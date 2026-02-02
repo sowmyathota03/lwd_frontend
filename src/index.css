@@ -1,4 +1,4 @@
-/* Top bar */
+
 .top-navbar {
   background-color: #0f172a;
   color: white;
@@ -40,7 +40,7 @@
   letter-spacing: 1px;
 }
 
-/* Links */
+
 .nav-links {
   display: flex;
   gap: 25px;
@@ -81,8 +81,9 @@
   cursor: pointer;
 }
 
+/* Footer Styling */
 .footer {
-  background-color: black;
+  background-color: #010711;
   color: white;
   padding: 40px 30px 10px;
 }
@@ -211,7 +212,7 @@
 
 
 .why-lwd {
-  background-color: #f9f9f9;
+  background-color: #A7F3D0;
   padding: 40px 20px;
   text-align: center;
 }
@@ -249,7 +250,7 @@
 
 
 .cta {
-  background-color:rgb(86, 84, 84);
+  background-color:#FED7AA;
   color: white;
   padding: 40px 20px;
   text-align: center;
@@ -518,7 +519,7 @@
 
 .profile-page {
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: rgb(224, 157, 224);
   display: flex;
   justify-content: center;
   align-items: center;

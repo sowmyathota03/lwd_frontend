@@ -38,7 +38,7 @@ function Career() {
   ];
 
   return (
-    <div style={{ padding: "40px",  backgroundColor: "#f0f4f8" }}>
+    <div style={{ padding: "40px",  backgroundColor: "#111827" ,color:"#EDE9FE"}}>
       
       
       <h1 style={{ textAlign: "center", }}>Careers</h1>
@@ -47,7 +47,7 @@ function Career() {
           textAlign: "center",
           maxWidth: "700px",
           margin: "10px auto 40px",
-          color: "#555",
+          // color: "#EDE9FE",
         }}
       >
         Discover career opportunities across multiple industries.  
@@ -55,7 +55,6 @@ function Career() {
         experience, and career goals.
       </p>
 
-      {/* Why Use Our Job Portal */}
       <section style={{ marginBottom: "40px" }}>
         <h2>Why Search Jobs with LWD?</h2>
         <ul style={{ lineHeight: "28px" }}>
@@ -65,8 +64,7 @@ function Career() {
           <li>✔ Easy job search and quick apply</li>
         </ul>
       </section>
-
-      {/* Career Categories */}
+      
       <section>
         <h2>Explore Career Paths</h2>
 
@@ -86,12 +84,13 @@ function Career() {
                 backgroundColor: "white",
                 padding: "20px",
                 borderRadius: "10px",
+                backgroundColor:"white",
+                color:"black",
                 boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
               }}
             >
               <h3>{career.title}</h3>
-              <p style={{ color: "#555" }}>{career.desc}</p>
-
+              <p style={{ color: "darkgray" }}>{career.desc}</p>
               <button
                 onClick={() => navigate("/jobs")}
                 style={{
@@ -114,12 +113,12 @@ function Career() {
      
       <section style={{ textAlign: "center", marginTop: "50px" }}>
         <h2>Start Your Career Journey Today</h2>
-        <p style={{ color: "#555" }}>
-          Create your profile and apply for jobs that match your skills.
+        <p >
+          Create your profile and apply efor jobs that match your skills.
         </p>
 
         <button
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate("/Profile")}
           style={{
             padding: "10px 20px",
             backgroundColor: "green",

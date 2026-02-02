@@ -30,21 +30,21 @@ function JobCard({ job, onApply }) {
   onClick={() => onApply(job)}
   style={{
     marginTop: "10px",
-    padding: "12px 0",        // taller button
-    width: "50%",            // full width
+    padding: "12px 0",        
+    width: "50%",            
     backgroundColor: "green",
     color: "white",
     border: "none",
     borderRadius: "6px",
     cursor: "pointer",
-    fontWeight: "bold",       // optional, looks better
-    fontSize: "16px"          // optional, bigger text
+    fontWeight: "bold",       
+    fontSize: "16px"         
   }}
 >
   Apply Now
 </button>
 
-    </div>
+  </div>
   );
 }
 

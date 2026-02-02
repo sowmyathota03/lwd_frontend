@@ -32,7 +32,6 @@ function Companies() {
       jobs: 15,
       about: "One of India's largest private sector banks.",
     },
-    
     {
       id: 4,
       name: "Accenture",
@@ -58,12 +57,13 @@ function Companies() {
       about: "One of India's largest private sector banks.",
     },
     {
-      id: 1,
+      id: 7,
       name: "Google",
       industry: "IT Services",
-      location: "India",
-      jobs: 120,
-      about: "A leading global technology company providing innovative digital products, cloud services, and AI-driven solutions worldwide.",
+      location: "Global",
+      jobs: 200,
+      about:
+        "A leading global technology company providing innovative digital products and AI solutions.",
     },
   ];
 
@@ -74,15 +74,13 @@ function Companies() {
   );
 
   return (
-    <div style={{ padding: "40px",  backgroundColor: "#f0f4f8" }}>
-      
-      <h1>Companies Hiring Now</h1>
-      <p style={{ color: "#555", maxWidth: "700px" }}>
+    <div style={{ padding: "40px", backgroundColor: "#ffe4ec", minHeight: "100vh" }}>
+      <h1 style={{ color: "#374151" }}>Companies Hiring Now</h1>
+      <p style={{ color: "#4b5563", maxWidth: "700px" }}>
         Explore companies actively hiring across industries. View open positions,
         company profiles and apply instantly.
       </p>
 
-      {/* Search & Filter */}
       <div
         style={{
           display: "flex",
@@ -112,22 +110,22 @@ function Companies() {
         </select>
       </div>
 
-      
+    
       {filteredCompanies.length === 0 ? (
-        <p style={{ marginTop: "40px", color: "#888" }}>
+        <p style={{ marginTop: "40px", color: "#6b7280" }}>
           No companies found for selected filters.
         </p>
       ) : (
         filteredCompanies.map((company) => (
           <div key={company.id} style={companyCard}>
             <div>
-              <h3>{company.name}</h3>
-              <p style={{ color: "#555" }}>{company.about}</p>
-              <p>
+              <h3 style={{ color: "#1f2937" }}>{company.name}</h3>
+              <p style={{ color: "#6b7280" }}>{company.about}</p>
+              <p style={{ color: "#374151" }}>
                 <b>Industry:</b> {company.industry} |{" "}
                 <b>Location:</b> {company.location}
               </p>
-              <p>
+              <p style={{ color: "#374151" }}>
                 <b>Open Positions:</b> {company.jobs}
               </p>
             </div>
@@ -149,40 +147,45 @@ function Companies() {
 }
 
 
+
 const inputStyle = {
   padding: "10px",
-  borderRadius: "6px",
-  border: "1px solid #ccc",
+  borderRadius: "8px",
+  border: "1px solid #d1d5db",
   minWidth: "220px",
+  backgroundColor: "#ffffff",
+  color: "#374151",
 };
 
 const companyCard = {
-  backgroundColor: "white",
-  padding: "20px",
-  borderRadius: "10px",
+  backgroundColor: "#ffffff",
+  padding: "22px",
+  borderRadius: "14px",
   marginBottom: "20px",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+  boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
 };
 
 const primaryBtn = {
-  padding: "8px 16px",
-  backgroundColor: "#2563eb",
+  padding: "9px 18px",
+  backgroundColor: "#ec4899", 
   color: "white",
   border: "none",
-  borderRadius: "6px",
+  borderRadius: "8px",
   cursor: "pointer",
   marginBottom: "8px",
+  fontWeight: "500",
 };
 
 const secondaryBtn = {
-  padding: "8px 16px",
+  padding: "9px 18px",
   backgroundColor: "#e5e7eb",
   border: "none",
-  borderRadius: "6px",
+  borderRadius: "8px",
   cursor: "pointer",
+  color: "#374151",
 };
 
 export default Companies;

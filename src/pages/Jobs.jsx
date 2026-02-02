@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import JobCard from "../components/jobs/JobCards";
+import JobSearchBlock from "../components/jobs/JobSearchBlock";
+import PopularJobs from "../components/jobs/PopularJobs";
 
 export const ITJobs = [
   { id: 1, title: "Frontend Developer (React.js)", company: "Arah Infotech", location: "Hyderabad", experience: "2-4 Years", description: "Develop React components, Redux, and UI." },
@@ -23,6 +26,16 @@ export const MarketingJobs = [
 const ALL_JOBS = [...ITJobs, ...FinancialJobs, ...MarketingJobs];
 
 function Jobs() {
+   const navigate = useNavigate();      
+  
+    const categories=[
+      { name: "IT",slug:"it", link: "/Jobs/IT" },
+      { name: "Finance",slug:"finance",link: "/Jobs"  },
+      { name: "Marketing",slug:"marketing", },
+      { name: "HR",slug:"hr", },
+      { name: "Freshers",slug:"fresher", },
+      { name: "Remote Jobs",slug:"remote", }
+    ];
   const { type } = useParams();
   const [jobs, setJobs] = useState([]);
 
@@ -38,7 +51,11 @@ function Jobs() {
    
   };
 
-  return (
+  return ( <>
+    
+      <JobSearchBlock /> 
+      <PopularJobs title="Popular Job Categories" categories={categories} />
+    
     <div style={{ padding: "20px" }}>
       <h1>{type ? `${type.toUpperCase()} Jobs` : "All Jobs"}</h1>
 
@@ -48,8 +65,8 @@ function Jobs() {
         ))}
       </div>
     </div>
+    </>
   );
 }
-
 export default Jobs;
  

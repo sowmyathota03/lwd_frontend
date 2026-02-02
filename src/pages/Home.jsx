@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PopularJobs from "../components/jobs/PopularJobs"; 
+import JobSearchBlock from "../components/jobs/JobSearchBlock";
 
 
 function Home() {
@@ -17,35 +18,9 @@ function Home() {
 
   return (
     <div className="home">
-      <section className="first_block" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "40px", backgroundColor: "#f0f4f8" ,color:"black"}}>
-  
-  <div style={{ maxWidth: "50%" }}>
-    <h1 style={{ fontSize: "36px", marginBottom: "15px" }}>Find Your Dream Job with LWD</h1>
-    <p style={{ fontSize: "18px", marginBottom: "20px" }}>
-      Explore thousands of verified jobs from top companies. Build your career the smart way!
-    </p>
-
-    <div style={{ display: "flex", gap: "10px", marginTop: "10px"  }}>
-      <input type="text" placeholder="Job title, skills" style={{ padding: "10px", flex: 1, borderRadius: "6px", border: "1px solid #ccc" }} />
-      <input type="text" placeholder="Location" style={{ padding: "10px", flex: 1, borderRadius: "6px", border: "1px solid #ccc" }} />
-      <button style={{ padding: "10px 20px", backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}>
-        Search Jobs
-      </button>
-    </div>
-  </div>
-
-  
-  <div style={{ maxWidth: "45%" }}>
-    <img 
-      src="https://media.istockphoto.com/id/1349094945/photo/human-using-a-computer-laptop-for-searching-for-job-and-fill-out-personal-data-on-job-website.jpg?s=612x612&w=0&k=20&c=nVCY302pin29eP1rN0eBGstQN3WF4YQTWvZ4TvAs21g=" 
-      alt="Job Search" 
-      style={{ width: "100%", borderRadius: "12px", boxShadow: "0 8px 16px rgba(0,0,0,)" }}
-    />
-  </div>
-
-</section>    
-      <PopularJobs title="Popular Job Categories"  categories={categories} />
-      <section className="why-lwd">
+      <JobSearchBlock />  
+      <PopularJobs title="Popular Job Categories" categories={categories} />
+      <section className="why-lwd" >
         <h2>Why Choose LWD?</h2>
         <div className="features">
           <div className="feature">✔ Verified Jobs</div>
@@ -67,12 +42,10 @@ function Home() {
           <div className="logo-box">Accenture</div>
         </div>
       </section>
-
       <section className="cta">
         <h2>Ready to take the next step?</h2>
-        <button onClick={() => navigate("/profile")}>Create Profile</button>
+        <button onClick={() => navigate("/Profile")}>Create Profile</button>
       </section>
-
     </div>
   );
 }

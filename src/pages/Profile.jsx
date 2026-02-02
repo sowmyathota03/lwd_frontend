@@ -148,7 +148,7 @@ function Profile() {
             </p>
           )}
 
-          <button type="submit">Save Profile</button>
+          <button type="submit" style={{width:"120px", height:"40px", }}>Save Profile</button>
         </form>
 
       </div>

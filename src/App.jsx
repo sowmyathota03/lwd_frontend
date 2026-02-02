@@ -10,6 +10,9 @@ import Companies from './pages/Companies';
 import JobCard from './components/jobs/JobCards';
 import Profile from './pages/Profile';
 import Career from './pages/Career';
+import JobSearchBlock from './components/jobs/JobSearchBlock';
+import JobSearch from './components/jobs/JobSearch';
+import ResumeUpload from './components/jobs/ResumeUpload';
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
       <Route path="/Companies" element={<Companies/>}/>
       <Route path="/Profile" element={<Profile/>}/>
       <Route path="/JobCard" element={<JobCard/>}/>
+      <Route path="/JobSearchBlock" element={<JobSearchBlock/>}/>
+      <Route path="/JobSearch" element={<JobSearch/>}/>
+      <Route path="/ResumeUpload" element={<ResumeUpload/>}/>
        
     </Routes>     
       <div><Footer/></div>
