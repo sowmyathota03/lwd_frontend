@@ -146,8 +146,6 @@ function Companies() {
   );
 }
 
-
-
 const inputStyle = {
   padding: "10px",
   borderRadius: "8px",

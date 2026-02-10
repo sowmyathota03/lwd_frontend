@@ -11,8 +11,16 @@ import JobCard from './components/jobs/JobCards';
 import Profile from './pages/Profile';
 import Career from './pages/Career';
 import JobSearchBlock from './components/jobs/JobSearchBlock';
-import JobSearch from './components/jobs/JobSearch';
 import ResumeUpload from './components/jobs/ResumeUpload';
+import JobAlert from './components/jobs/JobAlert';
+import CareerAdvice from './components/jobs/CareerAdvice';
+import EmployerLogin from './components/employee/EmployerLogin';
+import SearchResumes from './components/employee/SearchResumes';
+import PostJob from './components/employee/PostJob';
+import ContactUs from './components/company/ContactUs';
+import AboutUs from './components/company/AboutUs';
+import PrivacyPolicy from './components/company/PrivacyPolicy';
+import TermsAndConditions from './components/company/TermsAndConditions';
 
 function App() {
   return (
@@ -29,10 +37,20 @@ function App() {
       <Route path="/Profile" element={<Profile/>}/>
       <Route path="/JobCard" element={<JobCard/>}/>
       <Route path="/JobSearchBlock" element={<JobSearchBlock/>}/>
-      <Route path="/JobSearch" element={<JobSearch/>}/>
       <Route path="/ResumeUpload" element={<ResumeUpload/>}/>
+      <Route path="/JobAlert" element={<JobAlert/>}/>
+      <Route path="/CareerAdvice" element={<CareerAdvice/>}/>
+      <Route path="/EmployerLogin" element={<EmployerLogin/>}/>
+      <Route path="/SearchResumes" element={<SearchResumes/>}/>
+      <Route path="/PostJob" element={<PostJob/>}/>
+      <Route path="/ContactUs" element={<ContactUs/>}/>
+      <Route path="/AboutUs" element={<AboutUs/>}/>
+      <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>}/>
+       <Route path="/TermsAndConditions" element={<TermsAndConditions/>}/>
+      
+      
        
-    </Routes>     
+    </Routes>      
       <div><Footer/></div>
     </>
   )

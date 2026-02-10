@@ -19,11 +19,11 @@ function NavBar() {
         <div className="navbar-container">
           
           <div className="logo">
-            <h2>LWD</h2>
+           <h1>LWD</h1>
           </div>
 
           <ul className="nav-links">
-            <li><NavLink to="/">Home</NavLink></li>
+            <li><NavLink to="/"><b>Home</b></NavLink></li>
             <li><NavLink to="/Jobs">Jobs</NavLink></li>
             <li><NavLink to="/Companies">Companies</NavLink></li>
             <li><NavLink to="/Career">Careers</NavLink></li>
@@ -46,3 +46,4 @@ function NavBar() {
 }
 
 export default NavBar;
+ 
