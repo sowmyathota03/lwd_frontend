@@ -25,7 +25,7 @@ function ContactUs() {
     console.log(form);
     alert("Message sent successfully!");
 
-    // Reset form
+    
     setForm({
       name: "",
       email: "",

@@ -19,10 +19,10 @@ function EmployerLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Dummy validation (later backend connect cheyachu)
+    
     if (login.email === "employer@gmail.com" && login.password === "1234") {
       alert("Login Success");
-      navigate("/employer-dashboard"); // next page
+      navigate("/employer-dashboard"); 
     } else {
       alert("Invalid Credentials");
     }
@@ -33,30 +33,15 @@ function EmployerLogin() {
       <h2>Employer Login</h2>
 
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          value={login.email}
-          onChange={handleChange}
-          required
-        />
+        <input type="email" name="email" placeholder="Enter Email" value={login.email} onChange={handleChange} required/>
         <br /><br />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={login.password}
-          onChange={handleChange}
-          required
-        />
+        <input type="password" name="password" placeholder="Enter Password" value={login.password} onChange={handleChange} required/>
         <br /><br />
 
-        <button type="submit">Login</button>
+        <button type="submit" style={{marginBottom:"10px", backgroundColor:"blue", color:"white", border:"none", outline:"none", borderRadius:"15px"}}>Login</button>
       </form>
     </div>
   );
 }
-
 export default EmployerLogin;

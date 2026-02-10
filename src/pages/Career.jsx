@@ -47,7 +47,6 @@ function Career() {
           textAlign: "center",
           maxWidth: "700px",
           margin: "10px auto 40px",
-          // color: "#EDE9FE",
         }}
       >
         Discover career opportunities across multiple industries.  
@@ -84,7 +83,6 @@ function Career() {
                 backgroundColor: "white",
                 padding: "20px",
                 borderRadius: "10px",
-                backgroundColor:"white",
                 color:"black",
                 boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
               }}

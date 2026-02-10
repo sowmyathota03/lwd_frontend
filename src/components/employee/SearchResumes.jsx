@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function SearchResumes() {
   const [search, setSearch] = useState("");
 
-  // Dummy resumes data (later backend nundi teesukovachu)
+  
   const resumes = [
     { id: 1, name: "Ravi Kumar", skills: "React, JavaScript", location: "Hyderabad" },
     { id: 2, name: "Sneha Reddy", skills: "Java, Spring Boot", location: "Bangalore" },
