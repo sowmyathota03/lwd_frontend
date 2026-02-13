@@ -1,7 +1,8 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import PopularJobs from "../components/jobs/PopularJobs"; 
 import JobSearchBlock from "../components/jobs/JobSearchBlock";
+
+import JobActionButton from "../components/jobs/JobActionButton";
 
 
 function Home() {
@@ -44,7 +45,7 @@ function Home() {
       </section>
       <section className="cta">
         <h2>Ready to take the next step?</h2>
-        <button onClick={() => navigate("/Profile")}>Create Profile</button>
+        <JobActionButton />
       </section>
     </div>
   );
