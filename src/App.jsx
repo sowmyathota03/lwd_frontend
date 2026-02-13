@@ -4,6 +4,7 @@ import "./index.css";
 import { Routes,Route } from "react-router-dom"
 import Home from './pages/Home';
 import Jobs from './pages/Jobs';
+import JobDetails from "./pages/JobDetails";
 import Login from './auth/Login';
 import Register from './auth/Register';
 import Companies from './pages/Companies';
@@ -21,6 +22,7 @@ import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
 import PrivacyPolicy from './components/company/PrivacyPolicy';
 import TermsAndConditions from './components/company/TermsAndConditions';
+import ApplyJob from './components/jobs/ApplyJob';
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
       <Route path="/" element={<Home/>}/>
       <Route path="/jobs" element={<Jobs />} />
       <Route path="/jobs/:type" element={<Jobs />} />
+      <Route path="/job/:jobId" element={<JobDetails />} />
+      <Route path="/apply/:jobId" element={<ApplyJob />} />
       <Route path="/Login" element={<Login/>}/>
       <Route path="/Register" element={<Register/>}/>
       <Route path="/Career" element={<Career/>}/>     

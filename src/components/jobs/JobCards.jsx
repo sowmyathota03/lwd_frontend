@@ -1,50 +1,67 @@
-import React from "react";
+import styles from "./JobCard.module.css";
+import { useNavigate } from "react-router-dom";
+import { timeAgo } from "../../utils/timeAgo";
 
-function JobCard({ job, onApply }) {
+function JobCard({ job }) {
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/job/${job.id}`); // Navigate to Job Details page
+  };
+
+  const handleApply = () => {
+    navigate(`/apply/${job.id}`); // Navigate to Apply Job page
+  }
+
+
+
   return (
-    <div
-      style={{
-        border: "1px solid #ddd",
-        padding: "15px",
-        borderRadius: "8px",
-        width: "280px",
-        cursor: "pointer",
-        boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
-        transition: "transform 0.2s",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
-      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-    >
+    <div className={styles.card}
+      onClick={handleClick}>
+      {/* Top Section */}
       <div>
-        <h3 style={{ fontSize: "18px", marginBottom: "10px" }}>{job.title}</h3>
-        <p><b>Company:</b> {job.company}</p>
-        <p><b>Location:</b> {job.location}</p>
-        <p><b>Experience:</b> {job.experience}</p>
-        <p><b>Description:</b> {job.description}</p>
+        <h3 className={styles.title}>{job.title}</h3>
+        <p className={styles.company}>
+          {job.company} • {job.location}
+        </p>
+
+        <div className={styles.tags}>
+          <span className={styles.tag}>{job.experience}</span>
+          <span className={styles.tag}>{job.jobType}</span>
+          <span className={styles.tag}>{job.industry}</span>
+        </div>
+
+        <p className={styles.description}>
+          {job.description?.length > 100
+            ? job.description.substring(0, 100) + "..."
+            : job.description}
+        </p>
+
+        <div className={styles.bottomRow}>
+          <span className={styles.date}>
+            Posted {timeAgo(job.createdAt)}
+          </span>
+          <span className={styles.salary}>
+            {job.salary
+              ? `₹${job.salary.toLocaleString()} LPA`
+              : "Not Disclosed"}
+          </span>
+
+        </div>
       </div>
 
       <button
-  onClick={() => onApply(job)}
-  style={{
-    marginTop: "10px",
-    padding: "12px 0",        
-    width: "50%",            
-    backgroundColor: "green",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "bold",       
-    fontSize: "16px"         
-  }}
->
-  Apply Now
-</button>
+        className={styles.applyBtn}
+        onClick={(e) => {
+          e.stopPropagation(); // ✅ Prevents parent card click
+          handleApply();
+        }}
+      >
+        Apply Now
+      </button>
 
-  </div>
+    </div>
   );
 }
 

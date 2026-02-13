@@ -1,72 +1,277 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import JobCard from "../components/jobs/JobCards";
 import JobSearchBlock from "../components/jobs/JobSearchBlock";
 import PopularJobs from "../components/jobs/PopularJobs";
-
-export const ITJobs = [
-  { id: 1, title: "Frontend Developer (React.js)", company: "Arah Infotech", location: "Hyderabad", experience: "2-4 Years", description: "Develop React components, Redux, and UI." },
-  { id: 2, title: "Java Full Stack Developer", company: "Vagarious Solutions Pvt Ltd", location: "Bangalore", experience: "1-3 Years", description: "Build full stack apps with Java, Spring Boot, React." },
-  { id: 3, title: "Backend Developer (Java/Node.js)", company: "Wipro", location: "Chennai", experience: "3-5 Years", description: "Create APIs, manage databases and servers." },
-];
-
-export const FinancialJobs = [
-  { id: 4, title: "Financial Analyst", company: "HDFC Bank", location: "Mumbai", experience: "2-4 Years", description: "Analyze financial statements and forecasting." },
-  { id: 5, title: "Accounts Executive", company: "ICICI Bank", location: "Hyderabad", experience: "1-3 Years", description: "Handle accounts, GST, invoicing." },
-  { id: 6, title: "Investment Advisor", company: "Axis Bank", location: "Bangalore", experience: "3-5 Years", description: "Advise clients on investments and portfolios." },
-];
-
-export const MarketingJobs = [
-  { id: 7, title: "Digital Marketing Executive", company: "Wipro", location: "Bangalore", experience: "1-2 Years", description: "Manage social media, SEO, and campaigns." },
-  { id: 8, title: "Marketing Manager", company: "Infosys", location: "Hyderabad", experience: "3-5 Years", description: "Plan marketing strategies and team management." },
-  { id: 9, title: "Content Writer", company: "TCS", location: "Chennai", experience: "1-3 Years", description: "Create engaging content for websites and blogs." },
-];
-
-const ALL_JOBS = [...ITJobs, ...FinancialJobs, ...MarketingJobs];
+import {
+  getAllJobs,
+  getJobsByIndustry,
+  getTopCategories,
+  searchJobs,
+} from "../api/JobApi";
+import JobSkeleton from "../components/jobs/JobSkeleton";
+import Loader from "../components/jobs/Loader";
 
 function Jobs() {
-   const navigate = useNavigate();      
-  
-    const categories=[
-      { name: "IT",slug:"it", link: "/Jobs/IT" },
-      { name: "Finance",slug:"finance",link: "/Jobs"  },
-      { name: "Marketing",slug:"marketing", },
-      { name: "HR",slug:"hr", },
-      { name: "Freshers",slug:"fresher", },
-      { name: "Remote Jobs",slug:"remote", }
-    ];
   const { type } = useParams();
+  const [searchParamsUrl] = useSearchParams();
+
+  // ================= READ QUERY PARAMS =================
+  const keywordParam = searchParamsUrl.get("keyword");
+  const locationParam = searchParamsUrl.get("location");
+  const companyParam = searchParamsUrl.get("companyName");
+  const minExpParam = searchParamsUrl.get("minExp");
+  const maxExpParam = searchParamsUrl.get("maxExp");
+  const jobTypeParam = searchParamsUrl.get("jobType");
+
   const [jobs, setJobs] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [page, setPage] = useState(0);
+  const [last, setLast] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
+  const observer = useRef(null);
+
+  // ================= RESET WHEN FILTERS CHANGE =================
   useEffect(() => {
-    if (!type) setJobs(ALL_JOBS);
-    else if (type === "it") setJobs(ITJobs);
-    else if (type === "finance") setJobs(FinancialJobs);
-    else if (type === "marketing") setJobs(MarketingJobs);
-  }, [type]);
+    setJobs([]);
+    setPage(0);
+    setLast(false);
+    setInitialLoading(true);
+  }, [
+    type,
+    keywordParam,
+    locationParam,
+    companyParam,
+    minExpParam,
+    maxExpParam,
+    jobTypeParam,
+  ]);
 
-  const handleApply = (job) => {
-    alert(`You applied for ${job.title} at ${job.company}`);
-   
-  };
+  // ================= FETCH JOBS =================
+  useEffect(() => {
+    const fetchJobs = async () => {
+      if (last) return;
 
-  return ( <>
-    
-      <JobSearchBlock /> 
-      <PopularJobs title="Popular Job Categories" categories={categories} />
-    
-    <div style={{ padding: "20px" }}>
-      <h1>{type ? `${type.toUpperCase()} Jobs` : "All Jobs"}</h1>
+      try {
+        setLoading(true);
+        setError(null);
 
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-        {jobs.map((job) => (
-          <JobCard key={job.id} job={job} onApply={handleApply} />
-        ))}
+        let response;
+
+        const isSearchMode =
+          keywordParam ||
+          locationParam ||
+          companyParam ||
+          minExpParam ||
+          maxExpParam ||
+          jobTypeParam;
+
+        if (isSearchMode) {
+          response = await searchJobs({
+            keyword: keywordParam,
+            location: locationParam,
+            companyName: companyParam,
+            minExp: minExpParam,
+            maxExp: maxExpParam,
+            jobType: jobTypeParam,
+            page,
+          });
+        } else if (type) {
+          response = await getJobsByIndustry(type, page);
+        } else {
+          response = await getAllJobs(page);
+        }
+
+        const data = response.data;
+
+        setTotalCount(data.totalElements);
+
+        setJobs((prev) => {
+          const newJobs = data.content.filter(
+            (newJob) => !prev.some((existing) => existing.id === newJob.id)
+          );
+          return [...prev, ...newJobs];
+        });
+
+        setLast(data.last);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load jobs.");
+      } finally {
+        setLoading(false);
+        setInitialLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [
+    page,
+    type,
+    keywordParam,
+    locationParam,
+    companyParam,
+    minExpParam,
+    maxExpParam,
+    jobTypeParam,
+    last,
+  ]);
+
+  // ================= INFINITE SCROLL =================
+  const lastJobRef = useCallback(
+    (node) => {
+      if (loading || last) return;
+
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setPage((prev) => prev + 1);
+          }
+        },
+        { rootMargin: "300px" }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, last]
+  );
+
+  // ================= FETCH CATEGORIES =================
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getTopCategories();
+        setCategories(
+          response.data.map((cat) => ({
+            name: cat,
+            slug: cat.toLowerCase(),
+          }))
+        );
+      } catch (err) {
+        console.error("Failed to load categories");
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const isSearchMode =
+    keywordParam ||
+    locationParam ||
+    companyParam ||
+    jobTypeParam;
+
+  return (
+    <>
+      <JobSearchBlock />
+
+      {/* Hide categories during search */}
+      {!isSearchMode && (
+        <PopularJobs
+          title="Popular Job Categories"
+          categories={categories}
+        />
+      )}
+
+      <div style={{ 
+          background: "linear-gradient(135deg, #e0f7fa, #c8e6c9)", // light gradient\
+          padding: "30px", marginTop: "20px"
+        }}>
+        <h2 style={{ padding: "0 20px" }}>
+          {isSearchMode ? (
+            <>
+              🔍 Search Results ({totalCount})
+              {keywordParam && (
+                <>
+                  {" "}for{" "}
+                  <span style={{ color: "#2563eb" }}>
+                    {keywordParam}
+                  </span>
+                </>
+              )}
+              {locationParam && (
+                <>
+                  {" "}in{" "}
+                  <span style={{ color: "#16a34a" }}>
+                    {locationParam}
+                  </span>
+                </>
+              )}
+              {companyParam && (
+                <>
+                  {" "}at{" "}
+                  <span style={{ color: "#9333ea" }}>
+                    {companyParam}
+                  </span>
+                </>
+              )}
+            </>
+          ) : type ? (
+            `${type.toUpperCase()} Jobs (${totalCount})`
+          ) : (
+            `All Jobs (${totalCount})`
+          )}
+        </h2>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {/* ================= JOB GRID ================= */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)", // 3 columns
+            gap: "20px",
+            flexWrap: "wrap",
+            padding: "20px",
+            borderRadius: "12px",
+            maxWidth: "1000px", margin: "0 auto"
+          }}
+        >
+          {jobs.map((job, index) => {
+            const isLastItem = index === jobs.length - 1;
+
+            return (
+              <div
+                key={job.id}
+                ref={isLastItem ? lastJobRef : null}
+              >
+                <JobCard
+                  job={{
+                    ...job,
+                    company: job.company?.companyName,
+                    experience: `${job.minExperience || 0} - ${
+                      job.maxExperience || 0
+                    } Years`,
+                  }}
+                />
+              </div>
+            );
+          })}
+
+          {/* Initial Skeleton */}
+          {initialLoading &&
+            Array.from({ length: 6 }).map((_, index) => (
+              <JobSkeleton key={`initial-${index}`} />
+            ))}
+            </div>
+
+        {/* Loading Spinner */}
+        {loading && !initialLoading && <Loader />}
+
+        {/* No More Jobs */}
+        {last && !initialLoading && (
+          <p style={{ marginTop: "20px", textAlign: "center" }}>
+            No more jobs.
+          </p>
+        )}
       </div>
-    </div>
     </>
   );
 }
+
 export default Jobs;
- 
