@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { loginUser } from "../api/AuthApi";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
+import { AuthContext } from "../context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // 🔥 use context
 
   const [formData, setFormData] = useState({
     email: "",
@@ -34,14 +36,12 @@ export default function Login() {
     try {
       const res = await loginUser(formData);
 
-      // Save token
-      localStorage.setItem("token", res.token);
+      // 🔥 Use context login (this updates navbar immediately)
+      login(res.token);
 
-      // Decode token
+      // Decode token for role-based redirect
       const decoded = jwtDecode(res.token);
-      const role = decoded.role;
-
-      redirectBasedOnRole(role);
+      redirectBasedOnRole(decoded.role);
 
     } catch (err) {
       setError("Invalid email or password");
