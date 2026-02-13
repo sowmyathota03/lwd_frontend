@@ -1,144 +1,93 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAllCompanies } from "../api/CompanyApi";
 
 function Companies() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
-  const [industry, setIndustry] = useState("All");
+  const [companies, setCompanies] = useState([]);
 
-  const companies = [
-    {
-      id: 1,
-      name: "TCS",
-      industry: "IT Services",
-      location: "India",
-      jobs: 120,
-      about: "Leading global IT services and consulting company.",
-    },
-    {
-      id: 2,
-      name: "Infosys",
-      industry: "IT Services",
-      location: "India",
-      jobs: 95,
-      about: "Digital transformation and technology services.",
-    },
-    {
-      id: 3,
-      name: "HDFC Bank",
-      industry: "Finance",
-      location: "India",
-      jobs: 15,
-      about: "One of India's largest private sector banks.",
-    },
-    {
-      id: 4,
-      name: "Accenture",
-      industry: "Consulting",
-      location: "Global",
-      jobs: 150,
-      about: "Global professional services company.",
-    },
-    {
-      id: 5,
-      name: "Amazon",
-      industry: "E-Commerce",
-      location: "Global",
-      jobs: 110,
-      about: "World’s leading e-commerce and cloud company.",
-    },
-    {
-      id: 6,
-      name: "Axis Bank",
-      industry: "Finance",
-      location: "India",
-      jobs: 45,
-      about: "One of India's largest private sector banks.",
-    },
-    {
-      id: 7,
-      name: "Google",
-      industry: "IT Services",
-      location: "Global",
-      jobs: 200,
-      about:
-        "A leading global technology company providing innovative digital products and AI solutions.",
-    },
-  ];
+  useEffect(() => {
+    getAllCompanies()
+      .then((res) => setCompanies(res.data))
+      .catch((error) => console.error("API Error:", error));
+  }, []);
 
-  const filteredCompanies = companies.filter(
-    (c) =>
-      c.name.toLowerCase().includes(search.toLowerCase()) &&
-      (industry === "All" || c.industry === industry)
+  const filteredCompanies = companies.filter((company) =>
+    company.companyName?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div style={{ padding: "40px", backgroundColor: "#ffe4ec", minHeight: "100vh" }}>
-      <h1 style={{ color: "#374151" }}>Companies Hiring Now</h1>
-      <p style={{ color: "#4b5563", maxWidth: "700px" }}>
-        Explore companies actively hiring across industries. View open positions,
-        company profiles and apply instantly.
-      </p>
+    <div style={pageStyle}>
+      <h1 style={{ marginBottom: "20px" }}>Companies</h1>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "15px",
-          margin: "25px 0",
-          flexWrap: "wrap",
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Search company name"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={inputStyle}
-        />
+      <input
+        type="text"
+        placeholder="Search company name"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={inputStyle}
+      />
 
-        <select
-          value={industry}
-          onChange={(e) => setIndustry(e.target.value)}
-          style={inputStyle}
-        >
-          <option value="All">All Industries</option>
-          <option value="IT Services">IT Services</option>
-          <option value="Finance">Finance</option>
-          <option value="Consulting">Consulting</option>
-          <option value="E-Commerce">E-Commerce</option>
-        </select>
-      </div>
-
-    
       {filteredCompanies.length === 0 ? (
-        <p style={{ marginTop: "40px", color: "#6b7280" }}>
-          No companies found for selected filters.
-        </p>
+        <p>No companies found</p>
       ) : (
         filteredCompanies.map((company) => (
           <div key={company.id} style={companyCard}>
-            <div>
-              <h3 style={{ color: "#1f2937" }}>{company.name}</h3>
-              <p style={{ color: "#6b7280" }}>{company.about}</p>
-              <p style={{ color: "#374151" }}>
-                <b>Industry:</b> {company.industry} |{" "}
+            
+            {/* LEFT LOGO */}
+            <div style={{ width: "80px" }}>
+              {company.logoUrl ? (
+                <img
+                  src={company.logoUrl}
+                  alt="logo"
+                  style={{ width: "70px", borderRadius: "10px" }}
+                />
+              ) : (
+                <div style={logoPlaceholder}>No Logo</div>
+              )}
+            </div>
+
+            {/* MIDDLE DETAILS */}
+            <div style={{ flex: 1 }}>
+              <h3 style={{ margin: 0 }}>{company.companyName}</h3>
+              <p style={{ margin: "6px 0", color: "#555" }}>
+                {company.description}
+              </p>
+              <p style={{ margin: "4px 0" }}>
                 <b>Location:</b> {company.location}
               </p>
-              <p style={{ color: "#374151" }}>
-                <b>Open Positions:</b> {company.jobs}
+
+              {company.website && (
+                <a
+                  href={company.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#2563eb", fontSize: "14px" }}
+                >
+                  Visit Website
+                </a>
+              )}
+
+              <p style={{ marginTop: "5px", fontSize: "14px" }}>
+                <b>Status:</b>{" "}
+                <span style={{ color: company.isActive ? "green" : "red" }}>
+                  {company.isActive ? "Active" : "Inactive"}
+                </span>
               </p>
             </div>
 
-            <div style={{ textAlign: "right" }}>
+            {/* RIGHT BUTTON */}
+            <div>
               <button
-                style={primaryBtn}
-                onClick={() => navigate("/jobs")}
+                style={viewBtn}
+                onClick={() => navigate(`/jobs/${company.id}`)}
               >
-                View Jobs
+                View Jobs →
               </button>
-              <button style={secondaryBtn}>Follow</button>
             </div>
+
           </div>
         ))
       )}
@@ -146,44 +95,54 @@ function Companies() {
   );
 }
 
+/* STYLES */
+
+const pageStyle = {
+  padding: "40px",
+  backgroundColor: "#ffe4ec",
+  minHeight: "100vh",
+};
+
 const inputStyle = {
-  padding: "10px",
-  borderRadius: "8px",
-  border: "1px solid #d1d5db",
-  minWidth: "220px",
-  backgroundColor: "#ffffff",
-  color: "#374151",
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #ccc",
+  marginBottom: "25px",
+  width: "300px",
 };
 
 const companyCard = {
-  backgroundColor: "#ffffff",
-  padding: "22px",
-  borderRadius: "14px",
-  marginBottom: "20px",
+  backgroundColor: "#fff",
+  padding: "20px",
+  borderRadius: "16px",
+  marginBottom: "18px",
   display: "flex",
-  justifyContent: "space-between",
+  gap: "20px",
   alignItems: "center",
-  boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+  boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
 };
 
-const primaryBtn = {
-  padding: "9px 18px",
-  backgroundColor: "#ec4899", 
-  color: "white",
+const viewBtn = {
+  padding: "10px 18px",
+  backgroundColor: "#7c3aed",
+  color: "#fff",
   border: "none",
-  borderRadius: "8px",
+  borderRadius: "10px",
   cursor: "pointer",
-  marginBottom: "8px",
-  fontWeight: "500",
+  fontWeight: "600",
+  fontSize: "14px",
 };
 
-const secondaryBtn = {
-  padding: "9px 18px",
-  backgroundColor: "#e5e7eb",
-  border: "none",
-  borderRadius: "8px",
-  cursor: "pointer",
-  color: "#374151",
+const logoPlaceholder = {
+  width: "70px",
+  height: "70px",
+  backgroundColor: "#f3f4f6",
+  borderRadius: "10px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "12px",
+  color: "#6b7280",
 };
 
 export default Companies;

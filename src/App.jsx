@@ -23,7 +23,7 @@ import AboutUs from './components/company/AboutUs';
 import PrivacyPolicy from './components/company/PrivacyPolicy';
 import TermsAndConditions from './components/company/TermsAndConditions';
 import ApplyJob from './components/jobs/ApplyJob';
-
+import Suggestions from './components/jobs/Suggestions';
 function App() {
   return (
     <>
@@ -50,7 +50,9 @@ function App() {
       <Route path="/ContactUs" element={<ContactUs/>}/>
       <Route path="/AboutUs" element={<AboutUs/>}/>
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>}/>
-       <Route path="/TermsAndConditions" element={<TermsAndConditions/>}/>
+      <Route path="/TermsAndConditions" element={<TermsAndConditions/>}/>
+      <Route path="/Suggestions" element={<Suggestions/>}/>
+      
       
       
        
