@@ -1,7 +1,9 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { NavLink, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 function NavBar() {
+  const {user, logout} = useContext(AuthContext);
   return (
     <>
       
@@ -27,16 +29,39 @@ function NavBar() {
             <li><NavLink to="/Jobs">Jobs</NavLink></li>
             <li><NavLink to="/Companies">Companies</NavLink></li>
             <li><NavLink to="/Career">Careers</NavLink></li>
-            <li><NavLink to="/Profile">Profile</NavLink></li>
           </ul>
 
-          <div className="nav-buttons">
-            <NavLink to="/Login">
-              <button className="login-btn">Login</button>
-            </NavLink>
-            <NavLink to="/Register">
-              <button className="register-btn">Register</button>
-            </NavLink>
+         {/* Right Side Auth Buttons */}
+          <div className="d-flex align-items-center">
+
+            {!user ? (
+              <>
+                <Link to="/login" className="btn btn-primary btn-outline-light me-2">
+                  Login
+                </Link>
+                <Link to="/register" className="btn btn-warning">
+                  Register
+                </Link>
+              </>
+            ) : (
+              <>
+                <span className="text-dark me-3">
+                  Welcome, {user?.sub}
+                </span>
+
+                <Link to="/profile" className="btn btn-outline-warning me-2">
+                  Profile
+                </Link>
+
+                <button
+                  onClick={logout}
+                  className="btn btn-danger"
+                >
+                  Logout
+                </button>
+              </>
+            )}
+
           </div>
 
         </div>

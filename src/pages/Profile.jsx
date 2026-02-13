@@ -1,158 +1,133 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getMyProfile, getUserById, updateMyProfile } from "../api/UserApi";
+import "./Profile.css";
 
-function Profile() {
-  const [profile, setProfile] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    role: "",
-    experience: "",
-    skills: "",
-    location: ""
-  });
+// Simple JWT decoder (only decodes payload)
+function decodeJWT(token) {
+  try {
+    const payload = token.split(".")[1];
+    return JSON.parse(atob(payload));
+  } catch (err) {
+    console.error("Invalid JWT token", err);
+    return null;
+  }
+}
 
-  const [resume, setResume] = useState(null);
+const Profile = () => {
+  const { userId } = useParams();
+  const [profile, setProfile] = useState(null);
+  const [formData, setFormData] = useState({ name: "", phone: "" });
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
+  const [editing, setEditing] = useState(false); // controls form visibility
+
+  // Decode JWT to get logged-in user ID
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = decodeJWT(token);
+      if (decoded) {
+        const id = Number(decoded.userId);
+        setLoggedInUserId(id);
+      }
+    }
+  }, []);
+
+  // Fetch profile (own or other)
+  useEffect(() => {
+    if (loggedInUserId === null) return;
+
+    const fetchProfile = userId ? getUserById(userId) : getMyProfile();
+
+    fetchProfile
+      .then((res) => {
+        setProfile(res.data);
+        if (res.data.id === loggedInUserId) {
+          setFormData({
+            name: res.data.name || "",
+            phone: res.data.phone || "",
+          });
+        }
+        console.log("Fetched profile:", res.data);
+      })
+      .catch((err) => console.error("Error fetching profile:", err));
+  }, [userId, loggedInUserId]);
+
+  const isOwnProfile = profile?.id === loggedInUserId;
 
   const handleChange = (e) => {
-    setProfile({
-      ...profile,
-      [e.target.name]: e.target.value
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdate = () => {
+    updateMyProfile(formData)
+      .then((res) => {
+        setProfile(res.data);
+        setEditing(false); // collapse form after update
+        alert("Profile updated successfully!");
+      })
+      .catch((err) => console.error("Error updating profile:", err));
+  };
+
+  const handleCancel = () => {
+    // reset form to original values
+    setFormData({
+      name: profile.name || "",
+      phone: profile.phone || "",
     });
+    setEditing(false);
   };
 
-  const handleResumeChange = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-
-    if (file.size > 2 * 1024 * 1024) {
-      alert("File size should be less than 2MB");
-      return;
-    }
-
-    const allowedTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      alert("Only PDF or DOC files allowed");
-      return;
-    }
-
-    setResume(file);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!resume) {
-      alert("Please upload resume");
-      return;
-    }
-
-    console.log("Profile Created:", profile);
-    console.log("Resume:", resume.name);
-
-    
-    localStorage.setItem("profileData", JSON.stringify(profile));
-    localStorage.setItem("resumeName", resume.name);
-
-    alert("Profile created successfully!");
-  };
+  if (!profile) return <p className="loading-text">Loading profile...</p>;
 
   return (
-    <div className="profile-page">
-      <div className="profile-card">
+    <div className="profile-container">
+      <h2>User Profile</h2>
 
-        <h2>Create Your Profile</h2>
-        <p className="subtitle">
-          Complete your profile to apply for jobs
-        </p>
+      <p><b>Name:</b> {profile.name}</p>
+      <p><b>Email:</b> {profile.email}</p>
+      <p><b>Phone:</b> {profile.phone || "-"}</p>
+      <p><b>Role:</b> {profile.role}</p>
+      <p><b>Status:</b> {profile.isActive ? "Active" : "Inactive"}</p>
+      <p><b>Created At:</b> {new Date(profile.createdAt).toLocaleDateString("en-GB")}</p>
+      <p><b>Updated At:</b> {new Date(profile.updatedAt).toLocaleDateString("en-GB")}</p>
+      {profile.companyName && (
+          <p><b>Company:</b> {profile.companyName}</p>
+        )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              onChange={handleChange}
-              required
-            />
-          </div>
 
-          <div className="form-row">
-            <input
-              type="text"
-              name="phone"
-              placeholder="Mobile Number"
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="location"
-              placeholder="Current Location"
-              onChange={handleChange}
-            />
-          </div>
 
-          <input
-            type="text"
-            name="role"
-            placeholder="Job Role (Eg: React Developer)"
-            onChange={handleChange}
-            required
-          />
-
-          <div className="form-row">
-            <select name="experience" onChange={handleChange} required>
-              <option value="">Experience</option>
-              <option>Fresher</option>
-              <option>1-3 Years</option>
-              <option>3-5 Years</option>
-              <option>5+ Years</option>
-            </select>
-
-            <input
-              type="text"
-              name="skills"
-              placeholder="Skills (React, Java, SQL)"
-              onChange={handleChange}
-            />
-          </div>
-
-         
-          <div className="form-row">
-            <input
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={handleResumeChange}
-              required
-            />
-          </div>
-
-        
-          {resume && (
-            <p style={{ fontSize: "14px", color: "green" }}>
-              Uploaded: {resume.name}
-            </p>
+      {/* Update section for own profile */}
+      {isOwnProfile && (
+        <div className="update-section">
+          {!editing ? (
+            <button onClick={() => setEditing(true)}>Update Profile</button>
+          ) : (
+            <div className="update-form">
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                placeholder="Name"
+                onChange={handleChange}
+              />
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                placeholder="Phone"
+                onChange={handleChange}
+              />
+              <div className="form-buttons">
+                <button className="confirm" onClick={handleUpdate}>Confirm</button>
+                <button className="cancel" onClick={handleCancel}>Cancel</button>
+              </div>
+            </div>
           )}
-
-          <button type="submit" style={{width:"120px", height:"40px", }}>Save Profile</button>
-        </form>
-
-      </div>
+        </div>
+      )}
     </div>
   );
-}
+};
+
 export default Profile;
