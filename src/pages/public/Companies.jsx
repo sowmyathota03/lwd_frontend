@@ -1,18 +1,28 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllCompanies } from "../api/CompanyApi";
+import { getAllCompanies } from "../../api/CompanyApi";
 
 function Companies() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [companies, setCompanies] = useState([]);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    getAllCompanies()
-      .then((res) => setCompanies(res.data))
+    fetchCompanies(page);
+  }, [page]);
+
+  const fetchCompanies = (pageNumber) => {
+    getAllCompanies(pageNumber, 5)
+      .then((res) => {
+        const data = res.data;
+        setCompanies(data.content || []);
+        setTotalPages(data.totalPages);
+      })
       .catch((error) => console.error("API Error:", error));
-  }, []);
+  };
 
   const filteredCompanies = companies.filter((company) =>
     company.companyName?.toLowerCase().includes(search.toLowerCase())
@@ -82,15 +92,41 @@ function Companies() {
             <div>
               <button
                 style={viewBtn}
-                onClick={() => navigate(`/jobs/${company.id}`)}
+                onClick={() =>
+                  navigate(
+                    `/jobs?companyId=${company.id}&companyName=${company.companyName}`
+                  )
+                }
               >
                 View Jobs →
               </button>
             </div>
-
           </div>
         ))
       )}
+
+      {/* ✅ Pagination Controls */}
+      <div style={paginationContainer}>
+        <button
+          style={paginationBtn}
+          disabled={page === 0}
+          onClick={() => setPage(page - 1)}
+        >
+          Previous
+        </button>
+
+        <span style={{ fontWeight: "600" }}>
+          Page {page + 1} of {totalPages}
+        </span>
+
+        <button
+          style={paginationBtn}
+          disabled={page + 1 === totalPages}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }
@@ -143,6 +179,23 @@ const logoPlaceholder = {
   justifyContent: "center",
   fontSize: "12px",
   color: "#6b7280",
+};
+
+const paginationContainer = {
+  marginTop: "30px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "20px",
+};
+
+const paginationBtn = {
+  padding: "8px 16px",
+  borderRadius: "8px",
+  border: "none",
+  backgroundColor: "#7c3aed",
+  color: "#fff",
+  cursor: "pointer",
 };
 
 export default Companies;

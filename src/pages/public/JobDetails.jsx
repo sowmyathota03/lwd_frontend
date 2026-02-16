@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getJobById } from "../api/JobApi";
-import Loader from "../components/jobs/Loader";
-import styles from "../components/jobs/JobCard.module.css";
+import { getJobById } from "../../api/JobApi";
+import Loader from "../../components/jobs/Loader";
+import styles from "../../components/jobs/JobCard.module.css";
 
 function JobDetails() {
   const { jobId } = useParams();

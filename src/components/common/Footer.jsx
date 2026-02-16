@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -14,28 +15,28 @@ function Footer() {
         <div className="footer-section">
           <h4>For Job Seekers</h4>
           <ul>
-            <li><a href="/JobSearchBlock">Search Jobs</a></li>
-            <li><a href="/ResumeUpload">Upload Resume</a></li>
-            <li><a href="/JobAlert">Job Alerts</a></li>
-            <li><a href="/CareerAdvice">Career Advice</a></li>
+            <li><Link to="/JobSearchBlock">Search Jobs</Link></li>
+            <li><Link to="/ResumeUpload">Upload Resume</Link></li>
+            <li><Link to="/JobAlert">Job Alerts</Link></li>
+            <li><Link to="/CareerAdvice">Career Advice</Link></li>
           </ul>
         </div>
          <div className="footer-section">
           <h4>For Employers</h4>
           <ul>
-            <li><a href="/PostJob">Post a Job</a></li>
-            <li><a href="/SearchResumes">Search Resumes</a></li>
-            <li><a href="/EmployerLogin">Employer Login</a></li>
-            <li><a href="/">Pricing</a></li>
+            <li><Link to="/PostJob">Post a Job</Link></li>
+            <li><Link to="/SearchResumes">Search Resumes</Link></li>
+            <li><Link to="/login">Recruiter Login</Link></li>
+            <li><Link to="/Pricing">Pricing</Link></li>
           </ul>
         </div>
          <div className="footer-section">
           <h4>Company</h4>
           <ul>
-            <li><a href="/AboutUs">About Us</a></li>
-            <li><a href="/ContactUs">Contact Us</a></li>
-            <li><a href="/PrivacyPolicy">Privacy Policy</a></li>
-            <li><a href="/TermsAndConditions">Terms & Conditions</a></li>
+            <li><Link to="/AboutUs">About Us</Link></li>
+            <li><Link to="/ContactUs">Contact Us</Link></li>
+            <li><Link to="/PrivacyPolicy">Privacy Policy</Link></li>
+            <li><Link to="/TermsAndConditions">Terms & Conditions</Link></li>
           </ul>
         </div>
 

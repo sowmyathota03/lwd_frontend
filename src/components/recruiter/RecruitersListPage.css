@@ -1,0 +1,205 @@
+/* ================= PAGE WRAPPER ================= */
+.recruiters-page {
+  padding: 24px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+/* ================= HEADER ================= */
+.recruiters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.recruiters-header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* ================= TABS ================= */
+.recruiters-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.recruiters-tabs button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recruiters-tabs button.active {
+  background: #2563eb;
+  color: white;
+}
+
+.recruiters-tabs button:hover {
+  background: #dbeafe;
+}
+
+/* ================= CARD ================= */
+.recruiters-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* ================= TABLE ================= */
+.recruiters-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recruiters-table thead {
+  background: #f1f5f9;
+}
+
+.recruiters-table th {
+  padding: 14px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  text-align: left;
+}
+
+.recruiters-table td {
+  padding: 14px;
+  font-size: 14px;
+  color: #1f2937;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ================= STATUS BADGES ================= */
+.status {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.blocked {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+/* Approve */
+.actions .approve {
+  background: #22c55e;
+  color: white;
+}
+
+.actions .approve:hover {
+  background: #16a34a;
+}
+
+/* Block */
+.actions .block {
+  background: #ef4444;
+  color: white;
+}
+
+.actions .block:hover {
+  background: #dc2626;
+}
+
+/* Unblock */
+.actions .unblock {
+  background: #f59e0b;
+  color: white;
+}
+
+.actions .unblock:hover {
+  background: #d97706;
+}
+
+/* View Jobs */
+.actions .view {
+  background: #3b82f6;
+  color: white;
+}
+
+.actions .view:hover {
+  background: #2563eb;
+}
+
+/* ================= STATES ================= */
+.loading,
+.no-data {
+  padding: 30px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .recruiters-table thead {
+    display: none;
+  }
+
+  .recruiters-table,
+  .recruiters-table tbody,
+  .recruiters-table tr,
+  .recruiters-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .recruiters-table tr {
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .recruiters-table td {
+    border: none;
+    padding: 8px 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .recruiters-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #475569;
+  }
+}

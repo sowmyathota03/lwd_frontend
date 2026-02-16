@@ -1,6 +1,11 @@
+<<<<<<< HEAD:src/pages/Home.jsx
+=======
+import { useState, useEffect } from "react";
+>>>>>>> 46735d7 (Chetan's added more admin files):src/pages/public/Home.jsx
 import { useNavigate } from "react-router-dom";
-import PopularJobs from "../components/jobs/PopularJobs"; 
-import JobSearchBlock from "../components/jobs/JobSearchBlock";
+import PopularJobs from "../../components/jobs/PopularJobs"; 
+import JobSearchBlock from "../../components/jobs/JobSearchBlock";
+import { getTopCategories } from "../../api/JobApi";
 
 import JobActionButton from "../components/jobs/JobActionButton";
 
@@ -8,14 +13,25 @@ import JobActionButton from "../components/jobs/JobActionButton";
 function Home() {
   const navigate = useNavigate();      
 
-  const categories=[
-    { name: "IT",slug:"it", link: "/Jobs/IT" },
-    { name: "Finance",slug:"finance",link: "/Jobs"  },
-    { name: "Marketing",slug:"marketing", },
-    { name: "HR",slug:"hr", },
-    { name: "Freshers",slug:"fresher", },
-    { name: "Remote Jobs",slug:"remote", }
-  ];
+   const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getTopCategories();
+        setCategories(
+          response.data.map((cat) => ({
+            name: cat,
+            slug: cat.toLowerCase(),
+          }))
+        );
+      } catch (err) {
+        console.error("Failed to load categories");
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   return (
     <div className="home">
@@ -45,7 +61,13 @@ function Home() {
       </section>
       <section className="cta">
         <h2>Ready to take the next step?</h2>
+<<<<<<< HEAD:src/pages/Home.jsx
         <JobActionButton />
+=======
+        <button onClick={() => navigate("/register/jobseeker")} className="btn btn-primary">
+          Create Profile
+        </button>
+>>>>>>> 46735d7 (Chetan's added more admin files):src/pages/public/Home.jsx
       </section>
     </div>
   );

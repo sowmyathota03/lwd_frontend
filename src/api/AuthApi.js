@@ -1,13 +1,29 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const API_URL = "http://localhost:8080/api/auth";
+export const registerJobSeeker = async (registerData) => {
+  const response = await axiosInstance.post(
+    "/auth/register/jobseeker",
+    registerData
+  );
+  return response.data;
+};
 
-export const registerUser = async (registerData) => {
-  const response = await axios.post(`${API_URL}/register`, registerData);
+export const registerRecruiter = async (registerData) => {
+  const response = await axiosInstance.post(
+    "/auth/register/recruiter",
+    registerData
+  );
   return response.data;
 };
 
 export const loginUser = async (loginData) => {
-  const response = await axios.post(`${API_URL}/login`, loginData);
-  return response.data; // JwtResponse { token }
+  const response = await axiosInstance.post(
+    "/auth/login",
+    loginData
+  );
+
+  // store token automatically
+  localStorage.setItem("token", response.data.token);
+
+  return response.data;
 };

@@ -1,0 +1,83 @@
+.company-dashboard {
+  padding: 24px;
+  background: #f8fafc; /* soft admin background */
+  min-height: 100vh;
+  margin-top: 50px;
+}
+
+/* ================= COMPANY CARD ================= */
+.company-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.company-card h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.company-meta {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* ================= STATUS BADGE ================= */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.status-badge.active {
+  background: #e7f7ed;
+  color: #137333;
+}
+
+.status-badge.blocked {
+  background: #fdecec;
+  color: #a50e0e;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.dashboard-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.dashboard-actions button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  background: #2563eb;
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.dashboard-actions button:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+.dashboard-actions button.secondary {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.dashboard-actions button.secondary:hover {
+  background: #e5e7eb;
+}

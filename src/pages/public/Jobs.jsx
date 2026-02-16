@@ -1,16 +1,17 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import JobCard from "../components/jobs/JobCards";
-import JobSearchBlock from "../components/jobs/JobSearchBlock";
-import PopularJobs from "../components/jobs/PopularJobs";
+import JobCard from "../../components/jobs/JobCards";
+import JobSearchBlock from "../../components/jobs/JobSearchBlock";
+import PopularJobs from "../../components/jobs/PopularJobs";
 import {
   getAllJobs,
   getJobsByIndustry,
+  getJobsByCompany,
   getTopCategories,
   searchJobs,
-} from "../api/JobApi";
-import JobSkeleton from "../components/jobs/JobSkeleton";
-import Loader from "../components/jobs/Loader";
+} from "../../api/JobApi";
+import JobSkeleton from "../../components/jobs/JobSkeleton";
+import Loader from "../../components/jobs/Loader";
 
 function Jobs() {
   const { type } = useParams();
@@ -23,6 +24,8 @@ function Jobs() {
   const minExpParam = searchParamsUrl.get("minExp");
   const maxExpParam = searchParamsUrl.get("maxExp");
   const jobTypeParam = searchParamsUrl.get("jobType");
+  const companyIdParam = searchParamsUrl.get("companyId");
+
 
   const [jobs, setJobs] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -49,6 +52,7 @@ function Jobs() {
     minExpParam,
     maxExpParam,
     jobTypeParam,
+    companyIdParam,
   ]);
 
   // ================= FETCH JOBS =================
@@ -68,9 +72,13 @@ function Jobs() {
           companyParam ||
           minExpParam ||
           maxExpParam ||
-          jobTypeParam;
+          jobTypeParam ||
+          companyIdParam;
 
-        if (isSearchMode) {
+        if (companyIdParam) {
+          response = await getJobsByCompany(companyIdParam, page);
+        } 
+        else if (isSearchMode) {
           response = await searchJobs({
             keyword: keywordParam,
             location: locationParam,
@@ -117,6 +125,7 @@ function Jobs() {
     minExpParam,
     maxExpParam,
     jobTypeParam,
+    companyIdParam,
     last,
   ]);
 
@@ -183,7 +192,15 @@ function Jobs() {
           padding: "30px", marginTop: "20px"
         }}>
         <h2 style={{ padding: "0 20px" }}>
-          {isSearchMode ? (
+          {companyIdParam ? (
+            <>
+              🏢 Jobs at{" "}
+              <span style={{ color: "#9333ea" }}>
+                {companyParam || searchParamsUrl.get("companyName")}
+              </span>{" "}
+              ({totalCount})
+            </>
+          ) : isSearchMode ? (
             <>
               🔍 Search Results ({totalCount})
               {keywordParam && (
@@ -217,6 +234,7 @@ function Jobs() {
             `All Jobs (${totalCount})`
           )}
         </h2>
+
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 

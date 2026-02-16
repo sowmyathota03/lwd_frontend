@@ -60,11 +60,15 @@ export const searchJobs = (params) => {
   return api.get(`/jobs/search`, { params });
 };
 
-
 // GET JOB BY ID
 export const getJobById = (jobId) => {
   return api.get(`/jobs/${jobId}`);
 };
+
+export const getJobsByCompany = (companyId, page = 0) => {
+  return api.get(`/jobs/company/${companyId}?page=${page}`);
+};
+
 
 // FILTER JOBS
 export const filterJobs = (params) => {
@@ -75,3 +79,15 @@ export const filterJobs = (params) => {
 export const getTrendingJobs = () => {
   return api.get(`/jobs/trending`);
 };
+
+// ===============================
+// GET MY JOBS (ADMIN / RECRUITER_ADMIN / RECRUITER)
+// ===============================
+export const getMyJobs = async (page = 0) => {
+  const response = await api.get("/jobs/my-jobs", {
+    params: { page },
+  });
+
+  return response.data; // ✅ return only data
+};
+

@@ -1,0 +1,63 @@
+/* Full Page Gradient Background */
+.login-container {
+  min-height: 80vh;
+  background: linear-gradient(135deg, #e0f7ff, #f8fbff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Glass Card */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  border: none;
+}
+
+/* Title */
+.login-card h3 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Input Styling Override */
+.login-card .form-control {
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  transition: all 0.3s ease;
+}
+
+.login-card .form-control:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+/* Button Styling */
+.login-card .btn-primary {
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  border: none;
+  padding: 12px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.login-card .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+}
+
+/* Alert Styling */
+.login-card .alert {
+  border-radius: 10px;
+  font-size: 14px;
+}

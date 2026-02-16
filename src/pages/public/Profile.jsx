@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMyProfile, getUserById, updateMyProfile } from "../api/UserApi";
+import { getMyProfile, getUserById, updateMyProfile } from "../../api/UserApi";
 import "./Profile.css";
 
 // Simple JWT decoder (only decodes payload)

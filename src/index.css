@@ -1,3 +1,9 @@
+@import "tailwindcss";
+/* 
+@tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
 
 .top-navbar {
   background-color: #0f172a;

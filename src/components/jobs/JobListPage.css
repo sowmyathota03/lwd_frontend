@@ -1,0 +1,45 @@
+.job-list-container {
+  padding: 20px;
+}
+
+.job-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.job-table th,
+.job-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.job-table th {
+  background-color: #f0f6ff;
+  color: #333;
+  font-weight: 600;
+}
+
+.job-table tr:hover {
+  background-color: #f9fbff;
+}
+
+.loading-text,
+.error-text,
+.empty-text {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.status.active {
+  color: green;
+  font-weight: 600;
+}
+
+.status.closed {
+  color: red;
+  font-weight: 600;
+}
