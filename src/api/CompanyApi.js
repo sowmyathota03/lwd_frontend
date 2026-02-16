@@ -19,11 +19,11 @@ export const createCompany = (companyData) =>
 
 // 🔹 Update company by company ID
 export const updateCompany = (id, companyData) =>
-  axiosInstance.put(`/${id}`, companyData).then((res) => res.data);
+  axiosInstance.put(`/companies/${id}`, companyData).then((res) => res.data);
 
 // 🔹 Delete company (Soft delete)
 export const deleteCompany = (id) =>
-  axiosInstance.delete(`/${id}`).then((res) => res.data);
+  axiosInstance.delete(`/companies/${id}`).then((res) => res.data);
 
 // 🔹 Get company created by logged-in user
 export const getMyCompany = () =>
@@ -31,4 +31,4 @@ export const getMyCompany = () =>
 
 // 🔹 Get company by creator user ID (Admin use)
 export const getCompanyByCreatedByUserId = (userId) =>
-  axiosInstance.get(`/created-by/${userId}`).then((res) => res.data);
+  axiosInstance.get(`/companies/created-by/${userId}`).then((res) => res.data);

@@ -38,6 +38,7 @@ import CompanyManagementPage from './components/admin/CompanyManagementPage';
 // import CompanyDashboardPage from './components/admin/CompanyDashboardPage';
 import JobList from './components/jobs/JobList';
 import ManageJobs from './components/jobs/ManageJobs';
+import CreateJob from './components/jobs/CreateJob';
 import JobApplicationList from './components/jobApplications/JobApplicationList';
 
 import RecruiterAdminDashboard from './pages/recruiter-admin/RecruiterAdminDashboard';
@@ -94,7 +95,7 @@ function App() {
         <Route index element={<AdminHome />} />
         <Route path="users" element={<UserManagementPage />} />
         <Route path="companies" element={<CompanyManagementPage />} />
-        {/* <Route path=":companyId/companyprofile" element={<CompanyDashboardPage />} /> */}
+        <Route path=":companyId/createjob" element={<CreateJob />}  />
         <Route path="jobs" element={<JobList />} />
         <Route path="managejob" element={<ManageJobs />} />
         <Route path="applications" element={<JobApplicationList />} />
@@ -115,6 +116,7 @@ function App() {
         <Route path="/recruiter/company-profile" element={<CompanyProfilePage />} />
         <Route path="/recruiter/jobs" element={<JobList />} />
         <Route path="/recruiter/managejob" element={<ManageJobs />} />
+        <Route path="/recruiter/createjob" element={<CreateJob />}  />
         <Route path="/recruiter/applications" element={<JobApplicationList />} />
       </Route>
 

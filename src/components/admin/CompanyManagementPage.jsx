@@ -166,6 +166,7 @@ export default function CompanyManagementPage() {
                     </td>
 
                     <td className="px-6 py-4">
+
                       <button
                         disabled={actionLoadingId === company.id}
                         onClick={() => openConfirm(company)}

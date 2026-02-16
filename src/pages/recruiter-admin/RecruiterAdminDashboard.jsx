@@ -23,7 +23,7 @@ export default function RecruiterAdminDashboard() {
   ];
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-br from-slate-300 via-blue-400 to-indigo-600 transition-all duration-500">
+    <div className="flex h-screen w-full bg-linear-to-br from-slate-300 via-blue-400 to-indigo-600 transition-all duration-500">
 
       {/* Sidebar */}
       <aside className="w-64 bg-white/70 backdrop-blur-xl shadow-xl flex flex-col">

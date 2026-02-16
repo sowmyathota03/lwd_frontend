@@ -1,13 +1,10 @@
-<<<<<<< HEAD:src/pages/Home.jsx
-=======
 import { useState, useEffect } from "react";
->>>>>>> 46735d7 (Chetan's added more admin files):src/pages/public/Home.jsx
 import { useNavigate } from "react-router-dom";
 import PopularJobs from "../../components/jobs/PopularJobs"; 
 import JobSearchBlock from "../../components/jobs/JobSearchBlock";
 import { getTopCategories } from "../../api/JobApi";
 
-import JobActionButton from "../components/jobs/JobActionButton";
+import JobActionButton from "../../components/jobs/JobActionButton";
 
 
 function Home() {
@@ -61,13 +58,11 @@ function Home() {
       </section>
       <section className="cta">
         <h2>Ready to take the next step?</h2>
-<<<<<<< HEAD:src/pages/Home.jsx
         <JobActionButton />
 =======
         <button onClick={() => navigate("/register/jobseeker")} className="btn btn-primary">
           Create Profile
         </button>
->>>>>>> 46735d7 (Chetan's added more admin files):src/pages/public/Home.jsx
       </section>
     </div>
   );

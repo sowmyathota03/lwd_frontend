@@ -3,17 +3,12 @@ import { loginUser } from "../api/AuthApi";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import jwtDecode from "jwt-decode";
-import { AuthContext } from "../context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-<<<<<<< HEAD
   const { login } = useContext(AuthContext); // 🔥 use context
-=======
-  const { login } = useContext(AuthContext); // ✅ get login from context
->>>>>>> 46735d7 (Chetan's added more admin files)
 
   const [formData, setFormData] = useState({
     email: "",
@@ -42,16 +37,14 @@ export default function Login() {
     try {
       const res = await loginUser(formData);
 
-<<<<<<< HEAD
       // 🔥 Use context login (this updates navbar immediately)
       login(res.token);
 
       // Decode token for role-based redirect
-=======
+
       // ✅ Update context + localStorage
       login(res.token);
 
->>>>>>> 46735d7 (Chetan's added more admin files)
       const decoded = jwtDecode(res.token);
       redirectBasedOnRole(decoded.role);
 

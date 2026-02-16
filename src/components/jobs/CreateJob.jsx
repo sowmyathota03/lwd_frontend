@@ -1,10 +1,8 @@
-// src/pages/jobs/CreateJob.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createJobAsAdmin, createJobAsRecruiter } from "../api/JobsApi";
-import "./CreateJob.css";
+import { createJobAsAdmin, createJobAsRecruiter } from "../../api/JobApi";
 
-export default function CreateJob({ companyId, role }) {
+export default function CreateJob() {
   const navigate = useNavigate();
 
   const [job, setJob] = useState({
@@ -34,14 +32,10 @@ export default function CreateJob({ companyId, role }) {
     };
 
     try {
-      if (role === "ADMIN") {
-        await createJobAsAdmin(companyId, payload);
-      } else {
-        await createJobAsRecruiter(payload);
-      }
+      await createJobAsRecruiter(payload);
 
       alert("✅ Job created successfully");
-      navigate("/recruiters/jobs");
+      navigate("/recruiter/managejob");
     } catch (err) {
       console.error(err);
       alert("❌ Failed to create job");
@@ -49,66 +43,96 @@ export default function CreateJob({ companyId, role }) {
   };
 
   return (
-    <div className="create-job-container">
-      <form className="create-job-form" onSubmit={handleSubmit}>
-        <h2>Create Job</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 transition-all">
 
-        <div className="form-group">
-          <label>Job Title *</label>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-6"
+      >
+        {/* Title */}
+        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
+          Create New Job
+        </h2>
+
+        {/* Job Title */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700  mb-2">
+            Job Title *
+          </label>
           <input
             name="title"
             value={job.title}
             onChange={handleChange}
             required
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
-        <div className="form-group">
-          <label>Description</label>
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700  mb-2">
+            Description
+          </label>
           <textarea
             name="description"
             value={job.description}
             onChange={handleChange}
+            rows="4"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
           />
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label>Location</label>
+        {/* Location & Salary */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700  mb-2">
+              Location
+            </label>
             <input
               name="location"
               value={job.location}
               onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
-          <div className="form-group">
-            <label>Salary</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700  mb-2">
+              Salary
+            </label>
             <input
               type="number"
               name="salary"
               value={job.salary}
               onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label>Industry</label>
+        {/* Industry & Job Type */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700  mb-2">
+              Industry
+            </label>
             <input
               name="industry"
               value={job.industry}
               onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
-          <div className="form-group">
-            <label>Job Type</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700  mb-2">
+              Job Type
+            </label>
             <select
               name="jobType"
               value={job.jobType}
               onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               <option value="">Select</option>
               <option value="FULL_TIME">Full Time</option>
@@ -119,29 +143,40 @@ export default function CreateJob({ companyId, role }) {
           </div>
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label>Min Experience (Years)</label>
+        {/* Experience */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700  mb-2">
+              Min Experience (Years)
+            </label>
             <input
               type="number"
               name="minExperience"
               value={job.minExperience}
               onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
-          <div className="form-group">
-            <label>Max Experience (Years)</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700  mb-2">
+              Max Experience (Years)
+            </label>
             <input
               type="number"
               name="maxExperience"
               value={job.maxExperience}
               onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
         </div>
 
-        <button type="submit" className="submit-btn">
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-3 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
           Create Job
         </button>
       </form>
