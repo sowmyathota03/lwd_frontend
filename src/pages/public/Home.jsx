@@ -6,11 +6,10 @@ import { getTopCategories } from "../../api/JobApi";
 
 import JobActionButton from "../../components/jobs/JobActionButton";
 
-
 function Home() {
   const navigate = useNavigate();      
 
-   const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,7 +33,8 @@ function Home() {
     <div className="home">
       <JobSearchBlock />  
       <PopularJobs title="Popular Job Categories" categories={categories} />
-      <section className="why-lwd" >
+
+      <section className="why-lwd">
         <h2>Why Choose LWD?</h2>
         <div className="features">
           <div className="feature">✔ Verified Jobs</div>
@@ -56,11 +56,16 @@ function Home() {
           <div className="logo-box">Accenture</div>
         </div>
       </section>
+
       <section className="cta">
         <h2>Ready to take the next step?</h2>
+
         <JobActionButton />
-=======
-        <button onClick={() => navigate("/register/jobseeker")} className="btn btn-primary">
+          
+        <button
+          onClick={() => navigate("/register/jobseeker")}
+          className="btn btn-primary"
+        >
           Create Profile
         </button>
       </section>
