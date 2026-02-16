@@ -7,72 +7,94 @@ function Career() {
   const careerPaths = [
     {
       id: 1,
-      title: "IT & Software Jobs",
-      desc: "Explore opportunities in React, Java, Python, Full Stack, and more.",
+      title: "Immediate Joiner Jobs",
+      desc: "Jobs for candidates who can join within 0–15 days.",
     },
     {
       id: 2,
-      title: "Finance & Banking",
-      desc: "Jobs in accounting, banking, auditing, and financial analysis.",
+      title: "Notice Period Friendly Jobs",
+      desc: "Companies accepting 30–90 day notice period candidates.",
     },
     {
       id: 3,
-      title: "Marketing & Sales",
-      desc: "Digital marketing, SEO, content creation, and sales roles.",
+      title: "Bench Candidate Hiring",
+      desc: "Special openings for employees currently on bench.",
     },
     {
       id: 4,
-      title: "HR & Management",
-      desc: "Human resources, recruitment, and operations jobs.",
+      title: "Skill Upgrade Opportunities",
+      desc: "Roles that allow learning React, Java, and Full Stack.",
     },
     {
       id: 5,
       title: "Freshers & Internships",
-      desc: "Entry-level jobs and internships for fresh graduates.",
+      desc: "Entry-level jobs and internships for graduates.",
     },
     {
       id: 6,
-      title: "Remote Jobs",
-      desc: "Work-from-home opportunities across industries.",
+      title: "Remote & Contract Jobs",
+      desc: "Work-from-home and short-term contract roles.",
     },
   ];
 
   return (
-    <div style={{ padding: "40px",  backgroundColor: "#111827" ,color:"#EDE9FE"}}>
-      
-      
-      <h1 style={{ textAlign: "center", }}>Careers</h1>
+    <div
+      style={{
+        padding: "40px",
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #e0f2fe, #f0fdfa)",
+        color: "#0f172a",
+      }}
+    >
+      {/* HEADER */}
+      <h1 style={{ textAlign: "center", color: "#0ea5a4" }}>LWD Careers</h1>
       <p
         style={{
           textAlign: "center",
-          maxWidth: "700px",
+          maxWidth: "750px",
           margin: "10px auto 40px",
+          lineHeight: "26px",
+          color: "#334155",
         }}
       >
-        Discover career opportunities across multiple industries.  
-        Our job portal helps you find the right job based on your skills,
-        experience, and career goals.
+        LWD (Last Working Day) portal helps bench and notice-period candidates
+        find quick and relevant job opportunities based on skills,
+        availability, and last working day timeline.
       </p>
 
-      <section style={{ marginBottom: "40px" }}>
-        <h2>Why Search Jobs with LWD?</h2>
-        <ul style={{ lineHeight: "28px" }}>
-          <li>✔ Verified job openings from trusted companies</li>
-          <li>✔ Jobs for freshers and experienced professionals</li>
-          <li>✔ Multiple job categories in one platform</li>
-          <li>✔ Easy job search and quick apply</li>
+      {/* WHY LWD */}
+      <section
+        style={{
+          backgroundColor: "white",
+          padding: "25px",
+          borderRadius: "12px",
+          marginBottom: "40px",
+          boxShadow: "0 6px 15px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h2 style={{ color: "#0284c7" }}>Why Use LWD Career Portal?</h2>
+        <ul style={{ lineHeight: "30px", color: "#475569" }}>
+          <li>✔ Jobs for Immediate Joiners</li>
+          <li>✔ Notice Period Friendly Companies</li>
+          <li>✔ Bench Employee Opportunities</li>
+          <li>✔ Quick Apply & Faster Hiring</li>
+          <li>✔ Resume & Career Support Tools</li>
         </ul>
       </section>
-      
+
+      {/* CAREER PATHS */}
       <section>
-        <h2>Explore Career Paths</h2>
+        <h2 style={{ textAlign: "center", color: "#0284c7" }}>
+          Explore Opportunities
+        </h2>
 
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "20px",
-            marginTop: "20px",
+            gap: "25px",
+            marginTop: "25px",
+            justifyContent: "center",
           }}
         >
           {careerPaths.map((career) => (
@@ -82,19 +104,19 @@ function Career() {
                 width: "300px",
                 backgroundColor: "white",
                 padding: "20px",
-                borderRadius: "10px",
-                color:"black",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                borderRadius: "12px",
+                boxShadow: "0 6px 15px rgba(0,0,0,0.08)",
+                transition: "transform 0.2s",
               }}
             >
-              <h3>{career.title}</h3>
-              <p style={{ color: "darkgray" }}>{career.desc}</p>
+              <h3 style={{ color: "#0ea5a4" }}>{career.title}</h3>
+              <p style={{ color: "#64748b" }}>{career.desc}</p>
               <button
                 onClick={() => navigate("/jobs")}
                 style={{
                   marginTop: "10px",
-                  padding: "8px 16px",
-                  backgroundColor: "#2563eb",
+                  padding: "9px 18px",
+                  backgroundColor: "#0284c7",
                   color: "white",
                   border: "none",
                   borderRadius: "6px",
@@ -108,22 +130,43 @@ function Career() {
         </div>
       </section>
 
-     
+      {/* TOOLS */}
+      <section
+        style={{
+          marginTop: "50px",
+          backgroundColor: "white",
+          padding: "25px",
+          borderRadius: "12px",
+          boxShadow: "0 6px 15px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h2 style={{ color: "#0284c7" }}>Career Support Tools</h2>
+        <ul style={{ lineHeight: "30px", color: "#475569" }}>
+          <li>📄 Resume Building Tips</li>
+          <li>🧮 Last Working Day Calculator</li>
+          <li>🎯 Interview Preparation Guides</li>
+          <li>📢 Immediate Job Alerts</li>
+        </ul>
+      </section>
+
+      {/* CTA */}
       <section style={{ textAlign: "center", marginTop: "50px" }}>
-        <h2>Start Your Career Journey Today</h2>
-        <p >
-          Create your profile and apply efor jobs that match your skills.
+        <h2 style={{ color: "#0ea5a4" }}>Restart Your Career Faster</h2>
+        <p style={{ color: "#475569" }}>
+          Create your profile and apply for jobs aligned with your LWD.
         </p>
 
         <button
-          onClick={() => navigate("/Profile")}
+          onClick={() => navigate("/profile")}
           style={{
-            padding: "10px 20px",
-            backgroundColor: "green",
+            padding: "12px 26px",
+            backgroundColor: "#16a34a",
             color: "white",
             border: "none",
-            borderRadius: "6px",
+            borderRadius: "8px",
             cursor: "pointer",
+            fontSize: "16px",
+            marginTop: "10px",
           }}
         >
           Create Profile
@@ -132,4 +175,5 @@ function Career() {
     </div>
   );
 }
+
 export default Career;

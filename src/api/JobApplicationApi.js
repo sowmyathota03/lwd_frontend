@@ -1,4 +1,4 @@
-import api from "./axiosInstance"; 
+ import api from "./axiosInstance"; 
 
 // ================= APPLY FOR JOB =================
 export const applyForJob = (jobApplicationData) => {
