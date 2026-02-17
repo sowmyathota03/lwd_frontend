@@ -1,48 +1,105 @@
-import styles from "./JobCard.module.css";
 import { useNavigate } from "react-router-dom";
 import { timeAgo } from "../../utils/timeAgo";
 
 function JobCard({ job }) {
-
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/job/${job.id}`); // Navigate to Job Details page
+    navigate(`/job/${job.id}`);
   };
 
-  const handleApply = () => {
-    navigate(`/apply/${job.id}`); // Navigate to Apply Job page
-  }
-
-
+  const handleApply = (e) => {
+    e.stopPropagation();
+    navigate(`/apply/${job.id}`);
+  };
 
   return (
-    <div className={styles.card}
-      onClick={handleClick}>
-      {/* Top Section */}
+    <div
+      onClick={handleClick}
+      className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 p-6 cursor-pointer border border-gray-100"
+    >
       <div>
-        <h3 className={styles.title}>{job.title}</h3>
-        <p className={styles.company}>
-          {job.company} • {job.location}
-        </p>
+        {/* Title */}
+        {job.title && (
+          <h3 className="text-lg font-semibold text-gray-800 mb-1">
+            {job.title}
+          </h3>
+        )}
 
-        <div className={styles.tags}>
-          <span className={styles.tag}>{job.experience}</span>
-          <span className={styles.tag}>{job.jobType}</span>
-          <span className={styles.tag}>{job.industry}</span>
+        {/* Company + Location */}
+        {(job.company?.companyName || job.location) && (
+          <p className="text-sm text-gray-500 mb-3">
+            {job.company?.companyName}
+            {job.company?.companyName && job.location && " • "}
+            {job.location}
+          </p>
+        )}
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-3">
+
+          {job.minExperience !== null && job.maxExperience !== null && (
+            <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
+              {job.minExperience} - {job.maxExperience} yrs
+            </span>
+          )}
+
+          {job.jobType && (
+            <span className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+              {job.jobType}
+            </span>
+          )}
+
+          {job.industry && (
+            <span className="px-3 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">
+              {job.industry}
+            </span>
+          )}
+
+          {/* LWD Badge */}
+          {job.lwdPreferred && (
+            <span className="px-3 py-1 text-xs bg-orange-200 text-orange-700 rounded-full font-semibold">
+              LWD Preferred
+            </span>
+          )}
+
+          {/* Notice Preference */}
+          {job.noticePreference && (
+            <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+              {job.noticePreference.replaceAll("_", " ")}
+            </span>
+          )}
+
+          {/* Max Notice Period */}
+         {job.maxNoticePeriod > 0 && (
+            <span className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
+              Max Notice: {job.maxNoticePeriod} days
+            </span>
+          )}
+
+
+
         </div>
 
-        <p className={styles.description}>
-          {job.description?.length > 100
-            ? job.description.substring(0, 100) + "..."
-            : job.description}
-        </p>
+        {/* Description */}
+        {job.description && (
+          <p className="text-sm text-gray-600 mb-2">
+            {job.description.length > 100
+              ? job.description.substring(0, 100) + "..."
+              : job.description}
+          </p>
+        )}
 
-        <div className={styles.bottomRow}>
-          <span className={styles.date}>
-            Posted {timeAgo(job.createdAt)}
-          </span>
-          <span className={styles.salary}>
+        {/* Bottom Row */}
+        <div className="flex justify-between items-center text-sm text-gray-500">
+
+          {job.createdAt && (
+            <span>
+              Posted {timeAgo(job.createdAt)}
+            </span>
+          )}
+
+          <span className="font-medium text-gray-700">
             {job.salary
               ? `₹${job.salary.toLocaleString()} LPA`
               : "Not Disclosed"}
@@ -51,16 +108,13 @@ function JobCard({ job }) {
         </div>
       </div>
 
+      {/* Apply Button */}
       <button
-        className={styles.applyBtn}
-        onClick={(e) => {
-          e.stopPropagation(); // ✅ Prevents parent card click
-          handleApply();
-        }}
+        onClick={handleApply}
+        className="mt-4  bg-blue-600 hover:bg-blue-700 text-white font-medium p-2 rounded transition"
       >
         Apply Now
       </button>
-
     </div>
   );
 }
