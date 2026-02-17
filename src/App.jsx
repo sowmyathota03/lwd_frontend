@@ -35,8 +35,6 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHome from './components/admin/AdminHome';
 import UserManagementPage from './components/admin/UserManagementPage';
 import CompanyManagementPage from './components/admin/CompanyManagementPage';
-// import CompanyDashboardPage from './components/admin/CompanyDashboardPage';
-import JobList from './components/jobs/JobList';
 import ManageJobs from './components/jobs/ManageJobs';
 import CreateJob from './components/jobs/CreateJob';
 import JobApplicationList from './components/jobApplications/JobApplicationList';
@@ -89,14 +87,13 @@ function App() {
       <Route path="/TermsAndConditions" element={<TermsAndConditions/>}/>
       <Route path="/Suggestions" element={<Suggestions/>}/>
       
-      <Route path="/PostJob" element={<PostJob/>}/>
+      <Route path="/postJob" element={<PostJob/>}/>
 
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<AdminHome />} />
         <Route path="users" element={<UserManagementPage />} />
         <Route path="companies" element={<CompanyManagementPage />} />
         <Route path=":companyId/createjob" element={<CreateJob />}  />
-        <Route path="jobs" element={<JobList />} />
         <Route path="managejob" element={<ManageJobs />} />
         <Route path="applications" element={<JobApplicationList />} />
       </Route>
@@ -105,7 +102,6 @@ function App() {
         <Route index element={ <RecruiterAdminHome /> } />
         <Route path="/recruiter-admin/company-profile" element={<CompanyProfilePage />} />
         <Route path="/recruiter-admin/manage-recruiter" element={<RecruiterList />} />
-        <Route path="/recruiter-admin/jobs" element={<JobList />} />
         <Route path="/recruiter-admin/managejob" element={<ManageJobs />} />
         <Route path="/recruiter-admin/applications" element={<JobApplicationList />} />
       </Route>
@@ -114,21 +110,11 @@ function App() {
       <Route path="/recruiter" element={<RecruiterDashboard />} >
         <Route index element={ <RecruiterHome /> } />
         <Route path="/recruiter/company-profile" element={<CompanyProfilePage />} />
-        <Route path="/recruiter/jobs" element={<JobList />} />
         <Route path="/recruiter/managejob" element={<ManageJobs />} />
         <Route path="/recruiter/createjob" element={<CreateJob />}  />
         <Route path="/recruiter/applications" element={<JobApplicationList />} />
       </Route>
-
-      {/* <Route path="/recruiter/*" element={<RecruiterDashboard />} />
-      <Route path="/recruiters-admin/recruiter/:recruiterId/jobs" element={<JobListPage />} />
-      
-      <Route path="/recruiter-admin/company/:companyId" element={<CompanyDashboardPage />} /> */}
-
-
-      
-      
-       
+             
     </Routes>      
       <div><Footer/></div>
     </>
