@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+
 import JobCard from "../../components/jobs/JobCards";
 import JobSearchBlock from "../../components/jobs/JobSearchBlock";
 import PopularJobs from "../../components/jobs/PopularJobs";
@@ -13,11 +15,36 @@ import {
 import JobSkeleton from "../../components/jobs/JobSkeleton";
 import Loader from "../../components/jobs/Loader";
 
+/* ================= ANIMATION VARIANTS ================= */
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 25,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.45,
+      ease: "easeOut",
+    },
+  },
+};
+
 function Jobs() {
   const { type } = useParams();
   const [searchParamsUrl] = useSearchParams();
 
-  // ================= READ QUERY PARAMS =================
   const keywordParam = searchParamsUrl.get("keyword");
   const locationParam = searchParamsUrl.get("location");
   const companyParam = searchParamsUrl.get("companyName");
@@ -25,7 +52,9 @@ function Jobs() {
   const maxExpParam = searchParamsUrl.get("maxExp");
   const jobTypeParam = searchParamsUrl.get("jobType");
   const companyIdParam = searchParamsUrl.get("companyId");
-
+  const noticePreferenceParam = searchParamsUrl.get("noticePreference");
+  const lwdPreferredParam = searchParamsUrl.get("lwdPreferred");
+  const industryParam = searchParamsUrl.get("industry");
 
   const [jobs, setJobs] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -38,7 +67,20 @@ function Jobs() {
 
   const observer = useRef(null);
 
-  // ================= RESET WHEN FILTERS CHANGE =================
+  const isSearchMode =
+    keywordParam ||
+    locationParam ||
+    companyParam ||
+    minExpParam ||
+    maxExpParam ||
+    jobTypeParam ||
+    noticePreferenceParam ||
+    lwdPreferredParam ||
+    industryParam ||
+    companyIdParam;
+
+  /* ================= RESET ON FILTER CHANGE ================= */
+
   useEffect(() => {
     setJobs([]);
     setPage(0);
@@ -52,10 +94,14 @@ function Jobs() {
     minExpParam,
     maxExpParam,
     jobTypeParam,
+    noticePreferenceParam,
+    lwdPreferredParam,
+    industryParam,
     companyIdParam,
   ]);
 
-  // ================= FETCH JOBS =================
+  /* ================= FETCH JOBS ================= */
+
   useEffect(() => {
     const fetchJobs = async () => {
       if (last) return;
@@ -66,19 +112,9 @@ function Jobs() {
 
         let response;
 
-        const isSearchMode =
-          keywordParam ||
-          locationParam ||
-          companyParam ||
-          minExpParam ||
-          maxExpParam ||
-          jobTypeParam ||
-          companyIdParam;
-
         if (companyIdParam) {
           response = await getJobsByCompany(companyIdParam, page);
-        } 
-        else if (isSearchMode) {
+        } else if (isSearchMode) {
           response = await searchJobs({
             keyword: keywordParam,
             location: locationParam,
@@ -86,6 +122,9 @@ function Jobs() {
             minExp: minExpParam,
             maxExp: maxExpParam,
             jobType: jobTypeParam,
+            noticePreference: noticePreferenceParam,
+            lwdPreferred: lwdPreferredParam,
+            industry: industryParam,
             page,
           });
         } else if (type) {
@@ -125,11 +164,15 @@ function Jobs() {
     minExpParam,
     maxExpParam,
     jobTypeParam,
+    noticePreferenceParam,
+    lwdPreferredParam,
+    industryParam,
     companyIdParam,
     last,
   ]);
 
-  // ================= INFINITE SCROLL =================
+  /* ================= INFINITE SCROLL ================= */
+
   const lastJobRef = useCallback(
     (node) => {
       if (loading || last) return;
@@ -150,7 +193,8 @@ function Jobs() {
     [loading, last]
   );
 
-  // ================= FETCH CATEGORIES =================
+  /* ================= FETCH CATEGORIES ================= */
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -169,17 +213,10 @@ function Jobs() {
     fetchCategories();
   }, []);
 
-  const isSearchMode =
-    keywordParam ||
-    locationParam ||
-    companyParam ||
-    jobTypeParam;
-
   return (
     <>
       <JobSearchBlock />
 
-      {/* Hide categories during search */}
       {!isSearchMode && (
         <PopularJobs
           title="Popular Job Categories"
@@ -187,107 +224,76 @@ function Jobs() {
         />
       )}
 
-      <div style={{ 
-          background: "linear-gradient(135deg, #e0f7fa, #c8e6c9)", // light gradient\
-          padding: "30px", marginTop: "20px"
-        }}>
+      {/* Smooth page fade */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        style={{
+          background: "linear-gradient(135deg, #e0f7fa, #c8e6c9)",
+          padding: "30px",
+          marginTop: "20px",
+        }}
+      >
         <h2 style={{ padding: "0 20px" }}>
-          {companyIdParam ? (
-            <>
-              🏢 Jobs at{" "}
-              <span style={{ color: "#9333ea" }}>
-                {companyParam || searchParamsUrl.get("companyName")}
-              </span>{" "}
-              ({totalCount})
-            </>
-          ) : isSearchMode ? (
-            <>
-              🔍 Search Results ({totalCount})
-              {keywordParam && (
-                <>
-                  {" "}for{" "}
-                  <span style={{ color: "#2563eb" }}>
-                    {keywordParam}
-                  </span>
-                </>
-              )}
-              {locationParam && (
-                <>
-                  {" "}in{" "}
-                  <span style={{ color: "#16a34a" }}>
-                    {locationParam}
-                  </span>
-                </>
-              )}
-              {companyParam && (
-                <>
-                  {" "}at{" "}
-                  <span style={{ color: "#9333ea" }}>
-                    {companyParam}
-                  </span>
-                </>
-              )}
-            </>
-          ) : type ? (
-            `${type.toUpperCase()} Jobs (${totalCount})`
-          ) : (
-            `All Jobs (${totalCount})`
-          )}
+          {companyIdParam
+            ? `🏢 Company Jobs (${totalCount})`
+            : isSearchMode
+            ? `🔍 Search Results (${totalCount})`
+            : type
+            ? `${type.toUpperCase()} Jobs (${totalCount})`
+            : `All Jobs (${totalCount})`}
         </h2>
-
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        {/* ================= JOB GRID ================= */}
-        <div
+        {/* ================= PREMIUM ANIMATED GRID ================= */}
+
+        <motion.div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)", // 3 columns
+            gridTemplateColumns: "repeat(3, 1fr)",
             gap: "20px",
-            flexWrap: "wrap",
             padding: "20px",
-            borderRadius: "12px",
-            maxWidth: "1000px", margin: "0 auto"
+            maxWidth: "1200px",
+            margin: "0 auto",
           }}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          {jobs.map((job, index) => {
-            const isLastItem = index === jobs.length - 1;
+          <AnimatePresence>
+            {jobs.map((job, index) => {
+              const isLastItem = index === jobs.length - 1;
 
-            return (
-              <div
-                key={job.id}
-                ref={isLastItem ? lastJobRef : null}
-              >
-                <JobCard
-                  job={{
-                    ...job,
-                    company: job.company?.companyName,
-                    experience: `${job.minExperience || 0} - ${
-                      job.maxExperience || 0
-                    } Years`,
-                  }}
-                />
-              </div>
-            );
-          })}
+              return (
+                <motion.div
+                  key={job.id}
+                  ref={isLastItem ? lastJobRef : null}
+                  variants={cardVariants}
+                  layout
+                  exit={{ opacity: 0, y: -15 }}
+                >
+                  <JobCard job={job} />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
 
-          {/* Initial Skeleton */}
           {initialLoading &&
             Array.from({ length: 6 }).map((_, index) => (
               <JobSkeleton key={`initial-${index}`} />
             ))}
-            </div>
+        </motion.div>
 
-        {/* Loading Spinner */}
         {loading && !initialLoading && <Loader />}
 
-        {/* No More Jobs */}
         {last && !initialLoading && (
           <p style={{ marginTop: "20px", textAlign: "center" }}>
             No more jobs.
           </p>
         )}
-      </div>
+      </motion.div>
     </>
   );
 }
