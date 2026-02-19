@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getMyProfile,
   createOrUpdateProfile,
@@ -6,19 +6,25 @@ import {
 
 const JobSeekerProfile = () => {
   const [profile, setProfile] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
+
   const [formData, setFormData] = useState({
     fullName: "",
+    email: "",
     currentCompany: "",
     totalExperience: "",
+    currentCTC: "",
+    expectedCTC: "",
     currentLocation: "",
     preferredLocation: "",
+    noticeStatus: "",
+    noticePeriod: "",
+    lastWorkingDay: "",
+    availableFrom: "",
+    immediateJoiner: false,
     skills: "",
-    expectedCTC: "",
+    resumeUrl: "",
   });
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -26,198 +32,346 @@ const JobSeekerProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await getMyProfile();
-      if (response.data) {
-        setProfile(response.data);
-        setFormData(response.data);
+      const res = await getMyProfile();
+      if (res.data) {
+        setProfile(res.data);
+        setFormData(res.data);
       }
     } catch (err) {
-      console.log("No profile found → Create new");
-    } finally {
-      setLoading(false);
+      console.log("No profile found");
     }
   };
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = async () => {
     try {
-      const response = await createOrUpdateProfile(formData);
-      setProfile(response.data);
+      const res = await createOrUpdateProfile(formData);
+      setProfile(res.data);
       setIsEdit(false);
-      alert("Profile saved successfully");
+      alert("Profile Updated Successfully");
     } catch (err) {
-      setError("Failed to save profile");
+      alert("Error saving profile");
     }
   };
 
-  const handleHover = (e, hover) => {
-    e.target.style.transform = hover ? "scale(1.05)" : "scale(1)";
-  };
-
-  if (loading) return <h3 style={{ textAlign: "center" }}>Loading profile...</h3>;
-
   return (
     <div style={styles.page}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Job Seeker Profile</h2>
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        {!profile || isEdit ? (
-          <div style={styles.formGrid}>
-            <input
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="currentCompany"
-              placeholder="Current Company"
-              value={formData.currentCompany}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="totalExperience"
-              placeholder="Experience (Years)"
-              value={formData.totalExperience}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="currentLocation"
-              placeholder="Current Location"
-              value={formData.currentLocation}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="preferredLocation"
-              placeholder="Preferred Location"
-              value={formData.preferredLocation}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="skills"
-              placeholder="Skills"
-              value={formData.skills}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="expectedCTC"
-              placeholder="Expected CTC"
-              value={formData.expectedCTC}
-              onChange={handleChange}
-              style={styles.input}
-            />
-
-            <button
-              style={styles.saveBtn}
-              onClick={handleSubmit}
-              onMouseEnter={(e) => handleHover(e, true)}
-              onMouseLeave={(e) => handleHover(e, false)}
-            >
-              💾 Save Profile
-            </button>
+      <div style={styles.container}>
+        {/* LEFT SIDEBAR */}
+        <div style={styles.sidebar}>
+          <div style={styles.avatar}>
+            {profile?.fullName?.charAt(0) || "U"}
           </div>
-        ) : (
-          <div style={styles.viewBox}>
-            <p><strong>Name:</strong> {profile.fullName}</p>
-            <p><strong>Company:</strong> {profile.currentCompany}</p>
-            <p><strong>Experience:</strong> {profile.totalExperience} yrs</p>
-            <p><strong>Location:</strong> {profile.currentLocation}</p>
-            <p><strong>Skills:</strong> {profile.skills}</p>
-            <p><strong>Expected CTC:</strong> ₹{profile.expectedCTC}</p>
+          <h3 style={styles.name}>
+            {profile?.fullName || "Your Name"}
+          </h3>
+          <p style={styles.company}>
+            {profile?.currentCompany || "Current Company"}
+          </p>
 
+          {!isEdit && (
             <button
-              style={styles.editBtn}
+              style={styles.editButton}
               onClick={() => setIsEdit(true)}
             >
-              ✏️ Edit Profile
+              Edit Profile
             </button>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* RIGHT CONTENT */}
+        <div style={styles.content}>
+          {isEdit ? (
+            <>
+              <h2 style={styles.heading}>Edit Profile</h2>
+
+              {renderInput("Full Name", "fullName", formData, handleChange)}
+              {renderInput("Email", "email", formData, handleChange)}
+
+              {renderTwoInputs(
+                "Current Company",
+                "currentCompany",
+                "Total Experience (Years)",
+                "totalExperience",
+                formData,
+                handleChange
+              )}
+
+              {renderTwoInputs(
+                "Current CTC",
+                "currentCTC",
+                "Expected CTC",
+                "expectedCTC",
+                formData,
+                handleChange
+              )}
+
+              {renderTwoInputs(
+                "Current Location",
+                "currentLocation",
+                "Preferred Location",
+                "preferredLocation",
+                formData,
+                handleChange
+              )}
+
+              <div style={styles.grid2}>
+                <div>
+                  <label style={styles.label}>Notice Status</label>
+                  <select
+                    name="noticeStatus"
+                    value={formData.noticeStatus}
+                    onChange={handleChange}
+                    style={styles.input}
+                  >
+                    <option value="">Select</option>
+                    <option value="SERVING">Serving Notice</option>
+                    <option value="NOT_SERVING">Not Serving</option>
+                  </select>
+                </div>
+
+                {renderInputField(
+                  "Notice Period (Days)",
+                  "noticePeriod",
+                  formData,
+                  handleChange
+                )}
+              </div>
+
+              {renderTwoDateInputs(
+                "Last Working Day",
+                "lastWorkingDay",
+                "Available From",
+                "availableFrom",
+                formData,
+                handleChange
+              )}
+
+              <div style={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  name="immediateJoiner"
+                  checked={formData.immediateJoiner}
+                  onChange={handleChange}
+                />
+                <span>Immediate Joiner</span>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Skills</label>
+                <textarea
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleChange}
+                  style={styles.textarea}
+                />
+              </div>
+
+              {renderInput("Resume URL", "resumeUrl", formData, handleChange)}
+
+              <button style={styles.saveButton} onClick={handleSubmit}>
+                Save Changes
+              </button>
+            </>
+          ) : (
+            <>
+              <h2 style={styles.heading}>Profile Details</h2>
+              {renderDetail("Email", profile?.email)}
+              {renderDetail("Experience", profile?.totalExperience + " Years")}
+              {renderDetail("Current CTC", "₹ " + profile?.currentCTC)}
+              {renderDetail("Expected CTC", "₹ " + profile?.expectedCTC)}
+              {renderDetail("Location", profile?.currentLocation)}
+              {renderDetail("Notice Status", profile?.noticeStatus)}
+              {renderDetail("Skills", profile?.skills)}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
+
+
+const renderInput = (label, name, formData, handleChange) => (
+  <div style={styles.formGroup}>
+    <label style={styles.label}>{label}</label>
+    <input
+      name={name}
+      value={formData[name]}
+      onChange={handleChange}
+      style={styles.input}
+    />
+  </div>
+);
+
+const renderInputField = (label, name, formData, handleChange) => (
+  <div>
+    <label style={styles.label}>{label}</label>
+    <input
+      name={name}
+      value={formData[name]}
+      onChange={handleChange}
+      style={styles.input}
+    />
+  </div>
+);
+
+const renderTwoInputs = (
+  label1,
+  name1,
+  label2,
+  name2,
+  formData,
+  handleChange
+) => (
+  <div style={styles.grid2}>
+    {renderInputField(label1, name1, formData, handleChange)}
+    {renderInputField(label2, name2, formData, handleChange)}
+  </div>
+);
+
+const renderTwoDateInputs = (
+  label1,
+  name1,
+  label2,
+  name2,
+  formData,
+  handleChange
+) => (
+  <div style={styles.grid2}>
+    <div>
+      <label style={styles.label}>{label1}</label>
+      <input
+        type="date"
+        name={name1}
+        value={formData[name1]}
+        onChange={handleChange}
+        style={styles.input}
+      />
+    </div>
+    <div>
+      <label style={styles.label}>{label2}</label>
+      <input
+        type="date"
+        name={name2}
+        value={formData[name2]}
+        onChange={handleChange}
+        style={styles.input}
+      />
+    </div>
+  </div>
+);
+
+const renderDetail = (label, value) => (
+  <div style={styles.detailRow}>
+    <span style={styles.detailLabel}>{label}</span>
+    <span>{value || "-"}</span>
+  </div>
+);
+
+
+
 const styles = {
   page: {
-    minHeight: "80vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "linear-gradient(135deg,#eef2ff,#f0fdf4)",
+    background: "#f4f6f9",
+    minHeight: "100vh",
+    padding: "40px",
   },
-
-  card: {
+  container: {
+    maxWidth: "1100px",
+    margin: "auto",
+    display: "flex",
+    gap: "30px",
+  },
+  sidebar: {
+    width: "280px",
     background: "#ffffff",
     padding: "30px",
-    borderRadius: "16px",
-    width: "fit-content",
-    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
-  },
-
-  title: {
+    borderRadius: "8px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
     textAlign: "center",
-    marginBottom: "20px",
-    color: "#4f46e5",
   },
-
-  formGrid: {
+  avatar: {
+    width: "80px",
+    height: "80px",
+    borderRadius: "50%",
+    background: "#1d4ed8",
+    color: "#fff",
+    fontSize: "30px",
+    fontWeight: "bold",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "0 auto 15px",
+  },
+  name: { marginBottom: "5px" },
+  company: { color: "#6b7280", marginBottom: "20px" },
+  editButton: {
+    padding: "10px 20px",
+    background: "#1d4ed8",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+  },
+  content: {
+    flex: 1,
+    background: "#ffffff",
+    padding: "30px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+  },
+  heading: { marginBottom: "20px" },
+  formGroup: { marginBottom: "20px" },
+  label: { display: "block", marginBottom: "6px", fontWeight: "600" },
+  input: {
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #d1d5db",
+    borderRadius: "6px",
+  },
+  textarea: {
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #d1d5db",
+    borderRadius: "6px",
+    height: "80px",
+  },
+  grid2: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
-    gap: "15px",
+    gap: "20px",
+    marginBottom: "20px",
   },
-
-  input: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "14px",
-  },
-
-  saveBtn: {
-    gridColumn: "span 2",
-    alignSelf: "center",
-    padding: "12px 28px",
-    background: "linear-gradient(135deg,#3b82f6,#6366f1)",
-    color: "white",
-    border: "none",
-    borderRadius: "30px",
-    fontWeight: "600",
-    fontSize: "15px",
-    cursor: "pointer",
-    boxShadow: "0 4px 12px rgba(59,130,246,0.4)",
-    transition: "all 0.2s ease-in-out",
-  },
-
-  viewBox: {
+  checkboxRow: {
     display: "flex",
-    flexDirection: "column",
+    alignItems: "center",
     gap: "10px",
+    marginBottom: "20px",
   },
-
-  editBtn: {
-    marginTop: "15px",
-    padding: "10px 20px",
-    background: "#10b981",
-    color: "white",
+  saveButton: {
+    padding: "12px 25px",
+    background: "#16a34a",
+    color: "#fff",
     border: "none",
-    borderRadius: "20px",
+    borderRadius: "6px",
     cursor: "pointer",
   },
+  detailRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "12px 0",
+    borderBottom: "1px solid #e5e7eb",
+  },
+  detailLabel: { fontWeight: "600", color: "#374151" },
 };
 
 export default JobSeekerProfile;
