@@ -6,14 +6,24 @@ import {
 
 const JobSeekerProfile = () => {
   const [profile, setProfile] = useState(null);
+
   const [formData, setFormData] = useState({
     fullName: "",
+    email: "",
+    noticeStatus: "",
+    isServingNotice: false,
+    lastWorkingDay: "",
+    noticePeriod: "",
+    availableFrom: "",
+    immediateJoiner: false,
     currentCompany: "",
-    totalExperience: "",
+    currentCTC: "",
+    expectedCTC: "",
     currentLocation: "",
     preferredLocation: "",
+    totalExperience: "",
     skills: "",
-    expectedCTC: "",
+    resumeUrl: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -39,9 +49,11 @@ const JobSeekerProfile = () => {
   };
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -56,168 +68,194 @@ const JobSeekerProfile = () => {
     }
   };
 
-  const handleHover = (e, hover) => {
-    e.target.style.transform = hover ? "scale(1.05)" : "scale(1)";
-  };
-
-  if (loading) return <h3 style={{ textAlign: "center" }}>Loading profile...</h3>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg font-semibold text-gray-600">
+          Loading profile...
+        </p>
+      </div>
+    );
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Job Seeker Profile</h2>
+    <div className="min-h-screen bg-linear-to-br from-indigo-50 to-emerald-50 py-12 px-6">
+      <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-2xl p-8">
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <h2 className="text-3xl font-bold text-indigo-600 mb-8 text-center">
+          Job Seeker Profile
+        </h2>
+
+        {error && (
+          <p className="text-red-500 text-center mb-4">{error}</p>
+        )}
 
         {!profile || isEdit ? (
-          <div style={styles.formGrid}>
-            <input
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="currentCompany"
-              placeholder="Current Company"
-              value={formData.currentCompany}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="totalExperience"
-              placeholder="Experience (Years)"
-              value={formData.totalExperience}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="currentLocation"
-              placeholder="Current Location"
-              value={formData.currentLocation}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="preferredLocation"
-              placeholder="Preferred Location"
-              value={formData.preferredLocation}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="skills"
-              placeholder="Skills"
-              value={formData.skills}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              name="expectedCTC"
-              placeholder="Expected CTC"
-              value={formData.expectedCTC}
-              onChange={handleChange}
-              style={styles.input}
-            />
+          <>
+            {/* ================= PERSONAL SECTION ================= */}
+            <SectionTitle title="Personal Information" />
 
-            <button
-              style={styles.saveBtn}
-              onClick={handleSubmit}
-              onMouseEnter={(e) => handleHover(e, true)}
-              onMouseLeave={(e) => handleHover(e, false)}
-            >
-              💾 Save Profile
-            </button>
-          </div>
+            <div className="grid md:grid-cols-2 gap-6 mb-10">
+              <Input name="fullName" label="Full Name" value={formData.fullName} onChange={handleChange} />
+              <Input name="email" label="Email" value={formData.email} onChange={handleChange} />
+            </div>
+
+            {/* ================= NOTICE SECTION ================= */}
+            <SectionTitle title="Notice & Availability" />
+
+            <div className="grid md:grid-cols-2 gap-6 mb-10">
+              <Select
+                name="noticeStatus"
+                label="Notice Status"
+                value={formData.noticeStatus}
+                onChange={handleChange}
+                options={[
+                  "SERVING_NOTICE",
+                  "IMMEDIATE_JOINER",
+                  "NOT_SERVING",
+                  "ANY",
+                ]}
+              />
+
+              <Input
+                name="noticePeriod"
+                label="Notice Period (Days)"
+                type="number"
+                value={formData.noticePeriod}
+                onChange={handleChange}
+              />
+
+              <Input
+                name="lastWorkingDay"
+                label="Last Working Day"
+                type="date"
+                value={formData.lastWorkingDay}
+                onChange={handleChange}
+              />
+
+              <Input
+                name="availableFrom"
+                label="Available From"
+                type="date"
+                value={formData.availableFrom}
+                onChange={handleChange}
+              />
+
+              <Checkbox
+                name="isServingNotice"
+                label="Currently Serving Notice"
+                checked={formData.isServingNotice}
+                onChange={handleChange}
+              />
+
+              <Checkbox
+                name="immediateJoiner"
+                label="Immediate Joiner"
+                checked={formData.immediateJoiner}
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* ================= PROFESSIONAL SECTION ================= */}
+            <SectionTitle title="Professional Information" />
+
+            <div className="grid md:grid-cols-2 gap-6 mb-10">
+              <Input name="currentCompany" label="Current Company" value={formData.currentCompany} onChange={handleChange} />
+              <Input name="totalExperience" label="Total Experience (Years)" type="number" value={formData.totalExperience} onChange={handleChange} />
+              <Input name="currentCTC" label="Current CTC" type="number" value={formData.currentCTC} onChange={handleChange} />
+              <Input name="expectedCTC" label="Expected CTC" type="number" value={formData.expectedCTC} onChange={handleChange} />
+              <Input name="currentLocation" label="Current Location" value={formData.currentLocation} onChange={handleChange} />
+              <Input name="preferredLocation" label="Preferred Location" value={formData.preferredLocation} onChange={handleChange} />
+              <Input name="skills" label="Skills (Comma Separated)" value={formData.skills} onChange={handleChange} />
+              <Input name="resumeUrl" label="Resume URL" value={formData.resumeUrl} onChange={handleChange} />
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={handleSubmit}
+                className="px-8 py-3 bg-linear-to-r from-indigo-500 to-blue-500 text-white rounded-full font-semibold shadow-md hover:scale-105 transition-all duration-200"
+              >
+                💾 Save Profile
+              </button>
+            </div>
+          </>
         ) : (
-          <div style={styles.viewBox}>
-            <p><strong>Name:</strong> {profile.fullName}</p>
-            <p><strong>Company:</strong> {profile.currentCompany}</p>
-            <p><strong>Experience:</strong> {profile.totalExperience} yrs</p>
-            <p><strong>Location:</strong> {profile.currentLocation}</p>
-            <p><strong>Skills:</strong> {profile.skills}</p>
-            <p><strong>Expected CTC:</strong> ₹{profile.expectedCTC}</p>
-
-            <button
-              style={styles.editBtn}
-              onClick={() => setIsEdit(true)}
-            >
-              ✏️ Edit Profile
-            </button>
-          </div>
+          <ProfileView profile={profile} onEdit={() => setIsEdit(true)} />
         )}
       </div>
     </div>
   );
 };
 
-const styles = {
-  page: {
-    minHeight: "80vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "linear-gradient(135deg,#eef2ff,#f0fdf4)",
-  },
+/* ================= REUSABLE COMPONENTS ================= */
 
-  card: {
-    background: "#ffffff",
-    padding: "30px",
-    borderRadius: "16px",
-    width: "fit-content",
-    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
-  },
+const SectionTitle = ({ title }) => (
+  <h3 className="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">
+    {title}
+  </h3>
+);
 
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#4f46e5",
-  },
+const Input = ({ label, ...props }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-600 mb-1">
+      {label}
+    </label>
+    <input
+      {...props}
+      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+    />
+  </div>
+);
 
-  formGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "15px",
-  },
+const Select = ({ label, options, ...props }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-600 mb-1">
+      {label}
+    </label>
+    <select
+      {...props}
+      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+    >
+      <option value="">Select</option>
+      {options.map((opt) => (
+        <option key={opt} value={opt}>
+          {opt.replaceAll("_", " ")}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
-  input: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "14px",
-  },
+const Checkbox = ({ label, ...props }) => (
+  <div className="flex items-center gap-3 mt-6">
+    <input type="checkbox" {...props} className="h-5 w-5 text-indigo-600" />
+    <label className="text-sm text-gray-600">{label}</label>
+  </div>
+);
 
-  saveBtn: {
-    gridColumn: "span 2",
-    alignSelf: "center",
-    padding: "12px 28px",
-    background: "linear-gradient(135deg,#3b82f6,#6366f1)",
-    color: "white",
-    border: "none",
-    borderRadius: "30px",
-    fontWeight: "600",
-    fontSize: "15px",
-    cursor: "pointer",
-    boxShadow: "0 4px 12px rgba(59,130,246,0.4)",
-    transition: "all 0.2s ease-in-out",
-  },
+const ProfileView = ({ profile, onEdit }) => (
+  <div className="space-y-4">
+    <div className="grid md:grid-cols-2 gap-4 text-gray-700">
+      {Object.entries(profile).map(([key, value]) =>
+        value ? (
+          <p key={key}>
+            <span className="font-semibold capitalize">
+              {key.replace(/([A-Z])/g, " $1")}:
+            </span>{" "}
+            {value.toString()}
+          </p>
+        ) : null
+      )}
+    </div>
 
-  viewBox: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-
-  editBtn: {
-    marginTop: "15px",
-    padding: "10px 20px",
-    background: "#10b981",
-    color: "white",
-    border: "none",
-    borderRadius: "20px",
-    cursor: "pointer",
-  },
-};
+    <div className="text-center mt-6">
+      <button
+        onClick={onEdit}
+        className="px-6 py-2 bg-emerald-500 text-white rounded-full font-medium hover:scale-105 transition"
+      >
+        ✏️ Edit Profile
+      </button>
+    </div>
+  </div>
+);
 
 export default JobSeekerProfile;
