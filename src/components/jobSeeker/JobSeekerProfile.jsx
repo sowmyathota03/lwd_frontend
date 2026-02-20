@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  getMyProfile,
-  createOrUpdateProfile,
-} from "../../api/JobSeekerApi";
+import { getMyProfile, createOrUpdateProfile } from "../../api/JobSeekerApi";
 
 const initialState = {
   fullName: "",
@@ -61,7 +58,7 @@ const JobSeekerProfile = () => {
       const res = await createOrUpdateProfile(formData);
       setProfile(res.data);
       setIsEdit(false);
-      alert("Profile Updated Successfully ✅");
+      alert("Profile Updated Successfully");
     } catch (err) {
       setError("Error saving profile");
     }
@@ -69,7 +66,7 @@ const JobSeekerProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 via-indigo-50 to-emerald-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-lg font-semibold text-gray-600 animate-pulse">
           Loading profile...
         </p>
@@ -78,31 +75,26 @@ const JobSeekerProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-indigo-50 to-emerald-50 py-16 px-6">
-      <div className="max-w-5xl mx-auto bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl border border-white/40 p-10 transition-all">
-
-        <h2 className="text-4xl font-bold text-center mb-12 bg-linear-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent tracking-tight">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
+      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-2xl p-8">
+        <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Job Seeker Profile
         </h2>
 
         {error && (
-          <p className="text-red-500 text-center mb-6 font-medium">
-            {error}
-          </p>
+          <p className="text-red-500 text-center mb-4 font-medium">{error}</p>
         )}
 
         {!profile || isEdit ? (
           <>
-            {/* Personal Info */}
             <SectionTitle title="Personal Information" />
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
               <Input name="fullName" label="Full Name" value={formData.fullName} onChange={handleChange} />
               <Input name="email" label="Email" value={formData.email} onChange={handleChange} />
             </div>
 
-            {/* Notice */}
             <SectionTitle title="Notice & Availability" />
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
               <Select
                 name="noticeStatus"
                 label="Notice Status"
@@ -117,9 +109,8 @@ const JobSeekerProfile = () => {
               <Checkbox name="immediateJoiner" label="Immediate Joiner" checked={formData.immediateJoiner} onChange={handleChange} />
             </div>
 
-            {/* Professional */}
             <SectionTitle title="Professional Information" />
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
               <Input name="currentCompany" label="Current Company" value={formData.currentCompany} onChange={handleChange} />
               <Input name="totalExperience" label="Total Experience (Years)" type="number" value={formData.totalExperience} onChange={handleChange} />
               <Input name="currentCTC" label="Current CTC" type="number" value={formData.currentCTC} onChange={handleChange} />
@@ -130,12 +121,23 @@ const JobSeekerProfile = () => {
               <Input name="resumeUrl" label="Resume URL" value={formData.resumeUrl} onChange={handleChange} />
             </div>
 
-            <div className="text-center">
+            <div className="flex justify-end gap-4 mt-6">
+              <button
+                onClick={() => {
+                  setFormData(profile);
+                  setIsEdit(false);
+                  setError("");
+                }}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded border-none font-medium hover:bg-gray-300 transition"
+              >
+                Cancel
+              </button>
+
               <button
                 onClick={handleSubmit}
-                className="px-12 py-3.5 bg-linear-to-r from-indigo-600 to-emerald-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="px-8 py-2 bg-blue-600 text-white rounded border-none font-semibold hover:bg-blue-700 transition"
               >
-                💾 Save Profile
+                Save
               </button>
             </div>
           </>
@@ -148,31 +150,27 @@ const JobSeekerProfile = () => {
 };
 
 const SectionTitle = ({ title }) => (
-  <h3 className="text-lg font-semibold text-gray-700 mb-6 border-l-4 border-indigo-500 pl-4">
+  <h3 className="text-lg font-semibold text-gray-700 mb-4 border-l-4 border-blue-600 pl-3">
     {title}
   </h3>
 );
 
 const Input = ({ label, ...props }) => (
   <div className="space-y-1">
-    <label className="block text-sm font-medium text-gray-600">
-      {label}
-    </label>
+    <label className="block text-sm font-medium text-gray-600">{label}</label>
     <input
       {...props}
-      className="w-full px-4 py-2.5 border border-gray-200 bg-white/70 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 outline-none"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
     />
   </div>
 );
 
 const Select = ({ label, options, ...props }) => (
   <div className="space-y-1">
-    <label className="block text-sm font-medium text-gray-600">
-      {label}
-    </label>
+    <label className="block text-sm font-medium text-gray-600">{label}</label>
     <select
       {...props}
-      className="w-full px-4 py-2.5 border border-gray-200 bg-white/70 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 outline-none"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
     >
       <option value="">Select</option>
       {options.map((opt) => (
@@ -185,15 +183,9 @@ const Select = ({ label, options, ...props }) => (
 );
 
 const Checkbox = ({ label, ...props }) => (
-  <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-gray-200">
-    <input
-      type="checkbox"
-      {...props}
-      className="h-5 w-5 accent-indigo-600 cursor-pointer"
-    />
-    <label className="text-sm text-gray-700 cursor-pointer">
-      {label}
-    </label>
+  <div className="flex items-center gap-3 bg-gray-100 px-4 py-2 rounded-lg">
+    <input type="checkbox" {...props} className="h-5 w-5 accent-blue-600 cursor-pointer" />
+    <label className="text-sm text-gray-700 cursor-pointer">{label}</label>
   </div>
 );
 
@@ -206,16 +198,9 @@ const ViewField = ({ label, value }) => {
 
   if (label === "Resume URL" && value) {
     return (
-      <div className="bg-slate-50 p-4 rounded-xl border border-gray-100 shadow-sm">
-        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-          {label}
-        </p>
-        <a
-          href={value}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-indigo-600 font-semibold hover:text-indigo-800 transition underline"
-        >
+      <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+        <a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-semibold underline">
           View Resume
         </a>
       </div>
@@ -223,27 +208,23 @@ const ViewField = ({ label, value }) => {
   }
 
   return (
-    <div className="bg-slate-50 p-4 rounded-xl border border-gray-100 shadow-sm">
-      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-        {label}
-      </p>
-      <p className="font-medium text-gray-800">
-        {formatValue(value)}
-      </p>
+    <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+      <p className="font-medium text-gray-800">{formatValue(value)}</p>
     </div>
   );
 };
 
 const ProfileView = ({ profile, onEdit }) => (
-  <div className="space-y-12">
+  <div className="space-y-8">
     <SectionTitle title="Personal Information" />
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid md:grid-cols-2 gap-6">
       <ViewField label="Full Name" value={profile.fullName} />
       <ViewField label="Email" value={profile.email} />
     </div>
 
     <SectionTitle title="Notice & Availability" />
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid md:grid-cols-2 gap-6">
       <ViewField label="Notice Status" value={profile.noticeStatus?.replaceAll("_", " ")} />
       <ViewField label="Notice Period (Days)" value={profile.noticePeriod} />
       <ViewField label="Last Working Day" value={profile.lastWorkingDay} />
@@ -253,7 +234,7 @@ const ProfileView = ({ profile, onEdit }) => (
     </div>
 
     <SectionTitle title="Professional Information" />
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid md:grid-cols-2 gap-6">
       <ViewField label="Current Company" value={profile.currentCompany} />
       <ViewField label="Total Experience (Years)" value={profile.totalExperience} />
       <ViewField label="Current CTC" value={profile.currentCTC} />
@@ -267,9 +248,9 @@ const ProfileView = ({ profile, onEdit }) => (
     <div className="text-center mt-6">
       <button
         onClick={onEdit}
-        className="px-10 py-3 bg-linear-to-r from-emerald-500 to-indigo-500 text-white rounded font-semibold shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
+        className="px-10 py-3 bg-blue-600 text-white rounded border-none font-medium hover:bg-blue-700 transition"
       >
-        ✏️ Edit Profile
+        Edit Profile
       </button>
     </div>
   </div>
