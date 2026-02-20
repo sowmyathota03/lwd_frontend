@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { registerJobSeeker } from "../api/AuthApi";
 
 function Register() {
   const navigate = useNavigate();
@@ -11,6 +12,9 @@ function Register() {
     contactNumber: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -18,78 +22,83 @@ function Register() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    alert("Registered Successfully (Frontend Only)");
-    navigate("/login");
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await registerJobSeeker(formData);
+      console.log("Job Seeker Registered:", response);
+      alert("Registration Successful!");
+      navigate("/login");
+    } catch (error) {
+      setError(error.response?.data || "Registration Failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 to-slate-50 flex items-center justify-center p-5 font-sans">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-lg shadow-xl flex flex-col"
-      >
-        <h2 className="text-center text-2xl font-semibold text-slate-900 mb-8">
-          Create Account
+    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center px-4">
+
+      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
+
+        <h2 className="text-2xl font-semibold text-center text-slate-900 mb-6">
+          Register 
         </h2>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          onChange={handleChange}
-          required
-          className="mb-4 px-4 py-3 rounded-lg border border-blue-200 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition"
-        />
+        {error && (
+          <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
+            {error}
+          </div>
+        )}
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-          className="mb-4 px-4 py-3 rounded-lg border border-blue-200 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition"
-        />
+        <form onSubmit={handleSubmit}>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          className="mb-4 px-4 py-3 rounded-lg border border-blue-200 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition"
-        />
+          {/* Full Name */}
+          <div className="mb-4">
+            <input type="text" name="name" placeholder="Full Name" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+          </div>
 
-        <input
-          type="text"
-          name="contactNumber"
-          placeholder="Contact Number"
-          onChange={handleChange}
-          required
-          className="mb-4 px-4 py-3 rounded-lg border border-blue-200 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-200 transition"
-        />
+          {/* Email */}
+          <div className="mb-4">
+            <input type="email" name="email" placeholder="Email" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+          </div>
 
-        <button
-          type="submit"
-          className="mt-2 py-3 rounded-lg bg-gradient-to-r from-sky-400 to-sky-500 text-white font-semibold text-sm hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-400/40 transition duration-300"
-        >
-          Register
-        </button>
+          {/* Password */}
+          <div className="mb-4">
+            <input type="password" name="password" placeholder="Password" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+          </div>
 
-        <div className="mt-6 text-center text-sm text-slate-500">
-          <p>
-            Already have an account?{" "}
-            <span
-              onClick={() => navigate("/login")}
-              className="text-sky-500 font-semibold cursor-pointer hover:text-sky-600 underline underline-offset-2"
-            >
-              Login here
-            </span>
-          </p>
-        </div>
-      </form>
+          {/* Contact Number */}
+          <div className="mb-4">
+            <input type="text" name="contactNumber" placeholder="Contact Number" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70">
+            {loading ? "Registering..." : "Register"}
+          </button>
+
+          {/* Login Redirect */}
+          <div className="mt-4 text-center text-sm">
+            <p>
+              Already have an account?{" "}
+              <span
+                className="text-sky-500 cursor-pointer hover:underline"
+                onClick={() => navigate("/login")}
+              >
+                Login here
+              </span>
+            </p>
+          </div>
+
+        </form>
+      </div>
     </div>
   );
 }
