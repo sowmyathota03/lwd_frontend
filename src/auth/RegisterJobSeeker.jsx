@@ -40,7 +40,7 @@ function RegisterJobSeeker() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center px-4">
+    <div className="min-h-[80vh] bg-linear-to-br from-sky-100 to-blue-50 flex justify-center items-center px-4">
 
       <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
 
@@ -80,7 +80,7 @@ function RegisterJobSeeker() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70">
+            className="w-full py-3 rounded-lg font-semibold text-white bg-linear-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70">
             {loading ? "Registering..." : "Register"}
           </button>
 

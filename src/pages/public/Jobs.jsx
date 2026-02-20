@@ -247,7 +247,7 @@ function Jobs() {
         )}
 
         {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 max-w-7xl mx-auto auto-rows-fr">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 max-w-5xl mx-auto auto-rows-fr">
           {jobs.map((job, index) => {
             const isLastItem = index === jobs.length - 1;
 

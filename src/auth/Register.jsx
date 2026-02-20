@@ -26,7 +26,7 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 to-slate-50 flex items-center justify-center p-5 font-sans">
+    <div className="min-h-screen bg-linear-to-br from-sky-100 to-slate-50 flex items-center justify-center p-5 font-sans">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-lg shadow-xl flex flex-col"
@@ -73,7 +73,7 @@ function Register() {
 
         <button
           type="submit"
-          className="mt-2 py-3 rounded-lg bg-gradient-to-r from-sky-400 to-sky-500 text-white font-semibold text-sm hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-400/40 transition duration-300"
+          className="mt-2 py-3 rounded-lg bg-linear-to-r from-sky-400 to-sky-500 text-white font-semibold text-sm hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-400/40 transition duration-300"
         >
           Register
         </button>
