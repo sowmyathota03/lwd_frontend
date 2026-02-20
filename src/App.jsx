@@ -4,6 +4,7 @@ import "./index.css";
 import { Routes,Route } from "react-router-dom"
 
 import Login from './auth/Login';
+
 // import AuthSelection from './auth/AuthSelection';
 // import RegisterJobSeeker from './auth/RegisterJobSeeker';
 // import RegisterRecruiter from './auth/RegisterRecruiter';
@@ -61,7 +62,8 @@ function App() {
     <div><NavBar/></div>
     <Routes>
       <Route path="/" element={<Home/>}/>
-      
+
+
       {/* <Route path="/register" element={<AuthSelection />} />
       <Route path="/register/jobseeker" element={<RegisterJobSeeker />} />
       <Route path="/register/recruiter" element={<RegisterRecruiter />} /> */}

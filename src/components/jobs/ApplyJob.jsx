@@ -71,7 +71,7 @@ function ApplyJob() {
     );
 
   return (
-    <div className="flex justify-center items-center px-4 py-16 min-h-[80vh] bg-gradient-to-br from-slate-100 to-blue-200">
+    <div className="flex justify-center items-center px-4 py-16 min-h-[80vh] bg-linear-to-br from-slate-100 to-blue-200">
       <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-xl">
 
         {/* Back Button */}
@@ -135,7 +135,7 @@ function ApplyJob() {
             placeholder="Cover Letter"
             value={coverLetter}
             onChange={(e) => setCoverLetter(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-lg text-sm min-h-[100px] resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className="px-4 py-3 border border-gray-300 rounded-lg text-sm min-h-25 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
 
           <input
