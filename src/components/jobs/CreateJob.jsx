@@ -14,6 +14,11 @@ export default function CreateJob() {
     minExperience: "",
     maxExperience: "",
     jobType: "",
+
+    // ✅ NEW FIELDS
+    noticePreference: "",
+    maxNoticePeriod: "",
+    lwdPreferred: false,
   });
 
   const handleChange = (e) => {
@@ -29,6 +34,7 @@ export default function CreateJob() {
       salary: job.salary ? Number(job.salary) : null,
       minExperience: job.minExperience ? Number(job.minExperience) : null,
       maxExperience: job.maxExperience ? Number(job.maxExperience) : null,
+      maxNoticePeriod: job.maxNoticePeriod ? Number(job.maxNoticePeriod) : null,
     };
 
     try {
@@ -44,7 +50,6 @@ export default function CreateJob() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 transition-all">
-
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-6"
@@ -144,7 +149,7 @@ export default function CreateJob() {
         </div>
 
         {/* Experience */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col gap-6 justify-between">
           <div>
             <label className="block text-sm font-medium text-gray-700  mb-2">
               Min Experience (Years)
@@ -170,6 +175,58 @@ export default function CreateJob() {
               className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
+
+          {/* LWD Specific Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Notice Preference */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Notice Preference
+              </label>
+              <select
+                name="noticePreference"
+                value={job.noticePreference}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">Select</option>
+                <option value="SERVING_NOTICE">Serving Notice</option>
+                <option value="IMMEDIATE_JOINER">Immediate Joiner</option>
+                <option value="NOT_SERVING">Not Serving</option>
+                <option value="ANY">Any</option>
+              </select>
+            </div>
+
+            {/* Max Notice Period */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Max Notice Period (Days)
+              </label>
+              <input
+                type="number"
+                name="maxNoticePeriod"
+                value={job.maxNoticePeriod}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            {/* LWD Preferred Toggle */}
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                name="lwdPreferred"
+                checked={job.lwdPreferred}
+                onChange={(e) =>
+                  setJob({ ...job, lwdPreferred: e.target.checked })
+                }
+                className="h-4 w-4"
+              />
+              <label className="text-sm font-medium text-gray-700">
+                LWD Preferred
+              </label>
+            </div>
+          </div>
+
         </div>
 
         {/* Submit Button */}

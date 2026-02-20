@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import PopularJobs from "../../components/jobs/PopularJobs"; 
 import JobSearchBlock from "../../components/jobs/JobSearchBlock";
 import { getTopCategories } from "../../api/JobApi";
@@ -7,7 +8,8 @@ import { getTopCategories } from "../../api/JobApi";
 import JobActionButton from "../../components/jobs/JobActionButton";
 
 function Home() {
-  const navigate = useNavigate();      
+  const navigate = useNavigate();  
+  const { user } = useContext(AuthContext);    
 
   const [categories, setCategories] = useState([]);
 
@@ -60,14 +62,17 @@ function Home() {
       <section className="cta">
         <h2>Ready to take the next step?</h2>
 
-        <JobActionButton />
-          
-        <button
-          onClick={() => navigate("/register/jobseeker")}
-          className="btn btn-primary"
-        >
-          Create Profile
-        </button>
+         {user?.role === "JOB_SEEKER" ? (
+            <JobActionButton />
+          ) : (
+            <button
+              onClick={() => navigate("/register/jobseeker")}
+              className="btn btn-primary"
+            >
+              Create Profile
+            </button>
+          )}
+
       </section>
     </div>
   );
