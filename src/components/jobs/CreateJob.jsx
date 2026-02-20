@@ -52,10 +52,10 @@ export default function CreateJob() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 transition-all">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-6"
+        className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl p-8 space-y-6"
       >
         {/* Title */}
-        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
+        <h2 className="text-2xl font-bold text-center text-gray-800 ">
           Post New Job
         </h2>
 
