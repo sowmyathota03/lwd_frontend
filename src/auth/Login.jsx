@@ -3,12 +3,10 @@ import { loginUser } from "../api/AuthApi";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import jwtDecode from "jwt-decode";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // 🔥 use context
+  const { login } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -36,13 +34,6 @@ export default function Login() {
 
     try {
       const res = await loginUser(formData);
-
-      // 🔥 Use context login (this updates navbar immediately)
-      login(res.token);
-
-      // Decode token for role-based redirect
-
-      // ✅ Update context + localStorage
       login(res.token);
 
       const decoded = jwtDecode(res.token);
@@ -56,58 +47,45 @@ export default function Login() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow p-4" style={{ width: "400px" }}>
-        <h3 className="text-center mb-4">Login</h3>
+    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center font-sans">
+      
+      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
+
+        <h3 className="text-center text-2xl font-semibold text-slate-900 mb-6">
+          Login
+        </h3>
 
         {error && (
-          <div className="alert alert-danger text-center">
+          <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
 
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              placeholder="Enter email"
-              required
-              onChange={handleChange}
-            />
+          {/* Email */}
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-medium text-slate-700">
+              Email
+            </label>
+            <input type="email" name="email" placeholder="Enter email" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              placeholder="Enter password"
-              required
-              onChange={handleChange}
-            />
+          {/* Password */}
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-medium text-slate-700">Password</label>
+            <input type="password" name="password" placeholder="Enter password" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary w-100"
-            disabled={loading}
-          >
+          {/* Button */}
+          <button type="submit" disabled={loading} className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70">
             {loading ? "Logging in..." : "Login"}
           </button>
 
-          <div className="register-redirect mt-3 text-center">
-            <p>
-              Don't have an account?{" "}
-              <span
-                className="register-link text-primary"
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate("/register")}
-              >
+          {/* Register Redirect */}
+          <div className="mt-4 text-center text-sm">
+            <p>Don't have an account?{" "}<span className="text-sky-500 cursor-pointer hover:underline"
+                onClick={() => navigate("/register")}>
                 Register here
               </span>
             </p>
