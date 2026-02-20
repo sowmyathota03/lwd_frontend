@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./CompanyDashboardPage.css";
 import { getCompanyById } from "../api/CompanyApi";
+import Loader from "../components/common/Loader";
 
 export default function CompanyDashboardPage() {
   const { companyId } = useParams();
@@ -25,52 +25,82 @@ export default function CompanyDashboardPage() {
     loadCompany();
   }, [companyId]);
 
-  if (loading) return <p className="loading">Loading company...</p>;
-  if (!company) return <p className="error">Company not found</p>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 mt-12">
+        <Loader fullScreen={false} />
+      </div>
+    );
+
+  if (!company)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 mt-12">
+        <p className="text-red-500 font-medium">
+          Company not found
+        </p>
+      </div>
+    );
 
   return (
-    <div className="company-dashboard">
-      <div className="company-card">
-        <h2>{company.companyName}</h2>
+    <div className="min-h-screen bg-slate-50 p-6 mt-12">
+      <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
+        
+        {/* Company Name */}
+        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+          {company.companyName}
+        </h2>
 
-        <div className="company-meta">
+        {/* Meta Info */}
+        <div className="text-sm text-gray-500 mb-4">
           {company.location} •{" "}
-          <a href={company.website} target="_blank" rel="noreferrer">
+          <a
+            href={company.website}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 hover:underline"
+          >
             {company.website}
           </a>
         </div>
 
+        {/* Status Badge */}
         <span
-          className={`status-badge ${
-            company.isActive ? "active" : "blocked"
+          className={`inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold tracking-wide ${
+            company.isActive
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
           }`}
         >
           {company.isActive ? "ACTIVE" : "BLOCKED"}
         </span>
 
-        <div className="dashboard-actions">
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-4 mt-6">
           <button
-            onClick={() => navigate(`/admin/company/${companyId}/recruiters`)}
+            onClick={() =>
+              navigate(`/admin/company/${companyId}/recruiters`)
+            }
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition transform hover:-translate-y-0.5"
           >
             View Recruiters
           </button>
-
 
           <button
             onClick={() =>
               navigate(`/recruiter-admin/companies/${companyId}/jobs`)
             }
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition transform hover:-translate-y-0.5"
           >
             View Jobs
           </button>
 
           <button
-            className="secondary"
             onClick={() =>
               navigate(
                 `/recruiter-admin/companies/${companyId}/applications`
               )
             }
+            className="px-5 py-2 rounded-lg bg-gray-200 text-gray-800 text-sm font-medium hover:bg-gray-300 transition transform hover:-translate-y-0.5"
           >
             View Applications
           </button>

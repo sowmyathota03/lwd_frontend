@@ -1,4 +1,6 @@
+
 import UserRow from "./UserRow";
+import Loader from "../common/Loader";
 
 export default function UserTable({
   users,
@@ -9,9 +11,7 @@ export default function UserTable({
 }) {
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-500 text-sm">
-        Loading users...
-      </div>
+      <Loader fullScreen={false} />
     );
   }
 

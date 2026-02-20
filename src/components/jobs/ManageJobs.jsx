@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import JobActions from "./JobActions";
 import { getMyJobs } from "../../api/JobApi";
+import Loader from "../common/Loader";
 
 export default function ManageJobs() {
   const [jobs, setJobs] = useState([]);
@@ -60,7 +61,7 @@ export default function ManageJobs() {
             {loading ? (
               <tr>
                 <td colSpan="8" className="text-center py-4 text-gray-500">
-                  Loading jobs...
+                 <Loader fullScreen={false} />
                 </td>
               </tr>
             ) : jobs.length === 0 ? (
@@ -127,6 +128,44 @@ export default function ManageJobs() {
           </tbody>
         </table>
       </div>
+      {/* ================= PAGINATION ================= */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+          <button
+            onClick={() => fetchJobs(page - 1)}
+            disabled={page === 0}
+            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Previous
+          </button>
+
+          <div className="flex items-center gap-2">
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                onClick={() => fetchJobs(index)}
+                className={`px-3 py-1 text-sm rounded-md border
+            ${
+              page === index
+                ? "bg-blue-600 text-white border-blue-600"
+                : "hover:bg-gray-100"
+            }
+          `}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => fetchJobs(page + 1)}
+            disabled={page + 1 >= totalPages}
+            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

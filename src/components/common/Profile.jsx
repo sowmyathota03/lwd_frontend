@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getMyProfile, getUserById, updateMyProfile } from "../../api/UserApi";
 import { AuthContext } from "../../context/AuthContext";
+import Loader from "../../components/common/Loader";
+
 
 const Profile = () => {
   const { userId } = useParams();
@@ -60,7 +62,7 @@ const Profile = () => {
   if (!profile)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500 text-lg">Loading profile...</p>
+        <Loader fullScreen />;
       </div>
     );
 

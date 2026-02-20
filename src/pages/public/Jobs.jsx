@@ -13,7 +13,7 @@ import {
   searchJobs,
 } from "../../api/JobApi";
 import JobSkeleton from "../../components/jobs/JobSkeleton";
-import Loader from "../../components/jobs/Loader";
+import Loader from "../../components/common/Loader";
 
 /* ================= CLEAN PROFESSIONAL ANIMATION ================= */
 
@@ -275,7 +275,7 @@ function Jobs() {
 
         {loading && !initialLoading && (
           <div className="mt-6">
-            <Loader />
+            <Loader fullScreen={false} />
           </div>
         )}
 

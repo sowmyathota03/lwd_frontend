@@ -4,7 +4,6 @@ import {
   updateCompany,
   getMyCompany,
 } from "../../api/CompanyApi";
-// import "./CompanyProfile.css";
 
 export default function CompanyProfile() {
   const [company, setCompany] = useState(null);

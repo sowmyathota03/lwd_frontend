@@ -3,6 +3,7 @@ import {
   getApplicationsByRole,
   changeApplicationStatus,
 } from "../../api/JobApplicationApi";
+import Loader from "../common/Loader";
 
 export default function JobApplicationList() {
   const [applications, setApplications] = useState([]);
@@ -96,7 +97,7 @@ export default function JobApplicationList() {
                   colSpan="7"
                   className="text-center py-6 text-gray-500"
                 >
-                  Loading applications...
+                  <Loader fullScreen={false} />
                 </td>
               </tr>
             ) : applications.length === 0 ? (

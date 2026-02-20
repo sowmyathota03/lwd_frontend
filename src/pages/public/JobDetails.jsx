@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getJobById, getSimilarJobs } from "../../api/JobApi";
-import Loader from "../../components/jobs/Loader";
+import Loader from "../../components/common/Loader";
 import JobCards from "../../components/jobs/JobCards";
 
 function JobDetails() {

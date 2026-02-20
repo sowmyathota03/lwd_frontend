@@ -60,7 +60,6 @@ function App() {
     <div><NavBar/></div>
     <Routes>
       <Route path="/" element={<Home/>}/>
-      
       <Route path="/register" element={<AuthSelection />} />
       <Route path="/register/jobseeker" element={<RegisterJobSeeker />} />
       <Route path="/register/recruiter" element={<RegisterRecruiter />} />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../api/CompanyApi";
-import Loader from "../../components/jobs/Loader"; // adjust path if needed
+import Loader from "../../components/common/Loader"; // adjust path if needed
 
 function Companies() {
   const navigate = useNavigate();

@@ -19,6 +19,7 @@ export default function RecruiterAdminDashboard() {
     { to: "/recruiter-admin/company-profile", label: "🏢 Company Profile" },
     { to: "/recruiter-admin/manage-recruiter", label: "👥 Manage Recruiter" },
     { to: "/recruiter-admin/managejob", label: "📄 Manage Jobs" },
+    { to: "/recruiter/createjob", label: "➕ Create New Job" },
     { to: "/recruiter-admin/applications", label: "📑 Applications" },
   ];
 

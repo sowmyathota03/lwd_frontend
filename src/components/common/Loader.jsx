@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-function Loader() {
+function Loader({ fullScreen = false, size = 16 }) {
   const colors = [
     "bg-blue-500",
     "bg-purple-500",
@@ -9,7 +9,11 @@ function Loader() {
   ];
 
   return (
-    <div className="w-full flex items-center justify-center py-16">
+    <div
+      className={`w-full flex items-center justify-center ${
+        fullScreen ? "min-h-screen" : "py-12"
+      }`}
+    >
       <motion.div
         className="flex space-x-3"
         initial="start"
@@ -22,7 +26,8 @@ function Loader() {
         {colors.map((color, index) => (
           <motion.span
             key={index}
-            className={`w-4 h-4 rounded-full ${color}`}
+            className={`rounded-full ${color}`}
+            style={{ width: size, height: size }}
             variants={{
               start: { y: 0 },
               end: { y: -12 },

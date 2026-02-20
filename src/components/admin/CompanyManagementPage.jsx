@@ -5,6 +5,7 @@ import {
   unblockCompany,
 } from "../../api/AdminApi";
 import { useNavigate } from "react-router-dom";
+import Loader from "../common/Loader";
 
 export default function CompanyManagementPage() {
   const [companies, setCompanies] = useState([]);
@@ -99,9 +100,7 @@ export default function CompanyManagementPage() {
 
       <div className="bg-white shadow-md overflow-hidden">
         {loading ? (
-          <p className="p-6 text-center text-gray-500">
-            Loading companies...
-          </p>
+          <Loader fullScreen={false} />
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-blue-50">

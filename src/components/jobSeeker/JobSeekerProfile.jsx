@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getMyProfile, createOrUpdateProfile } from "../../api/JobSeekerApi";
+import Loader from "../../components/common/Loader";
+
 
 const initialState = {
   fullName: "",
@@ -67,9 +69,7 @@ const JobSeekerProfile = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-lg font-semibold text-gray-600 animate-pulse">
-          Loading profile...
-        </p>
+        <Loader fullScreen />;
       </div>
     );
   }

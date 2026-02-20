@@ -5,6 +5,7 @@ import {
   blockRecruiter,
   getRecruitersByCompanyId
 } from "../api/AdminApi";
+import Loader from "../common/Loader";
 
 export default function RecruitersListPage() {
   const { companyId } = useParams();
@@ -91,7 +92,7 @@ export default function RecruitersListPage() {
 
         {loading ? (
           <div className="p-10 text-center text-gray-500 dark:text-gray-400">
-            Loading recruiters...
+            <Loader fullScreen={false} />
           </div>
         ) : recruiters.length === 0 ? (
           <div className="p-10 text-center text-gray-500 dark:text-gray-400">

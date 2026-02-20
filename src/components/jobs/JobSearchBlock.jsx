@@ -15,7 +15,6 @@ function JobSearchBlock() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
-  // ================= SEARCH =================
   const handleSearch = () => {
     const params = new URLSearchParams();
 
@@ -26,18 +25,14 @@ function JobSearchBlock() {
     if (maxExp) params.append("maxExp", maxExp);
     if (jobType) params.append("jobType", jobType);
 
-    setSuggestions([]); // Close suggestions when search triggers
+    setSuggestions([]);
     navigate(`/Jobs?${params.toString()}`);
   };
 
-  // ================= HANDLE ENTER =================
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    if (e.key === "Enter") handleSearch();
   };
 
-  // ================= SUGGESTIONS =================
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       if (keyword.length > 1) {
@@ -60,95 +55,42 @@ function JobSearchBlock() {
     setSuggestions([]);
   };
 
-  // ================= CLICK OUTSIDE TO CLOSE =================
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
         setSuggestions([]);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ================= STYLES =================
-  const inputStyle = {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    width: "90%",
-    fontSize: "14px",
-  };
-
-  const searchBtnStyle = {
-    padding: "12px 24px",
-    backgroundColor: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "500",
-  };
-
-  const suggestionBoxStyle = {
-    position: "absolute",
-    top: "110%",
-    left: 0,
-    width: "100%",
-    background: "white",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
-    zIndex: 100,
-  };
-
-  const suggestionItemStyle = {
-    padding: "10px",
-    cursor: "pointer",
-    borderBottom: "1px solid #eee",
-  };
-
   return (
-    <section
-      style={{
-        padding: "60px 20px",
-        background: "linear-gradient(to right, #fbc2eb, #a6c1ee)",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "40px",
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ flex: "1 1 600px" }}>
-          <h1 style={{ fontSize: "42px", marginBottom: "15px" }}>
+    <section className="py-16 px-5 bg-linear-to-r from-[#f595da] to-[#8eb5fa]">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
+        
+        {/* LEFT CONTENT */}
+        <div className="flex-1 text-center lg:text-left">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4">
             Find Your Dream Job
           </h1>
 
-          <p style={{ fontSize: "18px", marginBottom: "30px", color: "#333" }}>
-            Explore thousands of verified jobs from top companies and grow your career with LWD.
+          <p className="text-lg mb-8 text-gray-700">
+            Explore thousands of verified jobs from top companies and grow your
+            career with LWD.
           </p>
 
           <div
             ref={containerRef}
-            style={{
-              background: "white",
-              padding: "25px",
-              borderRadius: "12px",
-              boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-            }}
+            className="bg-white p-6 rounded-xl shadow-lg flex flex-col gap-4 mx-auto lg:mx-0"
           >
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              <div style={{ position: "relative", flex: 2, minWidth: "250px" }}>
+            {/* MAIN SEARCH ROW */}
+            <div className="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
+              <div className="relative flex-1 min-w-62.5">
                 <input
                   type="text"
                   placeholder={
@@ -159,16 +101,16 @@ function JobSearchBlock() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  style={inputStyle}
+                  className="w-full p-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
 
                 {suggestions.length > 0 && (
-                  <div style={suggestionBoxStyle}>
+                  <div className="absolute top-full mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                     {suggestions.map((s, index) => (
                       <div
                         key={index}
                         onClick={() => handleSuggestionClick(s)}
-                        style={suggestionItemStyle}
+                        className="px-4 py-2 text-sm cursor-pointer border-b last:border-none hover:bg-gray-100"
                       >
                         {s}
                       </div>
@@ -177,41 +119,32 @@ function JobSearchBlock() {
                 )}
               </div>
 
-              <button onClick={handleSearch} style={searchBtnStyle}>
+              <button
+                onClick={handleSearch}
+                className="p-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition"
+              >
                 🔍 Search
               </button>
 
+              {/* Smaller Advanced Button */}
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                style={{
-                  padding: "12px 18px",
-                  borderRadius: "8px",
-                  border: "1px solid #2563eb",
-                  background: "white",
-                  color: "#2563eb",
-                  cursor: "pointer",
-                  fontWeight: "500",
-                }}
+                className="p-2 text-sm rounded border border-blue-600 bg-white text-blue-600 font-medium hover:bg-blue-50 transition"
               >
-                {showAdvanced ? "Close Advanced" : "Advanced Search"}
+                {showAdvanced ? "Close" : "Advanced"}
               </button>
             </div>
 
+            {/* ADVANCED SEARCH */}
             {showAdvanced && (
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  flexWrap: "wrap",
-                  marginTop: "10px",
-                }}
-              >
+              <div className="flex flex-wrap gap-3 mt-2 justify-center lg:justify-start items-center">
+                
                 <input
                   type="text"
                   placeholder="Location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  style={{ ...inputStyle, flex: 1 }}
+                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-40"
                 />
 
                 <input
@@ -219,7 +152,7 @@ function JobSearchBlock() {
                   placeholder="Company"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  style={{ ...inputStyle, flex: 1 }}
+                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-40"
                 />
 
                 <input
@@ -227,7 +160,7 @@ function JobSearchBlock() {
                   placeholder="Min Exp"
                   value={minExp}
                   onChange={(e) => setMinExp(e.target.value)}
-                  style={{ ...inputStyle, width: "100px" }}
+                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-24"
                 />
 
                 <input
@@ -235,13 +168,13 @@ function JobSearchBlock() {
                   placeholder="Max Exp"
                   value={maxExp}
                   onChange={(e) => setMaxExp(e.target.value)}
-                  style={{ ...inputStyle, width: "100px" }}
+                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-24"
                 />
 
                 <select
                   value={jobType}
                   onChange={(e) => setJobType(e.target.value)}
-                  style={{ ...inputStyle, width: "150px" }}
+                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-36"
                 >
                   <option value="">Job Type</option>
                   <option value="FULL_TIME">Full Time</option>
@@ -254,16 +187,12 @@ function JobSearchBlock() {
           </div>
         </div>
 
-        <div style={{ flex: "1 1 400px", textAlign: "center" }}>
+        {/* RIGHT IMAGE */}
+        <div className="flex-1 text-center">
           <img
             src="https://media.istockphoto.com/id/1349094945/photo/human-using-a-computer-laptop-for-searching-for-job-and-fill-out-personal-data-on-job-website.jpg?s=612x612&w=0&k=20&c=nVCY302pin29eP1rN0eBGstQN3WF4YQTWvZ4TvAs21g="
             alt="Job Search"
-            style={{
-              width: "100%",
-              maxWidth: "450px",
-              borderRadius: "16px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-            }}
+            className="w-full max-w-md mx-auto rounded-2xl shadow-2xl"
           />
         </div>
       </div>
