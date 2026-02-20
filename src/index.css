@@ -4,87 +4,8 @@
 @tailwind components;
 @tailwind utilities; */
 
-
-.top-navbar {
-  background-color: #0f172a;
-  color: white;
-  font-size: 14px;
-}
-
-.topbar-container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 8px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.topbar-link {
-  color: #38bdf8;
+a {
   text-decoration: none;
-  font-weight: 500;
-}
-
-/* Main navbar */
-.main-navbar {
-  background-color: white;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.navbar-container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo h2 {
-  color: #0f172a;
-  letter-spacing: 1px;
-}
-
-
-.nav-links {
-  display: flex;
-  gap: 25px;
-  list-style: none;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #334155;
-  font-weight: 500;
-}
-
-.nav-links a.active {
-  color: #2563eb;
-}
-
-/* Buttons */
-.nav-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.login-btn {
-  background: transparent;
-  border: 1px solid #2563eb;
-  color: #2563eb;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.register-btn {
-  background-color: #2563eb;
-  border: none;
-  color: white;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 /* Footer Styling */

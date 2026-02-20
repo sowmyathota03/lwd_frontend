@@ -1,54 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getMyProfile, getUserById, updateMyProfile } from "../../api/UserApi";
-import "./Profile.css";
-
-// Simple JWT decoder (only decodes payload)
-function decodeJWT(token) {
-  try {
-    const payload = token.split(".")[1];
-    return JSON.parse(atob(payload));
-  } catch (err) {
-    console.error("Invalid JWT token", err);
-    return null;
-  }
-}
+import { AuthContext } from "../../context/AuthContext";
 
 const Profile = () => {
   const { userId } = useParams();
+  const { user } = useContext(AuthContext); // ✅ from context
+
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({ name: "", phone: "" });
-  const [loggedInUserId, setLoggedInUserId] = useState(null);
-  const [editing, setEditing] = useState(false); // controls form visibility
+  const [editing, setEditing] = useState(false);
 
-  // Decode JWT to get logged-in user ID
+  const loggedInUserId = user?.userId; // 👈 comes from JWT
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = decodeJWT(token);
-      if (decoded) {
-        const id = Number(decoded.userId);
-        setLoggedInUserId(id);
-      }
-    }
-  }, []);
+    if (!loggedInUserId && !userId) return;
 
-  // Fetch profile (own or other)
-  useEffect(() => {
-    if (loggedInUserId === null) return;
-
-    const fetchProfile = userId ? getUserById(userId) : getMyProfile();
+    const fetchProfile = userId
+      ? getUserById(userId)
+      : getMyProfile();
 
     fetchProfile
       .then((res) => {
         setProfile(res.data);
+
         if (res.data.id === loggedInUserId) {
           setFormData({
             name: res.data.name || "",
             phone: res.data.phone || "",
           });
         }
-        console.log("Fetched profile:", res.data);
       })
       .catch((err) => console.error("Error fetching profile:", err));
   }, [userId, loggedInUserId]);
@@ -63,14 +44,12 @@ const Profile = () => {
     updateMyProfile(formData)
       .then((res) => {
         setProfile(res.data);
-        setEditing(false); // collapse form after update
-        alert("Profile updated successfully!");
+        setEditing(false);
       })
       .catch((err) => console.error("Error updating profile:", err));
   };
 
   const handleCancel = () => {
-    // reset form to original values
     setFormData({
       name: profile.name || "",
       phone: profile.phone || "",
@@ -78,54 +57,100 @@ const Profile = () => {
     setEditing(false);
   };
 
-  if (!profile) return <p className="loading-text">Loading profile...</p>;
+  if (!profile)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500 text-lg">Loading profile...</p>
+      </div>
+    );
 
   return (
-    <div className="profile-container">
-      <h2>User Profile</h2>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl p-8 space-y-6">
 
-      <p><b>Name:</b> {profile.name}</p>
-      <p><b>Email:</b> {profile.email}</p>
-      <p><b>Phone:</b> {profile.phone || "-"}</p>
-      <p><b>Role:</b> {profile.role}</p>
-      <p><b>Status:</b> {profile.isActive ? "Active" : "Inactive"}</p>
-      <p><b>Created At:</b> {new Date(profile.createdAt).toLocaleDateString("en-GB")}</p>
-      <p><b>Updated At:</b> {new Date(profile.updatedAt).toLocaleDateString("en-GB")}</p>
-      {profile.companyName && (
-          <p><b>Company:</b> {profile.companyName}</p>
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800">
+            User Profile
+          </h2>
+
+          <span className="px-4 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-700">
+            {profile.role}
+          </span>
+        </div>
+
+        {/* Details */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+          <div>
+            <p className="font-medium text-gray-500">Name</p>
+            <p className="text-base font-semibold">{profile.name}</p>
+          </div>
+
+          <div>
+            <p className="font-medium text-gray-500">Email</p>
+            <p className="text-base">{profile.email}</p>
+          </div>
+
+          <div>
+            <p className="font-medium text-gray-500">Phone</p>
+            <p className="text-base">{profile.phone || "-"}</p>
+          </div>
+        </div>
+
+        {/* Edit Section */}
+        {isOwnProfile && (
+          <div className="border-t pt-6 space-y-4">
+
+            {!editing ? (
+              <button
+                onClick={() => setEditing(true)}
+                className="px-6 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition shadow-md"
+              >
+                Update Profile
+              </button>
+            ) : (
+              <div className="space-y-4">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    onClick={handleUpdate}
+                    className="px-6 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 transition shadow"
+                  >
+                    Confirm
+                  </button>
+
+                  <button
+                    onClick={handleCancel}
+                    className="px-6 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+              </div>
+            )}
+          </div>
         )}
 
-
-
-      {/* Update section for own profile */}
-      {isOwnProfile && (
-        <div className="update-section">
-          {!editing ? (
-            <button onClick={() => setEditing(true)}>Update Profile</button>
-          ) : (
-            <div className="update-form">
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                placeholder="Name"
-                onChange={handleChange}
-              />
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                placeholder="Phone"
-                onChange={handleChange}
-              />
-              <div className="form-buttons">
-                <button className="confirm" onClick={handleUpdate}>Confirm</button>
-                <button className="cancel" onClick={handleCancel}>Cancel</button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      </div>
     </div>
   );
 };

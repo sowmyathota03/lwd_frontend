@@ -56,7 +56,7 @@ export default function CreateJob() {
       >
         {/* Title */}
         <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
-          Create New Job
+          Post New Job
         </h2>
 
         {/* Job Title */}
@@ -91,12 +91,13 @@ export default function CreateJob() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700  mb-2">
-              Location
+              Location <span className="text-red-500">*</span>
             </label>
             <input
               name="location"
               value={job.location}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
@@ -119,7 +120,7 @@ export default function CreateJob() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700  mb-2">
-              Industry
+              Industry <span className="text-red-500">*</span>
             </label>
             <input
               name="industry"
@@ -131,7 +132,7 @@ export default function CreateJob() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700  mb-2">
-              Job Type
+              Job Type <span className="text-red-500">*</span>
             </label>
             <select
               name="jobType"
@@ -181,12 +182,13 @@ export default function CreateJob() {
             {/* Notice Preference */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Notice Preference
+                Notice Preference <span className="text-red-500">*</span>
               </label>
               <select
                 name="noticePreference"
                 value={job.noticePreference}
                 onChange={handleChange}
+                required
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               >
                 <option value="">Select</option>

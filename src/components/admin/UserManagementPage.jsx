@@ -151,7 +151,7 @@ export default function UserManagementPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white w-[380px] max-w-[92%] p-6 rounded-2xl shadow-2xl animate-scaleIn"
+            className="bg-white w-95 max-w-[92%] p-6 rounded-2xl shadow-2xl animate-scaleIn"
           >
             <h3 className="text-lg font-semibold text-blue-900 mb-3">
               {confirmType === "block"
