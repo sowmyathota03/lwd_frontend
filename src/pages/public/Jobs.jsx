@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 import JobCard from "../../components/jobs/JobCards";
 import JobSearchBlock from "../../components/jobs/JobSearchBlock";
@@ -15,31 +15,16 @@ import {
 import JobSkeleton from "../../components/jobs/JobSkeleton";
 import Loader from "../../components/jobs/Loader";
 
-/* ================= PREMIUM ANIMATION VARIANTS ================= */
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.07,
-    },
-  },
-};
+/* ================= CLEAN PROFESSIONAL ANIMATION ================= */
 
 const cardVariants = {
-  hidden: {
-    opacity: 0,
-    y: 30,
-    scale: 0.97,
-  },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 18,
+      duration: 0.35,
+      ease: "easeOut",
     },
   },
 };
@@ -109,7 +94,7 @@ function Jobs() {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      if (last) return;
+      if (last || loading) return; // 🔥 Prevent double calls
 
       try {
         setLoading(true);
@@ -173,7 +158,6 @@ function Jobs() {
     lwdPreferredParam,
     industryParam,
     companyIdParam,
-    last,
   ]);
 
   /* ================= INFINITE SCROLL ================= */
@@ -190,7 +174,7 @@ function Jobs() {
             setPage((prev) => prev + 1);
           }
         },
-        { rootMargin: "300px" }
+        { rootMargin: "150px" } // 🔥 Reduced trigger distance
       );
 
       if (node) observer.current.observe(node);
@@ -218,7 +202,7 @@ function Jobs() {
     fetchCategories();
   }, []);
 
-  /* ================= TITLE + FILTER BADGES ================= */
+  /* ================= TITLE ================= */
 
   const titleText = companyIdParam
     ? "🏢 Company Jobs"
@@ -227,24 +211,6 @@ function Jobs() {
     : type
     ? `${type.toUpperCase()} Jobs`
     : "All Jobs";
-
-  const filters = [
-    keywordParam && { label: `for ${keywordParam}`, color: "text-blue-600 bg-blue-50" },
-    locationParam && { label: `in ${locationParam}`, color: "text-green-600 bg-green-50" },
-    companyParam && { label: `at ${companyParam}`, color: "text-purple-600 bg-purple-50" },
-    noticePreferenceParam && {
-      label: noticePreferenceParam.replaceAll("_", " "),
-      color: "text-red-600 bg-red-50",
-    },
-    lwdPreferredParam && {
-      label: "LWD Preferred",
-      color: "text-orange-600 bg-orange-50",
-    },
-    industryParam && {
-      label: industryParam,
-      color: "text-violet-600 bg-violet-50",
-    },
-  ].filter(Boolean);
 
   /* ================= RETURN ================= */
 
@@ -265,30 +231,13 @@ function Jobs() {
         transition={{ duration: 0.4 }}
         className="bg-linear-to-br from-cyan-100 to-green-100 p-8 mt-5"
       >
-        {/* HEADER */}
-        <div className="px-5 mb-8 flex items-center justify-center flex-wrap gap-2">
-          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2 mt-1 flex-wrap">
+        <div className="px-5 mb-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-800">
             {titleText}
-            <span className="text-gray-500 font-medium">
+            <span className="text-gray-500 font-medium ml-2">
               ({totalCount})
             </span>
           </h2>
-
-          {isSearchMode && filters.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {filters.map((filter, index) => (
-                <motion.span
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.06 }}
-                  className={`text-2xl font-medium rounded-full ${filter.color}`}
-                >
-                  {filter.label}
-                </motion.span>
-              ))}
-            </div>
-          )}
         </div>
 
         {error && (
@@ -297,13 +246,8 @@ function Jobs() {
           </p>
         )}
 
-        {/* PREMIUM GRID */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-5 max-w-6xl mx-auto"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        {/* GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 max-w-7xl mx-auto auto-rows-fr">
           {jobs.map((job, index) => {
             const isLastItem = index === jobs.length - 1;
 
@@ -312,8 +256,9 @@ function Jobs() {
                 key={job.id}
                 ref={isLastItem ? lastJobRef : null}
                 variants={cardVariants}
-                layout="position"
-                whileHover={{ y: -6 }}
+                initial="hidden"
+                animate="visible"
+                whileHover={{ y: -4 }}
               >
                 <JobCard job={job} />
               </motion.div>
@@ -322,25 +267,16 @@ function Jobs() {
 
           {initialLoading &&
             Array.from({ length: 6 }).map((_, index) => (
-              <motion.div
-                key={`initial-${index}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.05 }}
-              >
+              <div key={`initial-${index}`}>
                 <JobSkeleton />
-              </motion.div>
+              </div>
             ))}
-        </motion.div>
+        </div>
 
         {loading && !initialLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-6"
-          >
+          <div className="mt-6">
             <Loader />
-          </motion.div>
+          </div>
         )}
 
         {last && !initialLoading && (
