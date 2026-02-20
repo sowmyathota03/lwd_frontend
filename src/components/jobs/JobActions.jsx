@@ -1,12 +1,14 @@
 // src/pages/jobs/JobActions.jsx
+import { useNavigate } from "react-router-dom";
 import { deleteJob, changeJobStatus } from "../../api/JobApi";
 
-export default function JobActions({ jobId, currentStatus, refresh }) {
-  const isOpen = currentStatus === "OPEN";
+export default function JobActions({ job, refresh }) {
+  const navigate = useNavigate();
+  const isOpen = job.status === "OPEN";
 
   const handleStatusChange = async () => {
     try {
-      await changeJobStatus(jobId, isOpen ? "CLOSED" : "OPEN");
+      await changeJobStatus(job.id, isOpen ? "CLOSED" : "OPEN");
       refresh();
     } catch (err) {
       alert("Failed to update job status");
@@ -17,7 +19,7 @@ export default function JobActions({ jobId, currentStatus, refresh }) {
     if (!window.confirm("Are you sure you want to delete this job?")) return;
 
     try {
-      await deleteJob(jobId);
+      await deleteJob(job.id);
       refresh();
     } catch (err) {
       alert("Failed to delete job");
@@ -26,6 +28,20 @@ export default function JobActions({ jobId, currentStatus, refresh }) {
 
   return (
     <div className="flex items-center gap-2">
+      {/* Update Button (Only if OPEN) */}
+      {isOpen && (
+        <button
+          onClick={() =>
+            navigate(`/jobs/updatejob/${job.id}`, {
+              state: job,
+            })
+          }
+          className="px-3 py-1.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition"
+        >
+          Update
+        </button>
+      )}
+
       {/* Open / Close Button */}
       <button
         onClick={handleStatusChange}

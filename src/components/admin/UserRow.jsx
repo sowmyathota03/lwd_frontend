@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const UserRow = React.memo(({ user, isLoading, openConfirm }) => {
+  
   const statusStyles = {
     ACTIVE: "bg-green-100 text-green-700",
     APPROVED: "bg-green-100 text-green-700",
@@ -13,7 +14,7 @@ const UserRow = React.memo(({ user, isLoading, openConfirm }) => {
   return (
     <tr className="hover:bg-blue-50 transition">
       {/* Name */}
-      <td className="px-8 py-4 font-medium">
+      <td className="px-4 py-2 font-medium">
         <Link
           to={`/profile/${user.id}`}
           className="text-gray-800 hover:text-teal-700 hover:underline transition"
@@ -23,7 +24,7 @@ const UserRow = React.memo(({ user, isLoading, openConfirm }) => {
       </td>
 
       {/* Email */}
-      <td className="px-6 py-4">
+      <td className="px-4 py-2">
         <Link
           to={`/profile/${user.id}`}
           className="text-gray-600 hover:text-teal-700 hover:underline transition"
@@ -33,12 +34,12 @@ const UserRow = React.memo(({ user, isLoading, openConfirm }) => {
       </td>
 
       {/* Role */}
-      <td className="px-6 py-4 text-gray-700">
+      <td className="px-4 py-2 text-gray-700">
         {user.role}
       </td>
 
       {/* Status */}
-      <td className="px-6 py-4">
+      <td className="px-4 py-2">
         <span
           className={`px-3 py-1 text-xs font-semibold rounded-full ${
             statusStyles[user.status] || "bg-gray-100 text-gray-600"
@@ -49,17 +50,17 @@ const UserRow = React.memo(({ user, isLoading, openConfirm }) => {
       </td>
 
       {/* Created At */}
-      <td className="px-6 py-4 text-gray-600 text-sm">
+      <td className="px-4 py-2 text-gray-600 text-sm">
         {new Date(user.createdAt).toLocaleDateString("en-GB")}
       </td>
 
       {/* Updated At */}
-      <td className="px-6 py-4 text-gray-600 text-sm">
+      <td className="px-4 py-2 text-gray-600 text-sm">
         {new Date(user.updatedAt).toLocaleDateString("en-GB")}
       </td>
 
       {/* Actions */}
-      <td className="px-6 py-4 flex items-center gap-2">
+      <td className="px-4 py-2 flex items-center gap-2">
         
 
         {/* Block / Unblock Button */}

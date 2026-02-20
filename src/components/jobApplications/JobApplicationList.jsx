@@ -79,13 +79,13 @@ export default function JobApplicationList() {
         <table className="min-w-full text-sm text-left border-collapse">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
             <tr>
-              <th className="px-4 py-3">Applicant</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Job Title</th>
-              <th className="px-4 py-3">Company</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Applied On</th>
-              <th className="px-4 py-3">Action</th>
+              <th className="px-4 py-2">Applicant</th>
+              <th className="px-4 py-2">Email</th>
+              <th className="px-4 py-2">Job Title</th>
+              <th className="px-4 py-2">Company</th>
+              <th className="px-4 py-2">Status</th>
+              <th className="px-4 py-2">Applied On</th>
+              <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
 
@@ -114,24 +114,24 @@ export default function JobApplicationList() {
                   key={app.applicationId}
                   className="hover:bg-gray-50 transition"
                 >
-                  <td className="px-4 py-3 font-medium text-gray-800">
+                  <td className="px-4 py-2 font-medium text-gray-800 truncate max-w-xs">
                     {app.applicantName}
                   </td>
 
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-2 text-gray-600">
                     {app.email}
                   </td>
 
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-2 text-gray-600 truncate max-w-xs">
                     {app.job?.title || "-"}
                   </td>
 
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-2 text-gray-600 truncate max-w-xs">
                     {app.company?.companyName || "-"}
                   </td>
 
                   {/* STATUS BADGE */}
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-2">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
                         app.status === "SELECTED" ||
@@ -150,7 +150,7 @@ export default function JobApplicationList() {
                     </span>
                   </td>
 
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-2 text-gray-600">
                     {app.appliedAt
                       ? new Date(app.appliedAt).toLocaleDateString(
                           "en-IN"
@@ -159,7 +159,7 @@ export default function JobApplicationList() {
                   </td>
 
                   {/* ACTION */}
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-2">
                     <div className="flex items-center gap-2">
                       <select
                         className="border border-gray-300 rounded-md px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"

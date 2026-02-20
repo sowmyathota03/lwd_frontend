@@ -20,13 +20,13 @@ export default function UserTable({
       <table className="min-w-full text-sm text-left border-collapse">
         <thead className="bg-blue-50 text-gray-700 uppercase text-xs tracking-wide">
           <tr>
-            <th className="px-6 py-3 font-semibold">Name</th>
-            <th className="px-6 py-3 font-semibold">Email</th>
-            <th className="px-6 py-3 font-semibold">Role</th>
-            <th className="px-6 py-3 font-semibold">Status</th>
-            <th className="px-6 py-3 font-semibold">Created At</th>
-            <th className="px-6 py-3 font-semibold">Updated At</th>
-            <th className="px-6 py-3 font-semibold text-right">Actions</th>
+            <th className="px-4 py-2 font-semibold">Name</th>
+            <th className="px-4 py-2 font-semibold">Email</th>
+            <th className="px-4 py-2 font-semibold">Role</th>
+            <th className="px-4 py-2 font-semibold">Status</th>
+            <th className="px-4 py-2 font-semibold">Created At</th>
+            <th className="px-4 py-2 font-semibold">Updated At</th>
+            <th className="px-4 py-2 font-semibold text-right">Actions</th>
           </tr>
         </thead>
 

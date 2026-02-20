@@ -129,7 +129,7 @@ export default function CompanyManagementPage() {
                     className="border-b hover:bg-blue-50 transition"
                   >
                     <td
-                      className="px-6 py-4 font-medium text-gray-800 cursor-pointer hover:underline"
+                      className="px-4 py-2 font-medium text-gray-800 cursor-pointer hover:underline"
                       onClick={() =>
                         navigate(`/admin/${company.id}/companyprofile`)
                       }
@@ -137,23 +137,23 @@ export default function CompanyManagementPage() {
                       {company.companyName}
                     </td>
 
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-4 py-2 text-gray-600">
                       {company.createdByName || "N/A"}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-2">
                       <span className="px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded-full">
                         {company.totalRecruiters ?? 0}
                       </span>
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-2">
                       <span className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">
                         {company.totalJobs ?? 0}
                       </span>
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-2">
                       <span
                         className={`px-3 py-1 text-xs font-semibold rounded-full ${
                           company.isActive
@@ -165,7 +165,7 @@ export default function CompanyManagementPage() {
                       </span>
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-2">
 
                       <button
                         disabled={actionLoadingId === company.id}
