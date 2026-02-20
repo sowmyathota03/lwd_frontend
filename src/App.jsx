@@ -7,6 +7,7 @@ import Login from './auth/Login';
 import AuthSelection from './auth/AuthSelection';
 import RegisterJobSeeker from './auth/RegisterJobSeeker';
 import RegisterRecruiter from './auth/RegisterRecruiter';
+import Register from './auth/Register';
 
 import Home from './pages/public/Home';
 import Jobs from './pages/public/Jobs';
@@ -61,9 +62,10 @@ function App() {
     <Routes>
       <Route path="/" element={<Home/>}/>
       
-      <Route path="/register" element={<AuthSelection />} />
+      {/* <Route path="/register" element={<AuthSelection />} />
       <Route path="/register/jobseeker" element={<RegisterJobSeeker />} />
-      <Route path="/register/recruiter" element={<RegisterRecruiter />} />
+      <Route path="/register/recruiter" element={<RegisterRecruiter />} /> */}
+      <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
 
       <Route path="/jobs" element={<Jobs />} />
