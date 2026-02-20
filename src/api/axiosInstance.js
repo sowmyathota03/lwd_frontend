@@ -2,11 +2,11 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-   baseURL: "https://lwd-backend-production.up.railway.app/api",
-    // baseURL: "http://localhost:8080/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 10000,
 });
 
 // ===============================
@@ -17,7 +17,10 @@ axiosInstance.interceptors.request.use(
     const token = localStorage.getItem("token");
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${token}`,
+      };
     }
 
     return config;
@@ -25,16 +28,28 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// ===============================
+// Global Error Handling
+// ===============================
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+
+    if (status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login";
+
+      if (window.location.pathname !== "/login") {
+        window.location.replace("/login");
+      }
     }
+
+    if (status === 403) {
+      console.error("Access denied.");
+    }
+
     return Promise.reject(error);
   }
 );
-
 
 export default axiosInstance;
