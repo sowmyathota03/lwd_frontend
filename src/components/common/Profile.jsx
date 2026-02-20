@@ -102,7 +102,7 @@ const Profile = () => {
             <p className="text-gray-500 text-xs uppercase tracking-wide">
               Email
             </p>
-            <p className="text-base text-gray-700 break-words">
+            <p className="text-base text-gray-700 wrap-break-word">
               {profile.email}
             </p>
           </div>

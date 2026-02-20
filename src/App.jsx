@@ -12,7 +12,7 @@ import Home from './pages/public/Home';
 import Jobs from './pages/public/Jobs';
 import JobDetails from "./pages/public/JobDetails";
 import Companies from './pages/public/Companies';
-import Profile from './pages/public/Profile';
+import Profile from './components/common/Profile';
 import Career from './pages/public/Career';
 
 import JobCard from './components/jobs/JobCards';
