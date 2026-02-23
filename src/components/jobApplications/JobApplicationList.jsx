@@ -4,6 +4,7 @@ import {
   changeApplicationStatus,
 } from "../../api/JobApplicationApi";
 import Loader from "../common/Loader";
+import { useNavigate } from "react-router-dom";
 
 export default function JobApplicationList() {
   const [applications, setApplications] = useState([]);
@@ -12,6 +13,7 @@ export default function JobApplicationList() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
+  const navigate = useNavigate();
 
   const statusOptions = [
     "APPLIED",
@@ -24,13 +26,13 @@ export default function JobApplicationList() {
   ];
 
   // ================= FETCH =================
-  const fetchApplications = useCallback(async (pageNumber = 0) => {
+  const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await getApplicationsByRole(pageNumber, size);
+
+      const data = await getApplicationsByRole(page, size);
 
       setApplications(data?.applications || []);
-      setPage(data?.pageNumber ?? 0);
       setTotalPages(data?.totalPages ?? 0);
     } catch (error) {
       console.error("Failed to fetch applications", error);
@@ -39,10 +41,11 @@ export default function JobApplicationList() {
     } finally {
       setLoading(false);
     }
-  }, [size]);
+  }, [page, size]);
 
+  // 🔥 Fetch when page changes
   useEffect(() => {
-    fetchApplications(0);
+    fetchApplications();
   }, [fetchApplications]);
 
   // ================= STATUS UPDATE =================
@@ -54,10 +57,8 @@ export default function JobApplicationList() {
 
       setApplications((prev) =>
         prev.map((app) =>
-          app.applicationId === applicationId
-            ? { ...app, status }
-            : app
-        )
+          app.applicationId === applicationId ? { ...app, status } : app,
+        ),
       );
     } catch (error) {
       console.error("Failed to update status", error);
@@ -66,8 +67,17 @@ export default function JobApplicationList() {
     }
   };
 
+  // ================= PAGE CHANGE HANDLER =================
+  const handlePrevious = () => {
+    if (page > 0) setPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (page + 1 < totalPages) setPage((prev) => prev + 1);
+  };
+
   return (
-    <div className="p-4">
+    <div className="md:p-4 p-0">
       {/* ================= HEADER ================= */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
@@ -93,19 +103,13 @@ export default function JobApplicationList() {
           <tbody className="divide-y divide-gray-200">
             {loading ? (
               <tr>
-                <td
-                  colSpan="7"
-                  className="text-center py-6 text-gray-500"
-                >
+                <td colSpan="7" className="text-center py-6">
                   <Loader fullScreen={false} />
                 </td>
               </tr>
             ) : applications.length === 0 ? (
               <tr>
-                <td
-                  colSpan="7"
-                  className="text-center py-6 text-gray-500"
-                >
+                <td colSpan="7" className="text-center py-6 text-gray-500">
                   No applications found
                 </td>
               </tr>
@@ -115,19 +119,25 @@ export default function JobApplicationList() {
                   key={app.applicationId}
                   className="hover:bg-gray-50 transition"
                 >
-                  <td className="px-4 py-2 font-medium text-gray-800 truncate max-w-xs">
+                  <td
+                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium "
+                    onClick={() => navigate(`/profile/${app.applicationId}`)}
+                  >
                     {app.applicantName}
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600">
+                  <td
+                    className="text-blue-600 p-2 cursor-pointer hover:underline"
+                    onClick={() => navigate(`/profile/${app.applicationId}`)}
+                  >
                     {app.email}
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600 truncate max-w-xs">
+                  <td className="px-4 py-2 truncate max-w-xs">
                     {app.job?.title || "-"}
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600 truncate max-w-xs">
+                  <td className="px-4 py-2 truncate max-w-xs">
                     {app.company?.companyName || "-"}
                   </td>
 
@@ -135,27 +145,24 @@ export default function JobApplicationList() {
                   <td className="px-4 py-2">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        app.status === "SELECTED" ||
-                        app.status === "HIRED"
+                        app.status === "SELECTED" || app.status === "HIRED"
                           ? "bg-green-100 text-green-700"
                           : app.status === "REJECTED"
-                          ? "bg-red-100 text-red-700"
-                          : app.status === "INTERVIEW_SCHEDULED"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : app.status === "SHORTLISTED"
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-gray-100 text-gray-700"
+                            ? "bg-red-100 text-red-700"
+                            : app.status === "INTERVIEW_SCHEDULED"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : app.status === "SHORTLISTED"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-gray-100 text-gray-700"
                       }`}
                     >
                       {app.status}
                     </span>
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600">
+                  <td className="px-4 py-2">
                     {app.appliedAt
-                      ? new Date(app.appliedAt).toLocaleDateString(
-                          "en-IN"
-                        )
+                      ? new Date(app.appliedAt).toLocaleDateString("en-IN")
                       : "-"}
                   </td>
 
@@ -163,13 +170,10 @@ export default function JobApplicationList() {
                   <td className="px-4 py-2">
                     <div className="flex items-center gap-2">
                       <select
-                        className="border border-gray-300 rounded-md px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="border rounded-md px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         value={app.status}
                         onChange={(e) =>
-                          handleStatusUpdate(
-                            app.applicationId,
-                            e.target.value
-                          )
+                          handleStatusUpdate(app.applicationId, e.target.value)
                         }
                         disabled={updatingId === app.applicationId}
                       >
@@ -179,12 +183,12 @@ export default function JobApplicationList() {
                           </option>
                         ))}
                       </select>
+
                       {updatingId === app.applicationId && (
                         <span className="text-xs text-blue-500 animate-pulse">
                           Updating...
                         </span>
                       )}
-
                     </div>
                   </td>
                 </tr>
@@ -195,24 +199,24 @@ export default function JobApplicationList() {
       </div>
 
       {/* ================= PAGINATION ================= */}
-      {totalPages > 0 && (
-        <div className="flex justify-center items-center mt-6">
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center px-6 py-4 border-t gap-4 border-gray-200">
           <button
+            onClick={handlePrevious}
             disabled={page === 0}
-            onClick={() => fetchApplications(page - 1)}
-            className="px-4 py-2 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
+            className="px-4 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
-            Prev
+            Previous
           </button>
 
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-700">
             Page {page + 1} of {totalPages}
           </span>
 
           <button
-            disabled={page >= totalPages - 1}
-            onClick={() => fetchApplications(page + 1)}
-            className="px-4 py-2 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
+            onClick={handleNext}
+            disabled={page + 1 >= totalPages}
+            className="px-4 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             Next
           </button>

@@ -11,8 +11,6 @@ export default function ManageJobs() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-
   // ================= FETCH JOBS =================
   const fetchJobs = useCallback(async (pageNumber = 0) => {
     setLoading(true);
@@ -34,6 +32,20 @@ export default function ManageJobs() {
   useEffect(() => {
     fetchJobs(0);
   }, [fetchJobs]);
+
+
+  const handleDelete = (id) => {
+    setJobs((prev) => prev.filter((job) => job.id !== id));
+  };
+
+  const handleStatusChange = (id, newStatus) => {
+    setJobs((prev) =>
+      prev.map((job) =>
+        job.id === id ? { ...job, status: newStatus } : job
+      )
+    );
+  };
+
 
   return (
     <div className="bg-white shadow-sm rounded-lg border border-gray-200">
@@ -75,7 +87,7 @@ export default function ManageJobs() {
                 <tr
                   key={job.id}
                   className={`transition
-                ${job.status === "CLOSED" ? "bg-red-50" : "hover:bg-gray-50"}
+                ${job.status === "CLOSED" ? "bg-red-200" : "hover:bg-gray-50"}
               `}
                 >
                   <td className="px-4 py-2 font-medium text-gray-800 truncate max-w-xs">
@@ -120,7 +132,7 @@ export default function ManageJobs() {
                   </td>
 
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <JobActions job={job} refresh={() => fetchJobs(page)} />
+                    <JobActions job={job} onDelete={handleDelete} onStatusChange={handleStatusChange} page={page} />
                   </td>
                 </tr>
               ))
@@ -130,7 +142,7 @@ export default function ManageJobs() {
       </div>
       {/* ================= PAGINATION ================= */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+        <div className="flex items-center justify-center px-6 py-4 border-t gap-3 border-gray-200">
           <button
             onClick={() => fetchJobs(page - 1)}
             disabled={page === 0}
@@ -140,21 +152,9 @@ export default function ManageJobs() {
           </button>
 
           <div className="flex items-center gap-2">
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index}
-                onClick={() => fetchJobs(index)}
-                className={`px-3 py-1 text-sm rounded-md border
-            ${
-              page === index
-                ? "bg-blue-600 text-white border-blue-600"
-                : "hover:bg-gray-100"
-            }
-          `}
-              >
-                {index + 1}
-              </button>
-            ))}
+            <span className="text-sm text-gray-700">
+              Page {page + 1} of {totalPages}
+            </span>
           </div>
 
           <button

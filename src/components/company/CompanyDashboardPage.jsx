@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getCompanyById } from "../api/CompanyApi";
 import Loader from "../components/common/Loader";
 
+
 export default function CompanyDashboardPage() {
   const { companyId } = useParams();
   const navigate = useNavigate();

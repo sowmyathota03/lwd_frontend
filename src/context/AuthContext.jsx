@@ -1,10 +1,12 @@
 import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   // 🔥 Restore user on refresh
   useEffect(() => {
@@ -31,6 +33,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
+    navigate("/login", { replace: true }); // important
   };
 
   return (

@@ -1,28 +1,49 @@
 // src/pages/jobs/JobActions.jsx
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteJob, changeJobStatus } from "../../api/JobApi";
 
-export default function JobActions({ job, refresh }) {
+export default function JobActions({ job, onDelete, onStatusChange }) {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const isOpen = job.status === "OPEN";
 
+  // ================= STATUS CHANGE =================
   const handleStatusChange = async () => {
     try {
-      await changeJobStatus(job.id, isOpen ? "CLOSED" : "OPEN");
-      refresh();
+      setLoading(true);
+
+      const newStatus = isOpen ? "CLOSED" : "OPEN";
+      await changeJobStatus(job.id, newStatus);
+
+      // Update parent state immediately
+      onStatusChange(job.id, newStatus);
     } catch (err) {
       alert("Failed to update job status");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // ================= DELETE =================
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this job?")) return;
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this job?"
+    );
+    if (!confirmDelete) return;
 
     try {
+      setLoading(true);
+
       await deleteJob(job.id);
-      refresh();
+
+      // Remove job from parent immediately
+      onDelete(job.id);
     } catch (err) {
       alert("Failed to delete job");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,7 +57,8 @@ export default function JobActions({ job, refresh }) {
               state: job,
             })
           }
-          className="px-3 py-1.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition"
+          disabled={loading}
+          className="px-3 py-1.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition disabled:opacity-50"
         >
           Update
         </button>
@@ -45,22 +67,24 @@ export default function JobActions({ job, refresh }) {
       {/* Open / Close Button */}
       <button
         onClick={handleStatusChange}
-        className={`px-3 py-1.5 text-xs font-medium rounded border transition
+        disabled={loading}
+        className={`px-3 py-1.5 text-xs font-medium rounded border transition disabled:opacity-50
           ${
             isOpen
               ? "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
               : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
           }`}
       >
-        {isOpen ? "Close Job" : "Open Job"}
+        {loading ? "Processing..." : isOpen ? "Close Job" : "Open Job"}
       </button>
 
       {/* Delete Button */}
       <button
         onClick={handleDelete}
-        className="px-3 py-1.5 text-xs font-medium rounded border border-red-300 bg-red-500 text-white hover:bg-red-600 transition"
+        disabled={loading}
+        className="px-3 py-1.5 text-xs font-medium rounded border border-red-300 bg-red-500 text-white hover:bg-red-600 transition disabled:opacity-50"
       >
-        Delete
+        {loading ? "Deleting..." : "Delete"}
       </button>
     </div>
   );

@@ -1,10 +1,16 @@
-import { useContext, useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { useContext, useState, useEffect } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 function NavBar() {
   const { user, logout } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  // ✅ Auto close mobile menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
 
   const role = user?.role;
 
@@ -59,12 +65,12 @@ function NavBar() {
                   <Link
                     to="/login"
                     className="bg-blue-400 hover:bg-blue-500
-             text-black font-medium
-             border border-gray-700
-             px-5 py-2 rounded-xl
-             hover:text-gray-600
-             transition duration-200
-             no-underline! hover:no-underline!"
+                      text-black font-medium
+                      border border-gray-700
+                      px-5 py-2 rounded-xl
+                      hover:text-gray-600
+                      transition duration-200
+                      no-underline! hover:no-underline!"
                   >
                     Login
                   </Link>
@@ -160,7 +166,10 @@ function NavBar() {
                   Profile
                 </Link>
                 <button
-                  onClick={logout}
+                  onClick={() => {
+                    setIsOpen(false);
+                    logout();
+                  }}
                   className="w-full bg-red-500 text-white py-2 rounded-lg"
                 >
                   Logout

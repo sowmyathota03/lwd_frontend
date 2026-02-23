@@ -163,7 +163,7 @@ export default function RecruitersListPage() {
                         </button>
                       )}
 
-                      {r.status === "BLOCKED" && (
+                      {r.status === "SUSPENDED" && (
                         <button
                           onClick={() => openConfirm(r, "UNBLOCK")}
                           disabled={actionLoadingId === r.id}

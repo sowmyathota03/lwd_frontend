@@ -98,7 +98,7 @@ export default function CompanyManagementPage() {
         Company Management
       </h1>
 
-      <div className="bg-white shadow-md overflow-hidden">
+      <div className="bg-white shadow-md overflow-hidden overflow-x-auto rounded-lg border border-gray-200">
         {loading ? (
           <Loader fullScreen={false} />
         ) : (
