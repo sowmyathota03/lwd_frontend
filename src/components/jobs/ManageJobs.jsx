@@ -140,21 +140,9 @@ export default function ManageJobs() {
           </button>
 
           <div className="flex items-center gap-2">
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index}
-                onClick={() => fetchJobs(index)}
-                className={`px-3 py-1 text-sm rounded-md border
-            ${
-              page === index
-                ? "bg-blue-600 text-white border-blue-600"
-                : "hover:bg-gray-100"
-            }
-          `}
-              >
-                {index + 1}
-              </button>
-            ))}
+            <span className="text-sm text-gray-700">
+              Page {page + 1} of {totalPages}
+            </span>
           </div>
 
           <button

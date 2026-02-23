@@ -67,7 +67,7 @@ export default function JobApplicationList() {
   };
 
   return (
-    <div className="p-4">
+    <div className="md:p-4 p-0">
       {/* ================= HEADER ================= */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
@@ -196,7 +196,7 @@ export default function JobApplicationList() {
 
       {/* ================= PAGINATION ================= */}
       {totalPages > 0 && (
-        <div className="flex justify-center items-center mt-6">
+        <div className="flex justify-center items-center mt-6 gap-3">
           <button
             disabled={page === 0}
             onClick={() => fetchApplications(page - 1)}
