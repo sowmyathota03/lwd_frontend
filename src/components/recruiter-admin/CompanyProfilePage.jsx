@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import {
   createCompany,
   updateCompany,
   getMyCompany,
 } from "../../api/CompanyApi";
+import { AuthContext } from "../../context/AuthContext";
+import Loader from "../common/Loader";
 
 export default function CompanyProfile() {
   const [company, setCompany] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -86,12 +89,13 @@ export default function CompanyProfile() {
     }
   };
 
+  const canEdit = user?.role === "ADMIN" || user?.role === "RECRUITER_ADMIN";
+
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <p className="text-gray-600 animate-pulse">
-          Loading company profile...
-        </p>
+        <Loader />
       </div>
     );
   }
@@ -153,12 +157,15 @@ export default function CompanyProfile() {
             </p>
           </div>
 
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg"
-          >
-            Edit Company
-          </button>
+          {canEdit && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+            >
+              Edit Company
+            </button>
+          )}
+
         </div>
       )}
 

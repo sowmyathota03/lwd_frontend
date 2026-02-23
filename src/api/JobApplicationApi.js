@@ -40,6 +40,7 @@ export const getApplicationsByJobCompany = (jobId, page = 0, size = 10) =>
     .then((res) => res.data);
 
 // All applications of my company
+// No Used in UI but kept for future use (e.g. company dashboard)
 export const getMyCompanyApplications = (page = 0, size = 10) =>
   axiosInstance
     .get("/job-applications/company", {

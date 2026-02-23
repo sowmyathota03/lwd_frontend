@@ -226,7 +226,7 @@ export default function RecruiterList() {
                       </button>
                     )}
 
-                    {rec.status !== "BLOCKED" ? (
+                    {rec.status !== "SUSPENDED" ? (
                       <button
                         onClick={() => openConfirm("block", rec)}
                         className="px-4 py-1 rounded text-sm text-white bg-linear-to-r from-red-500 to-red-700 hover:opacity-90 transition"
