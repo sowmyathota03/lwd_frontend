@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { IoArrowBack } from "react-icons/io5";
 import { getMyProfile, createOrUpdateProfile } from "../../api/JobSeekerApi";
 import Loader from "../../components/common/Loader";
-
 
 const initialState = {
   fullName: "",
@@ -23,6 +24,8 @@ const initialState = {
 };
 
 const JobSeekerProfile = () => {
+  const navigate = useNavigate();
+
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState(initialState);
   const [isEdit, setIsEdit] = useState(false);
@@ -69,20 +72,38 @@ const JobSeekerProfile = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader fullScreen />;
+        <Loader fullScreen />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
-          Job Seeker Profile
-        </h2>
+      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-2xl p-8">
+
+        {/* Header Section */}
+        <div className="relative flex items-center justify-center mb-10">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-0 w-10 h-10 flex items-center justify-center 
+                       rounded-full bg-white shadow-md 
+                       hover:bg-gray-100 hover:shadow-lg 
+                       transition duration-200"
+          >
+            <IoArrowBack className="text-gray-700 text-lg" />
+          </button>
+
+          {/* Center Heading */}
+          <h2 className="text-3xl font-bold text-gray-800">
+            Job Seeker Profile
+          </h2>
+        </div>
 
         {error && (
-          <p className="text-red-500 text-center mb-4 font-medium">{error}</p>
+          <p className="text-red-500 text-center mb-4 font-medium">
+            {error}
+          </p>
         )}
 
         {!profile || isEdit ? (
@@ -124,18 +145,18 @@ const JobSeekerProfile = () => {
             <div className="flex justify-end gap-4 mt-6">
               <button
                 onClick={() => {
-                  setFormData(profile);
+                  setFormData(profile || initialState);
                   setIsEdit(false);
                   setError("");
                 }}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded border-none font-medium hover:bg-gray-300 transition"
+                className="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleSubmit}
-                className="px-8 py-2 bg-blue-600 text-white rounded border-none font-semibold hover:bg-blue-700 transition"
+                className="px-8 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 Save
               </button>
@@ -160,7 +181,7 @@ const Input = ({ label, ...props }) => (
     <label className="block text-sm font-medium text-gray-600">{label}</label>
     <input
       {...props}
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
     />
   </div>
 );
@@ -170,7 +191,7 @@ const Select = ({ label, options, ...props }) => (
     <label className="block text-sm font-medium text-gray-600">{label}</label>
     <select
       {...props}
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
     >
       <option value="">Select</option>
       {options.map((opt) => (
@@ -185,7 +206,7 @@ const Select = ({ label, options, ...props }) => (
 const Checkbox = ({ label, ...props }) => (
   <div className="flex items-center gap-3 bg-gray-100 px-4 py-2 rounded-lg">
     <input type="checkbox" {...props} className="h-5 w-5 accent-blue-600 cursor-pointer" />
-    <label className="text-sm text-gray-700 cursor-pointer">{label}</label>
+    <label className="text-sm text-gray-700">{label}</label>
   </div>
 );
 
@@ -199,8 +220,8 @@ const ViewField = ({ label, value }) => {
   if (label === "Resume URL" && value) {
     return (
       <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
-        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
-        <a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-semibold underline">
+        <p className="text-xs text-gray-500 uppercase mb-1">{label}</p>
+        <a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">
           View Resume
         </a>
       </div>
@@ -209,7 +230,7 @@ const ViewField = ({ label, value }) => {
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
-      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-xs text-gray-500 uppercase mb-1">{label}</p>
       <p className="font-medium text-gray-800">{formatValue(value)}</p>
     </div>
   );
@@ -248,7 +269,7 @@ const ProfileView = ({ profile, onEdit }) => (
     <div className="text-center mt-6">
       <button
         onClick={onEdit}
-        className="px-10 py-3 bg-blue-600 text-white rounded border-none font-medium hover:bg-blue-700 transition"
+        className="px-10 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
       >
         Edit Profile
       </button>
