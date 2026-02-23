@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchRecruiterAdminDashboard } from "../../api/dashboardApi";
+import { fetchRecruiterAdminDashboard } from "../../api/DashboardApi";
 import Loader from "../common/Loader";
 export default function RecruiterAdminHome() {
   const [dashboardData, setDashboardData] = useState(null);
