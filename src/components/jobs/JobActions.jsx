@@ -1,91 +1,70 @@
-// src/pages/jobs/JobActions.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { deleteJob, changeJobStatus } from "../../api/JobApi";
+import { Pencil, Trash2, MoreVertical, Loader2 } from "lucide-react";
+import { deleteJob } from "../../api/JobApi"; // import the delete API
 
-export default function JobActions({ job, onDelete, onStatusChange }) {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+export default function JobActions({ job, onDelete, onStatusChange, page }) {
+  const [showMenu, setShowMenu] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const isOpen = job.status === "OPEN";
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this job?")) return;
 
-  // ================= STATUS CHANGE =================
-  const handleStatusChange = async () => {
+    setDeleting(true);
     try {
-      setLoading(true);
-
-      const newStatus = isOpen ? "CLOSED" : "OPEN";
-      await changeJobStatus(job.id, newStatus);
-
-      // Update parent state immediately
-      onStatusChange(job.id, newStatus);
-    } catch (err) {
-      alert("Failed to update job status");
+      await deleteJob(job.id);
+      onDelete(job.id); // notify parent to remove from list
+      // optionally show success toast
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Failed to delete job. Please try again.");
     } finally {
-      setLoading(false);
+      setDeleting(false);
+      setShowMenu(false);
     }
   };
 
-  // ================= DELETE =================
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this job?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      setLoading(true);
-
-      await deleteJob(job.id);
-
-      // Remove job from parent immediately
-      onDelete(job.id);
-    } catch (err) {
-      alert("Failed to delete job");
-    } finally {
-      setLoading(false);
-    }
+  const handleStatusToggle = () => {
+    const newStatus = job.status === "OPEN" ? "CLOSED" : "OPEN";
+    onStatusChange(job.id, newStatus);
+    setShowMenu(false);
   };
 
   return (
-    <div className="flex items-center gap-2">
-      {/* Update Button (Only if OPEN) */}
-      {isOpen && (
-        <button
-          onClick={() =>
-            navigate(`/jobs/updatejob/${job.id}`, {
-              state: job,
-            })
-          }
-          disabled={loading}
-          className="px-3 py-1.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition disabled:opacity-50"
-        >
-          Update
-        </button>
+    <div className="relative">
+      <button
+        onClick={() => setShowMenu(!showMenu)}
+        className="p-1 hover:bg-gray-100 rounded"
+        disabled={deleting}
+      >
+        {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <MoreVertical className="w-4 h-4" />}
+      </button>
+
+      {showMenu && (
+        <div className="absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+          <button
+            onClick={() => {
+              // navigate to edit page, or open modal
+              window.location.href = `/jobs/edit/${job.id}`;
+            }}
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+          >
+            <Pencil className="w-3 h-3" /> Edit
+          </button>
+          <button
+            onClick={handleStatusToggle}
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+          >
+            <span className="w-3 h-3" /> {job.status === "OPEN" ? "Close" : "Reopen"}
+          </button>
+          <button
+            onClick={handleDelete}
+            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+            disabled={deleting}
+          >
+            <Trash2 className="w-3 h-3" /> Delete
+          </button>
+        </div>
       )}
-
-      {/* Open / Close Button */}
-      <button
-        onClick={handleStatusChange}
-        disabled={loading}
-        className={`px-3 py-1.5 text-xs font-medium rounded border transition disabled:opacity-50
-          ${
-            isOpen
-              ? "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
-              : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
-          }`}
-      >
-        {loading ? "Processing..." : isOpen ? "Close Job" : "Open Job"}
-      </button>
-
-      {/* Delete Button */}
-      <button
-        onClick={handleDelete}
-        disabled={loading}
-        className="px-3 py-1.5 text-xs font-medium rounded border border-red-300 bg-red-500 text-white hover:bg-red-600 transition disabled:opacity-50"
-      >
-        {loading ? "Deleting..." : "Delete"}
-      </button>
     </div>
   );
 }
