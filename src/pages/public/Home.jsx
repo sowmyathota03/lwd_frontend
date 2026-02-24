@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import PopularJobs from "../../components/jobs/PopularJobs";
 import JobSearchBlock from "../../components/jobs/JobSearchBlock";
 import { getTopCategories } from "../../api/JobApi";
-import JobActionButton from "../../components/jobs/JobActionButton";
+import JobActionButton from "../../components/jobs/HomeJobActionButton";
 
 function Home() {
   const navigate = useNavigate();

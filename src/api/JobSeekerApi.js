@@ -14,6 +14,12 @@ export const getMyProfile = () => {
   return axiosInstance.get("/job-seekers/me");
 };
 
+
+// Get Job Seeker Profile by User ID (for recruiters/admins)  
+export const getJobSeekerByUserId = (userId) => { 
+  return axiosInstance.get(`/job-seekers/user/${userId}`);
+} 
+
 // ===============================
 // RECRUITER APIs
 // ===============================

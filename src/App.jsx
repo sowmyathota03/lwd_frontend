@@ -13,7 +13,7 @@ import Home from './pages/public/Home';
 import Jobs from './pages/public/Jobs';
 import JobDetails from "./pages/public/JobDetails";
 import Companies from './pages/public/Companies';
-import Profile from './components/common/Profile';
+import Profile from './pages/profile/Profile';
 import Career from './pages/public/Career';
 
 import JobCard from './components/jobs/JobCards';
@@ -23,9 +23,6 @@ import JobAlert from './components/jobs/JobAlert';
 import CareerAdvice from './components/jobs/CareerAdvice';
 import ApplyJob from './components/jobs/ApplyJob';
 import Suggestions from './components/jobs/Suggestions';
-
-import SearchResumes from './components/employee/SearchResumes';
-import PostJob from './components/employee/PostJob';
 
 import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
@@ -48,8 +45,6 @@ import RecruiterList from './components/recruiter-admin/RecruiterList';
 
 import RecruiterDashboard from './pages/recruiter/RecruiterDashboard';
 import RecruiterHome from './components/recruiter/RecruiterHome';
-
-import JobSeekerProfile from './components/jobSeeker/JobSeekerProfile';
 
 
 
@@ -77,18 +72,15 @@ function App() {
       <Route path="/Career" element={<Career/>}/>     
       <Route path="/profile" element={<Profile/>}/>
       <Route path="/profile/:userId" element={<Profile/>}/>
-      <Route path="/jobseeker/profile" element={<JobSeekerProfile/>}/>
       <Route path="/ResumeUpload" element={<ResumeUpload/>}/>
       <Route path="/JobAlert" element={<JobAlert/>}/>
       <Route path="/CareerAdvice" element={<CareerAdvice/>}/>
-      <Route path="/SearchResumes" element={<SearchResumes/>}/>
       <Route path="/ContactUs" element={<ContactUs/>}/>
       <Route path="/AboutUs" element={<AboutUs/>}/>
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>}/>
       <Route path="/TermsAndConditions" element={<TermsAndConditions/>}/>
       <Route path="/Suggestions" element={<Suggestions/>}/>
       
-      <Route path="/postJob" element={<PostJob/>}/>
       <Route path="/jobs/updatejob/:id" element={<EditJob />} />
 
       <Route path="/admin" element={<AdminDashboard />}>

@@ -1,9 +1,9 @@
 // ./src/components/dashboard/AdminDashboard.jsx
 import { useDashboardData } from "../../hooks/useDashboardData";
 import { fetchAdminDashboard } from "../../api/DashboardApi";
-import KPICard from "../common/KPICard";
-import RecentTable from "../common/RecentTable";
-import SkeletonLoader from "../common/SkeletonLoader";
+import KPICard from "../dashboard/KPICard";
+import RecentTable from "../dashboard/RecentTable";
+import SkeletonLoader from "../dashboard/SkeletonLoader";
 
 import {
   Users,

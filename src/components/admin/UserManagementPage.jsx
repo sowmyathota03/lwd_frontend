@@ -6,6 +6,7 @@ import {
   approveRecruiter,
 } from "../../api/AdminApi";
 import UserTable from "./UserTable";
+import ConfirmModal from "../common/ConfirmModal";
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState([]);
@@ -15,8 +16,7 @@ export default function UserManagementPage() {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [confirmUser, setConfirmUser] = useState(null);
-  const [confirmType, setConfirmType] = useState(null);
+  const [confirmConfig, setConfirmConfig] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   const loadUsers = async (pageNumber = page) => {
@@ -47,14 +47,12 @@ export default function UserManagementPage() {
   };
 
   const openConfirm = (user, type) => {
-    setConfirmUser(user);
-    setConfirmType(type);
+    setConfirmConfig({ user, type });
   };
 
   const closeConfirm = () => {
     if (actionLoadingId) return;
-    setConfirmUser(null);
-    setConfirmType(null);
+    setConfirmConfig(null);
   };
 
   const handleBlockUnblock = async (user) => {
@@ -91,17 +89,19 @@ export default function UserManagementPage() {
 
   const updateUserStatus = (userId, status) => {
     setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, status } : u))
+      prev.map((u) => (u.id === userId ? { ...u, status } : u)),
     );
   };
 
-  const confirmAction = () => {
-    if (!confirmUser || !confirmType) return;
+  const confirmAction = async () => {
+    if (!confirmConfig) return;
 
-    if (confirmType === "block") {
-      handleBlockUnblock(confirmUser);
+    const { user, type } = confirmConfig;
+
+    if (type === "block") {
+      await handleBlockUnblock(user);
     } else {
-      handleApprove(confirmUser);
+      await handleApprove(user);
     }
   };
 
@@ -143,8 +143,40 @@ export default function UserManagementPage() {
         </button>
       </div>
 
+      <ConfirmModal
+        isOpen={!!confirmConfig}
+        title={
+          confirmConfig?.type === "block"
+            ? confirmConfig.user.status === "SUSPENDED"
+              ? "Unblock User?"
+              : "Block User?"
+            : "Approve User?"
+        }
+        message={
+          confirmConfig
+            ? `Are you sure you want to ${
+                confirmConfig.type === "block"
+                  ? confirmConfig.user.status === "SUSPENDED"
+                    ? "unblock"
+                    : "block"
+                  : "approve"
+              } ${confirmConfig.user.name}?`
+            : ""
+        }
+        confirmText={
+          confirmConfig?.type === "block"
+            ? confirmConfig.user.status === "SUSPENDED"
+              ? "Yes, Unblock"
+              : "Yes, Block"
+            : "Yes, Approve"
+        }
+        onConfirm={confirmAction}
+        onCancel={closeConfirm}
+        loading={!!actionLoadingId}
+      />
+
       {/* Confirm Modal */}
-      {confirmUser && confirmType && (
+      {/* {confirmUser && confirmType && (
         <div
           onClick={closeConfirm}
           className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
@@ -202,7 +234,7 @@ export default function UserManagementPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

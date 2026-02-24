@@ -12,10 +12,6 @@ function NavBar() {
     setIsOpen(false);
   }, [location]);
 
-  const role = user?.role;
-
-  const profilePath = role === "JOB_SEEKER" ? "/jobseeker/profile" : "/profile";
-
   const navItemClass = ({ isActive }) =>
     `relative px-1 py-2 text-sm font-medium transition duration-300 no-underline! ${
       isActive
@@ -96,7 +92,7 @@ function NavBar() {
 
                   {/* Profile Button */}
                   <Link
-                    to={profilePath}
+                    to="/profile"
                     className="border border-yellow-400 
                    text-yellow-600 
                    hover:bg-yellow-400 hover:text-black 
@@ -162,7 +158,7 @@ function NavBar() {
               </>
             ) : (
               <>
-                <Link to={profilePath} className="block text-gray-700">
+                <Link to="/profile" className="block text-gray-700">
                   Profile
                 </Link>
                 <button
