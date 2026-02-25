@@ -10,7 +10,7 @@ export const createOrUpdateProfile = (data) => {
 };
 
 // Get Logged-in Job Seeker Profile
-export const getMyProfile = () => {
+export const getJobSeekerProfile = () => {
   return axiosInstance.get("/job-seekers/me");
 };
 
@@ -23,6 +23,9 @@ export const getJobSeekerByUserId = (userId) => {
 // ===============================
 // RECRUITER APIs
 // ===============================
+
+export const searchJobSeekers = (searchRequest) =>
+  axiosInstance.post("/job-seekers/search", searchRequest);
 
 export const getImmediateJoiners = () => {
   return axiosInstance.get("/job-seekers/immediate-joiners");

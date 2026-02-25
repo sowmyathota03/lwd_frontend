@@ -21,6 +21,7 @@ export default function AdminDashboard() {
     { to: "/admin/companies", label: "Companies", icon: "🏢" },
     { to: "/admin/managejob", label: "Jobs", icon: "📄" },
     { to: "/admin/applications", label: "Applications", icon: "📑" },
+    { to: "/admin/job-seekers", label: "Job Seekers", icon: "📑" },
   ];
 
   return (

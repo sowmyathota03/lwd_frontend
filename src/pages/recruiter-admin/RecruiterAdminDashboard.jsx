@@ -21,8 +21,9 @@ export default function RecruiterAdminDashboard() {
     { to: "/recruiter-admin/company-profile", label: "Company Profile", icon: "🏢" },
     { to: "/recruiter-admin/manage-recruiter", label: "Manage Recruiter", icon: "👥" },
     { to: "/recruiter-admin/managejob", label: "Manage Jobs", icon: "📄" },
-    { to: "/recruiter/createjob", label: "Create Job", icon: "➕" },
+    { to: "/recruiter-admin/createjob", label: "Create Job", icon: "➕" },
     { to: "/recruiter-admin/applications", label: "Applications", icon: "📑" },
+    { to: "/recruiter-admin/job-seekers", label: "Job Seekers", icon: "📑" },
   ];
 
   return (

@@ -76,4 +76,3 @@ export const changeApplicationStatus = (applicationId, status) =>
     null,
     { params: { status } }
   );
-

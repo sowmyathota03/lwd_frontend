@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getMyProfile, getUserById } from "../../api/UserApi";
 
 import {
-  getMyProfile as getJobSeekerProfile,
+  getJobSeekerProfile,
   getJobSeekerByUserId,
 } from "../../api/JobSeekerApi";
 
@@ -62,12 +62,12 @@ const Profile = () => {
   if (loading) return <Loader fullScreen />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-indigo-100 via-blue-100 to-purple-100 py-12 px-4">
 
       <div className="max-w-5xl mx-auto rounded-2xl shadow-xl overflow-hidden">
 
         {/* Header Gradient */}
-        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-10 py-8 text-white">
+        <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-blue-600 px-10 py-8 text-white">
           <div className="flex justify-between items-center">
             <h2 className="text-3xl font-semibold tracking-wide">
               {isOwnProfile
@@ -81,7 +81,7 @@ const Profile = () => {
         {/* Content Area */}
         <div className="bg-white p-10 space-y-8">
 
-          <div className="bg-gradient-to-r from-white to-gray-50 rounded-xl shadow-md p-6 border border-gray-200">
+          <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
             <BasicInfo
               profile={basicProfile}
               setProfile={setBasicProfile}
@@ -90,7 +90,7 @@ const Profile = () => {
           </div>
 
           {basicProfile?.role === "JOB_SEEKER" && (
-            <div className="bg-gradient-to-r from-white to-gray-50 rounded-xl shadow-md p-6 border border-gray-200">
+            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
               <JobSeekerDetails
                 profile={extendedProfile}
                 setProfile={setExtendedProfile}
@@ -100,13 +100,13 @@ const Profile = () => {
           )}
 
           {basicProfile?.role === "RECRUITER" && (
-            <div className="bg-gradient-to-r from-white to-gray-50 rounded-xl shadow-md p-6 border border-gray-200">
+            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
               <RecruiterDetails editable={isOwnProfile} />
             </div>
           )}
 
           {basicProfile?.role === "ADMIN" && (
-            <div className="bg-gradient-to-r from-white to-gray-50 rounded-xl shadow-md p-6 border border-gray-200">
+            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
               <AdminDetails editable={isOwnProfile} />
             </div>
           )}

@@ -45,6 +45,7 @@ import RecruiterList from './components/recruiter-admin/RecruiterList';
 
 import RecruiterDashboard from './pages/recruiter/RecruiterDashboard';
 import RecruiterHome from './components/recruiter/RecruiterHome';
+import RecruiterJobSeekerSearch from './components/recruiter/RecruiterJobSeekerSearch';
 
 
 
@@ -90,6 +91,7 @@ function App() {
         <Route path=":companyId/createjob" element={<CreateJob />}  />
         <Route path="managejob" element={<ManageJobs />} />
         <Route path="applications" element={<JobApplicationList />} />
+        <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
       </Route>
 
       <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />} >
@@ -99,6 +101,7 @@ function App() {
         <Route path="/recruiter-admin/managejob" element={<ManageJobs />} />
         <Route path="/recruiter-admin/createjob" element={<CreateJob />}  />
         <Route path="/recruiter-admin/applications" element={<JobApplicationList />} />
+        <Route path="/recruiter-admin/job-seekers" element={<RecruiterJobSeekerSearch />} />
       </Route>
 
 
@@ -108,6 +111,7 @@ function App() {
         <Route path="/recruiter/managejob" element={<ManageJobs />} />
         <Route path="/recruiter/createjob" element={<CreateJob />}  />
         <Route path="/recruiter/applications" element={<JobApplicationList />} />
+        <Route path="/recruiter/job-seekers" element={<RecruiterJobSeekerSearch />} />
       </Route>
              
     </Routes>      
