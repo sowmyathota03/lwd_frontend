@@ -76,6 +76,7 @@ function Jobs() {
     setPage(0);
     setLast(false);
     setInitialLoading(true);
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [
     type,
     keywordParam,
@@ -94,7 +95,7 @@ function Jobs() {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      if (last || loading) return; // 🔥 Prevent double calls
+      if (last || loading) return;
 
       try {
         setLoading(true);
@@ -125,7 +126,12 @@ function Jobs() {
 
         const data = response.data;
 
-        setTotalCount(data.totalElements);
+        setTotalCount(data.totalElements || 0);
+
+        if (!data.content || data.content.length === 0) {
+          setLast(true);
+          return;
+        }
 
         setJobs((prev) => {
           const newJobs = data.content.filter(
@@ -160,11 +166,11 @@ function Jobs() {
     companyIdParam,
   ]);
 
-  /* ================= INFINITE SCROLL ================= */
+  /* ================= PRODUCTION INFINITE SCROLL ================= */
 
   const lastJobRef = useCallback(
     (node) => {
-      if (loading || last) return;
+      if (loading || last || initialLoading) return;
 
       if (observer.current) observer.current.disconnect();
 
@@ -174,12 +180,16 @@ function Jobs() {
             setPage((prev) => prev + 1);
           }
         },
-        { rootMargin: "150px" } // 🔥 Reduced trigger distance
+        {
+          root: null,
+          rootMargin: "200px",
+          threshold: 0.1,
+        }
       );
 
       if (node) observer.current.observe(node);
     },
-    [loading, last]
+    [loading, last, initialLoading]
   );
 
   /* ================= FETCH CATEGORIES ================= */
@@ -248,22 +258,17 @@ function Jobs() {
 
         {/* GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 max-w-5xl mx-auto auto-rows-fr">
-          {jobs.map((job, index) => {
-            const isLastItem = index === jobs.length - 1;
-
-            return (
-              <motion.div
-                key={job.id}
-                ref={isLastItem ? lastJobRef : null}
-                variants={cardVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{ y: -4 }}
-              >
-                <JobCard job={job} />
-              </motion.div>
-            );
-          })}
+          {jobs.map((job) => (
+            <motion.div
+              key={job.id}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover={{ y: -4 }}
+            >
+              <JobCard job={job} />
+            </motion.div>
+          ))}
 
           {initialLoading &&
             Array.from({ length: 6 }).map((_, index) => (
@@ -273,10 +278,16 @@ function Jobs() {
             ))}
         </div>
 
+        {/* LOADER */}
         {loading && !initialLoading && (
           <div className="mt-6">
             <Loader fullScreen={false} />
           </div>
+        )}
+
+        {/* SENTINEL DIV (PRODUCTION FIX) */}
+        {!last && !initialLoading && (
+          <div ref={lastJobRef} className="h-10" />
         )}
 
         {last && !initialLoading && (

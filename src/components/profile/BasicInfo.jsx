@@ -63,14 +63,14 @@ const BasicInfo = ({ profile, setProfile, editable }) => {
       onEdit={() => setEditing(true)}
     >
       {!editing ? (
-        <Grid>
+        <Grid mdCols={2} lgCols={3}>
           <Field label="Name" value={profile.name} />
           <Field label="Email" value={profile.email} />
           <Field label="Phone" value={profile.phone} />
         </Grid>
       ) : (
         <>
-          <Grid>
+          <Grid mdCols={2} lgCols={3}>
             <Input
               label="Name"
               name="name"
