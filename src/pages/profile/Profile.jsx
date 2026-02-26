@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import Skills from "../../components/profile/Skills";
 
 import { getMyProfile, getUserById } from "../../api/UserApi";
 
@@ -96,6 +97,10 @@ const Profile = () => {
                 setProfile={setExtendedProfile}
                 editable={isOwnProfile}
               />
+               <div className="border-t pt-6">
+                 <Skills />
+               </div>
+             
             </div>
           )}
 

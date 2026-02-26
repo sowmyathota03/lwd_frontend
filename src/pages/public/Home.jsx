@@ -57,7 +57,7 @@ function Home() {
             <JobActionButton />
           ) : (
             <button
-              onClick={() => navigate("/register/jobseeker")}
+              onClick={() => navigate("/register")}
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium transition duration-300"
             >
               Create Profile
