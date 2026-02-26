@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { createOrUpdateProfile } from "../../api/JobSeekerApi";
-import { Section, Grid, Field, Input, Buttons, Select, Checkbox } from "./Helpers";
+import {
+  Section,
+  Grid,
+  Field,
+  Input,
+  Buttons,
+  Select,
+  Checkbox,
+} from "./Helpers";
 
 const JobSeekerDetails = ({ profile, setProfile, editable }) => {
   const [editing, setEditing] = useState(false);
@@ -10,6 +18,8 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
   const NOTICE_STATUS_OPTIONS = [
     { value: "SERVING_NOTICE", label: "Serving Notice" },
     { value: "IMMEDIATE_JOINER", label: "Immediate Joiner" },
+    { value: "NOT_LOOKING", label: "Not Looking" },
+    { value: "OPEN_TO_WORK", label: "Open To Work" },
     { value: "NOT_SERVING", label: "Not Serving" },
     { value: "ANY", label: "Any" },
   ];
@@ -62,10 +72,7 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
             Notice & Availability
           </h3>
           <Grid mdCols={2} lgCols={3}>
-            <Field
-              label="Notice Status"
-              value={profile?.noticeStatus}
-            />
+            <Field label="Notice Status" value={profile?.noticeStatus} />
             <Field label="Notice Period (Days)" value={profile?.noticePeriod} />
             <Field label="Last Working Day" value={profile?.lastWorkingDay} />
             <Field label="Available From" value={profile?.availableFrom} />
@@ -112,22 +119,20 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
             />
 
             <div className="flex justify-around">
-
-            <Checkbox
-              label="Serving Notice"
-              name="isServingNotice"
-              checked={formData.isServingNotice || false}
-              onChange={handleChange}
+              <Checkbox
+                label="Serving Notice"
+                name="isServingNotice"
+                checked={formData.isServingNotice || false}
+                onChange={handleChange}
               />
 
-            <Checkbox
-              label="Immediate Joiner"
-              name="immediateJoiner"
-              checked={formData.immediateJoiner || false}
-              onChange={handleChange}
+              <Checkbox
+                label="Immediate Joiner"
+                name="immediateJoiner"
+                checked={formData.immediateJoiner || false}
+                onChange={handleChange}
               />
             </div>
-
 
             <Input
               label="Notice Period (Days)"
