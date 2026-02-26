@@ -33,52 +33,86 @@ function Home() {
   return (
     <div className="font-sans">
 
-      <JobSearchBlock />
-      <PopularJobs title="Popular Job Categories" categories={categories} />
+ 
+      <section
+        className="relative h-[500px] bg-cover bg-center flex items-center justify-center text-center"
+        style={{
+          backgroundImage:
+            "url('https://img.freepik.com/free-vector/futuristic-background-design_23-2148503793.jpg')",
+        }}
+      >
+        
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/50"></div>
 
-      {/* WHY LWD SECTION */}
-      <section className="bg-[#A7F3D0] py-10 px-5 text-center">
-        <h2 className="text-2xl font-semibold mb-6">Why Choose LWD?</h2>
+        <div className="relative z-10 text-white px-6 max-w-3xl">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Welcome to LWD Portal
+          </h1>
+          <p className="text-lg md:text-xl mb-6">
+            Discover top job opportunities and connect with trusted companies
+            across industries.
+          </p>
 
-        <div className="flex justify-center gap-8 flex-wrap py-8">
-          <div className="text-base">✔ Verified Jobs</div>
-          <div className="text-base">✔ Trusted Companies</div>
-          <div className="text-base">✔ Career Guidance</div>
-          <div className="text-base">✔ Free Job Alerts</div>
+          {user?.role === "JOB_SEEKER" ? (
+            <JobActionButton />
+          ) : (
+            <button
+              onClick={() => navigate("/register")}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium transition duration-300"
+            >
+              Create Profile
+            </button>
+          )}
         </div>
       </section>
 
-      {/* TOP COMPANIES SECTION */}
-      <section className="py-10 px-5 text-center">
-        <h2 className="text-2xl font-semibold mb-6">Top Companies Hiring</h2>
+      <div className="mt-8">
+        <JobSearchBlock />
+      </div>
 
-        <div className="flex justify-center gap-5 flex-wrap p-10">
-          <div className="bg-gray-200 px-6 py-3 rounded font-bold">
-            ArahInfotech
-          </div>
-          <div className="bg-gray-200 px-6 py-3 rounded font-bold">
-            Google
-          </div>
-          <div className="bg-gray-200 px-6 py-3 rounded font-bold">
-            TCS
-          </div>
-          <div className="bg-gray-200 px-6 py-3 rounded font-bold">
-            Infosys
-          </div>
-          <div className="bg-gray-200 px-6 py-3 rounded font-bold">
-            Wipro
-          </div>
-          <div className="bg-gray-200 px-6 py-3 rounded font-bold">
-            Amazon
-          </div>
-          <div className="bg-gray-200 px-6 py-3 rounded font-bold">
-            Accenture
-          </div>
+    
+      <div className="mt-10">
+        <PopularJobs title="Popular Job Categories" categories={categories} />
+      </div>
+
+      
+      <section className="bg-teal-100 py-12 px-5 text-center mt-10">
+        <h2 className="text-2xl font-semibold mb-8">Why Choose LWD?</h2>
+
+        <div className="flex justify-center gap-10 flex-wrap">
+          <div className="text-base font-medium">✔ Verified Jobs</div>
+          <div className="text-base font-medium">✔ Trusted Companies</div>
+          <div className="text-base font-medium">✔ Career Guidance</div>
+          <div className="text-base font-medium">✔ Free Job Alerts</div>
         </div>
       </section>
 
-      {/* CTA SECTION */}
-      <section className="bg-[#FED7AA] text-white py-10 px-5 text-center gap-4 flex flex-col items-center">
+    
+      <section className="py-12 px-5 text-center bg-gray-50">
+        <h2 className="text-2xl font-semibold mb-8">Top Companies Hiring</h2>
+
+        <div className="flex justify-center gap-6 flex-wrap">
+          {[
+            "ArahInfotech",
+            "Google",
+            "TCS",
+            "Infosys",
+            "Wipro",
+            "Amazon",
+            "Accenture",
+          ].map((company, index) => (
+            <div
+              key={index}
+              className="bg-white shadow-md border border-gray-200 px-8 py-4 rounded-lg font-semibold hover:shadow-xl transition duration-300"
+            >
+              {company}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      
+      <section className="bg-blue-600 text-white py-12 px-5 text-center flex flex-col items-center">
         <h2 className="text-2xl font-semibold mb-6">
           Ready to take the next step?
         </h2>
@@ -88,7 +122,7 @@ function Home() {
         ) : (
           <button
             onClick={() => navigate("/register/jobseeker")}
-            className="px-6 py-2 bg-white text-[#0a66c2] rounded text-base"
+            className="px-6 py-3 bg-white text-blue-600 rounded-md font-medium hover:bg-gray-200 transition duration-300"
           >
             Create Profile
           </button>
