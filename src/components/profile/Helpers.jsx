@@ -22,8 +22,8 @@
   );
 
   export const Field = ({ label, value }) => (
-    <div>
-      <p className="text-xs uppercase text-gray-500">{label}</p>
+    <div className="flex gap-2">
+      <p className="text-xs uppercase text-gray-500 mt-1">{label}:</p>
       <p className="font-medium">{value || "-"}</p>
     </div>
   );
@@ -60,3 +60,43 @@
       </button>
     </div>
   );
+
+  export const Select = ({ label, options = [], ...props }) => (
+  <div>
+    {label && (
+      <label className="text-xs uppercase text-gray-500 mb-1 block">
+        {label}
+      </label>
+    )}
+
+    <select
+      {...props}
+      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+    >
+      <option value="">Select {label}</option>
+
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+
+export const Checkbox = ({ label, ...props }) => (
+  <div className="flex items-center gap-2 mt-2">
+    <input
+      type="checkbox"
+      {...props}
+      className="w-4 h-4 accent-blue-600"
+    />
+
+    {label && (
+      <label className="text-sm text-gray-700">
+        {label}
+      </label>
+    )}
+  </div>
+);
