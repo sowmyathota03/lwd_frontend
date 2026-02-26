@@ -198,12 +198,6 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
               onChange={handleChange}
             />
             <Input
-              label="Skills"
-              name="skills"
-              value={formData.skills || ""}
-              onChange={handleChange}
-            />
-            <Input
               label="Resume URL"
               name="resumeUrl"
               value={formData.resumeUrl || ""}
