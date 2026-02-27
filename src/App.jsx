@@ -23,6 +23,7 @@ import JobAlert from './components/jobs/JobAlert';
 import CareerAdvice from './components/jobs/CareerAdvice';
 import ApplyJob from './components/jobs/ApplyJob';
 import Suggestions from './components/jobs/Suggestions';
+import MyApplications from './components/jobs/MyApplications';
 
 import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
@@ -69,6 +70,7 @@ function App() {
       <Route path="/apply/:jobId" element={<ApplyJob />} />
       <Route path="/JobCard" element={<JobCard/>}/>
       <Route path="/JobSearchBlock" element={<JobSearchBlock/>}/>
+      <Route path="/my/applications" element={<MyApplications/>}/>
 
       <Route path="/Companies" element={<Companies/>}/>
 
