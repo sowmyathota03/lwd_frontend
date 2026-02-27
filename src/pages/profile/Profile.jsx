@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import Skills from "../../components/profile/Skills";
+import JobSeekerSkills from "../../components/profile/JobSeekerSkills";
 
 import { getMyProfile, getUserById } from "../../api/UserApi";
 
@@ -97,12 +97,16 @@ const Profile = () => {
                 setProfile={setExtendedProfile}
                 editable={isOwnProfile}
               />
-               <div className="border-t pt-6">
-                 <Skills />
-               </div>
-             
             </div>
           )}
+
+
+           {basicProfile?.role === "JOB_SEEKER" && (
+            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+                <JobSeekerSkills editable={isOwnProfile} />
+            </div>
+          )}
+
 
           {basicProfile?.role === "RECRUITER" && (
             <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">

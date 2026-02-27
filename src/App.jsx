@@ -30,8 +30,6 @@ import AboutUs from './components/company/AboutUs';
 import PrivacyPolicy from './components/company/PrivacyPolicy';
 import TermsAndConditions from './components/company/TermsAndConditions';
 
-import Skills from './components/profile/Skills';
-
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHome from './components/admin/AdminHome';
 import UserManagementPage from './components/admin/UserManagementPage';
@@ -87,7 +85,6 @@ function App() {
       <Route path="/Suggestions" element={<Suggestions/>}/>
       
       <Route path="/jobs/updatejob/:id" element={<EditJob />} />
-      <Route path="/skills" element={<Skills />} />
 
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<AdminHome />} />
