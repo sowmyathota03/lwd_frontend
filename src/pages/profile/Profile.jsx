@@ -10,12 +10,15 @@ import {
 
 import Loader from "../../components/common/Loader";
 import BasicInfo from "../../components/profile/BasicInfo";
-import RoleBadge from "../../components/profile/RoleBadge";
+
 import JobSeekerDetails from "../../components/profile/JobSeekerDetails";
 import JobSeekerSkills from "../../components/profile/JobSeekerSkills";
 import RecruiterDetails from "../../components/profile/RecruiterDetails";
 import AdminDetails from "../../components/profile/AdminDetails";
 import Education from "./components/Education";
+import Internship from "./components/Internship";
+import Project from "./components/Project";
+import AddStatus from "./components/AddStatus";
 
 const Profile = () => {
   const { userId } = useParams();
@@ -63,26 +66,28 @@ const Profile = () => {
   if (loading) return <Loader fullScreen />;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-100 via-blue-100 to-purple-100 py-12 px-4">
-      <div className="max-w-5xl mx-auto rounded-2xl shadow-xl overflow-hidden">
+    <div className="min-h-screen bg-gray-100 py-10 px-4">
+      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
 
         {/* Header */}
-        <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-blue-600 px-10 py-8 text-white">
+        <div className="bg-indigo-600 px-10 py-8 text-white">
           <div className="flex justify-between items-center">
-            <h2 className="text-3xl font-semibold tracking-wide">
+            <h2 className="text-3xl font-semibold">
               {isOwnProfile
                 ? "My Profile"
-                : `${basicProfile?.name} - Profile`}
+                : `${basicProfile?.name}`}
             </h2>
-            <RoleBadge role={basicProfile?.role} />
+
+            {/* Only Status (No RoleBadge) */}
+            <AddStatus updatedAt={basicProfile?.updatedAt} />
           </div>
         </div>
 
         {/* Content */}
-        <div className="bg-white p-10 space-y-8">
+        <div className="p-10 space-y-8">
 
           {/* Basic Info */}
-          <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+          <div className="rounded-xl shadow-sm border border-gray-200">
             <BasicInfo
               profile={basicProfile}
               setProfile={setBasicProfile}
@@ -90,10 +95,10 @@ const Profile = () => {
             />
           </div>
 
-          {/* Job Seeker Sections */}
+          {/* JOB SEEKER SECTIONS */}
           {basicProfile?.role === "JOB_SEEKER" && (
             <>
-              <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+              <div className="rounded-xl shadow-sm border border-gray-200">
                 <JobSeekerDetails
                   profile={extendedProfile}
                   setProfile={setExtendedProfile}
@@ -101,13 +106,26 @@ const Profile = () => {
                 />
               </div>
 
-              <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+              <div className="rounded-xl shadow-sm border border-gray-200">
                 <JobSeekerSkills editable={isOwnProfile} />
               </div>
 
-              {/* ✅ Education Section Added */}
-              <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+              <div className="rounded-xl shadow-sm border border-gray-200">
                 <Education
+                  userId={isOwnProfile ? null : userId}
+                  editable={isOwnProfile}
+                />
+              </div>
+
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <Internship
+                  userId={isOwnProfile ? null : userId}
+                  editable={isOwnProfile}
+                />
+              </div>
+
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <Project
                   userId={isOwnProfile ? null : userId}
                   editable={isOwnProfile}
                 />
@@ -115,16 +133,16 @@ const Profile = () => {
             </>
           )}
 
-          {/* Recruiter Section */}
+          {/* RECRUITER SECTION */}
           {basicProfile?.role === "RECRUITER" && (
-            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+            <div className="rounded-xl shadow-sm border border-gray-200">
               <RecruiterDetails editable={isOwnProfile} />
             </div>
           )}
 
-          {/* Admin Section */}
+          {/* ADMIN SECTION */}
           {basicProfile?.role === "ADMIN" && (
-            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+            <div className="rounded-xl shadow-sm border border-gray-200">
               <AdminDetails editable={isOwnProfile} />
             </div>
           )}

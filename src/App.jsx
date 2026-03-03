@@ -26,6 +26,9 @@ import Suggestions from './components/jobs/Suggestions';
 import MyApplications from './components/jobs/MyApplications';
 
 import Education from './pages/profile/components/Education';
+import Internship from './pages/profile/components/Internship';
+import Project from './pages/profile/components/Project';
+import AddStatus from './pages/profile/components/AddStatus';
 
 import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
@@ -74,6 +77,10 @@ function App() {
 
       <Route path="/Companies" element={<Companies/>}/>
       <Route path="/education" element={<Education/>}/>
+      <Route path="/internship" element={<Internship/>}/>
+      <Route path="/project" element={<Project/>}/>
+
+      <Route path="/status" element={<AddStatus/>}/>
 
       <Route path="/Career" element={<Career/>}/>     
       <Route path="/profile" element={<Profile/>}/>
