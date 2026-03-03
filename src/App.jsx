@@ -25,6 +25,8 @@ import ApplyJob from './components/jobs/ApplyJob';
 import Suggestions from './components/jobs/Suggestions';
 import MyApplications from './components/jobs/MyApplications';
 
+import Education from './pages/profile/components/Education';
+
 import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
 import PrivacyPolicy from './components/company/PrivacyPolicy';
@@ -71,6 +73,7 @@ function App() {
       <Route path="/my/applications" element={<MyApplications/>}/>
 
       <Route path="/Companies" element={<Companies/>}/>
+      <Route path="/education" element={<Education/>}/>
 
       <Route path="/Career" element={<Career/>}/>     
       <Route path="/profile" element={<Profile/>}/>

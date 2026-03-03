@@ -13,7 +13,6 @@ function JobDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  /* ================= FETCH JOB + SIMILAR ================= */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,7 +24,7 @@ function JobDetails() {
         try {
           const similarResponse = await getSimilarJobs(jobId);
           setSimilarJobs(similarResponse.data || []);
-        } catch (err) {
+        } catch {
           console.log("No similar jobs found");
         }
 
@@ -48,10 +47,10 @@ function JobDetails() {
   if (!job) return <p className="text-center mt-10">No job found.</p>;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-100 via-indigo-1 font-semibold00 to-green-200 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-100 via-indigo-100 to-green-200 py-12 px-4">
       <div className="max-w-5xl mx-auto space-y-10">
 
-        {/* ================= JOB DETAILS ================= */}
+        {/* JOB DETAILS */}
         <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
 
           {/* Header */}
@@ -76,15 +75,15 @@ function JobDetails() {
               </div>
             </div>
 
+            {/* Apply Button (Blue kept same) */}
             <button
               onClick={handleApplyClick}
-              className="px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 transition font-medium"
+              className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition font-medium"
             >
               🚀 Apply Now
             </button>
           </div>
 
-          {/* Divider */}
           <div className="border-t border-gray-200 my-6"></div>
 
           {/* Details Grid */}
@@ -94,7 +93,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Experience</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm border-2 border-red-700 bg-red-100 text-red-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {job.minExperience} - {job.maxExperience} Years
                 </span>
               </div>
@@ -104,7 +103,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Salary</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm border-2 border-gray-700 bg-gray-100 text-gray-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   ₹{job.salary.toLocaleString()} LPA
                 </span>
               </div>
@@ -114,7 +113,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Job Type</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm border-2 border-blue-700 bg-blue-100 text-blue-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {job.jobType}
                 </span>
               </div>
@@ -124,7 +123,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Industry</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm border-2 border-purple-700 bg-purple-100 text-purple-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {job.industry}
                 </span>
               </div>
@@ -134,7 +133,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Notice Preference</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm border-2 border-green-700 bg-green-100 text-green-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {job.noticePreference.replaceAll("_", " ")}
                 </span>
               </div>
@@ -144,7 +143,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Max Notice Period</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm border-2 border-yellow-700 bg-yellow-100 text-yellow-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {job.maxNoticePeriod} Days
                 </span>
               </div>
@@ -154,7 +153,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">LWD Preference</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm font-semibold border-2 border-orange-700 bg-orange-100 text-orange-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full font-semibold">
                   Yes (Last Working Day Preferred)
                 </span>
               </div>
@@ -164,7 +163,7 @@ function JobDetails() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Posted On</span>
                 <span className="text-gray-300">•</span>
-                <span className="px-3 py-1 text-sm border-2 border-pink-700 bg-pink-100 text-pink-700 rounded-full">
+                <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {new Date(job.createdAt).toLocaleDateString("en-IN")}
                 </span>
               </div>
@@ -173,7 +172,7 @@ function JobDetails() {
           </div>
         </div>
 
-        {/* ================= JOB DESCRIPTION ================= */}
+        {/* JOB DESCRIPTION */}
         <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Job Description
@@ -183,7 +182,7 @@ function JobDetails() {
           </p>
         </div>
 
-        {/* ================= SIMILAR JOBS ================= */}
+        {/* SIMILAR JOBS */}
         {similarJobs.length > 0 && (
           <div>
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">

@@ -25,7 +25,6 @@ export default function JobApplicationList() {
     "HIRED",
   ];
 
-  // ================= FETCH =================
   const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
@@ -43,12 +42,10 @@ export default function JobApplicationList() {
     }
   }, [page, size]);
 
-  // 🔥 Fetch when page changes
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
-  // ================= STATUS UPDATE =================
   const handleStatusUpdate = async (applicationId, status) => {
     try {
       setUpdatingId(applicationId);
@@ -57,8 +54,8 @@ export default function JobApplicationList() {
 
       setApplications((prev) =>
         prev.map((app) =>
-          app.applicationId === applicationId ? { ...app, status } : app,
-        ),
+          app.applicationId === applicationId ? { ...app, status } : app
+        )
       );
     } catch (error) {
       console.error("Failed to update status", error);
@@ -67,7 +64,6 @@ export default function JobApplicationList() {
     }
   };
 
-  // ================= PAGE CHANGE HANDLER =================
   const handlePrevious = () => {
     if (page > 0) setPage((prev) => prev - 1);
   };
@@ -78,14 +74,14 @@ export default function JobApplicationList() {
 
   return (
     <div className="md:p-4 p-0">
-      {/* ================= HEADER ================= */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
           Job Applications
         </h2>
       </div>
 
-      {/* ================= TABLE ================= */}
+      {/* Table */}
       <div className="bg-white rounded-xl shadow-md overflow-x-auto">
         <table className="min-w-full text-sm text-left border-collapse">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
@@ -120,7 +116,7 @@ export default function JobApplicationList() {
                   className="hover:bg-gray-50 transition"
                 >
                   <td
-                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium "
+                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium"
                     onClick={() => navigate(`/profile/${app.applicationId}`)}
                   >
                     {app.applicantName}
@@ -149,11 +145,7 @@ export default function JobApplicationList() {
                           ? "bg-green-100 text-green-700"
                           : app.status === "REJECTED"
                             ? "bg-red-100 text-red-700"
-                            : app.status === "INTERVIEW_SCHEDULED"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : app.status === "SHORTLISTED"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-gray-100 text-gray-700"
+                            : "bg-gray-100 text-gray-700"
                       }`}
                     >
                       {app.status}
@@ -198,7 +190,7 @@ export default function JobApplicationList() {
         </table>
       </div>
 
-      {/* ================= PAGINATION ================= */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center px-6 py-4 border-t gap-4 border-gray-200">
           <button
