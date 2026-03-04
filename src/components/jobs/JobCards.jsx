@@ -41,8 +41,9 @@ function JobCards({ job, showApply = true, compact = false }) {
           </p>
         )}
 
-        {/* Tags */}
+        {/* Tags - All Same Gray Color */}
         <div className="flex flex-wrap gap-2 mb-3">
+          
           {job.minExperience !== null && job.maxExperience !== null && (
             <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
               {job.minExperience} - {job.maxExperience} yrs
@@ -50,31 +51,31 @@ function JobCards({ job, showApply = true, compact = false }) {
           )}
 
           {job.jobType && (
-            <span className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+            <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
               {job.jobType}
             </span>
           )}
 
           {job.industry && (
-            <span className="px-3 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">
+            <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
               {job.industry}
             </span>
           )}
 
           {job.lwdPreferred && (
-            <span className="px-3 py-1 text-xs bg-orange-200 text-orange-700 rounded-full font-semibold">
+            <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full font-semibold">
               LWD Preferred
             </span>
           )}
 
           {job.noticePreference && (
-            <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+            <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
               {job.noticePreference.replaceAll("_", " ")}
             </span>
           )}
 
           {job.maxNoticePeriod > 0 && (
-            <span className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
+            <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
               Max Notice: {job.maxNoticePeriod} days
             </span>
           )}
@@ -101,7 +102,7 @@ function JobCards({ job, showApply = true, compact = false }) {
         </div>
       </div>
 
-      {/* Apply Button */}
+      {/* Apply Button - Blue */}
       {showApply && (
         <button
           onClick={handleApply}

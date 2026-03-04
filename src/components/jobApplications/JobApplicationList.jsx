@@ -1,7 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import {
-  getApplicationsByRole,
-} from "../../api/JobApplicationApi";
+import { getApplicationsByRole } from "../../api/JobApplicationApi";
 import Loader from "../common/Loader";
 import { useNavigate } from "react-router-dom";
 import ApplicationStatusDropdown from "./ApplicationStatusDropdown";
@@ -12,9 +10,9 @@ export default function JobApplicationList() {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  // ================= FETCH =================
   const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
@@ -32,13 +30,10 @@ export default function JobApplicationList() {
     }
   }, [page, size]);
 
-  // 🔥 Fetch when page changes
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
-
-  // ================= PAGE CHANGE HANDLER =================
   const handlePrevious = () => {
     if (page > 0) setPage((prev) => prev - 1);
   };
@@ -49,14 +44,12 @@ export default function JobApplicationList() {
 
   return (
     <div className="md:p-4 p-0">
-      {/* ================= HEADER ================= */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
           Job Applications
         </h2>
       </div>
 
-      {/* ================= TABLE ================= */}
       <div className="bg-white rounded-xl shadow-md overflow-x-auto">
         <table className="min-w-full text-sm text-left border-collapse">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
@@ -91,7 +84,7 @@ export default function JobApplicationList() {
                   className="hover:bg-gray-50 transition"
                 >
                   <td
-                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium overflow-hidden whitespace-nowrap"
+                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium whitespace-nowrap"
                     onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
                   >
                     {app.applicantName}
@@ -118,19 +111,14 @@ export default function JobApplicationList() {
                     {app.company?.companyName || "-"}
                   </td>
 
-                  {/* STATUS BADGE */}
                   <td className="px-4 py-2">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
                         app.status === "SELECTED" || app.status === "HIRED"
                           ? "bg-green-100 text-green-700"
                           : app.status === "REJECTED"
-                            ? "bg-red-100 text-red-700"
-                            : app.status === "INTERVIEW_SCHEDULED"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : app.status === "SHORTLISTED"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-gray-100 text-gray-700"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-gray-100 text-gray-700"
                       }`}
                     >
                       {app.status}
@@ -143,7 +131,6 @@ export default function JobApplicationList() {
                       : "-"}
                   </td>
 
-                  {/* ACTION */}
                   <td className="px-4 py-2">
                     <ApplicationStatusDropdown
                       applicationId={app.applicationId}
@@ -153,8 +140,8 @@ export default function JobApplicationList() {
                           prev.map((a) =>
                             a.applicationId === id
                               ? { ...a, status: newStatus }
-                              : a,
-                          ),
+                              : a
+                          )
                         );
                       }}
                     />
@@ -166,7 +153,6 @@ export default function JobApplicationList() {
         </table>
       </div>
 
-      {/* ================= PAGINATION ================= */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center px-6 py-4 border-t gap-4 border-gray-200">
           <button

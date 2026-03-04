@@ -111,23 +111,7 @@ function Home() {
         </div>
       </section>
 
-      
-      <section className="bg-blue-600 text-white py-12 px-5 text-center flex flex-col items-center">
-        <h2 className="text-2xl font-semibold mb-6">
-          Ready to take the next step?
-        </h2>
-
-        {user?.role === "JOB_SEEKER" ? (
-          <JobActionButton />
-        ) : (
-          <button
-            onClick={() => navigate("/register/jobseeker")}
-            className="px-6 py-3 bg-white text-blue-600 rounded-md font-medium hover:bg-gray-200 transition duration-300"
-          >
-            Create Profile
-          </button>
-        )}
-      </section>
+     
 
     </div>
   );

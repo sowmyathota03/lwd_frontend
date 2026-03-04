@@ -3,13 +3,27 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../context/AuthContext";
 
+<<<<<<< HEAD
 import JobSeekerSkills from "../../components/profile/JobSeekerSkills";
+=======
+import { getMyProfile, getUserById } from "../../api/UserApi";
+import {
+  getJobSeekerProfile,
+  getJobSeekerByUserId,
+} from "../../api/JobSeekerApi";
+
+>>>>>>> 21cbe117f6ac80007d630ac612f42ef7dc534180
 import Loader from "../../components/common/Loader";
 import BasicInfo from "../../components/profile/BasicInfo";
-import RoleBadge from "../../components/profile/RoleBadge";
+
 import JobSeekerDetails from "../../components/profile/JobSeekerDetails";
+import JobSeekerSkills from "../../components/profile/JobSeekerSkills";
 import RecruiterDetails from "../../components/profile/RecruiterDetails";
 import AdminDetails from "../../components/profile/AdminDetails";
+import Education from "./components/Education";
+import Internship from "./components/Internship";
+import Project from "./components/Project";
+import AddStatus from "./components/AddStatus";
 
 import { getMyProfile, getUserById } from "../../api/UserApi";
 import {
@@ -67,32 +81,49 @@ const Profile = () => {
   if (basicLoading || extendedLoading) return <Loader fullScreen />;
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-linear-to-br from-indigo-100 via-blue-100 to-purple-100 py-12 px-4">
       <div className="max-w-5xl mx-auto rounded-2xl shadow-xl overflow-hidden">
 
         {/* Header */}
         <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-blue-600 px-10 py-8 text-white">
+=======
+    <div className="min-h-screen bg-gray-100 py-10 px-4">
+      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        {/* Header */}
+        <div className="bg-indigo-600 px-10 py-8 text-white">
+>>>>>>> 21cbe117f6ac80007d630ac612f42ef7dc534180
           <div className="flex justify-between items-center">
-            <h2 className="text-3xl font-semibold tracking-wide">
+            <h2 className="text-3xl font-semibold">
               {isOwnProfile
                 ? "My Profile"
-                : `${basicProfile?.name} - Profile`}
+                : `${basicProfile?.name}`}
             </h2>
-            <RoleBadge role={basicProfile?.role} />
+
+            {/* Only Status (No RoleBadge) */}
+            <AddStatus updatedAt={basicProfile?.updatedAt} />
           </div>
         </div>
 
         {/* Content */}
+<<<<<<< HEAD
         <div className="bg-white p-10 space-y-8">
+=======
+        <div className="p-10 space-y-8">
+>>>>>>> 21cbe117f6ac80007d630ac612f42ef7dc534180
 
-          <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+          {/* Basic Info */}
+          <div className="rounded-xl shadow-sm border border-gray-200">
             <BasicInfo
               profile={basicProfile}
               editable={isOwnProfile}
             />
           </div>
 
+          {/* JOB SEEKER SECTIONS */}
           {basicProfile?.role === "JOB_SEEKER" && (
+<<<<<<< HEAD
             <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
               <JobSeekerDetails
                 profile={extendedProfile}
@@ -109,14 +140,54 @@ const Profile = () => {
             />
           )}
 
+=======
+            <>
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <JobSeekerDetails
+                  profile={extendedProfile}
+                  setProfile={setExtendedProfile}
+                  editable={isOwnProfile}
+                />
+              </div>
+
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <JobSeekerSkills editable={isOwnProfile} />
+              </div>
+
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <Education
+                  userId={isOwnProfile ? null : userId}
+                  editable={isOwnProfile}
+                />
+              </div>
+
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <Internship
+                  userId={isOwnProfile ? null : userId}
+                  editable={isOwnProfile}
+                />
+              </div>
+
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <Project
+                  userId={isOwnProfile ? null : userId}
+                  editable={isOwnProfile}
+                />
+              </div>
+            </>
+          )}
+
+          {/* RECRUITER SECTION */}
+>>>>>>> 21cbe117f6ac80007d630ac612f42ef7dc534180
           {basicProfile?.role === "RECRUITER" && (
-            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+            <div className="rounded-xl shadow-sm border border-gray-200">
               <RecruiterDetails editable={isOwnProfile} />
             </div>
           )}
 
+          {/* ADMIN SECTION */}
           {basicProfile?.role === "ADMIN" && (
-            <div className="bg-linear-to-r from-white to-gray-50 rounded-xl shadow-md border border-gray-200">
+            <div className="rounded-xl shadow-sm border border-gray-200">
               <AdminDetails editable={isOwnProfile} />
             </div>
           )}

@@ -23,11 +23,20 @@ import JobAlert from './components/jobs/JobAlert';
 import CareerAdvice from './components/jobs/CareerAdvice';
 import ApplyJob from './components/jobs/ApplyJob';
 import Suggestions from './components/jobs/Suggestions';
+import MyApplications from './components/jobs/MyApplications';
+
+import Education from './pages/profile/components/Education';
+import Internship from './pages/profile/components/Internship';
+import Project from './pages/profile/components/Project';
+import VerifyEmail from './pages/profile/components/VerifyEmail';
+import AddStatus from './pages/profile/components/AddStatus';
 
 import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
 import PrivacyPolicy from './components/company/PrivacyPolicy';
 import TermsAndConditions from './components/company/TermsAndConditions';
+import Pricing from './components/company/Pricing';
+
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHome from './components/admin/AdminHome';
@@ -68,8 +77,15 @@ function App() {
       <Route path="/apply/:jobId" element={<ApplyJob />} />
       <Route path="/JobCard" element={<JobCard/>}/>
       <Route path="/JobSearchBlock" element={<JobSearchBlock/>}/>
+      <Route path="/my/applications" element={<MyApplications/>}/>
 
       <Route path="/Companies" element={<Companies/>}/>
+      <Route path="/education" element={<Education/>}/>
+      <Route path="/internship" element={<Internship/>}/>
+      <Route path="/project" element={<Project/>}/>
+      {/* <Route path="/verify-email" element={<VerifyEmail />} /> */}
+
+      <Route path="/status" element={<AddStatus/>}/>
 
       <Route path="/Career" element={<Career/>}/>     
       <Route path="/profile" element={<Profile/>}/>
@@ -82,6 +98,8 @@ function App() {
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>}/>
       <Route path="/TermsAndConditions" element={<TermsAndConditions/>}/>
       <Route path="/Suggestions" element={<Suggestions/>}/>
+       <Route path="/pricing" element={<Pricing/>}/>
+
       
       <Route path="/jobs/updatejob/:id" element={<EditJob />} />
 
