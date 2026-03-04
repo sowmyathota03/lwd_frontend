@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { searchJobSeekers } from "../../api/JobSeekerApi";
 import { Search } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
 
 function RecruiterJobSeekerSearch() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [filters, setFilters] = useState({
-    keyword: "",
-    skills: "",
-    currentLocation: "",
-    minExperience: "",
-    maxExperience: "",
-    page: 0,
+    keyword: searchParams.get("keyword") || "",
+    skills: searchParams.get("skills") || "",
+    currentLocation: searchParams.get("currentLocation") || "",
+    minExperience: searchParams.get("minExperience") || "",
+    maxExperience: searchParams.get("maxExperience") || "",
+    page: Number(searchParams.get("page")) || 0,
     size: 10,
   });
 
@@ -24,20 +27,30 @@ function RecruiterJobSeekerSearch() {
     });
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (updatedFilters = filters) => {
     try {
       setLoading(true);
 
+      // Update URL (THIS FIXES BACK BUTTON ISSUE)
+      setSearchParams({
+        keyword: updatedFilters.keyword || "",
+        skills: updatedFilters.skills || "",
+        currentLocation: updatedFilters.currentLocation || "",
+        minExperience: updatedFilters.minExperience || "",
+        maxExperience: updatedFilters.maxExperience || "",
+        page: updatedFilters.page || 0,
+      });
+
       const requestBody = {
-        ...filters,
-        skills: filters.skills
-          ? filters.skills.split(",").map((s) => s.trim())
+        ...updatedFilters,
+        skills: updatedFilters.skills
+          ? updatedFilters.skills.split(",").map((s) => s.trim())
           : [],
-        minExperience: filters.minExperience
-          ? Number(filters.minExperience)
+        minExperience: updatedFilters.minExperience
+          ? Number(updatedFilters.minExperience)
           : null,
-        maxExperience: filters.maxExperience
-          ? Number(filters.maxExperience)
+        maxExperience: updatedFilters.maxExperience
+          ? Number(updatedFilters.maxExperience)
           : null,
       };
 
@@ -52,18 +65,50 @@ function RecruiterJobSeekerSearch() {
     }
   };
 
+  // Auto search when page changes (via back button or pagination)
+  useEffect(() => {
+    const urlFilters = {
+      keyword: searchParams.get("keyword") || "",
+      skills: searchParams.get("skills") || "",
+      currentLocation: searchParams.get("currentLocation") || "",
+      minExperience: searchParams.get("minExperience") || "",
+      maxExperience: searchParams.get("maxExperience") || "",
+      page: Number(searchParams.get("page")) || 0,
+      size: 10,
+    };
+
+    setFilters(urlFilters);
+
+    // Auto search only if something exists
+    if (
+      urlFilters.keyword ||
+      urlFilters.skills ||
+      urlFilters.currentLocation ||
+      urlFilters.minExperience ||
+      urlFilters.maxExperience ||
+      urlFilters.page !== 0
+    ) {
+      handleSearch(urlFilters);
+    }
+  }, [searchParams]);
+
+  const handlePageChange = (newPage) => {
+    const updated = { ...filters, page: newPage };
+    handleSearch(updated);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
 
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">
           Recruiter Candidate Search
         </h2>
 
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-          {/* LEFT FILTER PANEL */}
-          <div className="col-span-3 bg-white p-6 rounded-lg shadow-sm border border-gray-200 h-fit sticky top-6">
+          {/* FILTER PANEL */}
+          <div className="lg:col-span-3 bg-white p-5 sm:p-6 rounded-lg shadow-sm border border-gray-200 h-fit lg:sticky lg:top-6 mb-6 lg:mb-0">
 
             <h3 className="text-lg font-semibold mb-4 text-gray-700">
               Filters
@@ -77,7 +122,7 @@ function RecruiterJobSeekerSearch() {
                 placeholder="Keyword"
                 value={filters.keyword}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2.5 rounded-md focus:ring-1 focus:ring-blue-600 outline-none"
+                className="w-full border p-2.5 rounded-md text-sm"
               />
 
               <input
@@ -86,7 +131,7 @@ function RecruiterJobSeekerSearch() {
                 placeholder="Skills (React, Java)"
                 value={filters.skills}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2.5 rounded-md focus:ring-1 focus:ring-blue-600 outline-none"
+                className="w-full border p-2.5 rounded-md text-sm"
               />
 
               <input
@@ -95,7 +140,7 @@ function RecruiterJobSeekerSearch() {
                 placeholder="Location"
                 value={filters.currentLocation}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2.5 rounded-md focus:ring-1 focus:ring-blue-600 outline-none"
+                className="w-full border p-2.5 rounded-md text-sm"
               />
 
               <input
@@ -104,7 +149,7 @@ function RecruiterJobSeekerSearch() {
                 placeholder="Min Experience"
                 value={filters.minExperience}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2.5 rounded-md focus:ring-1 focus:ring-blue-600 outline-none"
+                className="w-full border p-2.5 rounded-md text-sm"
               />
 
               <input
@@ -113,12 +158,12 @@ function RecruiterJobSeekerSearch() {
                 placeholder="Max Experience"
                 value={filters.maxExperience}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2.5 rounded-md focus:ring-1 focus:ring-blue-600 outline-none"
+                className="w-full border p-2.5 rounded-md text-sm"
               />
 
               <button
-                onClick={handleSearch}
-                className="w-full flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white py-2.5 rounded-md text-sm font-medium transition"
+                onClick={() => handleSearch({ ...filters, page: 0 })}
+                className="w-full flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white py-2.5 rounded-md text-sm"
               >
                 <Search size={16} />
                 {loading ? "Searching..." : "Apply Filters"}
@@ -127,11 +172,11 @@ function RecruiterJobSeekerSearch() {
             </div>
           </div>
 
-          {/* RIGHT RESULTS SECTION */}
-          <div className="col-span-9 space-y-4">
+          {/* RESULTS SECTION */}
+          <div className="lg:col-span-9 space-y-4">
 
             {results.length === 0 && !loading && (
-              <div className="bg-white p-8 rounded-lg border border-gray-200 text-center text-gray-500">
+              <div className="bg-white p-6 rounded-lg border text-center text-gray-500">
                 No candidates found. Adjust filters.
               </div>
             )}
@@ -139,12 +184,12 @@ function RecruiterJobSeekerSearch() {
             {results.map((js) => (
               <div
                 key={js.id}
-                className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition"
+                className="bg-white border rounded-lg p-4 sm:p-6 hover:shadow-md transition"
               >
-                <div className="flex justify-between">
+                <div className="flex flex-col md:flex-row md:justify-between gap-4">
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
+                    <h3 className="text-base sm:text-lg font-semibold">
                       {js.fullName}
                     </h3>
 
@@ -152,11 +197,11 @@ function RecruiterJobSeekerSearch() {
                       {js.currentCompany} • {js.currentLocation}
                     </p>
 
-                    <p className="text-sm text-gray-600 mt-2">
+                    <p className="text-sm mt-2">
                       {js.totalExperience} years experience
                     </p>
 
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm">
                       Expected CTC: {js.expectedCTC} LPA
                     </p>
 
@@ -164,7 +209,7 @@ function RecruiterJobSeekerSearch() {
                       {js.skills?.map((skill, index) => (
                         <span
                           key={index}
-                          className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium"
+                          className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs"
                         >
                           {skill}
                         </span>
@@ -172,13 +217,19 @@ function RecruiterJobSeekerSearch() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <button className="px-4 py-2 text-sm border border-blue-700 text-blue-700 rounded-md hover:bg-blue-50 transition">
+                  <div className="flex flex-row md:flex-col gap-2 w-full md:w-auto">
+
+                    <Link
+                      to={`/profile/${js.userId}`}
+                      className="flex-1 md:flex-none text-center px-4 py-2 text-sm border border-blue-700 text-blue-700 rounded-md hover:bg-blue-50 transition"
+                    >
                       View Profile
-                    </button>
-                    <button className="px-4 py-2 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 transition">
+                    </Link>
+
+                    {/* <button className="flex-1 md:flex-none px-4 py-2 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 transition">
                       Shortlist
-                    </button>
+                    </button> */}
+
                   </div>
 
                 </div>
@@ -187,28 +238,24 @@ function RecruiterJobSeekerSearch() {
 
             {/* Pagination */}
             {pagination && (
-              <div className="flex justify-between items-center mt-6 bg-white p-4 rounded-lg border border-gray-200">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mt-6 bg-white p-4 rounded-lg border text-sm">
 
                 <button
                   disabled={pagination.pageNumber === 0}
-                  onClick={() =>
-                    setFilters({ ...filters, page: pagination.pageNumber - 1 })
-                  }
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50"
+                  onClick={() => handlePageChange(pagination.pageNumber - 1)}
+                  className="w-full sm:w-auto px-4 py-2 border rounded-md hover:bg-gray-100 disabled:opacity-50"
                 >
                   Previous
                 </button>
 
-                <span className="text-sm text-gray-600">
+                <span>
                   Page {pagination.pageNumber + 1} of {pagination.totalPages}
                 </span>
 
                 <button
                   disabled={pagination.last}
-                  onClick={() =>
-                    setFilters({ ...filters, page: pagination.pageNumber + 1 })
-                  }
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50"
+                  onClick={() => handlePageChange(pagination.pageNumber + 1)}
+                  className="w-full sm:w-auto px-4 py-2 border rounded-md hover:bg-gray-100 disabled:opacity-50"
                 >
                   Next
                 </button>

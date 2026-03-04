@@ -65,6 +65,11 @@ export const getJobById = (jobId) => {
   return api.get(`/jobs/${jobId}`);
 };
 
+// Get Job Analytics
+export const getJobAnalytics = (jobId) => {
+  return api.get(`/jobs/${jobId}/analytics`);
+};
+
 
 // GET JOB BY ID
 export const getSimilarJobs = (jobId) => {

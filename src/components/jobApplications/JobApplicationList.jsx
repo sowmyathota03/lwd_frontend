@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import {
   getApplicationsByRole,
-  changeApplicationStatus,
 } from "../../api/JobApplicationApi";
 import Loader from "../common/Loader";
 import { useNavigate } from "react-router-dom";
+import ApplicationStatusDropdown from "./ApplicationStatusDropdown";
 
 export default function JobApplicationList() {
   const [applications, setApplications] = useState([]);
@@ -12,18 +12,7 @@ export default function JobApplicationList() {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [updatingId, setUpdatingId] = useState(null);
   const navigate = useNavigate();
-
-  const statusOptions = [
-    "APPLIED",
-    "SHORTLISTED",
-    "INTERVIEW_SCHEDULED",
-    "SELECTED",
-    "REJECTED",
-    "ON_HOLD",
-    "HIRED",
-  ];
 
   // ================= FETCH =================
   const fetchApplications = useCallback(async () => {
@@ -48,24 +37,6 @@ export default function JobApplicationList() {
     fetchApplications();
   }, [fetchApplications]);
 
-  // ================= STATUS UPDATE =================
-  const handleStatusUpdate = async (applicationId, status) => {
-    try {
-      setUpdatingId(applicationId);
-
-      await changeApplicationStatus(applicationId, status);
-
-      setApplications((prev) =>
-        prev.map((app) =>
-          app.applicationId === applicationId ? { ...app, status } : app,
-        ),
-      );
-    } catch (error) {
-      console.error("Failed to update status", error);
-    } finally {
-      setUpdatingId(null);
-    }
-  };
 
   // ================= PAGE CHANGE HANDLER =================
   const handlePrevious = () => {
@@ -120,20 +91,26 @@ export default function JobApplicationList() {
                   className="hover:bg-gray-50 transition"
                 >
                   <td
-                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium "
-                    onClick={() => navigate(`/profile/${app.applicationId}`)}
+                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium overflow-hidden whitespace-nowrap"
+                    onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
                   >
                     {app.applicantName}
                   </td>
 
                   <td
                     className="text-blue-600 p-2 cursor-pointer hover:underline"
-                    onClick={() => navigate(`/profile/${app.applicationId}`)}
+                    onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
                   >
                     {app.email}
                   </td>
 
-                  <td className="px-4 py-2 truncate max-w-xs">
+                  <td
+                    className="px-4 py-2 truncate max-w-xs text-blue-600 cursor-pointer hover:underline"
+                    onClick={() =>
+                      app.job?.id &&
+                      navigate(`/admin/managejob/${app.job.id}/analytics`)
+                    }
+                  >
                     {app.job?.title || "-"}
                   </td>
 
@@ -168,28 +145,19 @@ export default function JobApplicationList() {
 
                   {/* ACTION */}
                   <td className="px-4 py-2">
-                    <div className="flex items-center gap-2">
-                      <select
-                        className="border rounded-md px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        value={app.status}
-                        onChange={(e) =>
-                          handleStatusUpdate(app.applicationId, e.target.value)
-                        }
-                        disabled={updatingId === app.applicationId}
-                      >
-                        {statusOptions.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-
-                      {updatingId === app.applicationId && (
-                        <span className="text-xs text-blue-500 animate-pulse">
-                          Updating...
-                        </span>
-                      )}
-                    </div>
+                    <ApplicationStatusDropdown
+                      applicationId={app.applicationId}
+                      currentStatus={app.status}
+                      onStatusUpdated={(id, newStatus) => {
+                        setApplications((prev) =>
+                          prev.map((a) =>
+                            a.applicationId === id
+                              ? { ...a, status: newStatus }
+                              : a,
+                          ),
+                        );
+                      }}
+                    />
                   </td>
                 </tr>
               ))
