@@ -43,7 +43,7 @@ const Education = ({ userId, editable }) => {
             <div key={index} className="relative">
               
               {/* Timeline Dot */}
-              <span className="absolute -left-[11px] top-2 w-4 h-4 bg-indigo-600 rounded-full"></span>
+              <span className="absolute -left-2.75 top-2 w-4 h-4 bg-indigo-600 rounded-full"></span>
 
               <div className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition">
                 <h4 className="text-lg font-semibold text-gray-800">

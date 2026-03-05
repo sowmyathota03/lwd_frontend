@@ -14,6 +14,14 @@ export const getMyApplications = (page = 0, size = 10) => {
   });
 };
 
+// GET applications by Job ID (ADMIN / RECRUITER)
+export const getApplicationsByJobId = (jobId, page = 0, size = 10) => {
+  return axiosInstance.get(`/job-applications/job/${jobId}`, {
+    params: { page, size },
+  });
+};
+
+
 
 /* ==================================================
    ADMIN APIs

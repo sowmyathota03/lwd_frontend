@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import JobCard from "../../components/jobs/JobCards";
 import JobSearchBlock from "../../components/jobs/JobSearchBlock";
@@ -15,23 +16,21 @@ import {
 import JobSkeleton from "../../components/jobs/JobSkeleton";
 import Loader from "../../components/common/Loader";
 
-/* ================= CLEAN PROFESSIONAL ANIMATION ================= */
+/* ================= ANIMATION ================= */
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.35,
-      ease: "easeOut",
-    },
+    transition: { duration: 0.35, ease: "easeOut" },
   },
 };
 
 function Jobs() {
   const { type } = useParams();
   const [searchParamsUrl] = useSearchParams();
+  const observer = useRef(null);
 
   /* ================= QUERY PARAMS ================= */
 
@@ -46,17 +45,6 @@ function Jobs() {
   const lwdPreferredParam = searchParamsUrl.get("lwdPreferred");
   const industryParam = searchParamsUrl.get("industry");
 
-  const [jobs, setJobs] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [page, setPage] = useState(0);
-  const [last, setLast] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [totalCount, setTotalCount] = useState(0);
-
-  const observer = useRef(null);
-
   const isSearchMode =
     keywordParam ||
     locationParam ||
@@ -69,148 +57,100 @@ function Jobs() {
     industryParam ||
     companyIdParam;
 
-  /* ================= RESET ON FILTER CHANGE ================= */
+  /* ================= INFINITE QUERY ================= */
 
-  useEffect(() => {
-    setJobs([]);
-    setPage(0);
-    setLast(false);
-    setInitialLoading(true);
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, [
-    type,
-    keywordParam,
-    locationParam,
-    companyParam,
-    minExpParam,
-    maxExpParam,
-    jobTypeParam,
-    noticePreferenceParam,
-    lwdPreferredParam,
-    industryParam,
-    companyIdParam,
-  ]);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: [
+      "jobs",
+      type,
+      keywordParam,
+      locationParam,
+      companyParam,
+      minExpParam,
+      maxExpParam,
+      jobTypeParam,
+      noticePreferenceParam,
+      lwdPreferredParam,
+      industryParam,
+      companyIdParam,
+    ],
+    queryFn: async ({ pageParam = 0 }) => {
+      let response;
 
-  /* ================= FETCH JOBS ================= */
-
-  useEffect(() => {
-    const fetchJobs = async () => {
-      if (last || loading) return;
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        let response;
-
-        if (companyIdParam) {
-          response = await getJobsByCompany(companyIdParam, page);
-        } else if (isSearchMode) {
-          response = await searchJobs({
-            keyword: keywordParam,
-            location: locationParam,
-            companyName: companyParam,
-            minExp: minExpParam,
-            maxExp: maxExpParam,
-            jobType: jobTypeParam,
-            noticePreference: noticePreferenceParam,
-            lwdPreferred: lwdPreferredParam,
-            industry: industryParam,
-            page,
-          });
-        } else if (type) {
-          response = await getJobsByIndustry(type, page);
-        } else {
-          response = await getAllJobs(page);
-        }
-
-        const data = response.data;
-
-        setTotalCount(data.totalElements || 0);
-
-        if (!data.content || data.content.length === 0) {
-          setLast(true);
-          return;
-        }
-
-        setJobs((prev) => {
-          const newJobs = data.content.filter(
-            (newJob) => !prev.some((existing) => existing.id === newJob.id)
-          );
-          return [...prev, ...newJobs];
+      if (companyIdParam) {
+        response = await getJobsByCompany(companyIdParam, pageParam);
+      } else if (isSearchMode) {
+        response = await searchJobs({
+          keyword: keywordParam,
+          location: locationParam,
+          companyName: companyParam,
+          minExp: minExpParam,
+          maxExp: maxExpParam,
+          jobType: jobTypeParam,
+          noticePreference: noticePreferenceParam,
+          lwdPreferred: lwdPreferredParam,
+          industry: industryParam,
+          page: pageParam,
         });
-
-        setLast(data.last);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load jobs.");
-      } finally {
-        setLoading(false);
-        setInitialLoading(false);
+      } else if (type) {
+        response = await getJobsByIndustry(type, pageParam);
+      } else {
+        response = await getAllJobs(pageParam);
       }
-    };
 
-    fetchJobs();
-  }, [
-    page,
-    type,
-    keywordParam,
-    locationParam,
-    companyParam,
-    minExpParam,
-    maxExpParam,
-    jobTypeParam,
-    noticePreferenceParam,
-    lwdPreferredParam,
-    industryParam,
-    companyIdParam,
-  ]);
+      return response.data;
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage.last) return undefined;
+      return pages.length;
+    },
+    keepPreviousData: true,
+  });
 
-  /* ================= PRODUCTION INFINITE SCROLL ================= */
+  /* ================= FLATTEN DATA ================= */
+
+  const jobs = data?.pages.flatMap((page) => page.content) || [];
+  const totalCount = data?.pages[0]?.totalElements || 0;
+
+  /* ================= INFINITE SCROLL ================= */
 
   const lastJobRef = useCallback(
     (node) => {
-      if (loading || last || initialLoading) return;
+      if (isFetchingNextPage || !hasNextPage) return;
 
       if (observer.current) observer.current.disconnect();
 
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            setPage((prev) => prev + 1);
-          }
-        },
-        {
-          root: null,
-          rootMargin: "200px",
-          threshold: 0.1,
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
         }
-      );
+      });
 
       if (node) observer.current.observe(node);
     },
-    [loading, last, initialLoading]
+    [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
 
   /* ================= FETCH CATEGORIES ================= */
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getTopCategories();
-        setCategories(
-          response.data.map((cat) => ({
-            name: cat,
-            slug: cat.toLowerCase(),
-          }))
-        );
-      } catch (err) {
-        console.error("Failed to load categories");
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  const { data: categoriesData } = useQuery({
+    queryKey: ["topCategories"],
+    queryFn: async () => {
+      const response = await getTopCategories();
+      return response.data.map((cat) => ({
+        name: cat,
+        slug: cat.toLowerCase(),
+      }));
+    },
+    staleTime: 10 * 60 * 1000,
+  });
 
   /* ================= TITLE ================= */
 
@@ -228,10 +168,10 @@ function Jobs() {
     <>
       <JobSearchBlock />
 
-      {!isSearchMode && (
+      {!isSearchMode && categoriesData && (
         <PopularJobs
           title="Popular Job Categories"
-          categories={categories}
+          categories={categoriesData}
         />
       )}
 
@@ -250,27 +190,44 @@ function Jobs() {
           </h2>
         </div>
 
-        {error && (
+        {isError && (
           <p className="text-center text-red-500 font-medium mb-4">
-            {error}
+            Failed to load jobs.
           </p>
         )}
 
         {/* GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 max-w-5xl mx-auto auto-rows-fr">
-          {jobs.map((job) => (
-            <motion.div
-              key={job.id}
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-              whileHover={{ y: -4 }}
-            >
-              <JobCard job={job} />
-            </motion.div>
-          ))}
+          {jobs.map((job, index) => {
+            if (index === jobs.length - 1) {
+              return (
+                <motion.div
+                  ref={lastJobRef}
+                  key={job.id}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  whileHover={{ y: -4 }}
+                >
+                  <JobCard job={job} />
+                </motion.div>
+              );
+            }
 
-          {initialLoading &&
+            return (
+              <motion.div
+                key={job.id}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover={{ y: -4 }}
+              >
+                <JobCard job={job} />
+              </motion.div>
+            );
+          })}
+
+          {isLoading &&
             Array.from({ length: 6 }).map((_, index) => (
               <div key={`initial-${index}`}>
                 <JobSkeleton />
@@ -278,19 +235,13 @@ function Jobs() {
             ))}
         </div>
 
-        {/* LOADER */}
-        {loading && !initialLoading && (
+        {isFetchingNextPage && (
           <div className="mt-6">
             <Loader fullScreen={false} />
           </div>
         )}
 
-        {/* SENTINEL DIV (PRODUCTION FIX) */}
-        {!last && !initialLoading && (
-          <div ref={lastJobRef} className="h-10" />
-        )}
-
-        {last && !initialLoading && (
+        {!hasNextPage && !isLoading && (
           <p className="mt-8 text-center text-gray-500 font-medium">
             No more jobs.
           </p>

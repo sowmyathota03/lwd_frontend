@@ -8,9 +8,11 @@ export const getAllCompanies = (page = 0, size = 5) => {
 };
 
 
-export const getCompanyById = (companyId) => {
-  return axiosInstance.get(`/companies/${companyId}`);
+export const getCompanyById = async (companyId) => {
+  const response = await axiosInstance.get(`/companies/${companyId}`);
+  return response.data;
 };
+
 
 
 // 🔹 Create company (ADMIN, RECRUITER_ADMIN)
@@ -32,3 +34,12 @@ export const getMyCompany = () =>
 // 🔹 Get company by creator user ID (Admin use)
 export const getCompanyByCreatedByUserId = (userId) =>
   axiosInstance.get(`/companies/created-by/${userId}`).then((res) => res.data);
+
+// 🔹 Get company analytics by company ID (Admin / Recruiter Admin)
+export const getCompanyAnalytics = async (companyId) => {
+  const response = await axiosInstance.get(
+    `/companies/${companyId}/analytics`
+  );
+  return response.data;
+};
+

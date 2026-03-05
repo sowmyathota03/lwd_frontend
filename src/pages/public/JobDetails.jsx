@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { getJobById, getSimilarJobs } from "../../api/JobApi";
 import Loader from "../../components/common/Loader";
 import JobCards from "../../components/jobs/JobCards";
@@ -8,52 +8,42 @@ function JobDetails() {
   const { jobId } = useParams();
   const navigate = useNavigate();
 
-  const [job, setJob] = useState(null);
-  const [similarJobs, setSimilarJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    data: job,
+    isLoading: jobLoading,
+    isError: jobError,
+  } = useQuery({
+    queryKey: ["jobDetails", jobId],
+    queryFn: () => getJobById(jobId).then((res) => res.data),
+    enabled: !!jobId,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const jobResponse = await getJobById(jobId);
-        setJob(jobResponse.data);
-
-        try {
-          const similarResponse = await getSimilarJobs(jobId);
-          setSimilarJobs(similarResponse.data || []);
-        } catch {
-          console.log("No similar jobs found");
-        }
-
-      } catch {
-        setError("Failed to load job details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [jobId]);
+  const {
+    data: similarJobs = [],
+    isLoading: similarLoading,
+  } = useQuery({
+    queryKey: ["similarJobs", jobId],
+    queryFn: () => getSimilarJobs(jobId).then((res) => res.data),
+    enabled: !!jobId,
+  });
 
   const handleApplyClick = () => {
     navigate(`/apply/${job.id}`);
   };
 
-  if (loading) return <Loader />;
-  if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
+  if (jobLoading) return <Loader />;
+  if (jobError)
+    return (
+      <p className="text-red-500 text-center mt-10">
+        Failed to load job details.
+      </p>
+    );
   if (!job) return <p className="text-center mt-10">No job found.</p>;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-100 via-indigo-100 to-green-200 py-12 px-4">
       <div className="max-w-5xl mx-auto space-y-10">
-
-        {/* JOB DETAILS */}
         <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
-
-          {/* Header */}
           <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">
@@ -75,7 +65,6 @@ function JobDetails() {
               </div>
             </div>
 
-            {/* Apply Button (Blue kept same) */}
             <button
               onClick={handleApplyClick}
               className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition font-medium"
@@ -86,9 +75,7 @@ function JobDetails() {
 
           <div className="border-t border-gray-200 my-6"></div>
 
-          {/* Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-10">
-
             {job.minExperience !== null && job.maxExperience !== null && (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Experience</span>
@@ -131,7 +118,9 @@ function JobDetails() {
 
             {job.noticePreference && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Notice Preference</span>
+                <span className="text-sm text-gray-500">
+                  Notice Preference
+                </span>
                 <span className="text-gray-300">•</span>
                 <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {job.noticePreference.replaceAll("_", " ")}
@@ -141,7 +130,9 @@ function JobDetails() {
 
             {job.maxNoticePeriod > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Max Notice Period</span>
+                <span className="text-sm text-gray-500">
+                  Max Notice Period
+                </span>
                 <span className="text-gray-300">•</span>
                 <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {job.maxNoticePeriod} Days
@@ -151,7 +142,9 @@ function JobDetails() {
 
             {job.lwdPreferred && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">LWD Preference</span>
+                <span className="text-sm text-gray-500">
+                  LWD Preference
+                </span>
                 <span className="text-gray-300">•</span>
                 <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full font-semibold">
                   Yes (Last Working Day Preferred)
@@ -161,18 +154,18 @@ function JobDetails() {
 
             {job.createdAt && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Posted On</span>
+                <span className="text-sm text-gray-500">
+                  Posted On
+                </span>
                 <span className="text-gray-300">•</span>
                 <span className="px-3 py-1 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-full">
                   {new Date(job.createdAt).toLocaleDateString("en-IN")}
                 </span>
               </div>
             )}
-
           </div>
         </div>
 
-        {/* JOB DESCRIPTION */}
         <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Job Description
@@ -182,12 +175,13 @@ function JobDetails() {
           </p>
         </div>
 
-        {/* SIMILAR JOBS */}
         {similarJobs.length > 0 && (
           <div>
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
               Similar Jobs
             </h2>
+
+            {similarLoading && <Loader />}
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {similarJobs.map((item) => (
@@ -196,7 +190,6 @@ function JobDetails() {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

@@ -1,16 +1,21 @@
 import { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router-dom";
 import {
   createCompany,
   updateCompany,
   getMyCompany,
+  getCompanyById,
 } from "../../api/CompanyApi";
 import { AuthContext } from "../../context/AuthContext";
 import Loader from "../common/Loader";
+import CompanyAnalytics from "../company/CompanyAnalytics";
 
 export default function CompanyProfile() {
   const [company, setCompany] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const { user } = useContext(AuthContext);
+
+  const { companyId } = useParams();
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -28,12 +33,20 @@ export default function CompanyProfile() {
 
   useEffect(() => {
     loadCompany();
-  }, []);
+  }, [companyId]);
 
   const loadCompany = async () => {
     try {
       setLoading(true);
-      const data = await getMyCompany();
+      let data;
+      if (companyId) {
+        // 🔹 Admin viewing specific company
+        data = await getCompanyById(companyId);
+      } else {
+        // 🔹 Recruiter viewing own company
+        data = await getMyCompany();
+        console.log("My Company:", data); 
+      }
 
       setCompany(data);
       setFormData({
@@ -91,7 +104,6 @@ export default function CompanyProfile() {
 
   const canEdit = user?.role === "ADMIN" || user?.role === "RECRUITER_ADMIN";
 
-
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -102,7 +114,6 @@ export default function CompanyProfile() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-4 md:py-6">
-
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-red-100 text-red-700">
           {error}
@@ -117,7 +128,6 @@ export default function CompanyProfile() {
 
       {!isEditing && company && (
         <div className="bg-white shadow-xl rounded-2xl p-6 md:p-8 space-y-6">
-
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden text-2xl font-bold text-blue-600">
               {company.logoUrl ? (
@@ -135,19 +145,35 @@ export default function CompanyProfile() {
               <h2 className="text-xl md:text-2xl font-bold text-gray-800">
                 {company.companyName}
               </h2>
-              <span className={`inline-block mt-2 px-3 py-1 text-sm rounded-full ${
-                company.isActive
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}>
+              <span
+                className={`inline-block mt-2 px-3 py-1 text-sm rounded-full ${
+                  company.isActive
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
                 {company.isActive ? "Active" : "Inactive"}
               </span>
+            </div>
+            <div>
+              {canEdit && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+                >
+                  Edit Company
+                </button>
+              )}
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
-            <p><strong>Website:</strong> {company.website || "-"}</p>
-            <p><strong>Location:</strong> {company.location || "-"}</p>
+            <p>
+              <strong>Website:</strong> {company.website || "-"}
+            </p>
+            <p>
+              <strong>Location:</strong> {company.location || "-"}
+            </p>
           </div>
 
           <div>
@@ -157,15 +183,7 @@ export default function CompanyProfile() {
             </p>
           </div>
 
-          {canEdit && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg"
-            >
-              Edit Company
-            </button>
-          )}
-
+          <CompanyAnalytics companyId={company.id} />
         </div>
       )}
 

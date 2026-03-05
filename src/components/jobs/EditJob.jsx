@@ -1,13 +1,11 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getJobById, updateJob } from "../../api/JobApi";
-import { AuthContext } from "../../context/AuthContext";
 
 export default function EditJob() {
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -25,30 +23,32 @@ export default function EditJob() {
 
   useEffect(() => {
     if (state) {
-      setFormData({
-        ...state,
-        salary: state.salary ?? "",
-        minExperience: state.minExperience ?? "",
-        maxExperience: state.maxExperience ?? "",
-        maxNoticePeriod: state.maxNoticePeriod ?? "",
-        lwdPreferred: state.lwdPreferred ?? false,
-      });
+      mapJobToForm(state);
     } else {
       fetchJob();
     }
   }, []);
 
+  const mapJobToForm = (job) => {
+    setFormData({
+      title: job?.title ?? "",
+      description: job?.description ?? "",
+      location: job?.location ?? "",
+      salary: job?.salary ?? "",
+      industry: job?.industry ?? "",
+      minExperience: job?.minExperience ?? "",
+      maxExperience: job?.maxExperience ?? "",
+      jobType: job?.jobType ?? "",
+      noticePreference: job?.noticePreference ?? "",
+      maxNoticePeriod: job?.maxNoticePeriod ?? "",
+      lwdPreferred: job?.lwdPreferred ?? false,
+    });
+  };
+
   const fetchJob = async () => {
     try {
       const job = await getJobById(id);
-      setFormData({
-        ...job,
-        salary: job.salary ?? "",
-        minExperience: job.minExperience ?? "",
-        maxExperience: job.maxExperience ?? "",
-        maxNoticePeriod: job.maxNoticePeriod ?? "",
-        lwdPreferred: job.lwdPreferred ?? false,
-      });
+      mapJobToForm(job);
     } catch (err) {
       alert("❌ Failed to load job");
     }
@@ -56,10 +56,11 @@ export default function EditJob() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
   const handleUpdate = async (e) => {
@@ -82,16 +83,7 @@ export default function EditJob() {
     try {
       await updateJob(id, payload);
       alert("✅ Job updated successfully");
-      if (user?.role === "ADMIN") {
-        navigate("/admin/managejob");
-      } else if (user?.role === "RECRUITER") {
-        navigate("/recruiter/managejob");
-      } else if (user?.role === "RECRUITER_ADMIN") {
-        navigate("/recruiter-admin/managejob");
-      }else{
-        navigate("/jobs");
-      }
-
+      navigate(-1);
     } catch (err) {
       alert("❌ Update failed");
     }
@@ -109,21 +101,21 @@ export default function EditJob() {
 
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Job Title <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium mb-2">
+            Job Title *
           </label>
           <input
             name="title"
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full px-4 py-2 rounded-lg border"
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium mb-2">
             Description
           </label>
           <textarea
@@ -131,27 +123,27 @@ export default function EditJob() {
             rows="4"
             value={formData.description}
             onChange={handleChange}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+            className="w-full px-4 py-2 rounded-lg border resize-none"
           />
         </div>
 
         {/* Location & Salary */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Location <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2">
+              Location *
             </label>
             <input
               name="location"
               value={formData.location}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Salary
             </label>
             <input
@@ -159,36 +151,36 @@ export default function EditJob() {
               name="salary"
               value={formData.salary}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             />
           </div>
         </div>
 
         {/* Industry & Job Type */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Industry <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2">
+              Industry *
             </label>
             <input
               name="industry"
               value={formData.industry}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Job Type <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2">
+              Job Type *
             </label>
             <select
               name="jobType"
               value={formData.jobType}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             >
               <option value="">Select</option>
               <option value="FULL_TIME">Full Time</option>
@@ -200,46 +192,45 @@ export default function EditJob() {
         </div>
 
         {/* Experience */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Min Experience
+            <label className="block text-sm font-medium mb-2">
+              Min Experience (Years)
             </label>
             <input
               type="number"
               name="minExperience"
               value={formData.minExperience}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Max Experience
+            <label className="block text-sm font-medium mb-2">
+              Max Experience (Years)
             </label>
             <input
               type="number"
               name="maxExperience"
               value={formData.maxExperience}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             />
           </div>
         </div>
 
-        {/* Notice & LWD */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Notice Preference & Max Notice Period */}
+        <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Notice Preference <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2">
+              Notice Preference
             </label>
             <select
               name="noticePreference"
               value={formData.noticePreference}
               onChange={handleChange}
-              required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             >
               <option value="">Select</option>
               <option value="SERVING_NOTICE">Serving Notice</option>
@@ -250,7 +241,7 @@ export default function EditJob() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Max Notice Period (Days)
             </label>
             <input
@@ -258,27 +249,27 @@ export default function EditJob() {
               name="maxNoticePeriod"
               value={formData.maxNoticePeriod}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 rounded-lg border"
             />
           </div>
         </div>
 
+        {/* LWD Preferred */}
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
             name="lwdPreferred"
             checked={formData.lwdPreferred}
             onChange={handleChange}
-            className="h-4 w-4"
           />
-          <label className="text-sm font-medium text-gray-700">
+          <label className="text-sm font-medium">
             LWD Preferred
           </label>
         </div>
 
         <button
           type="submit"
-          className="w-full py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="w-full py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700"
         >
           Update Job
         </button>

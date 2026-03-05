@@ -27,6 +27,14 @@ export const getJobSeekerByUserId = (userId) => {
 export const getMySkills = () =>
   axiosInstance.get("/job-seekers/myskills");
 
+
+
+// ===============================
+// 🔹 Get Skills By UserId
+// ===============================
+export const getSkillsById = (userId) =>
+  axiosInstance.get(`/job-seekers/skills/${userId}`);
+
 // ===============================
 // 🔹 Update My Skills
 // ===============================

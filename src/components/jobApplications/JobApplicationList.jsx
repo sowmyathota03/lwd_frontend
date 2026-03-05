@@ -1,10 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
-import {
-  getApplicationsByRole,
-  changeApplicationStatus,
-} from "../../api/JobApplicationApi";
+import { getApplicationsByRole } from "../../api/JobApplicationApi";
 import Loader from "../common/Loader";
 import { useNavigate } from "react-router-dom";
+import ApplicationStatusDropdown from "./ApplicationStatusDropdown";
 
 export default function JobApplicationList() {
   const [applications, setApplications] = useState([]);
@@ -12,18 +10,8 @@ export default function JobApplicationList() {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [updatingId, setUpdatingId] = useState(null);
-  const navigate = useNavigate();
 
-  const statusOptions = [
-    "APPLIED",
-    "SHORTLISTED",
-    "INTERVIEW_SCHEDULED",
-    "SELECTED",
-    "REJECTED",
-    "ON_HOLD",
-    "HIRED",
-  ];
+  const navigate = useNavigate();
 
   const fetchApplications = useCallback(async () => {
     try {
@@ -46,24 +34,6 @@ export default function JobApplicationList() {
     fetchApplications();
   }, [fetchApplications]);
 
-  const handleStatusUpdate = async (applicationId, status) => {
-    try {
-      setUpdatingId(applicationId);
-
-      await changeApplicationStatus(applicationId, status);
-
-      setApplications((prev) =>
-        prev.map((app) =>
-          app.applicationId === applicationId ? { ...app, status } : app
-        )
-      );
-    } catch (error) {
-      console.error("Failed to update status", error);
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
   const handlePrevious = () => {
     if (page > 0) setPage((prev) => prev - 1);
   };
@@ -74,14 +44,12 @@ export default function JobApplicationList() {
 
   return (
     <div className="md:p-4 p-0">
-      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
           Job Applications
         </h2>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-xl shadow-md overflow-x-auto">
         <table className="min-w-full text-sm text-left border-collapse">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
@@ -116,20 +84,26 @@ export default function JobApplicationList() {
                   className="hover:bg-gray-50 transition"
                 >
                   <td
-                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium"
-                    onClick={() => navigate(`/profile/${app.applicationId}`)}
+                    className="text-blue-600 p-2 cursor-pointer hover:underline font-medium whitespace-nowrap"
+                    onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
                   >
                     {app.applicantName}
                   </td>
 
                   <td
                     className="text-blue-600 p-2 cursor-pointer hover:underline"
-                    onClick={() => navigate(`/profile/${app.applicationId}`)}
+                    onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
                   >
                     {app.email}
                   </td>
 
-                  <td className="px-4 py-2 truncate max-w-xs">
+                  <td
+                    className="px-4 py-2 truncate max-w-xs text-blue-600 cursor-pointer hover:underline"
+                    onClick={() =>
+                      app.job?.id &&
+                      navigate(`/admin/managejob/${app.job.id}/analytics`)
+                    }
+                  >
                     {app.job?.title || "-"}
                   </td>
 
@@ -137,15 +111,14 @@ export default function JobApplicationList() {
                     {app.company?.companyName || "-"}
                   </td>
 
-                  {/* STATUS BADGE */}
                   <td className="px-4 py-2">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
                         app.status === "SELECTED" || app.status === "HIRED"
                           ? "bg-green-100 text-green-700"
                           : app.status === "REJECTED"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-gray-100 text-gray-700"
                       }`}
                     >
                       {app.status}
@@ -158,30 +131,20 @@ export default function JobApplicationList() {
                       : "-"}
                   </td>
 
-                  {/* ACTION */}
                   <td className="px-4 py-2">
-                    <div className="flex items-center gap-2">
-                      <select
-                        className="border rounded-md px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        value={app.status}
-                        onChange={(e) =>
-                          handleStatusUpdate(app.applicationId, e.target.value)
-                        }
-                        disabled={updatingId === app.applicationId}
-                      >
-                        {statusOptions.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-
-                      {updatingId === app.applicationId && (
-                        <span className="text-xs text-blue-500 animate-pulse">
-                          Updating...
-                        </span>
-                      )}
-                    </div>
+                    <ApplicationStatusDropdown
+                      applicationId={app.applicationId}
+                      currentStatus={app.status}
+                      onStatusUpdated={(id, newStatus) => {
+                        setApplications((prev) =>
+                          prev.map((a) =>
+                            a.applicationId === id
+                              ? { ...a, status: newStatus }
+                              : a
+                          )
+                        );
+                      }}
+                    />
                   </td>
                 </tr>
               ))
@@ -190,7 +153,6 @@ export default function JobApplicationList() {
         </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center px-6 py-4 border-t gap-4 border-gray-200">
           <button

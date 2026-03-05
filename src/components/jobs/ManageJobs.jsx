@@ -1,5 +1,6 @@
 // src/pages/jobs/ManageJobs.jsx
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import JobActions from "./JobActions";
 import { getMyJobs } from "../../api/JobApi";
 import Loader from "../common/Loader";
@@ -9,6 +10,8 @@ export default function ManageJobs() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   // ================= FETCH JOBS =================
   const fetchJobs = useCallback(async (pageNumber = 0) => {
@@ -32,19 +35,20 @@ export default function ManageJobs() {
     fetchJobs(0);
   }, [fetchJobs]);
 
-
-  const handleDelete = (id) => {
+ const handleDelete = async (id, refresh = false) => {
     setJobs((prev) => prev.filter((job) => job.id !== id));
+
+    if (refresh) {
+      await fetchJobs(page);
+    }
   };
+
 
   const handleStatusChange = (id, newStatus) => {
     setJobs((prev) =>
-      prev.map((job) =>
-        job.id === id ? { ...job, status: newStatus } : job
-      )
+      prev.map((job) => (job.id === id ? { ...job, status: newStatus } : job)),
     );
   };
-
 
   return (
     <div className="bg-white shadow-sm rounded-lg border border-gray-200">
@@ -63,6 +67,9 @@ export default function ManageJobs() {
               <th className="px-4 py-2">Experience</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2 hidden md:table-cell">Created</th>
+              <th className="px-4 py-2 hidden md:table-cell">
+                Total Applications
+              </th>
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
@@ -72,7 +79,7 @@ export default function ManageJobs() {
             {loading ? (
               <tr>
                 <td colSpan="8" className="text-center py-4 text-gray-500">
-                 <Loader fullScreen={false} />
+                  <Loader fullScreen={false} />
                 </td>
               </tr>
             ) : jobs.length === 0 ? (
@@ -86,26 +93,40 @@ export default function ManageJobs() {
                 <tr
                   key={job.id}
                   className={`transition
-                ${job.status === "CLOSED" ? "bg-red-200" : "hover:bg-gray-50"}
-              `}
+                    ${
+                      job.deleted
+                        ? "bg-red-400 text-gray-950 opacity-80"
+                        : job.status === "CLOSED"
+                          ? "bg-red-200"
+                          : "hover:bg-gray-50"
+                    }
+                  `}
                 >
-                  <td className="px-4 py-2 font-medium text-gray-800 truncate max-w-xs">
+                  <td
+                    className="px-4 py-2 font-medium truncate max-w-xs cursor-pointer hover:underline"
+                    onClick={() =>
+                      navigate(`/admin/managejob/${job.id}/analytics`)
+                    }
+                  >
                     {job.title}
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap">
                     {job.location || "-"}
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600 truncate max-w-xs">
+                  <td className="px-4 py-2 truncate max-w-xs cursor-pointer hover:underline"
+                  onClick={() =>
+                        navigate(`/admin/${job.company?.id}/companyprofile`)
+                      }>
                     {job.company?.companyName || "-"}
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap">
                     {job.jobType || "-"}
                   </td>
 
-                  <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap">
                     {job.minExperience ?? 0} - {job.maxExperience ?? 0} yrs
                   </td>
 
@@ -124,14 +145,23 @@ export default function ManageJobs() {
                     </span>
                   </td>
 
-                  <td className="px-4 py-2 text-gray-500 hidden md:table-cell whitespace-nowrap">
+                  <td className="px-4 py-2  hidden md:table-cell whitespace-nowrap">
                     {job.createdAt
                       ? new Date(job.createdAt).toLocaleDateString("en-IN")
                       : "-"}
                   </td>
 
+                  <td className="px-4 py-2 text-center">
+                    {job.totalApplications ?? 0}
+                  </td>
+
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <JobActions job={job} onDelete={handleDelete} onStatusChange={handleStatusChange} page={page} />
+                    <JobActions
+                      job={job}
+                      onDelete={handleDelete}
+                      onStatusChange={handleStatusChange}
+                      page={page}
+                    />
                   </td>
                 </tr>
               ))
@@ -151,7 +181,7 @@ export default function ManageJobs() {
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-700">
+            <span className="text-sm">
               Page {page + 1} of {totalPages}
             </span>
           </div>

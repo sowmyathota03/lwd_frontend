@@ -4,10 +4,11 @@ import {
   getMySkills,
   updateMySkills,
   getAllSkills,
+  getSkillsById, // ✅ Added
 } from "../../api/JobSeekerApi";
 import { Search } from "lucide-react";
 
-const JobSeekerSkills = ({ editable }) => {
+const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -19,9 +20,16 @@ const JobSeekerSkills = ({ editable }) => {
 
   const normalizeSkill = (skill) => skill.trim().toLowerCase();
 
+  // ==========================================
+  // 🔹 Load Skills (Own or Other Profile)
+  // ==========================================
   useEffect(() => {
-    fetchMySkills();
-  }, []);
+    if (isOwnProfile) {
+      fetchMySkills();
+    } else if (userId) {
+      fetchSkillsByUserId(userId);
+    }
+  }, [isOwnProfile, userId]);
 
   const fetchMySkills = async () => {
     try {
@@ -34,6 +42,20 @@ const JobSeekerSkills = ({ editable }) => {
     }
   };
 
+  const fetchSkillsByUserId = async (id) => {
+    try {
+      const res = await getSkillsById(id);
+      const normalized = res.data.map(normalizeSkill);
+      setMySkills(normalized);
+      setSelectedSkills(normalized);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ==========================================
+  // 🔍 Fetch Suggested Skills (Editing Mode)
+  // ==========================================
   useEffect(() => {
     if (!editing) return;
 
@@ -58,6 +80,9 @@ const JobSeekerSkills = ({ editable }) => {
     }
   };
 
+  // ==========================================
+  // 🧠 Skill Manipulation
+  // ==========================================
   const addSkill = (skillName) => {
     const normalized = normalizeSkill(skillName);
     if (!selectedSkills.includes(normalized)) {
@@ -77,6 +102,9 @@ const JobSeekerSkills = ({ editable }) => {
     }
   };
 
+  // ==========================================
+  // 💾 Save
+  // ==========================================
   const handleSave = async () => {
     try {
       setLoading(true);
@@ -98,9 +126,9 @@ const JobSeekerSkills = ({ editable }) => {
   return (
     <Section
       title="Skills"
-      editable={editable}
+      editable={editable && isOwnProfile} // ✅ Only own profile editable
       editing={editing}
-      onEdit={() => setEditing(true)}
+      onEdit={() => isOwnProfile && setEditing(true)}
     >
       {!editing ? (
         <div>
@@ -138,7 +166,7 @@ const JobSeekerSkills = ({ editable }) => {
             />
           </div>
 
-          {/* 🔥 Skill Suggestions */}
+          {/* 🔥 Suggested Skills */}
           <div>
             <h4 className="text-sm font-semibold text-gray-600 mb-3">
               Suggested Skills
