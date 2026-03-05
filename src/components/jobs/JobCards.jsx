@@ -13,6 +13,25 @@ function JobCards({ job, showApply = true, compact = false }) {
     navigate(`/apply/${job.id}`);
   };
 
+  // Save Job Function
+  const handleSaveJob = (e) => {
+    e.stopPropagation();
+
+    const savedJobs = JSON.parse(localStorage.getItem("savedJobs")) || [];
+
+    const alreadySaved = savedJobs.find((j) => j.id === job.id);
+
+    if (alreadySaved) {
+      alert("Job already saved");
+      return;
+    }
+
+    savedJobs.push(job);
+    localStorage.setItem("savedJobs", JSON.stringify(savedJobs));
+
+    alert("Job saved successfully");
+  };
+
   return (
     <div
       onClick={handleClick}
@@ -41,9 +60,8 @@ function JobCards({ job, showApply = true, compact = false }) {
           </p>
         )}
 
-        {/* Tags - All Same Gray Color */}
+        {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-3">
-          
           {job.minExperience !== null && job.maxExperience !== null && (
             <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
               {job.minExperience} - {job.maxExperience} yrs
@@ -102,15 +120,28 @@ function JobCards({ job, showApply = true, compact = false }) {
         </div>
       </div>
 
-      {/* Apply Button - Blue */}
-      {showApply && (
+      {/* Buttons */}
+      <div className="flex gap-3 mt-4">
+
+        {/* Apply Button */}
+        {showApply && (
+          <button
+            onClick={handleApply}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium p-2 rounded transition"
+          >
+            Apply Now
+          </button>
+        )}
+
+        {/* Save Button */}
         <button
-          onClick={handleApply}
-          className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium p-2 rounded transition"
+          onClick={handleSaveJob}
+          className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded transition"
         >
-          Apply Now
+          Save
         </button>
-      )}
+
+      </div>
     </div>
   );
 }

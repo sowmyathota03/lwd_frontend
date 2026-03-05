@@ -24,6 +24,7 @@ import CareerAdvice from './components/jobs/CareerAdvice';
 import ApplyJob from './components/jobs/ApplyJob';
 import Suggestions from './components/jobs/Suggestions';
 import MyApplications from './components/jobs/MyApplications';
+import SavedJobs from './components/jobs/SavedJobs';
 
 import Education from './pages/profile/components/Education';
 import Internship from './pages/profile/components/Internship';
@@ -77,6 +78,7 @@ function App() {
       <Route path="/JobCard" element={<JobCard/>}/>
       <Route path="/JobSearchBlock" element={<JobSearchBlock/>}/>
       <Route path="/my/applications" element={<MyApplications/>}/>
+      <Route path="/saved-jobs" element={<SavedJobs />} />
 
       <Route path="/Companies" element={<Companies/>}/>
       <Route path="/education" element={<Education/>}/>
