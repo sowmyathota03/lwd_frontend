@@ -1,24 +1,45 @@
-import { useEffect, useState } from "react";
-// import { getProjectsByUserId, getMyProjects } from "../../../api/ProjectApi";
+import { useState, useEffect } from "react";
+import {
+  getMyProjects,
+  getProjectsByUserId,
+  createProject,
+  updateProject
+} from "../../api/ProjectApi";
+
+import { Section, Grid, Input, Buttons } from "./Helpers";
 
 const Project = ({ userId, editable }) => {
+
   const [projectList, setProjectList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [editing, setEditing] = useState(false);
+  const [forms, setForms] = useState([]);
+
+  const initialForm = {
+    projectTitle: "",
+    technologies: "",
+    startDate: "",
+    endDate: "",
+    description: "",
+    githubLink: "",
+    liveLink: ""
+  };
+
+  /* LOAD PROJECTS */
 
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        let res;
 
-        if (!userId) {
-          res = await getMyProjects();
-        } else {
-          res = await getProjectsByUserId(userId);
-        }
+        const res = !userId
+          ? await getMyProjects()
+          : await getProjectsByUserId(userId);
 
-        setProjectList(res?.data || []);
-      } catch (error) {
-        console.error("Project load error", error);
+        setProjectList(res || []);
+
+      } catch (err) {
+        console.error("Project load error:", err);
       } finally {
         setLoading(false);
       }
@@ -27,87 +48,260 @@ const Project = ({ userId, editable }) => {
     loadProjects();
   }, [userId]);
 
-  if (loading) return <p className="p-4 text-gray-500">Loading projects...</p>;
+  /* EDIT ALL */
+
+  const handleEditAll = () => {
+
+    const allForms = projectList.map((proj) => ({
+      id: proj.id,
+      data: { ...proj }
+    }));
+
+    setForms(allForms);
+    setEditing(true);
+  };
+
+  /* ADD FORM */
+
+  const handleAddForm = () => {
+
+    setForms([
+      ...forms,
+      { id: Date.now(), data: initialForm }
+    ]);
+
+    setEditing(true);
+  };
+
+  /* INPUT CHANGE */
+
+  const handleChange = (id, e) => {
+
+    setForms(
+      forms.map((f) =>
+        f.id === id
+          ? { ...f, data: { ...f.data, [e.target.name]: e.target.value } }
+          : f
+      )
+    );
+  };
+
+  /* SAVE */
+
+  const handleSave = async (id) => {
+
+    const form = forms.find((f) => f.id === id);
+    if (!form) return;
+
+    try {
+
+      const exists = projectList.find((proj) => proj.id === id);
+
+      if (exists) {
+
+        await updateProject(id, form.data);
+
+        setProjectList(
+          projectList.map((proj) =>
+            proj.id === id ? { ...proj, ...form.data } : proj
+          )
+        );
+
+      } else {
+
+        const res = await createProject(form.data);
+
+        setProjectList([...projectList, res]);
+      }
+
+      const remainingForms = forms.filter((f) => f.id !== id);
+      setForms(remainingForms);
+
+      if (remainingForms.length === 0) {
+        setEditing(false);
+      }
+
+    } catch (err) {
+      console.error("Save project error:", err);
+    }
+  };
+
+  /* CANCEL */
+
+  const handleCancel = (id) => {
+
+    const remainingForms = forms.filter((f) => f.id !== id);
+    setForms(remainingForms);
+
+    if (remainingForms.length === 0) {
+      setEditing(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="p-6 text-gray-500">Loading projects...</div>;
+  }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
-      <h3 className="text-xl font-semibold mb-6 text-gray-800">
-        Projects
-      </h3>
-
-      {projectList.length === 0 ? (
-        <p className="text-gray-500">No projects added.</p>
-      ) : (
-        <div className="relative border-l-2 border-indigo-200 pl-6 space-y-8">
-          {projectList.map((project, index) => (
-            <div key={index} className="relative">
-
-              {/* Timeline Dot */}
-              <span className="absolute -left-[11px] top-2 w-4 h-4 bg-indigo-600 rounded-full"></span>
-
-              <div className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition">
-
-                {/* Project Title */}
-                <h4 className="text-lg font-semibold text-gray-800">
-                  {project.projectTitle}
-                </h4>
-
-                {/* Tech Stack */}
-                {project.technologies && (
-                  <p className="text-indigo-600 font-medium mt-1">
-                    {project.technologies}
-                  </p>
-                )}
-
-                {/* Duration */}
-                <p className="text-sm text-gray-500 mt-1">
-                  {project.startDate} - {project.endDate || "Ongoing"}
-                </p>
-
-                {/* Description */}
-                {project.description && (
-                  <p className="text-sm text-gray-600 mt-3 leading-relaxed">
-                    {project.description}
-                  </p>
-                )}
-
-                {/* Links */}
-                <div className="flex gap-4 mt-3">
-                  {project.githubLink && (
-                    <a
-                      href={project.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-indigo-600 hover:underline"
-                    >
-                      GitHub
-                    </a>
-                  )}
-
-                  {project.liveLink && (
-                    <a
-                      href={project.liveLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-indigo-600 hover:underline"
-                    >
-                      Live Demo
-                    </a>
-                  )}
-                </div>
-
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+    <Section
+      title="Projects"
+      editable={editable}
+      editing={editing}
+      onEdit={handleEditAll}
+    >
 
       {editable && (
-        <button className="mt-6 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+        <button
+          onClick={handleAddForm}
+          className="mb-4 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
+        >
           + Add Project
         </button>
       )}
-    </div>
+
+      <div className="space-y-4">
+
+        {/* FORMS */}
+
+        {forms.map((f) => (
+
+          <div key={f.id} className="p-4 border rounded-lg bg-gray-50">
+
+            <Grid mdCols={2} lgCols={2} className="gap-4">
+
+              <Input
+                label="Project Title"
+                name="projectTitle"
+                value={f.data.projectTitle}
+                onChange={(e) => handleChange(f.id, e)}
+              />
+
+              <Input
+                label="Technologies"
+                name="technologies"
+                value={f.data.technologies}
+                onChange={(e) => handleChange(f.id, e)}
+              />
+
+              <Input
+                label="Start Date"
+                name="startDate"
+                type="date"
+                value={f.data.startDate}
+                onChange={(e) => handleChange(f.id, e)}
+              />
+
+              <Input
+                label="End Date"
+                name="endDate"
+                type="date"
+                value={f.data.endDate}
+                onChange={(e) => handleChange(f.id, e)}
+              />
+
+              <Input
+                label="GitHub Link"
+                name="githubLink"
+                value={f.data.githubLink}
+                onChange={(e) => handleChange(f.id, e)}
+              />
+
+              <Input
+                label="Live Demo Link"
+                name="liveLink"
+                value={f.data.liveLink}
+                onChange={(e) => handleChange(f.id, e)}
+              />
+
+            </Grid>
+
+            <div className="mt-3">
+              <Input
+                label="Description"
+                name="description"
+                value={f.data.description}
+                onChange={(e) => handleChange(f.id, e)}
+              />
+            </div>
+
+            <Buttons
+              onCancel={() => handleCancel(f.id)}
+              onSave={() => handleSave(f.id)}
+              loading={false}
+            />
+
+          </div>
+        ))}
+
+        {/* PROJECT CARDS */}
+
+        {projectList
+          .filter((proj) => !forms.some((f) => f.id === proj.id))
+          .map((proj) => (
+
+            <div
+              key={proj.id}
+              className="bg-gray-50 p-4 rounded-lg hover:shadow-md transition"
+            >
+
+              <h3 className="text-lg font-semibold text-gray-800">
+                {proj.projectTitle}
+              </h3>
+
+              {proj.technologies && (
+                <p className="text-indigo-600 font-medium">
+                  {proj.technologies}
+                </p>
+              )}
+
+              <p className="text-sm text-gray-500 mt-1">
+                {proj.startDate} - {proj.endDate || "Ongoing"}
+              </p>
+
+              {proj.description && (
+                <p className="text-sm text-gray-500 mt-2">
+                  {proj.description}
+                </p>
+              )}
+
+              <div className="flex gap-4 mt-2">
+
+                {proj.githubLink && (
+                  <a
+                    href={proj.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-indigo-600 hover:underline"
+                  >
+                    GitHub
+                  </a>
+                )}
+
+                {proj.liveLink && (
+                  <a
+                    href={proj.liveLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-indigo-600 hover:underline"
+                  >
+                    Live Demo
+                  </a>
+                )}
+
+              </div>
+
+            </div>
+          ))}
+
+      </div>
+
+      {projectList.length === 0 && forms.length === 0 && (
+        <p className="text-gray-500 text-sm">
+          No project details added.
+        </p>
+      )}
+
+    </Section>
   );
 };
 
