@@ -33,18 +33,30 @@ export default function JobAnalytics() {
             </p>
           </div>
 
-          <div className="gap-2">
+          <div className="gap-2 flex">
             {job.deleted && (
               <span className="bg-gray-600 text-white text-xs px-3 py-1 rounded-full">
                 Deleted
               </span>
             )}
             {!job.deleted && (
+              <span
+                className={`text-xs px-3 text-center py-1 rounded-full ${
+                  job.active
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
+                {job.active ? "Active" : "Closed"}
+              </span>
+            )}
+
+            {!job.deleted && job.active && (
               <button
                 onClick={() =>
                   navigate(`/jobs/updatejob/${job.id}`, { state: job })
                 }
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                className="w-full text-left px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
               >
                 <Pencil className="w-3 h-3" /> Edit
               </button>
@@ -119,7 +131,6 @@ export default function JobAnalytics() {
 
       {/* Applications List */}
       <JobApplicationsByJob jobId={jobId} />
-
     </div>
   );
 }

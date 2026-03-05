@@ -73,3 +73,58 @@ export const getLwdWithinDays = (days) => {
 export const searchByLocation = (location) => {
   return axiosInstance.get(`/job-seekers/search-by-location?location=${location}`);
 };
+
+// ===============================
+// BASIC PROFILE
+// ===============================
+
+export const getProfileCompletion = async () => {
+  const res = await axiosInstance.get("/job-seekers/me/profile-completion");
+  return res.data;
+};
+
+
+// ===============================
+// ABOUT INFO
+// ===============================
+
+// Get logged-in user's about info
+export const getMyAboutInfo = async () => {
+  const response = await axiosInstance.get("/job-seekers/me/about");
+  return response.data;
+};
+
+// Update logged-in user's about info
+export const updateAboutInfo = async (data) => {
+  const response = await axiosInstance.put("/job-seekers/me/about", data);
+  return response.data;
+};
+
+// Get about info of another user
+export const getAboutInfoByUserId = async (userId) => {
+  const response = await axiosInstance.get(`/job-seekers/user/${userId}/about`);
+  return response.data;
+};
+
+
+// ===============================
+// SOCIAL LINKS
+// ===============================
+
+// Get logged-in user's social links
+export const getMySocialLinks = async () => {
+  const response = await axiosInstance.get("/job-seekers/me/social");
+  return response.data;
+};
+
+// Update logged-in user's social links
+export const updateSocialLinks = async (data) => {
+  const response = await axiosInstance.put("/job-seekers/me/social", data);
+  return response.data;
+};
+
+// Get social links of another user
+export const getSocialLinksByUserId = async (userId) => {
+  const response = await axiosInstance.get(`/job-seekers/user/${userId}/social`);
+  return response.data;
+};
