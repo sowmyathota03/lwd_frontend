@@ -20,9 +20,9 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
 
   const normalizeSkill = (skill) => skill.trim().toLowerCase();
 
-  // ==========================================
-  // 🔹 Load Skills (Own or Other Profile)
-  // ==========================================
+
+  // Load Skills (Own or Other Profile)
+  
   useEffect(() => {
     if (isOwnProfile) {
       fetchMySkills();
@@ -53,9 +53,9 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
     }
   };
 
-  // ==========================================
+  
   // 🔍 Fetch Suggested Skills (Editing Mode)
-  // ==========================================
+ 
   useEffect(() => {
     if (!editing) return;
 

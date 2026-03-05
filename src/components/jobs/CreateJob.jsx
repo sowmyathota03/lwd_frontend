@@ -1,24 +1,31 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createJobAsAdmin, createJobAsRecruiter } from "../../api/JobApi";
+import { createJobAsRecruiter } from "../../api/JobApi";
 
 export default function CreateJob() {
+
   const navigate = useNavigate();
 
   const [job, setJob] = useState({
     title: "",
-    description: "",
     location: "",
-    salary: "",
+    minSalary: "",
+    maxSalary: "",
     industry: "",
+    jobType: "",
     minExperience: "",
     maxExperience: "",
-    jobType: "",
-
-    // ✅ NEW FIELDS
-    noticePreference: "",
-    maxNoticePeriod: "",
-    lwdPreferred: false,
+    roleCategory: "",
+    department: "",
+    workplaceType: "",
+    education: "",
+    skills: "",
+    genderPreference: "",
+    ageLimit: "",
+    description: "",
+    responsibilities: "",
+    requirements: "",
+    benefits: "",
   });
 
   const handleChange = (e) => {
@@ -31,214 +38,221 @@ export default function CreateJob() {
 
     const payload = {
       ...job,
-      salary: job.salary ? Number(job.salary) : null,
+      minSalary: job.minSalary ? Number(job.minSalary) : null,
+      maxSalary: job.maxSalary ? Number(job.maxSalary) : null,
       minExperience: job.minExperience ? Number(job.minExperience) : null,
       maxExperience: job.maxExperience ? Number(job.maxExperience) : null,
-      maxNoticePeriod: job.maxNoticePeriod ? Number(job.maxNoticePeriod) : null,
     };
 
     try {
       await createJobAsRecruiter(payload);
-
-      alert("✅ Job created successfully");
+      alert("Job created successfully");
       navigate("/recruiter/managejob");
     } catch (err) {
       console.error(err);
-      alert("❌ Failed to create job");
+      alert("Failed to create job");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 transition-all">
+
+    <div className="min-h-screen bg-gray-100 py-10 flex justify-center">
+
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl p-8 space-y-6"
+        className="w-full max-w-6xl space-y-8"
       >
-        {/* Title */}
-        <h2 className="text-2xl font-bold text-center text-gray-800 ">
-          Post New Job
-        </h2>
 
-        {/* Job Title */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700  mb-2">
-            Job Title *
-          </label>
-          <input
-            name="title"
-            value={job.title}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
+        <h1 className="text-2xl font-semibold text-gray-800">
+          Create Job Posting
+        </h1>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700  mb-2">
-            Description
-          </label>
-          <textarea
-            name="description"
-            value={job.description}
-            onChange={handleChange}
-            rows="4"
-            className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
-          />
-        </div>
 
-        {/* Location & Salary */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
-              Location <span className="text-red-500">*</span>
-            </label>
-            <input
-              name="location"
-              value={job.location}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
+        {/* JOB DETAILS */}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
-              Salary
-            </label>
-            <input
-              type="number"
-              name="salary"
-              value={job.salary}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
-        </div>
+        <div className="bg-white p-6 rounded-xl shadow-sm">
 
-        {/* Industry & Job Type */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
-              Industry <span className="text-red-500">*</span>
-            </label>
-            <input
-              name="industry"
-              value={job.industry}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
+          <h2 className="text-lg font-semibold mb-5 text-gray-700">
+            Job Details
+          </h2>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
-              Job Type <span className="text-red-500">*</span>
-            </label>
-            <select
+          <div className="grid md:grid-cols-3 gap-5">
+
+            <Input label="Job Title" name="title" value={job.title} handleChange={handleChange} />
+
+            <Input label="Location" name="location" value={job.location} handleChange={handleChange} />
+
+            <Select
+              label="Job Type"
               name="jobType"
               value={job.jobType}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            >
-              <option value="">Select</option>
-              <option value="FULL_TIME">Full Time</option>
-              <option value="PART_TIME">Part Time</option>
-              <option value="INTERNSHIP">Internship</option>
-              <option value="CONTRACT">Contract</option>
-            </select>
+              handleChange={handleChange}
+              options={["FULL_TIME","PART_TIME","INTERNSHIP","CONTRACT"]}
+            />
+
+            <Input label="Min Salary" name="minSalary" value={job.minSalary} handleChange={handleChange} type="number" />
+
+            <Input label="Max Salary" name="maxSalary" value={job.maxSalary} handleChange={handleChange} type="number" />
+
+            <Input label="Industry" name="industry" value={job.industry} handleChange={handleChange} />
+
+            <Input label="Min Experience" name="minExperience" value={job.minExperience} handleChange={handleChange} type="number" />
+
+            <Input label="Max Experience" name="maxExperience" value={job.maxExperience} handleChange={handleChange} type="number" />
+
+            <Select
+              label="Workplace Type"
+              name="workplaceType"
+              value={job.workplaceType}
+              handleChange={handleChange}
+              options={["Work From Office","Remote","Hybrid"]}
+            />
+
           </div>
         </div>
 
-        {/* Experience */}
-        <div className="flex flex-col gap-6 justify-between">
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
-              Min Experience (Years)
-            </label>
-            <input
-              type="number"
-              name="minExperience"
-              value={job.minExperience}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
+
+        {/* CANDIDATE PREFERENCE */}
+
+        <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+
+          <h2 className="text-lg font-semibold mb-5 text-gray-700">
+            Candidate Preference
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-5">
+
+            <Input label="Education" name="education" value={job.education} handleChange={handleChange} />
+
+            <Input label="Skills" name="skills" value={job.skills} handleChange={handleChange} />
+
+            <Select
+              label="Gender Preference"
+              name="genderPreference"
+              value={job.genderPreference}
+              handleChange={handleChange}
+              options={["Any","Male","Female"]}
             />
+
+            <Input label="Age Limit" name="ageLimit" value={job.ageLimit} handleChange={handleChange} />
+
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
-              Max Experience (Years)
-            </label>
-            <input
-              type="number"
-              name="maxExperience"
-              value={job.maxExperience}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
 
-          {/* LWD Specific Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Notice Preference */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Notice Preference <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="noticePreference"
-                value={job.noticePreference}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="">Select</option>
-                <option value="SERVING_NOTICE">Serving Notice</option>
-                <option value="IMMEDIATE_JOINER">Immediate Joiner</option>
-                <option value="NOT_SERVING">Not Serving</option>
-                <option value="ANY">Any</option>
-              </select>
-            </div>
+        {/* JOB DESCRIPTION */}
 
-            {/* Max Notice Period */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Max Notice Period (Days)
-              </label>
-              <input
-                type="number"
-                name="maxNoticePeriod"
-                value={job.maxNoticePeriod}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        <div className="bg-white p-6 rounded-xl shadow-sm">
+
+          <h2 className="text-lg font-semibold mb-5 text-gray-700">
+            Job Description
+          </h2>
+
+          <div className="space-y-4">
+
+            <Textarea placeholder="Job Overview" name="description" value={job.description} handleChange={handleChange}/>
+
+            <Textarea placeholder="Responsibilities" name="responsibilities" value={job.responsibilities} handleChange={handleChange}/>
+
+            <Textarea placeholder="Requirements" name="requirements" value={job.requirements} handleChange={handleChange} />
+
+            <Textarea placeholder="Benefits" name="benefits" value={job.benefits} handleChange={handleChange}
               />
-            </div>
-            {/* LWD Preferred Toggle */}
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                name="lwdPreferred"
-                checked={job.lwdPreferred}
-                onChange={(e) =>
-                  setJob({ ...job, lwdPreferred: e.target.checked })
-                }
-                className="h-4 w-4"
-              />
-              <label className="text-sm font-medium text-gray-700">
-                LWD Preferred
-              </label>
-            </div>
+
           </div>
+        </div>
+
+
+        {/* BUTTON */}
+
+        <div className="flex justify-end">
+
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+          >
+            Publish Job
+          </button>
 
         </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full py-3 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-        >
-          Create Job
-        </button>
       </form>
+
     </div>
+  );
+}
+
+
+
+/* INPUT */
+
+function Input({ label, name, value, handleChange, type="text" }) {
+
+  return (
+    <div>
+
+      <label className="text-sm text-gray-600">
+        {label}
+      </label>
+
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={handleChange}
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+      />
+
+    </div>
+  );
+}
+
+
+
+/* SELECT */
+
+function Select({ label, name, value, handleChange, options }) {
+
+  return (
+    <div>
+
+      <label className="text-sm text-gray-600">
+        {label}
+      </label>
+
+      <select
+        name={name}
+        value={value}
+        onChange={handleChange}
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+      >
+
+        <option value="">Select</option>
+
+        {options.map((opt, i) => (
+          <option key={i}>{opt}</option>
+        ))}
+
+      </select>
+
+    </div>
+  );
+}
+
+
+
+/* TEXTAREA */
+
+function Textarea({ placeholder, name, value, handleChange }) {
+
+  return (
+    <textarea
+      name={name}
+      placeholder={placeholder}
+      value={value}
+      onChange={handleChange}
+      rows="3"
+      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+    />
   );
 }

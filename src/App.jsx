@@ -26,11 +26,11 @@ import Suggestions from './components/jobs/Suggestions';
 import MyApplications from './components/jobs/MyApplications';
 import SavedJobs from './components/jobs/SavedJobs';
 
-import Education from './pages/profile/components/Education';
-import Internship from './pages/profile/components/Internship';
-import Project from './pages/profile/components/Project';
-import VerifyEmail from './pages/profile/components/VerifyEmail';
+import Education from './components/profile/Education';
+import Internship from './components/profile/Internship';
+import Project from './components/profile/Project';
 import AddStatus from './pages/profile/components/AddStatus';
+import VerifyEmail from './pages/profile/components/VerifyEmail';
 
 import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
@@ -85,7 +85,7 @@ function App() {
       <Route path="/education" element={<Education/>}/>
       <Route path="/internship" element={<Internship/>}/>
       <Route path="/project" element={<Project/>}/>
-      {/* <Route path="/verify-email" element={<VerifyEmail />} /> */}
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
       <Route path="/status" element={<AddStatus/>}/>
 
