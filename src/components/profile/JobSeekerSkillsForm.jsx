@@ -73,7 +73,6 @@ function JobSeekerSkillsForm({ skills, setSkills, onClose }) {
       setSkills(selectedSkills);
 
       onClose();
-
     } catch (err) {
       console.error(err);
     } finally {
@@ -82,9 +81,9 @@ function JobSeekerSkillsForm({ skills, setSkills, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
 
-      <div className="bg-white p-6 rounded-lg w-[600px] space-y-6">
+      <div className="bg-white p-6 rounded-xl w-150 space-y-6">
 
         <h2 className="text-xl font-semibold">
           Edit Skills

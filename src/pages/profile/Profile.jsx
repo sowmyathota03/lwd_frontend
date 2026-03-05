@@ -10,11 +10,9 @@ import RecruiterDetails from "../../components/profile/RecruiterDetails";
 import AdminDetails from "../../components/profile/AdminDetails";
 import Experience from "../../components/profile/Experience";
 import BasicInfo from "../../components/profile/BasicInfo";
-
-import Education from "./components/Education";
-import Internship from "./components/Internship";
-import Project from "./components/Project";
-
+import Education from "../../components/profile/Education";
+import Internship from "../../components/profile/Internship";
+import Project from "../../components/profile/Project";
 import AddStatus from "./components/AddStatus";
 
 import { getMyProfile, getUserById } from "../../api/UserApi";
@@ -22,6 +20,7 @@ import {
   getJobSeekerProfile,
   getJobSeekerByUserId,
 } from "../../api/JobSeekerApi";
+
 import AboutInfo from "../../components/profile/AboutInfo";
 import ProfileCompletion from "../../components/profile/ProfileCompletion";
 
@@ -43,7 +42,6 @@ const Profile = () => {
         return res.data;
       }
     },
-    staleTime: 5 * 60 * 1000,
   });
 
   // ================= JOB SEEKER PROFILE =================
@@ -61,7 +59,6 @@ const Profile = () => {
       }
     },
     enabled: !!basicProfile && basicProfile.role === "JOB_SEEKER",
-    staleTime: 5 * 60 * 1000,
   });
 
   // ================= LOCAL STATE FOR INSTANT UPDATE =================
@@ -78,35 +75,44 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        {/* HEADER */}
         <div className="bg-indigo-500 px-10 py-8 text-white">
           <div className="flex justify-between items-center">
+
             <h2 className="text-3xl font-semibold">
               {isOwnProfile ? "My Profile" : `${basicProfile?.name}`}
             </h2>
-            <div className="flex flex-col text-sm text-gray-500 gap-1 items-center">
+
+            <div className="flex flex-col text-sm text-gray-100 gap-1 items-end">
               <AddStatus updatedAt={basicProfile?.updatedAt} />
 
               {basicProfile?.updatedAt && (
                 <span className="flex items-center gap-1">
                   <span>Last updated</span>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium">
                     {new Date(basicProfile.updatedAt).toLocaleDateString(
                       "en-IN",
                       {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
-                      },
+                      }
                     )}
                   </span>
                 </span>
               )}
             </div>
+
           </div>
         </div>
+
+        {/* PROFILE COMPLETION */}
         {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />}
 
         <div className="p-10 space-y-8">
+
+          {/* BASIC INFO */}
           <div className="rounded-xl shadow-sm border border-gray-200">
             <BasicInfo
               profile={basicProfile}
@@ -117,6 +123,8 @@ const Profile = () => {
 
           {basicProfile?.role === "JOB_SEEKER" && (
             <>
+
+              {/* JOB SEEKER DETAILS */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <JobSeekerDetails
                   profile={jobSeekerProfile}
@@ -125,6 +133,7 @@ const Profile = () => {
                 />
               </div>
 
+              {/* ABOUT */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <AboutInfo
                   profile={jobSeekerProfile}
@@ -135,6 +144,7 @@ const Profile = () => {
                 />
               </div>
 
+              {/* SKILLS */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <JobSeekerSkills
                   editable={isOwnProfile}
@@ -143,13 +153,7 @@ const Profile = () => {
                 />
               </div>
 
-              <div className="rounded-xl shadow-sm border border-gray-200">
-                <Education
-                  userId={isOwnProfile ? null : userId}
-                  editable={isOwnProfile}
-                />
-              </div>
-
+              {/* EXPERIENCE */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <Experience
                   userId={isOwnProfile ? null : userId}
@@ -157,6 +161,15 @@ const Profile = () => {
                 />
               </div>
 
+              {/* EDUCATION */}
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <Education
+                  userId={isOwnProfile ? null : userId}
+                  editable={isOwnProfile}
+                />
+              </div>
+
+              {/* INTERNSHIP */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <Internship
                   userId={isOwnProfile ? null : userId}
@@ -164,26 +177,31 @@ const Profile = () => {
                 />
               </div>
 
+              {/* PROJECTS */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <Project
                   userId={isOwnProfile ? null : userId}
                   editable={isOwnProfile}
                 />
               </div>
+
             </>
           )}
 
+          {/* RECRUITER */}
           {basicProfile?.role === "RECRUITER" && (
             <div className="rounded-xl shadow-sm border border-gray-200">
               <RecruiterDetails editable={isOwnProfile} />
             </div>
           )}
 
+          {/* ADMIN */}
           {basicProfile?.role === "ADMIN" && (
             <div className="rounded-xl shadow-sm border border-gray-200">
               <AdminDetails editable={isOwnProfile} />
             </div>
           )}
+
         </div>
       </div>
     </div>

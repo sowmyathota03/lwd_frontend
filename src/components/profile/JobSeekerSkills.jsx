@@ -10,6 +10,7 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
 
   const normalizeSkill = (skill) => skill.trim().toLowerCase();
 
+  // Load Skills
   useEffect(() => {
     if (isOwnProfile) {
       fetchMySkills();
@@ -55,7 +56,7 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
           {skills.map((skill, index) => (
             <span
               key={index}
-              className="bg-linear-to-r from-blue-100 to-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-medium shadow-sm"
+              className="bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-medium shadow-sm"
             >
               {formatSkill(skill)}
             </span>
@@ -63,7 +64,7 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
         </div>
       )}
 
-      {/* Modal Form */}
+      {/* Modal */}
       {openForm && (
         <JobSeekerSkillsForm
           skills={skills}

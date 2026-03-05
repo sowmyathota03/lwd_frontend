@@ -1,5 +1,14 @@
 import axiosInstance from "./axiosInstance";
 
+
+
+/* ================= CREATE EDUCATION ================= */
+
+export const createEducation = async (educationData) => {
+  const res = await axiosInstance.post("/education", educationData);
+  return res.data;
+};
+
 /* ================= GET MY EDUCATION ================= */
 
 export const getMyEducation = async () => {
