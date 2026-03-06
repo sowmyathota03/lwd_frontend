@@ -35,14 +35,6 @@ import Project from "./components/profile/Project";
 import AddStatus from "./pages/profile/components/AddStatus";
 import VerifyEmail from "./pages/profile/components/VerifyEmail";
 
-
-
-import Education from './components/profile/Education';
-import Internship from './components/profile/Internship';
-import Project from './components/profile/Project';
-import AddStatus from './pages/profile/components/AddStatus';
-import VerifyEmail from './pages/profile/components/VerifyEmail';
-
 import ContactUs from './components/company/ContactUs';
 import AboutUs from './components/company/AboutUs';
 import PrivacyPolicy from './components/company/PrivacyPolicy';
