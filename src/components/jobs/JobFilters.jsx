@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 const JobFilters = ({ onFilterChange }) => {
-  const [location, setLocation] = useState("");
   const [minExp, setMinExp] = useState("");
   const [maxExp, setMaxExp] = useState("");
   const [salary, setSalary] = useState("");
@@ -12,19 +11,32 @@ const JobFilters = ({ onFilterChange }) => {
 
   const handleChange = (name, value) => {
     switch (name) {
-      case "location": setLocation(value); break;
-      case "minExp": setMinExp(value); break;
-      case "maxExp": setMaxExp(value); break;
-      case "salary": setSalary(value); break;
-      case "jobType": setJobType(value); break;
-      case "noticeStatus": setNoticeStatus(value); break;
-      case "maxNoticePeriod": setMaxNoticePeriod(value); break;
-      case "lwdPreferred": setLwdPreferred(value); break;
-      default: break;
+      case "minExp":
+        setMinExp(value);
+        break;
+      case "maxExp":
+        setMaxExp(value);
+        break;
+      case "salary":
+        setSalary(value);
+        break;
+      case "jobType":
+        setJobType(value);
+        break;
+      case "noticeStatus":
+        setNoticeStatus(value);
+        break;
+      case "maxNoticePeriod":
+        setMaxNoticePeriod(value);
+        break;
+      case "lwdPreferred":
+        setLwdPreferred(value);
+        break;
+      default:
+        break;
     }
 
     onFilterChange({
-      location,
       minExp,
       maxExp,
       salary,
@@ -39,14 +51,6 @@ const JobFilters = ({ onFilterChange }) => {
   return (
     <div className="space-y-4 bg-white p-4 rounded-lg shadow-md">
       <h3 className="text-lg font-semibold">Filter Jobs</h3>
-
-      <input
-        type="text"
-        value={location}
-        placeholder="Location"
-        onChange={(e) => handleChange("location", e.target.value)}
-        className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      />
 
       <div className="flex gap-2">
         <input

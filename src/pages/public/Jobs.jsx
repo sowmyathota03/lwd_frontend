@@ -28,7 +28,9 @@ function Jobs() {
   const [searchParams] = useSearchParams();
   const observer = useRef(null);
 
-  // Read params directly from URL
+  // ===============================
+  // URL PARAMS
+  // ===============================
   const keyword = searchParams.get("keyword") || "";
   const location = searchParams.get("location") || "";
   const companyName = searchParams.get("companyName") || "";
@@ -39,19 +41,21 @@ function Jobs() {
   const noticeStatus = searchParams.get("noticeStatus") || "";
   const lwdPreferred = searchParams.get("lwdPreferred") === "true";
 
-  const isSearchMode =
+  const isSearchMode = Boolean(
     keyword ||
-    location ||
-    companyName ||
-    minExp ||
-    maxExp ||
-    jobType ||
-    industry ||
-    noticeStatus ||
-    lwdPreferred ||
-    type;
+      location ||
+      companyName ||
+      minExp ||
+      maxExp ||
+      jobType ||
+      industry ||
+      noticeStatus ||
+      lwdPreferred
+  );
 
-  // Infinite Query
+  // ===============================
+  // JOB QUERY
+  // ===============================
   const {
     data,
     fetchNextPage,
@@ -75,28 +79,33 @@ function Jobs() {
     ],
 
     queryFn: async ({ pageParam = 0 }) => {
+      // SEARCH API
       if (isSearchMode) {
-        const response = await searchJobs({
-          keyword,
-          location,
-          companyName,
-          minExp,
-          maxExp,
-          jobType,
-          industry,
-          noticeStatus,
-          lwdPreferred,
-          page: pageParam,
-        });
+        const filters = {};
 
+        if (keyword) filters.keyword = keyword;
+        if (location) filters.location = location;
+        if (companyName) filters.companyName = companyName;
+        if (minExp) filters.minExp = minExp;
+        if (maxExp) filters.maxExp = maxExp;
+        if (jobType) filters.jobType = jobType;
+        if (industry) filters.industry = industry;
+        if (noticeStatus) filters.noticeStatus = noticeStatus;
+        if (lwdPreferred) filters.lwdPreferred = true;
+
+        filters.page = pageParam;
+
+        const response = await searchJobs(filters);
         return response.data;
       }
 
+      // INDUSTRY JOBS
       if (type) {
         const response = await getJobsByIndustry(type, pageParam);
         return response.data;
       }
 
+      // DEFAULT JOBS
       const response = await getAllJobs(pageParam);
       return response.data;
     },
@@ -108,7 +117,9 @@ function Jobs() {
   const jobs = data?.pages.flatMap((p) => p.content) || [];
   const totalCount = data?.pages[0]?.totalElements || 0;
 
-  // Infinite scroll
+  // ===============================
+  // INFINITE SCROLL
+  // ===============================
   const lastJobRef = useCallback(
     (node) => {
       if (isFetchingNextPage || !hasNextPage) return;
@@ -116,9 +127,7 @@ function Jobs() {
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
+        if (entries[0].isIntersecting) fetchNextPage();
       });
 
       if (node) observer.current.observe(node);
@@ -126,7 +135,9 @@ function Jobs() {
     [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
 
-  // Popular categories
+  // ===============================
+  // POPULAR JOB CATEGORIES
+  // ===============================
   const { data: categoriesData } = useQuery({
     queryKey: ["topCategories"],
     queryFn: async () => {
@@ -144,16 +155,32 @@ function Jobs() {
     ? `${type.toUpperCase()} Jobs`
     : "All Jobs";
 
+  // ===============================
+  // FILTER HANDLER
+  // ===============================
+  const handleFilterChange = (filters) => {
+    const params = new URLSearchParams(searchParams);
+
+    Object.keys(filters).forEach((key) => {
+      if (filters[key]) {
+        params.set(key, filters[key]);
+      } else {
+        params.delete(key);
+      }
+    });
+
+    window.location.href = `/jobs?${params.toString()}`;
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
-
-      {/* Search Bar */}
+      {/* SEARCH BAR */}
       <div className="mt-8 px-5 max-w-5xl mx-auto">
         <JobSearchBar />
       </div>
 
-      {/* Popular Jobs */}
-      {!isSearchMode && categoriesData && (
+      {/* POPULAR JOBS */}
+      {!isSearchMode && !type && categoriesData && (
         <div className="mt-6 px-5 max-w-7xl mx-auto">
           <PopularJobs
             title="Popular Job Categories"
@@ -162,20 +189,17 @@ function Jobs() {
         </div>
       )}
 
-      {/* Jobs + Filters */}
-      {isSearchMode && (
+      {/* JOBS + FILTERS */}
+      {(isSearchMode || type) && (
         <div className="mt-6 px-5 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
-
-          {/* Filters */}
+          {/* FILTERS */}
           <div>
-            <JobFilters />
+            <JobFilters onFilterChange={handleFilterChange} />
           </div>
 
-          {/* Jobs */}
+          {/* JOB LIST */}
           <div className="md:col-span-3">
-
             <div className="bg-white p-6 rounded-xl shadow-md">
-
               <h2 className="text-2xl font-bold mb-6">
                 {titleText} ({totalCount})
               </h2>
@@ -187,7 +211,6 @@ function Jobs() {
               )}
 
               <div className="space-y-6">
-
                 {jobs.map((job, index) => {
                   if (index === jobs.length - 1) {
                     return (
@@ -229,7 +252,6 @@ function Jobs() {
                 </p>
               )}
             </div>
-
           </div>
         </div>
       )}

@@ -5,11 +5,9 @@ import { getSearchSuggestions } from "../../api/JobApi";
 function JobSearchBar() {
   const navigate = useNavigate();
 
-  const [type, setType] = useState("Jobs");
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
-  const [experience, setExperience] = useState("");
-
+  const [companyName, setCompanyName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const handleSearch = () => {
@@ -17,9 +15,11 @@ function JobSearchBar() {
 
     if (keyword.trim()) params.append("keyword", keyword.trim());
     if (location.trim()) params.append("location", location.trim());
-    if (experience) params.append("minExp", experience);
+    if (companyName.trim()) params.append("companyName", companyName.trim());
 
     navigate(`/jobs?${params.toString()}`);
+
+    setSuggestions([]);
   };
 
   const handleKeyDown = (e) => {
@@ -50,25 +50,13 @@ function JobSearchBar() {
   };
 
   return (
-    <div className="bg-white shadow-xl rounded-full px-4 py-3 max-w-5xl mx-auto flex items-center gap-2">
+    <div className="bg-white shadow-lg rounded-full px-5 py-3 max-w-5xl mx-auto flex items-center gap-3">
 
-      {/* JOB TYPE */}
-      <select
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        className="px-3 py-2 bg-transparent outline-none text-gray-700"
-      >
-        <option>Jobs</option>
-        <option>Internship</option>
-      </select>
-
-      <div className="w-px h-6 bg-gray-300"></div>
-
-      {/* KEYWORD */}
+      {/* SKILLS */}
       <div className="relative flex-1">
         <input
           type="text"
-          placeholder="Skills / Designations / Companies"
+          placeholder="Skills / Designation"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -76,7 +64,7 @@ function JobSearchBar() {
         />
 
         {suggestions.length > 0 && (
-          <div className="absolute top-12 w-full bg-white shadow-lg rounded-lg">
+          <div className="absolute top-12 w-full bg-white shadow-lg rounded-lg z-50">
             {suggestions.map((s, i) => (
               <div
                 key={i}
@@ -102,6 +90,18 @@ function JobSearchBar() {
         className="px-3 py-2 outline-none w-[180px]"
       />
 
+      <div className="w-px h-6 bg-gray-300"></div>
+
+      {/* COMPANY */}
+      <input
+        type="text"
+        placeholder="Company"
+        value={companyName}
+        onChange={(e) => setCompanyName(e.target.value)}
+        onKeyDown={handleKeyDown}
+        className="px-3 py-2 outline-none w-[180px]"
+      />
+
       {/* SEARCH BUTTON */}
       <button
         onClick={handleSearch}
@@ -109,6 +109,7 @@ function JobSearchBar() {
       >
         Search
       </button>
+
     </div>
   );
 }
