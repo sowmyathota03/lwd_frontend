@@ -1,122 +1,117 @@
 import React, { useState } from "react";
 
 const JobFilters = ({ onFilterChange }) => {
-  // State for each filter
   const [location, setLocation] = useState("");
-  const [experience, setExperience] = useState("");
+  const [minExp, setMinExp] = useState("");
+  const [maxExp, setMaxExp] = useState("");
   const [salary, setSalary] = useState("");
   const [jobType, setJobType] = useState("");
-  const [company, setCompany] = useState("");
+  const [noticeStatus, setNoticeStatus] = useState("");
+  const [maxNoticePeriod, setMaxNoticePeriod] = useState("");
+  const [lwdPreferred, setLwdPreferred] = useState(false);
 
-  // Handle filter change
-  const handleChange = (filterName, value) => {
-    switch (filterName) {
-      case "location":
-        setLocation(value);
-        break;
-      case "experience":
-        setExperience(value);
-        break;
-      case "salary":
-        setSalary(value);
-        break;
-      case "jobType":
-        setJobType(value);
-        break;
-      case "company":
-        setCompany(value);
-        break;
-      default:
-        break;
+  const handleChange = (name, value) => {
+    switch (name) {
+      case "location": setLocation(value); break;
+      case "minExp": setMinExp(value); break;
+      case "maxExp": setMaxExp(value); break;
+      case "salary": setSalary(value); break;
+      case "jobType": setJobType(value); break;
+      case "noticeStatus": setNoticeStatus(value); break;
+      case "maxNoticePeriod": setMaxNoticePeriod(value); break;
+      case "lwdPreferred": setLwdPreferred(value); break;
+      default: break;
     }
 
-    // Send updated filters to parent component
     onFilterChange({
       location,
-      experience,
+      minExp,
+      maxExp,
       salary,
       jobType,
-      company,
-      [filterName]: value, // make sure latest change is included
+      noticeStatus,
+      maxNoticePeriod,
+      lwdPreferred,
+      [name]: value,
     });
   };
 
   return (
-    <div className="p-4 border rounded-lg bg-white shadow-sm mb-6">
-      <h3 className="text-lg font-semibold mb-3">Filter Jobs</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Location Filter */}
-        <div>
-          <label className="block mb-1 font-medium">Location</label>
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => handleChange("location", e.target.value)}
-            placeholder="Enter location"
-            className="w-full border rounded px-2 py-1"
-          />
-        </div>
+    <div className="space-y-4 bg-white p-4 rounded-lg shadow-md">
+      <h3 className="text-lg font-semibold">Filter Jobs</h3>
 
-        {/* Experience Filter */}
-        <div>
-          <label className="block mb-1 font-medium">Experience</label>
-          <select
-            value={experience}
-            onChange={(e) => handleChange("experience", e.target.value)}
-            className="w-full border rounded px-2 py-1"
-          >
-            <option value="">Any</option>
-            <option value="0-1">0-1 years</option>
-            <option value="1-3">1-3 years</option>
-            <option value="3-5">3-5 years</option>
-            <option value="5+">5+ years</option>
-          </select>
-        </div>
+      <input
+        type="text"
+        value={location}
+        placeholder="Location"
+        onChange={(e) => handleChange("location", e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      />
 
-        {/* Salary Filter */}
-        <div>
-          <label className="block mb-1 font-medium">Salary</label>
-          <select
-            value={salary}
-            onChange={(e) => handleChange("salary", e.target.value)}
-            className="w-full border rounded px-2 py-1"
-          >
-            <option value="">Any</option>
-            <option value="0-3">0-3 LPA</option>
-            <option value="3-6">3-6 LPA</option>
-            <option value="6-10">6-10 LPA</option>
-            <option value="10+">10+ LPA</option>
-          </select>
-        </div>
-
-        {/* Job Type Filter */}
-        <div>
-          <label className="block mb-1 font-medium">Job Type</label>
-          <select
-            value={jobType}
-            onChange={(e) => handleChange("jobType", e.target.value)}
-            className="w-full border rounded px-2 py-1"
-          >
-            <option value="">Any</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Internship">Internship</option>
-            <option value="Contract">Contract</option>
-          </select>
-        </div>
-
-        {/* Company Filter */}
-        <div>
-          <label className="block mb-1 font-medium">Company</label>
-          <input
-            type="text"
-            value={company}
-            onChange={(e) => handleChange("company", e.target.value)}
-            placeholder="Company name"
-            className="w-full border rounded px-2 py-1"
-          />
-        </div>
+      <div className="flex gap-2">
+        <input
+          type="number"
+          value={minExp}
+          placeholder="Min Exp"
+          onChange={(e) => handleChange("minExp", e.target.value)}
+          className="w-1/2 px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <input
+          type="number"
+          value={maxExp}
+          placeholder="Max Exp"
+          onChange={(e) => handleChange("maxExp", e.target.value)}
+          className="w-1/2 px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
       </div>
+
+      <input
+        type="number"
+        value={salary}
+        placeholder="Salary (LPA)"
+        onChange={(e) => handleChange("salary", e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      />
+
+      <select
+        value={jobType}
+        onChange={(e) => handleChange("jobType", e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      >
+        <option value="">Job Type</option>
+        <option value="full_time">Full-time</option>
+        <option value="part_time">Part-time</option>
+        <option value="internship">Internship</option>
+        <option value="contract">Contract</option>
+      </select>
+
+      <select
+        value={noticeStatus}
+        onChange={(e) => handleChange("noticeStatus", e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      >
+        <option value="">Notice Status</option>
+        <option value="immediate">Immediate Joiner</option>
+        <option value="serving">Serving Notice</option>
+        <option value="any">Any</option>
+      </select>
+
+      <input
+        type="number"
+        value={maxNoticePeriod}
+        placeholder="Max Notice Period (days)"
+        onChange={(e) => handleChange("maxNoticePeriod", e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      />
+
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={lwdPreferred}
+          onChange={(e) => handleChange("lwdPreferred", e.target.checked)}
+        />
+        LWD Preferred
+      </label>
     </div>
   );
 };

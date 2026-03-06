@@ -1,64 +1,57 @@
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import JobCard from "../../components/jobs/JobCards";
-import JobSearchBlock from "../../components/jobs/JobSearchBlock";
+import JobSearchBar from "../../components/jobs/JobSearchBar";
+import JobFilters from "../../components/jobs/JobFilters";
 import PopularJobs from "../../components/jobs/PopularJobs";
+
 import {
   getAllJobs,
   getJobsByIndustry,
-  getJobsByCompany,
   getTopCategories,
   searchJobs,
 } from "../../api/JobApi";
+
 import JobSkeleton from "../../components/jobs/JobSkeleton";
 import Loader from "../../components/common/Loader";
 
-/* ================= ANIMATION ================= */
-
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, ease: "easeOut" },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
 };
 
 function Jobs() {
   const { type } = useParams();
-  const [searchParamsUrl] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const observer = useRef(null);
 
-  /* ================= QUERY PARAMS ================= */
-
-  const keywordParam = searchParamsUrl.get("keyword");
-  const locationParam = searchParamsUrl.get("location");
-  const companyParam = searchParamsUrl.get("companyName");
-  const minExpParam = searchParamsUrl.get("minExp");
-  const maxExpParam = searchParamsUrl.get("maxExp");
-  const jobTypeParam = searchParamsUrl.get("jobType");
-  const companyIdParam = searchParamsUrl.get("companyId");
-  const noticePreferenceParam = searchParamsUrl.get("noticePreference");
-  const lwdPreferredParam = searchParamsUrl.get("lwdPreferred");
-  const industryParam = searchParamsUrl.get("industry");
+  // Read params directly from URL
+  const keyword = searchParams.get("keyword") || "";
+  const location = searchParams.get("location") || "";
+  const companyName = searchParams.get("companyName") || "";
+  const minExp = searchParams.get("minExp") || "";
+  const maxExp = searchParams.get("maxExp") || "";
+  const jobType = searchParams.get("jobType") || "";
+  const industry = searchParams.get("industry") || "";
+  const noticeStatus = searchParams.get("noticeStatus") || "";
+  const lwdPreferred = searchParams.get("lwdPreferred") === "true";
 
   const isSearchMode =
-    keywordParam ||
-    locationParam ||
-    companyParam ||
-    minExpParam ||
-    maxExpParam ||
-    jobTypeParam ||
-    noticePreferenceParam ||
-    lwdPreferredParam ||
-    industryParam ||
-    companyIdParam;
+    keyword ||
+    location ||
+    companyName ||
+    minExp ||
+    maxExp ||
+    jobType ||
+    industry ||
+    noticeStatus ||
+    lwdPreferred ||
+    type;
 
-  /* ================= INFINITE QUERY ================= */
-
+  // Infinite Query
   const {
     data,
     fetchNextPage,
@@ -69,58 +62,53 @@ function Jobs() {
   } = useInfiniteQuery({
     queryKey: [
       "jobs",
+      keyword,
+      location,
+      companyName,
+      minExp,
+      maxExp,
+      jobType,
+      industry,
+      noticeStatus,
+      lwdPreferred,
       type,
-      keywordParam,
-      locationParam,
-      companyParam,
-      minExpParam,
-      maxExpParam,
-      jobTypeParam,
-      noticePreferenceParam,
-      lwdPreferredParam,
-      industryParam,
-      companyIdParam,
     ],
-    queryFn: async ({ pageParam = 0 }) => {
-      let response;
 
-      if (companyIdParam) {
-        response = await getJobsByCompany(companyIdParam, pageParam);
-      } else if (isSearchMode) {
-        response = await searchJobs({
-          keyword: keywordParam,
-          location: locationParam,
-          companyName: companyParam,
-          minExp: minExpParam,
-          maxExp: maxExpParam,
-          jobType: jobTypeParam,
-          noticePreference: noticePreferenceParam,
-          lwdPreferred: lwdPreferredParam,
-          industry: industryParam,
+    queryFn: async ({ pageParam = 0 }) => {
+      if (isSearchMode) {
+        const response = await searchJobs({
+          keyword,
+          location,
+          companyName,
+          minExp,
+          maxExp,
+          jobType,
+          industry,
+          noticeStatus,
+          lwdPreferred,
           page: pageParam,
         });
-      } else if (type) {
-        response = await getJobsByIndustry(type, pageParam);
-      } else {
-        response = await getAllJobs(pageParam);
+
+        return response.data;
       }
 
+      if (type) {
+        const response = await getJobsByIndustry(type, pageParam);
+        return response.data;
+      }
+
+      const response = await getAllJobs(pageParam);
       return response.data;
     },
-    getNextPageParam: (lastPage, pages) => {
-      if (lastPage.last) return undefined;
-      return pages.length;
-    },
-    keepPreviousData: true,
+
+    getNextPageParam: (lastPage, pages) =>
+      lastPage.last ? undefined : pages.length,
   });
 
-  /* ================= FLATTEN DATA ================= */
-
-  const jobs = data?.pages.flatMap((page) => page.content) || [];
+  const jobs = data?.pages.flatMap((p) => p.content) || [];
   const totalCount = data?.pages[0]?.totalElements || 0;
 
-  /* ================= INFINITE SCROLL ================= */
-
+  // Infinite scroll
   const lastJobRef = useCallback(
     (node) => {
       if (isFetchingNextPage || !hasNextPage) return;
@@ -138,8 +126,7 @@ function Jobs() {
     [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
 
-  /* ================= FETCH CATEGORIES ================= */
-
+  // Popular categories
   const { data: categoriesData } = useQuery({
     queryKey: ["topCategories"],
     queryFn: async () => {
@@ -149,105 +136,104 @@ function Jobs() {
         slug: cat.toLowerCase(),
       }));
     },
-    staleTime: 10 * 60 * 1000,
   });
 
-  /* ================= TITLE ================= */
-
-  const titleText = companyIdParam
-    ? "🏢 Company Jobs"
-    : isSearchMode
-    ? "🔍 Search Results"
+  const titleText = isSearchMode
+    ? "Search Results"
     : type
     ? `${type.toUpperCase()} Jobs`
     : "All Jobs";
 
-  /* ================= RETURN ================= */
-
   return (
-    <>
-      <JobSearchBlock />
+    <div className="bg-gray-50 min-h-screen">
 
+      {/* Search Bar */}
+      <div className="mt-8 px-5 max-w-5xl mx-auto">
+        <JobSearchBar />
+      </div>
+
+      {/* Popular Jobs */}
       {!isSearchMode && categoriesData && (
-        <PopularJobs
-          title="Popular Job Categories"
-          categories={categoriesData}
-        />
+        <div className="mt-6 px-5 max-w-7xl mx-auto">
+          <PopularJobs
+            title="Popular Job Categories"
+            categories={categoriesData}
+          />
+        </div>
       )}
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="bg-linear-to-br from-cyan-100 to-green-100 p-8 mt-5"
-      >
-        <div className="px-5 mb-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {titleText}
-            <span className="text-gray-500 font-medium ml-2">
-              ({totalCount})
-            </span>
-          </h2>
-        </div>
+      {/* Jobs + Filters */}
+      {isSearchMode && (
+        <div className="mt-6 px-5 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
 
-        {isError && (
-          <p className="text-center text-red-500 font-medium mb-4">
-            Failed to load jobs.
-          </p>
-        )}
-
-        {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 max-w-5xl mx-auto auto-rows-fr">
-          {jobs.map((job, index) => {
-            if (index === jobs.length - 1) {
-              return (
-                <motion.div
-                  ref={lastJobRef}
-                  key={job.id}
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover={{ y: -4 }}
-                >
-                  <JobCard job={job} />
-                </motion.div>
-              );
-            }
-
-            return (
-              <motion.div
-                key={job.id}
-                variants={cardVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{ y: -4 }}
-              >
-                <JobCard job={job} />
-              </motion.div>
-            );
-          })}
-
-          {isLoading &&
-            Array.from({ length: 6 }).map((_, index) => (
-              <div key={`initial-${index}`}>
-                <JobSkeleton />
-              </div>
-            ))}
-        </div>
-
-        {isFetchingNextPage && (
-          <div className="mt-6">
-            <Loader fullScreen={false} />
+          {/* Filters */}
+          <div>
+            <JobFilters />
           </div>
-        )}
 
-        {!hasNextPage && !isLoading && (
-          <p className="mt-8 text-center text-gray-500 font-medium">
-            No more jobs.
-          </p>
-        )}
-      </motion.div>
-    </>
+          {/* Jobs */}
+          <div className="md:col-span-3">
+
+            <div className="bg-white p-6 rounded-xl shadow-md">
+
+              <h2 className="text-2xl font-bold mb-6">
+                {titleText} ({totalCount})
+              </h2>
+
+              {isError && (
+                <p className="text-red-500 text-center">
+                  Failed to load jobs
+                </p>
+              )}
+
+              <div className="space-y-6">
+
+                {jobs.map((job, index) => {
+                  if (index === jobs.length - 1) {
+                    return (
+                      <motion.div
+                        ref={lastJobRef}
+                        key={job.id}
+                        variants={cardVariants}
+                        initial="hidden"
+                        animate="visible"
+                      >
+                        <JobCard job={job} />
+                      </motion.div>
+                    );
+                  }
+
+                  return (
+                    <motion.div
+                      key={job.id}
+                      variants={cardVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      <JobCard job={job} />
+                    </motion.div>
+                  );
+                })}
+
+                {isLoading &&
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <JobSkeleton key={i} />
+                  ))}
+              </div>
+
+              {isFetchingNextPage && <Loader />}
+
+              {!hasNextPage && !isLoading && (
+                <p className="text-center mt-6 text-gray-500">
+                  No more jobs
+                </p>
+              )}
+            </div>
+
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
