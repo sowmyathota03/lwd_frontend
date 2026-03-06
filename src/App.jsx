@@ -104,6 +104,7 @@ function App() {
         <Route path="/suggestions" element={<Suggestions />} />
         <Route path="/pricing" element={<Pricing />} />
 
+<<<<<<< HEAD
         <Route path="/jobs/updatejob/:id" element={<EditJob />} />
 
         {/* ADMIN */}
@@ -144,6 +145,20 @@ function App() {
           <Route path="applications" element={<JobApplicationList />} />
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
         </Route>
+=======
+      <Route path="/recruiter" element={<RecruiterDashboard />} >
+        <Route index element={ <RecruiterHome /> } />
+        <Route path="/recruiter/company-profile" element={<CompanyProfilePage />} />
+        <Route path="/recruiter/managejob" element={<ManageJobs />} />
+        <Route path="/recruiter/managejob/:jobId/analytics" element={<JobAnalytics />} /> 
+        <Route path="/recruiter/createjob" element={<CreateJob />}  />
+        <Route path="/recruiter/applications" element={<JobApplicationList />} />
+        <Route path="/recruiter/job-seekers" element={<RecruiterJobSeekerSearch />} />
+      </Route>
+    </Routes>      
+    
+    <Footer />
+>>>>>>> 936249b1aae7cbca867280d36ca54df9cffd14d7
 
         <Route
           path="/recruiter/companyrequest"
