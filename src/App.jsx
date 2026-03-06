@@ -1,62 +1,63 @@
-import NavBar from './components/common/NavBar'
-import Footer from './components/common/Footer'
-import "./index.css"
+import NavBar from "./components/common/NavBar";
+import Footer from "./components/common/Footer";
+import "./index.css";
 
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom";
 
-import Login from './auth/Login'
-import Register from './auth/Register'
+import Login from "./auth/Login";
+import Register from "./auth/Register";
 
-import Home from './pages/public/Home'
-import Jobs from './pages/public/Jobs'
-import JobDetails from "./pages/public/JobDetails"
-import Companies from './pages/public/Companies'
-import Profile from './pages/profile/Profile'
-import Career from './pages/public/Career'
+import Home from "./pages/public/Home";
+import Jobs from "./pages/public/Jobs";
+import JobDetails from "./pages/public/JobDetails";
+import Companies from "./pages/public/Companies";
+import Profile from "./pages/profile/Profile";
+import Career from "./pages/public/Career";
 
-import JobCard from "./components/jobs/JobCards"
-import JobSearchBlock from "./components/jobs/JobSearchBlock"
-import ResumeUpload from "./components/jobs/ResumeUpload"
-import JobAlert from "./components/jobs/JobAlert"
-import CareerAdvice from "./components/jobs/CareerAdvice"
-import ApplyJob from "./components/jobs/ApplyJob"
-import Suggestions from "./components/jobs/Suggestions"
-import MyApplications from "./components/profile/MyApplication/MyApplications"
-import SavedJobs from "./components/jobs/SavedJobs"
-import JobList from "./components/jobs/JobList"
+import JobCard from "./components/jobs/JobCards";
+import JobSearchBlock from "./components/jobs/JobSearchBlock";
+import ResumeUpload from "./components/jobs/ResumeUpload";
+import JobAlert from "./components/jobs/JobAlert";
+import CareerAdvice from "./components/jobs/CareerAdvice";
+import ApplyJob from "./components/jobs/ApplyJob";
+import Suggestions from "./components/jobs/Suggestions";
+import SavedJobs from "./components/jobs/SavedJobs";
+import JobList from "./components/jobs/JobList";
 
-import Education from './components/profile/Education'
-import Internship from './components/profile/Internship'
-import Project from './components/profile/Project'
-import AddStatus from './pages/profile/components/AddStatus'
-import VerifyEmail from './pages/profile/components/VerifyEmail'
+import MyApplications from "./components/profile/MyApplication/MyApplications";
+import Education from "./components/profile/Education";
+import Internship from "./components/profile/Internship";
+import Project from "./components/profile/Project";
 
-import ContactUs from './components/company/ContactUs'
-import AboutUs from './components/company/AboutUs'
-import PrivacyPolicy from './components/company/PrivacyPolicy'
-import TermsAndConditions from './components/company/TermsAndConditions'
-import Pricing from './components/company/Pricing'
+import AddStatus from "./pages/profile/components/AddStatus";
+import VerifyEmail from "./pages/profile/components/VerifyEmail";
 
-import AdminDashboard from './pages/admin/AdminDashboard'
-import AdminHome from './components/admin/AdminHome'
-import UserManagementPage from './components/admin/UserManagementPage'
-import CompanyManagementPage from './components/admin/CompanyManagementPage'
+import ContactUs from "./components/company/ContactUs";
+import AboutUs from "./components/company/AboutUs";
+import PrivacyPolicy from "./components/company/PrivacyPolicy";
+import TermsAndConditions from "./components/company/TermsAndConditions";
+import Pricing from "./components/company/Pricing";
 
-import ManageJobs from './components/jobs/ManageJobs'
-import CreateJob from './components/jobs/CreateJob'
-import EditJob from './components/jobs/EditJob'
-import JobApplicationList from './components/jobApplications/JobApplicationList'
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminHome from "./components/admin/AdminHome";
+import UserManagementPage from "./components/admin/UserManagementPage";
+import CompanyManagementPage from "./components/admin/CompanyManagementPage";
 
-import RecruiterAdminDashboard from './pages/recruiter-admin/RecruiterAdminDashboard'
-import RecruiterAdminHome from './components/recruiter-admin/RecruiterAdminHome'
-import CompanyProfilePage from './components/recruiter-admin/CompanyProfilePage'
-import RecruiterList from './components/recruiter-admin/RecruiterList'
+import ManageJobs from "./components/jobs/ManageJobs";
+import CreateJob from "./components/jobs/CreateJob";
+import EditJob from "./components/jobs/EditJob";
+import JobApplicationList from "./components/jobApplications/JobApplicationList";
 
-import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard"
-import RecruiterHome from "./components/recruiter/RecruiterHome"
-import RecruiterJobSeekerSearch from "./components/Searching/JobSeekerSearch/RecruiterJobSeekerSearch"
-import JobAnalytics from "./components/jobs/JobAnalytics"
-import RecruiterCompanyRequest from "./components/recruiter/RecruiterCompanyRequest"
+import RecruiterAdminDashboard from "./pages/recruiter-admin/RecruiterAdminDashboard";
+import RecruiterAdminHome from "./components/recruiter-admin/RecruiterAdminHome";
+import CompanyProfilePage from "./components/recruiter-admin/CompanyProfilePage";
+import RecruiterList from "./components/recruiter-admin/RecruiterList";
+
+import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
+import RecruiterHome from "./components/recruiter/RecruiterHome";
+import RecruiterJobSeekerSearch from "./components/Searching/JobSeekerSearch/RecruiterJobSeekerSearch";
+import JobAnalytics from "./components/jobs/JobAnalytics";
+import RecruiterCompanyRequest from "./components/recruiter/RecruiterCompanyRequest";
 
 function App() {
   return (
@@ -64,7 +65,6 @@ function App() {
       <NavBar />
 
       <Routes>
-
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -74,8 +74,8 @@ function App() {
         <Route path="/job/:jobId" element={<JobDetails />} />
         <Route path="/apply/:jobId" element={<ApplyJob />} />
 
-        <Route path="/JobCard" element={<JobCard />} />
-        <Route path="/JobSearchBlock" element={<JobSearchBlock />} />
+        <Route path="/jobcard" element={<JobCard />} />
+        <Route path="/jobsearch" element={<JobSearchBlock />} />
         <Route path="/my/applications" element={<MyApplications />} />
         <Route path="/saved-jobs" element={<SavedJobs />} />
         <Route path="/jobs-list" element={<JobList />} />
@@ -93,15 +93,15 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/:userId" element={<Profile />} />
 
-        <Route path="/ResumeUpload" element={<ResumeUpload />} />
-        <Route path="/JobAlert" element={<JobAlert />} />
-        <Route path="/CareerAdvice" element={<CareerAdvice />} />
+        <Route path="/resume-upload" element={<ResumeUpload />} />
+        <Route path="/job-alert" element={<JobAlert />} />
+        <Route path="/career-advice" element={<CareerAdvice />} />
 
-        <Route path="/ContactUs" element={<ContactUs />} />
-        <Route path="/AboutUs" element={<AboutUs />} />
-        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
-        <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
-        <Route path="/Suggestions" element={<Suggestions />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/suggestions" element={<Suggestions />} />
         <Route path="/pricing" element={<Pricing />} />
 
         <Route path="/jobs/updatejob/:id" element={<EditJob />} />
@@ -145,13 +145,15 @@ function App() {
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
         </Route>
 
-        <Route path="/recruiter/companyrequest" element={<RecruiterCompanyRequest />} />
-
+        <Route
+          path="/recruiter/companyrequest"
+          element={<RecruiterCompanyRequest />}
+        />
       </Routes>
 
       <Footer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

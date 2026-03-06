@@ -1,5 +1,5 @@
-import { useRef, useCallback } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useRef, useCallback, useState } from "react";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
@@ -24,9 +24,15 @@ const cardVariants = {
 };
 
 function Jobs() {
+
   const { type } = useParams();
   const [searchParams] = useSearchParams();
   const observer = useRef(null);
+  const navigate = useNavigate();
+
+  const [pageGroup, setPageGroup] = useState(0);
+
+  const MAX_PAGES = 5;
 
   // ===============================
   // URL PARAMS
@@ -53,6 +59,8 @@ function Jobs() {
       lwdPreferred
   );
 
+  const showFilters = isSearchMode || type;
+
   // ===============================
   // JOB QUERY
   // ===============================
@@ -64,6 +72,7 @@ function Jobs() {
     isLoading,
     isError,
   } = useInfiniteQuery({
+
     queryKey: [
       "jobs",
       keyword,
@@ -76,11 +85,15 @@ function Jobs() {
       noticeStatus,
       lwdPreferred,
       type,
+      pageGroup,
     ],
 
     queryFn: async ({ pageParam = 0 }) => {
-      // SEARCH API
+
+      const apiPage = pageParam + pageGroup * MAX_PAGES;
+
       if (isSearchMode) {
+
         const filters = {};
 
         if (keyword) filters.keyword = keyword;
@@ -93,35 +106,43 @@ function Jobs() {
         if (noticeStatus) filters.noticeStatus = noticeStatus;
         if (lwdPreferred) filters.lwdPreferred = true;
 
-        filters.page = pageParam;
+        filters.page = apiPage;
 
         const response = await searchJobs(filters);
         return response.data;
       }
 
-      // INDUSTRY JOBS
       if (type) {
-        const response = await getJobsByIndustry(type, pageParam);
+        const response = await getJobsByIndustry(type, apiPage);
         return response.data;
       }
 
-      // DEFAULT JOBS
-      const response = await getAllJobs(pageParam);
+      const response = await getAllJobs(apiPage);
       return response.data;
     },
 
-    getNextPageParam: (lastPage, pages) =>
-      lastPage.last ? undefined : pages.length,
+    getNextPageParam: (lastPage, pages) => {
+
+      if (lastPage.last) return undefined;
+
+      if (pages.length >= MAX_PAGES) return undefined;
+
+      return pages.length;
+    },
+
   });
 
   const jobs = data?.pages.flatMap((p) => p.content) || [];
-  const totalCount = data?.pages[0]?.totalElements || 0;
+  const totalCount = data?.pages?.[0]?.totalElements || 0;
+
+  const infiniteEndReached = data?.pages?.length >= MAX_PAGES;
 
   // ===============================
   // INFINITE SCROLL
   // ===============================
   const lastJobRef = useCallback(
     (node) => {
+
       if (isFetchingNextPage || !hasNextPage) return;
 
       if (observer.current) observer.current.disconnect();
@@ -131,9 +152,25 @@ function Jobs() {
       });
 
       if (node) observer.current.observe(node);
+
     },
     [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
+
+  // ===============================
+  // PAGINATION HANDLERS
+  // ===============================
+  const goToNextGroup = () => {
+    setPageGroup((prev) => prev + 1);
+  };
+
+  const goToPrevGroup = () => {
+    if (pageGroup > 0) setPageGroup((prev) => prev - 1);
+  };
+
+  const goToPage = (page) => {
+    setPageGroup(page);
+  };
 
   // ===============================
   // POPULAR JOB CATEGORIES
@@ -159,27 +196,25 @@ function Jobs() {
   // FILTER HANDLER
   // ===============================
   const handleFilterChange = (filters) => {
+
     const params = new URLSearchParams(searchParams);
 
     Object.keys(filters).forEach((key) => {
-      if (filters[key]) {
-        params.set(key, filters[key]);
-      } else {
-        params.delete(key);
-      }
+      if (filters[key]) params.set(key, filters[key]);
+      else params.delete(key);
     });
 
-    window.location.href = `/jobs?${params.toString()}`;
+    navigate(`/jobs?${params.toString()}`);
+
   };
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* SEARCH BAR */}
+
       <div className="mt-8 px-5 max-w-5xl mx-auto">
         <JobSearchBar />
       </div>
 
-      {/* POPULAR JOBS */}
       {!isSearchMode && !type && categoriesData && (
         <div className="mt-6 px-5 max-w-7xl mx-auto">
           <PopularJobs
@@ -189,45 +224,40 @@ function Jobs() {
         </div>
       )}
 
-      {/* JOBS + FILTERS */}
-      {(isSearchMode || type) && (
-        <div className="mt-6 px-5 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* FILTERS */}
+      <div
+        className={`mt-4 px-5 max-w-4xl mx-auto grid grid-cols-1 ${
+          showFilters ? "md:grid-cols-4" : "md:grid-cols-1"
+        } gap-6`}
+      >
+
+        {showFilters && (
           <div>
             <JobFilters onFilterChange={handleFilterChange} />
           </div>
+        )}
 
-          {/* JOB LIST */}
-          <div className="md:col-span-3">
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <h2 className="text-2xl font-bold mb-6">
-                {titleText} ({totalCount})
-              </h2>
+        <div className={showFilters ? "md:col-span-3" : "md:col-span-1"}>
 
-              {isError && (
-                <p className="text-red-500 text-center">
-                  Failed to load jobs
-                </p>
-              )}
+          <div className="bg-white p-6 rounded-xl shadow-md">
 
-              <div className="space-y-6">
-                {jobs.map((job, index) => {
-                  if (index === jobs.length - 1) {
-                    return (
-                      <motion.div
-                        ref={lastJobRef}
-                        key={job.id}
-                        variants={cardVariants}
-                        initial="hidden"
-                        animate="visible"
-                      >
-                        <JobCard job={job} />
-                      </motion.div>
-                    );
-                  }
+            <h2 className="text-2xl font-bold mb-6">
+              {titleText} ({totalCount})
+            </h2>
 
+            {isError && (
+              <p className="text-red-500 text-center">
+                Failed to load jobs
+              </p>
+            )}
+
+            <div className="space-y-6">
+
+              {jobs.map((job, index) => {
+
+                if (index === jobs.length - 1) {
                   return (
                     <motion.div
+                      ref={lastJobRef}
                       key={job.id}
                       variants={cardVariants}
                       initial="hidden"
@@ -236,25 +266,76 @@ function Jobs() {
                       <JobCard job={job} />
                     </motion.div>
                   );
+                }
+
+                return (
+                  <motion.div
+                    key={job.id}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <JobCard job={job} />
+                  </motion.div>
+                );
+
+              })}
+
+              {isLoading &&
+                Array.from({ length: 6 }).map((_, i) => (
+                  <JobSkeleton key={i} />
+                ))}
+
+            </div>
+
+            {isFetchingNextPage && <Loader />}
+
+            {!hasNextPage && !isLoading && (
+              <p className="text-center mt-6 text-gray-500">
+                No more jobs
+              </p>
+            )}
+
+            {infiniteEndReached && (
+              <div className="flex justify-center items-center gap-3 mt-8">
+
+                <button
+                  onClick={goToPrevGroup}
+                  disabled={pageGroup === 0}
+                  className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                >
+                  Previous
+                </button>
+
+                {[...Array(MAX_PAGES)].map((_, i) => {
+
+                  const pageNumber = pageGroup * MAX_PAGES + i + 1;
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => goToPage(pageGroup + i)}
+                      className="px-3 py-2 rounded bg-gray-200"
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+
                 })}
 
-                {isLoading &&
-                  Array.from({ length: 6 }).map((_, i) => (
-                    <JobSkeleton key={i} />
-                  ))}
+                <button
+                  onClick={goToNextGroup}
+                  className="px-4 py-2 bg-gray-200 rounded"
+                >
+                  Next
+                </button>
+
               </div>
+            )}
 
-              {isFetchingNextPage && <Loader />}
-
-              {!hasNextPage && !isLoading && (
-                <p className="text-center mt-6 text-gray-500">
-                  No more jobs
-                </p>
-              )}
-            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

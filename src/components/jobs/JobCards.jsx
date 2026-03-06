@@ -5,6 +5,8 @@ import { Bookmark } from "lucide-react";
 function JobCards({ job, recentlyOpened = false }) {
   const navigate = useNavigate();
 
+  if (!job) return null;
+
   const handleClick = () => {
     navigate(`/job/${job.id}`);
   };
@@ -13,7 +15,8 @@ function JobCards({ job, recentlyOpened = false }) {
     e.stopPropagation();
 
     const savedJobs = JSON.parse(localStorage.getItem("savedJobs")) || [];
-    const alreadySaved = savedJobs.find((j) => j.id === job.id);
+
+    const alreadySaved = savedJobs.some((j) => j.id === job.id);
 
     if (alreadySaved) {
       alert("Job already saved");
@@ -22,34 +25,44 @@ function JobCards({ job, recentlyOpened = false }) {
 
     savedJobs.push(job);
     localStorage.setItem("savedJobs", JSON.stringify(savedJobs));
+
     alert("Job saved successfully");
   };
+
+  const skills =
+    typeof job.skills === "string"
+      ? job.skills.split(",")
+      : job.skills || [];
 
   return (
     <div
       onClick={handleClick}
       className="bg-white rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex justify-between items-start px-5 py-4 gap-4 w-full"
     >
-      {/* LEFT SIDE */}
+      {/* LEFT */}
       <div className="flex-1 flex flex-col gap-2 overflow-hidden">
 
-        {/* Job Title */}
+        {/* TITLE */}
         <h3 className="text-lg font-semibold text-gray-800 truncate">
-          {job.title}
+          {job.title || "Untitled Job"}
         </h3>
 
-        {/* Company Name */}
+        {/* COMPANY */}
         <p className="text-sm text-gray-600 truncate">
-          {job.company?.companyName}
+          {job.company?.companyName || "Unknown Company"}
         </p>
 
-        {/* Location + Experience + Salary */}
+        {/* DETAILS */}
         <div className="flex flex-wrap gap-4 text-sm text-gray-600 mt-1">
+
           {job.location && <span>{job.location}</span>}
 
-          {job.minExperience !== null && job.maxExperience !== null && (
-            <span>{job.minExperience} - {job.maxExperience} yrs</span>
-          )}
+          {job.minExperience !== null &&
+            job.maxExperience !== null && (
+              <span>
+                {job.minExperience} - {job.maxExperience} yrs
+              </span>
+            )}
 
           <span>
             {job.salary
@@ -60,22 +73,23 @@ function JobCards({ job, recentlyOpened = false }) {
           {job.jobType && <span>{job.jobType}</span>}
         </div>
 
-        {/* Description */}
+        {/* DESCRIPTION */}
         {job.description && (
           <p className="text-sm text-gray-500 line-clamp-2">
             {job.description}
           </p>
         )}
 
-        {/* Skills Required */}
-        {job.skills && job.skills.length > 0 && (
+        {/* SKILLS */}
+        {skills.length > 0 && (
           <div className="mt-2">
+
             <p className="text-xs font-medium text-gray-600 mb-1">
               Skills Required
             </p>
 
             <div className="flex flex-wrap gap-2">
-              {job.skills.slice(0, 6).map((skill, index) => (
+              {skills.slice(0, 6).map((skill, index) => (
                 <span
                   key={index}
                   className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-md"
@@ -84,17 +98,19 @@ function JobCards({ job, recentlyOpened = false }) {
                 </span>
               ))}
 
-              {job.skills.length > 6 && (
+              {skills.length > 6 && (
                 <span className="text-xs text-gray-500">
-                  +{job.skills.length - 6} more
+                  +{skills.length - 6} more
                 </span>
               )}
             </div>
+
           </div>
         )}
+
       </div>
 
-      {/* RIGHT SIDE */}
+      {/* RIGHT */}
       <div className="flex flex-col justify-between items-end gap-2">
 
         {recentlyOpened && (
@@ -103,7 +119,7 @@ function JobCards({ job, recentlyOpened = false }) {
           </span>
         )}
 
-        {/* Save Job */}
+        {/* SAVE BUTTON */}
         <button
           onClick={handleSaveJob}
           className="flex items-center gap-1 p-2 rounded-md hover:bg-gray-100 text-gray-600 text-sm"
@@ -112,10 +128,11 @@ function JobCards({ job, recentlyOpened = false }) {
           <span>Save</span>
         </button>
 
-        {/* Posted Time */}
+        {/* TIME */}
         <span className="text-xs text-gray-400">
-          {job.createdAt && `Posted ${timeAgo(job.createdAt)}`}
+          {job.createdAt ? `Posted ${timeAgo(job.createdAt)}` : ""}
         </span>
+
       </div>
     </div>
   );
