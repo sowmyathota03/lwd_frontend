@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 const JobFilters = ({ onFilterChange }) => {
+
   const [minExp, setMinExp] = useState("");
   const [maxExp, setMaxExp] = useState("");
   const [salary, setSalary] = useState("");
@@ -9,32 +10,7 @@ const JobFilters = ({ onFilterChange }) => {
   const [maxNoticePeriod, setMaxNoticePeriod] = useState("");
   const [lwdPreferred, setLwdPreferred] = useState(false);
 
-  const handleChange = (name, value) => {
-    switch (name) {
-      case "minExp":
-        setMinExp(value);
-        break;
-      case "maxExp":
-        setMaxExp(value);
-        break;
-      case "salary":
-        setSalary(value);
-        break;
-      case "jobType":
-        setJobType(value);
-        break;
-      case "noticeStatus":
-        setNoticeStatus(value);
-        break;
-      case "maxNoticePeriod":
-        setMaxNoticePeriod(value);
-        break;
-      case "lwdPreferred":
-        setLwdPreferred(value);
-        break;
-      default:
-        break;
-    }
+  const handleApplyFilters = () => {
 
     onFilterChange({
       minExp,
@@ -44,42 +20,49 @@ const JobFilters = ({ onFilterChange }) => {
       noticeStatus,
       maxNoticePeriod,
       lwdPreferred,
-      [name]: value,
     });
+
   };
 
   return (
     <div className="space-y-4 bg-white p-4 rounded-lg shadow-md">
+
       <h3 className="text-lg font-semibold">Filter Jobs</h3>
 
+      {/* EXPERIENCE */}
       <div className="flex gap-2">
+
         <input
           type="number"
           value={minExp}
           placeholder="Min Exp"
-          onChange={(e) => handleChange("minExp", e.target.value)}
+          onChange={(e) => setMinExp(e.target.value)}
           className="w-1/2 px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
+
         <input
           type="number"
           value={maxExp}
           placeholder="Max Exp"
-          onChange={(e) => handleChange("maxExp", e.target.value)}
+          onChange={(e) => setMaxExp(e.target.value)}
           className="w-1/2 px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
+
       </div>
 
+      {/* SALARY */}
       <input
         type="number"
         value={salary}
         placeholder="Salary (LPA)"
-        onChange={(e) => handleChange("salary", e.target.value)}
+        onChange={(e) => setSalary(e.target.value)}
         className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
 
+      {/* JOB TYPE */}
       <select
         value={jobType}
-        onChange={(e) => handleChange("jobType", e.target.value)}
+        onChange={(e) => setJobType(e.target.value)}
         className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
       >
         <option value="">Job Type</option>
@@ -89,9 +72,10 @@ const JobFilters = ({ onFilterChange }) => {
         <option value="contract">Contract</option>
       </select>
 
+      {/* NOTICE STATUS */}
       <select
         value={noticeStatus}
-        onChange={(e) => handleChange("noticeStatus", e.target.value)}
+        onChange={(e) => setNoticeStatus(e.target.value)}
         className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
       >
         <option value="">Notice Status</option>
@@ -100,22 +84,36 @@ const JobFilters = ({ onFilterChange }) => {
         <option value="any">Any</option>
       </select>
 
+      {/* NOTICE PERIOD */}
       <input
         type="number"
         value={maxNoticePeriod}
         placeholder="Max Notice Period (days)"
-        onChange={(e) => handleChange("maxNoticePeriod", e.target.value)}
+        onChange={(e) => setMaxNoticePeriod(e.target.value)}
         className="w-full px-3 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
 
+      {/* LWD */}
       <label className="flex items-center gap-2">
+
         <input
           type="checkbox"
           checked={lwdPreferred}
-          onChange={(e) => handleChange("lwdPreferred", e.target.checked)}
+          onChange={(e) => setLwdPreferred(e.target.checked)}
         />
+
         LWD Preferred
+
       </label>
+
+      {/* APPLY BUTTON */}
+      <button
+        onClick={handleApplyFilters}
+        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+      >
+        Apply Filters
+      </button>
+
     </div>
   );
 };
