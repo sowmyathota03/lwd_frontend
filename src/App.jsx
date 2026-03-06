@@ -149,49 +149,9 @@ function App() {
         <Route path="/recruiter/applications" element={<JobApplicationList />} />
         <Route path="/recruiter/job-seekers" element={<RecruiterJobSeekerSearch />} />
       </Route>
-             
     </Routes>      
-      <div><Footer/></div>
-
-        {/* ADMIN */}
-
-        <Route path="/admin" element={<AdminDashboard />}>
-          <Route index element={<AdminHome />} />
-          <Route path="users" element={<UserManagementPage />} />
-          <Route path="companies" element={<CompanyManagementPage />} />
-          <Route path=":companyId/companyprofile" element={<CompanyProfilePage />} />
-          <Route path=":companyId/createjob" element={<CreateJob />} />
-          <Route path="managejob" element={<ManageJobs />} />
-          <Route path="managejob/:jobId/analytics" element={<JobAnalytics />} />
-          <Route path="applications" element={<JobApplicationList />} />
-          <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
-        </Route>
-
-        {/* RECRUITER ADMIN */}
-
-        <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />}>
-          <Route index element={<RecruiterAdminHome />} />
-          <Route path="company-profile" element={<CompanyProfilePage />} />
-          <Route path="manage-recruiter" element={<RecruiterList />} />
-          <Route path="managejob" element={<ManageJobs />} />
-          <Route path="managejob/:jobId/analytics" element={<JobAnalytics />} />
-          <Route path="createjob" element={<CreateJob />} />
-          <Route path="applications" element={<JobApplicationList />} />
-          <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
-        </Route>
-
-        {/* RECRUITER */}
-
-        <Route path="/recruiter" element={<RecruiterDashboard />}>
-          <Route index element={<RecruiterHome />} />
-          <Route path="company-profile" element={<CompanyProfilePage />} />
-          <Route path="managejob" element={<ManageJobs />} />
-          <Route path="managejob/:jobId/analytics" element={<JobAnalytics />} />
-          <Route path="createjob" element={<CreateJob />} />
-          <Route path="applications" element={<JobApplicationList />} />
-          <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
-        </Route>
-      <Footer />
+    
+    <Footer />
 
     </>
   )
