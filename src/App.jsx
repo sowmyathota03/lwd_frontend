@@ -16,16 +16,24 @@ import Companies from './pages/public/Companies';
 import Profile from './pages/profile/Profile';
 import Career from './pages/public/Career';
 
-import JobCard from './components/jobs/JobCards';
-import JobSearchBlock from './components/jobs/JobSearchBlock';
-import ResumeUpload from './components/jobs/ResumeUpload';
-import JobAlert from './components/jobs/JobAlert';
-import CareerAdvice from './components/jobs/CareerAdvice';
-import ApplyJob from './components/jobs/ApplyJob';
-import Suggestions from './components/jobs/Suggestions';
-import MyApplications from './components/jobs/MyApplications';
-import SavedJobs from './components/jobs/SavedJobs';
+
+import JobCard from "./components/jobs/JobCards";
+import JobSearchBlock from "./components/jobs/JobSearchBlock";
+import ResumeUpload from "./components/jobs/ResumeUpload";
+import JobAlert from "./components/jobs/JobAlert";
+import CareerAdvice from "./components/jobs/CareerAdvice";
+import ApplyJob from "./components/jobs/ApplyJob";
+import Suggestions from "./components/jobs/Suggestions";
+import MyApplications from "./components/profile/MyApplication/MyApplications";
+import SavedJobs from "./components/jobs/SavedJobs";
 import JobList from "./components/jobs/JobList";
+
+import Education from "./components/profile/Education";
+import Internship from "./components/profile/Internship";
+import Project from "./components/profile/Project";
+
+import AddStatus from "./pages/profile/components/AddStatus";
+import VerifyEmail from "./pages/profile/components/VerifyEmail";
 
 
 
@@ -56,13 +64,15 @@ import RecruiterAdminHome from './components/recruiter-admin/RecruiterAdminHome'
 import CompanyProfilePage from './components/recruiter-admin/CompanyProfilePage';
 import RecruiterList from './components/recruiter-admin/RecruiterList';
 
-import RecruiterDashboard from './pages/recruiter/RecruiterDashboard';
-import RecruiterHome from './components/recruiter/RecruiterHome';
-import RecruiterJobSeekerSearch from './components/recruiter/RecruiterJobSeekerSearch';
-import JobAnalytics from './components/jobs/JobAnalytics';
 
 
 
+
+import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
+import RecruiterHome from "./components/recruiter/RecruiterHome";
+import RecruiterJobSeekerSearch from "./components/Searching/JobSeekerSearch/RecruiterJobSeekerSearch";
+import JobAnalytics from "./components/jobs/JobAnalytics";
+import RecruiterCompanyRequest from "./components/recruiter/RecruiterCompanyRequest";
 
 
 function App() {
@@ -135,6 +145,8 @@ function App() {
         <Route path="/recruiter-admin/job-seekers" element={<RecruiterJobSeekerSearch />} />
       </Route>
 
+        <Route path="/recruiter/companyrequest" element={<RecruiterCompanyRequest />} />
+
 
       <Route path="/recruiter" element={<RecruiterDashboard />} >
         <Route index element={ <RecruiterHome /> } />
@@ -148,8 +160,52 @@ function App() {
              
     </Routes>      
       <div><Footer/></div>
+
+        {/* ADMIN */}
+
+        <Route path="/admin" element={<AdminDashboard />}>
+          <Route index element={<AdminHome />} />
+          <Route path="users" element={<UserManagementPage />} />
+          <Route path="companies" element={<CompanyManagementPage />} />
+          <Route path=":companyId/companyprofile" element={<CompanyProfilePage />} />
+          <Route path=":companyId/createjob" element={<CreateJob />} />
+          <Route path="managejob" element={<ManageJobs />} />
+          <Route path="managejob/:jobId/analytics" element={<JobAnalytics />} />
+          <Route path="applications" element={<JobApplicationList />} />
+          <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
+        </Route>
+
+        {/* RECRUITER ADMIN */}
+
+        <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />}>
+          <Route index element={<RecruiterAdminHome />} />
+          <Route path="company-profile" element={<CompanyProfilePage />} />
+          <Route path="manage-recruiter" element={<RecruiterList />} />
+          <Route path="managejob" element={<ManageJobs />} />
+          <Route path="managejob/:jobId/analytics" element={<JobAnalytics />} />
+          <Route path="createjob" element={<CreateJob />} />
+          <Route path="applications" element={<JobApplicationList />} />
+          <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
+        </Route>
+
+        {/* RECRUITER */}
+
+        <Route path="/recruiter" element={<RecruiterDashboard />}>
+          <Route index element={<RecruiterHome />} />
+          <Route path="company-profile" element={<CompanyProfilePage />} />
+          <Route path="managejob" element={<ManageJobs />} />
+          <Route path="managejob/:jobId/analytics" element={<JobAnalytics />} />
+          <Route path="createjob" element={<CreateJob />} />
+          <Route path="applications" element={<JobApplicationList />} />
+          <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
+        </Route>
+      <Footer />
+
     </>
   )
 }
 
-export default App
+
+
+export default App;
+

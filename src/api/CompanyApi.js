@@ -14,6 +14,15 @@ export const getCompanyById = async (companyId) => {
 };
 
 
+// 🔹 Search companies
+export const searchCompanies = (keyword = "", page = 0, size = 5) => {
+  return axiosInstance
+    .get(`/companies/search?keyword=${keyword}&page=${page}&size=${size}`)
+    .then((res) => res.data);
+};
+
+
+
 
 // 🔹 Create company (ADMIN, RECRUITER_ADMIN)
 export const createCompany = (companyData) =>

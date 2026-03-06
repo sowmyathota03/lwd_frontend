@@ -1,267 +1,118 @@
 import { useState, useEffect } from "react";
-import {
-  getMyInternships,
-  getInternshipsByUserId,
-  createInternship,
-  updateInternship
-} from "../../api/InternshipApi";
+import { Pencil } from "lucide-react";
+import { getMyInternships, getInternshipsByUserId } from "../../api/InternshipApi";
+import InternshipForm from "./InternshipForm";
 
-import { Section, Grid, Input, Buttons } from "./Helpers";
-
-const Internship = ({ userId, editable }) => {
-
-  const [internshipList, setInternshipList] = useState([]);
+function Internship({ userId, editable }) {
+  const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null); // null | "new" | internship.id
 
-  const [editing, setEditing] = useState(false);
-  const [forms, setForms] = useState([]);
-
-  const initialForm = {
-    role: "",
-    companyName: "",
-    startDate: "",
-    endDate: "",
-    description: ""
-  };
-
-  /* LOAD DATA */
-
+  /* ================= LOAD DATA ON MOUNT ================= */
   useEffect(() => {
-    const loadInternships = async () => {
+    async function fetchData() {
+      setLoading(true);
       try {
-
-        const res = !userId
-          ? await getMyInternships()
-          : await getInternshipsByUserId(userId);
-
-        setInternshipList(res || []);
-
+        const data = userId
+          ? await getInternshipsByUserId(userId)
+          : await getMyInternships();
+        setInternships(data);
       } catch (err) {
-        console.error("Internship load error:", err);
+        console.error("Error fetching internships", err);
       } finally {
         setLoading(false);
       }
-    };
-
-    loadInternships();
+    }
+    fetchData();
   }, [userId]);
 
-  /* EDIT ALL */
+  /* ================= GET CURRENT EDIT ================= */
+  const internshipToEdit =
+    editingId === "new"
+      ? null
+      : internships.find((i) => i.id === editingId);
 
-  const handleEditAll = () => {
-
-    const allForms = internshipList.map((intern) => ({
-      id: intern.id,
-      data: { ...intern }
-    }));
-
-    setForms(allForms);
-    setEditing(true);
-  };
-
-  /* ADD FORM */
-
-  const handleAddForm = () => {
-
-    setForms([
-      ...forms,
-      { id: Date.now(), data: initialForm }
-    ]);
-
-    setEditing(true);
-  };
-
-  /* INPUT CHANGE */
-
-  const handleChange = (id, e) => {
-
-    setForms(
-      forms.map((f) =>
-        f.id === id
-          ? { ...f, data: { ...f.data, [e.target.name]: e.target.value } }
-          : f
-      )
-    );
-  };
-
-  /* SAVE */
-
-  const handleSave = async (id) => {
-
-    const form = forms.find((f) => f.id === id);
-    if (!form) return;
-
-    try {
-
-      const exists = internshipList.find((intern) => intern.id === id);
-
-      if (exists) {
-
-        await updateInternship(id, form.data);
-
-        setInternshipList(
-          internshipList.map((intern) =>
-            intern.id === id ? { ...intern, ...form.data } : intern
-          )
-        );
-
-      } else {
-
-        const res = await createInternship(form.data);
-
-        setInternshipList([
-          ...internshipList,
-          res
-        ]);
-      }
-
-      const remainingForms = forms.filter((f) => f.id !== id);
-      setForms(remainingForms);
-
-      if (remainingForms.length === 0) {
-        setEditing(false);
-      }
-
-    } catch (err) {
-      console.error("Save internship error:", err);
+  /* ================= HANDLE SAVE (CREATE / UPDATE) ================= */
+  const handleSave = (savedInternship) => {
+    if (editingId === "new") {
+      // Add to top of list
+      setInternships([savedInternship, ...internships]);
+    } else {
+      // Update existing
+      setInternships(
+        internships.map((i) =>
+          i.id === savedInternship.id ? savedInternship : i
+        )
+      );
     }
+    setEditingId(null);
   };
 
-  /* CANCEL */
-
-  const handleCancel = (id) => {
-
-    const remainingForms = forms.filter((f) => f.id !== id);
-    setForms(remainingForms);
-
-    if (remainingForms.length === 0) {
-      setEditing(false);
-    }
-  };
-
-  if (loading) {
-    return <div className="p-6 text-gray-500">Loading internships...</div>;
-  }
+  if (loading) return <p>Loading internships...</p>;
 
   return (
-    <Section
-      title="Internship Experience"
-      editable={editable}
-      editing={editing}
-      onEdit={handleEditAll}
-    >
-
-      {editable && (
-        <button
-          onClick={handleAddForm}
-          className="mb-4 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
-        >
-          + Add Internship
-        </button>
-      )}
-
-      <div className="space-y-4">
-
-        {/* FORMS */}
-
-        {forms.map((f) => (
-
-          <div key={f.id} className="p-4 border rounded-lg bg-gray-50">
-
-            <Grid mdCols={2} lgCols={2} className="gap-4">
-
-              <Input
-                label="Role"
-                name="role"
-                value={f.data.role}
-                onChange={(e) => handleChange(f.id, e)}
-              />
-
-              <Input
-                label="Company Name"
-                name="companyName"
-                value={f.data.companyName}
-                onChange={(e) => handleChange(f.id, e)}
-              />
-
-              <Input
-                label="Start Date"
-                name="startDate"
-                type="date"
-                value={f.data.startDate}
-                onChange={(e) => handleChange(f.id, e)}
-              />
-
-              <Input
-                label="End Date"
-                name="endDate"
-                type="date"
-                value={f.data.endDate}
-                onChange={(e) => handleChange(f.id, e)}
-              />
-
-            </Grid>
-
-            <div className="mt-3">
-              <Input
-                label="Description"
-                name="description"
-                value={f.data.description}
-                onChange={(e) => handleChange(f.id, e)}
-              />
-            </div>
-
-            <Buttons
-              onCancel={() => handleCancel(f.id)}
-              onSave={() => handleSave(f.id)}
-              loading={false}
-            />
-
-          </div>
-        ))}
-
-        {/* CARDS */}
-
-        {internshipList
-          .filter((intern) => !forms.some((f) => f.id === intern.id))
-          .map((intern) => (
-
-            <div
-              key={intern.id}
-              className="bg-gray-50 p-4 rounded-lg hover:shadow-md transition"
-            >
-
-              <h3 className="text-lg font-semibold text-gray-800">
-                {intern.role}
-              </h3>
-
-              <p className="text-indigo-600 font-medium">
-                {intern.companyName}
-              </p>
-
-              <p className="text-sm text-gray-500 mt-1">
-                {intern.startDate} - {intern.endDate || "Present"}
-              </p>
-
-              {intern.description && (
-                <p className="text-sm text-gray-500 mt-2">
-                  {intern.description}
-                </p>
-              )}
-
-            </div>
-          ))}
-
+    <div className="bg-white shadow rounded-lg p-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">Internships</h2>
+        {editable && (
+          <button
+            className="text-white bg-blue-500 px-3 py-1 rounded"
+            onClick={() => setEditingId("new")}
+          >
+            + Add
+          </button>
+        )}
       </div>
 
-      {internshipList.length === 0 && forms.length === 0 && (
-        <p className="text-gray-500 text-sm">
-          No internship details added.
-        </p>
+      {/* List */}
+      {internships.length === 0 && (
+        <p className="text-gray-500">No internships added.</p>
       )}
 
-    </Section>
+      {internships.map((i) => (
+        <div key={i.id} className="py-3 flex justify-between items-start hover:shadow transition rounded-lg">
+          <div className="p-4 rounded-lg ">
+            <h3 className="font-semibold">{i.role}</h3>
+            <div className="text-sm flex items-center text-gray-600">
+              <span>{i.companyName}</span>
+              {i.location && (
+                <>
+                  <span className="mx-2 text-gray-400">•</span>
+                  <span>{i.location}</span>
+                </>
+              )}
+            </div>
+            <p className="text-sm text-gray-500">
+              {i.startDate} - {i.endDate || "Present"}
+            </p>
+            {i.description && <p className="text-sm text-gray-600 mt-1">{i.description}</p>}
+            {i.skills && <p className="text-sm text-gray-500 mt-1">Skills: {i.skills}</p>}
+            {i.stipend && <p className="text-sm text-gray-500 mt-1">Stipend: ₹{i.stipend}</p>}
+            {i.employmentType && <p className="text-sm text-gray-500 mt-1">Type: {i.employmentType}</p>}
+          </div>
+
+          {editable && (
+            <button
+              onClick={() => setEditingId(i.id)}
+              className="p-1.5 rounded-lg text-gray-600 hover:bg-blue-50 transition"
+            >
+              <Pencil size={16} />
+            </button>
+          )}
+        </div>
+      ))}
+
+      {/* Modal Form */}
+      {editingId && (
+        <InternshipForm
+          internship={internshipToEdit}
+          onClose={() => setEditingId(null)}
+          onSave={handleSave}
+        />
+      )}
+    </div>
   );
-};
+}
 
 export default Internship;

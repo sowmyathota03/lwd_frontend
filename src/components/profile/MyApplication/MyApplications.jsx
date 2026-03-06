@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getMyApplications } from "../../api/JobApplicationApi";
+import { getMyApplications } from "../../../api/JobApplicationApi";
 
 const MyApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -45,7 +45,7 @@ const MyApplications = () => {
       case "SHORTLISTED":
         return "bg-blue-100 text-blue-700";
       default:
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -67,7 +67,7 @@ const MyApplications = () => {
           <>
             <div className="overflow-x-auto">
               <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                <thead className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+                <thead className="bg-linear-to-r from-blue-500 to-indigo-500 text-white">
                   <tr>
                     <th className="py-3 px-4 text-left">Job Title</th>
                     <th className="py-3 px-4 text-left">Company</th>
@@ -85,7 +85,7 @@ const MyApplications = () => {
                         {app.job?.title || "N/A"}
                       </td>
                       <td className="py-3 px-4">
-                        {app.company?.name || "N/A"}
+                        {app.company?.companyName  || "N/A"}
                       </td>
                       <td className="py-3 px-4">
                         {formatDate(app.appliedAt)}

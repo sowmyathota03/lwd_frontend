@@ -1,125 +1,107 @@
 import { useState, useEffect } from "react";
-import {
-  getMyEducation,
-  getEducationByUserId,
-} from "../../api/EducationApi";
-import { Section } from "./Helpers";
+import { Pencil } from "lucide-react";
+import { getMyEducation, getEducationByUserId } from "../../api/EducationApi";
 import EducationForm from "./EducationForm";
 
-const Education = ({ userId, editable }) => {
-
+function Education({ userId, editable }) {
   const [educationList, setEducationList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [openForm, setOpenForm] = useState(false);
-  const [selectedEducation, setSelectedEducation] = useState(null);
+  const [editingId, setEditingId] = useState(null); // null | "new" | edu.id
 
   // ================= LOAD EDUCATION =================
-
   useEffect(() => {
     fetchEducation();
   }, [userId]);
 
   const fetchEducation = async () => {
+    setLoading(true);
     try {
-      const res = userId
+      const data = userId
         ? await getEducationByUserId(userId)
         : await getMyEducation();
-
-      setEducationList(res || []);
+      setEducationList(data || []);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching education", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // ================= ADD =================
+  const eduToEdit = editingId === "new" ? null : educationList.find(e => e.id === editingId);
 
-  const handleAdd = () => {
-    setSelectedEducation(null);
-    setOpenForm(true);
+  const handleSave = (savedEdu) => {
+    if (editingId === "new") {
+      setEducationList([savedEdu, ...educationList]);
+    } else {
+      setEducationList(
+        educationList.map(e => (e.id === savedEdu.id ? savedEdu : e))
+      );
+    }
+    setEditingId(null);
   };
 
-  // ================= EDIT =================
-
-  const handleEdit = (edu) => {
-    setSelectedEducation(edu);
-    setOpenForm(true);
-  };
-
-  if (loading) return <div className="p-6 text-gray-500">Loading...</div>;
+  if (loading) return <p className="p-6 text-gray-500">Loading education...</p>;
 
   return (
-    <Section title="Education" editable={editable} onEdit={handleAdd}>
+    <div className="bg-white shadow rounded-lg p-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">Education</h2>
+        {editable && (
+          <button
+            onClick={() => setEditingId("new")}
+            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            + Add
+          </button>
+        )}
+      </div>
 
-      {editable && (
-        <button
-          onClick={handleAdd}
-          className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
-        >
-          + Add Education
-        </button>
+      {/* List */}
+      {educationList.length === 0 && (
+        <p className="text-gray-500 text-sm">No education added.</p>
       )}
 
-      <div className="space-y-4">
-
-        {educationList.length === 0 && (
-          <p className="text-gray-400 text-sm">
-            No education added
-          </p>
-        )}
-
+      <div className="space-y-3 hover:shadow transition">
         {educationList.map((edu) => (
           <div
             key={edu.id}
-            className="bg-gray-50 p-4 rounded-lg hover:shadow"
+            className="p-4 rounded-lg flex justify-between items-start"
           >
-            <div className="flex justify-between">
-
-              <div>
-                <h3 className="font-semibold text-gray-800">
-                  {edu.degree} {edu.fieldOfStudy && `- ${edu.fieldOfStudy}`}
-                </h3>
-
-                <p className="text-indigo-600 text-sm">
-                  {edu.institutionName}
-                </p>
-
-                <p className="text-sm text-gray-500">
-                  {edu.startDate} - {edu.endDate || "Present"}
-                </p>
-
-                {edu.grade && (
-                  <p className="text-sm text-gray-500">
-                    Grade: {edu.grade}
-                  </p>
-                )}
-              </div>
-
-              {editable && (
-                <button
-                  onClick={() => handleEdit(edu)}
-                  className="text-blue-500"
-                >
-                  ✏️
-                </button>
-              )}
-
+            <div>
+              <h3 className="font-semibold text-gray-800">
+                {edu.degree} {edu.fieldOfStudy && `- ${edu.fieldOfStudy}`}
+              </h3>
+              <p className="text-indigo-600 text-sm">{edu.institutionName}</p>
+              <p className="text-gray-500 text-sm">
+                {edu.startDate} - {edu.endDate || "Present"}
+              </p>
+              {edu.grade && <p className="text-gray-500 text-sm">Grade: {edu.grade}</p>}
+              {edu.percentage && <p className="text-gray-500 text-sm">Percentage: {edu.percentage}</p>}
             </div>
+
+            {editable && (
+              <button
+                onClick={() => setEditingId(edu.id)}
+                className="p-1.5 rounded-lg text-gray-600 hover:bg-blue-50 transition"
+              >
+                <Pencil size={16} />
+              </button>
+            )}
           </div>
         ))}
       </div>
 
-      {openForm && (
+      {/* Modal Form */}
+      {editingId && (
         <EducationForm
-          education={selectedEducation}
-          onClose={() => setOpenForm(false)}
-          refresh={fetchEducation}
+          education={eduToEdit}
+          onClose={() => setEditingId(null)}
+          onSave={handleSave}
         />
       )}
-
-    </Section>
+    </div>
   );
-};
+}
 
 export default Education;

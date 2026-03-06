@@ -93,7 +93,7 @@ export default function RecruiterDashboard() {
           ))}
         </nav>
 
-        {/* Theme Toggle */}
+        {/* Theme Toggle
         <div className="p-3 border-t border-gray-200">
           <button
             onClick={() => setDarkMode(!darkMode)}
@@ -110,7 +110,7 @@ export default function RecruiterDashboard() {
               {darkMode ? "Light Mode" : "Dark Mode"}
             </span>
           </button>
-        </div>
+        </div> */}
 
       </aside>
 

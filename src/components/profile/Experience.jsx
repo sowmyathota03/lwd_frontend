@@ -54,8 +54,8 @@ function Experience({ userId, editable }) {
       )}
 
       {experiences.map((exp) => (
-        <div key={exp.id} className="py-3 flex justify-between items-start">
-          <div>
+        <div key={exp.id} className=" flex justify-between items-start">
+          <div className="p-4 rounded-lg hover:shadow transition">
             <h3 className="font-semibold">{exp.jobTitle}</h3>
             <div className="text-sm flex items-center text-gray-600">
               <span>{exp.companyName}</span>

@@ -13,6 +13,10 @@ import BasicInfo from "../../components/profile/BasicInfo";
 import Education from "../../components/profile/Education";
 import Internship from "../../components/profile/Internship";
 import Project from "../../components/profile/Project";
+import Certification from "../../components/profile/Certification";
+import AboutInfo from "../../components/profile/AboutInfo";
+import ProfileCompletion from "../../components/profile/ProfileCompletion";
+
 import AddStatus from "./components/AddStatus";
 
 import { getMyProfile, getUserById } from "../../api/UserApi";
@@ -21,20 +25,26 @@ import {
   getJobSeekerByUserId,
 } from "../../api/JobSeekerApi";
 
-import AboutInfo from "../../components/profile/AboutInfo";
-import ProfileCompletion from "../../components/profile/ProfileCompletion";
-
 const Profile = () => {
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
 
   const isOwnProfile = !userId || user?.userId === Number(userId);
 
-  // ================= BASIC PROFILE =================
-  const { data: basicProfile, isLoading: basicLoading } = useQuery({
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+
+  /* ================= BASIC PROFILE ================= */
+
+  const {
+    data: basicProfile,
+    isLoading: basicLoading,
+  } = useQuery({
     queryKey: ["profile", userId || "me"],
     queryFn: async () => {
-      if (!userId) {
+      if (isOwnProfile) {
         const res = await getMyProfile();
         return res.data;
       } else {
@@ -44,12 +54,14 @@ const Profile = () => {
     },
   });
 
-  // ================= JOB SEEKER PROFILE =================
-  const { data: extendedProfile, isLoading: extendedLoading } = useQuery({
-    queryKey: ["jobSeekerProfile", userId || "me"],
-    queryFn: async () => {
-      if (!basicProfile || basicProfile.role !== "JOB_SEEKER") return null;
+  /* ================= JOB SEEKER PROFILE ================= */
 
+  const {
+    data: extendedProfile,
+    isLoading: extendedLoading,
+  } = useQuery({
+    queryKey: ["jobSeekerProfile", basicProfile?.id],
+    queryFn: async () => {
       if (isOwnProfile) {
         const res = await getJobSeekerProfile();
         return res.data;
@@ -61,7 +73,8 @@ const Profile = () => {
     enabled: !!basicProfile && basicProfile.role === "JOB_SEEKER",
   });
 
-  // ================= LOCAL STATE FOR INSTANT UPDATE =================
+  /* ================= LOCAL STATE ================= */
+
   const [jobSeekerProfile, setJobSeekerProfile] = useState(null);
 
   useEffect(() => {
@@ -70,7 +83,9 @@ const Profile = () => {
     }
   }, [extendedProfile]);
 
-  if (basicLoading || extendedLoading) return <Loader fullScreen />;
+  if (basicLoading || extendedLoading) {
+    return <Loader fullScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
@@ -81,7 +96,9 @@ const Profile = () => {
           <div className="flex justify-between items-center">
 
             <h2 className="text-3xl font-semibold">
-              {isOwnProfile ? "My Profile" : `${basicProfile?.name}`}
+              {isOwnProfile
+                ? "My Profile"
+                : `${basicProfile?.name || "User Profile"}`}
             </h2>
 
             <div className="flex flex-col text-sm text-gray-100 gap-1 items-end">
@@ -116,14 +133,14 @@ const Profile = () => {
           <div className="rounded-xl shadow-sm border border-gray-200">
             <BasicInfo
               profile={basicProfile}
-              setProfile={setJobSeekerProfile}
               editable={isOwnProfile}
             />
           </div>
 
+          {/* ================= JOB SEEKER SECTIONS ================= */}
+
           {basicProfile?.role === "JOB_SEEKER" && (
             <>
-
               {/* JOB SEEKER DETAILS */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <JobSeekerDetails
@@ -177,7 +194,7 @@ const Profile = () => {
                 />
               </div>
 
-              {/* PROJECTS */}
+              {/* PROJECT */}
               <div className="rounded-xl shadow-sm border border-gray-200">
                 <Project
                   userId={isOwnProfile ? null : userId}
@@ -185,17 +202,26 @@ const Profile = () => {
                 />
               </div>
 
+              {/* CERTIFICATIONS */}
+              <div className="rounded-xl shadow-sm border border-gray-200">
+                <Certification
+                  userId={isOwnProfile ? null : userId}
+                  editable={isOwnProfile}
+                />
+              </div>
             </>
           )}
 
-          {/* RECRUITER */}
+          {/* ================= RECRUITER ================= */}
+
           {basicProfile?.role === "RECRUITER" && (
             <div className="rounded-xl shadow-sm border border-gray-200">
               <RecruiterDetails editable={isOwnProfile} />
             </div>
           )}
 
-          {/* ADMIN */}
+          {/* ================= ADMIN ================= */}
+
           {basicProfile?.role === "ADMIN" && (
             <div className="rounded-xl shadow-sm border border-gray-200">
               <AdminDetails editable={isOwnProfile} />

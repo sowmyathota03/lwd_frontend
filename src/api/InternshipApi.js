@@ -1,46 +1,25 @@
 import axiosInstance from "./axiosInstance";
 
 /* ================= CREATE INTERNSHIP ================= */
-
 export const createInternship = async (internshipData) => {
-  const response = await axiosInstance.post(
-    "/internships",
-    internshipData
-  );
-  return response.data;
+  const res = await axiosInstance.post("/internships", internshipData);
+  return res.data;
 };
-
 
 /* ================= GET MY INTERNSHIPS ================= */
-
 export const getMyInternships = async () => {
-  const response = await axiosInstance.get("/internships/me");
-  return response.data;
+  const res = await axiosInstance.get("/internships/me");
+  return res.data;
 };
-
 
 /* ================= GET INTERNSHIPS BY USER ID ================= */
-
 export const getInternshipsByUserId = async (userId) => {
-  const response = await axiosInstance.get(`/internships/user/${userId}`);
-  return response.data;
+  const res = await axiosInstance.get(`/internships/user/${userId}`);
+  return res.data;
 };
-
 
 /* ================= UPDATE INTERNSHIP ================= */
-
 export const updateInternship = async (internshipId, internshipData) => {
-  const response = await axiosInstance.put(
-    `/internships/${internshipId}`,
-    internshipData
-  );
-  return response.data;
-};
-
-
-/* ================= DELETE INTERNSHIP ================= */
-
-export const deleteInternship = async (internshipId) => {
-  const response = await axiosInstance.delete(`/internships/${internshipId}`);
-  return response.data;
+  const res = await axiosInstance.put(`/internships/${internshipId}`, internshipData);
+  return res.data;
 };
