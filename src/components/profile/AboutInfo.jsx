@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 
 import {
   getMyAboutInfo,
@@ -12,20 +11,30 @@ import AboutInfoForm from "./AboutInfoForm";
 const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
 
   const [openForm, setOpenForm] = useState(false);
+  const [aboutData, setAboutData] = useState(null);
 
   // ================= FETCH ABOUT INFO =================
-  const { data: aboutData } = useQuery({
-    queryKey: ["aboutInfo", userId || "me"],
-    queryFn: async () => {
-      if (isOwnProfile) {
-        return await getMyAboutInfo();
-      } else {
-        return await getAboutInfoByUserId(userId);
-      }
-    },
-  });
+  const loadAboutInfo = async () => {
+    try {
+      let res;
 
-  // Sync profile
+      if (isOwnProfile) {
+        res = await getMyAboutInfo();
+      } else {
+        res = await getAboutInfoByUserId(userId);
+      }
+
+      setAboutData(res);
+    } catch (error) {
+      console.error("Error loading about info", error);
+    }
+  };
+
+  useEffect(() => {
+    loadAboutInfo();
+  }, [userId, isOwnProfile]);
+
+  // ================= SYNC PROFILE =================
   useEffect(() => {
     if (aboutData) {
       setProfile((prev) => ({
@@ -34,7 +43,7 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
         about: aboutData.about,
       }));
     }
-  }, [aboutData]);
+  }, [aboutData, setProfile]);
 
   return (
     <>
@@ -44,7 +53,9 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
         onEdit={() => setOpenForm(true)}
       >
         <Field label="Headline" value={profile?.headline || "—"} />
-        <Field label="About" value={profile?.about || "—"} />
+        <p className="text-sm">
+          About: <span className="font-medium">{profile?.about || "—"}</span>
+        </p>
       </Section>
 
       {/* Modal Form */}

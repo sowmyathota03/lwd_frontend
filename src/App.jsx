@@ -23,7 +23,7 @@ import JobAlert from './components/jobs/JobAlert';
 import CareerAdvice from './components/jobs/CareerAdvice';
 import ApplyJob from './components/jobs/ApplyJob';
 import Suggestions from './components/jobs/Suggestions';
-import MyApplications from './components/jobs/MyApplications';
+import MyApplications from './components/profile/MyApplication/MyApplications';
 import SavedJobs from './components/jobs/SavedJobs';
 
 import Education from './components/profile/Education';
@@ -55,8 +55,9 @@ import RecruiterList from './components/recruiter-admin/RecruiterList';
 
 import RecruiterDashboard from './pages/recruiter/RecruiterDashboard';
 import RecruiterHome from './components/recruiter/RecruiterHome';
-import RecruiterJobSeekerSearch from './components/recruiter/RecruiterJobSeekerSearch';
+import RecruiterJobSeekerSearch from './components/Searching/JobSeekerSearch/RecruiterJobSeekerSearch';
 import JobAnalytics from './components/jobs/JobAnalytics';
+import RecruiterCompanyRequest from './components/recruiter/RecruiterCompanyRequest';
 
 
 
@@ -128,6 +129,8 @@ function App() {
         <Route path="/recruiter-admin/job-seekers" element={<RecruiterJobSeekerSearch />} />
       </Route>
 
+
+      <Route path="/recruiter/companyrequest" element={<RecruiterCompanyRequest />} />
 
       <Route path="/recruiter" element={<RecruiterDashboard />} >
         <Route index element={ <RecruiterHome /> } />

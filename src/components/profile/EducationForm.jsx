@@ -1,10 +1,8 @@
-import { useState } from "react";
-import {
-  createEducation,
-  updateEducation,
-} from "../../api/EducationApi";
+import { useState, useEffect } from "react";
+import { createEducation, updateEducation } from "../../api/EducationApi";
 
-const EducationForm = ({ education, onClose, refresh }) => {
+function EducationForm({ education, onClose, onSave }) {
+  const isEdit = !!education?.id;
 
   const [form, setForm] = useState({
     degree: education?.degree || "",
@@ -27,18 +25,16 @@ const EducationForm = ({ education, onClose, refresh }) => {
   };
 
   const handleSave = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-
-      if (education) {
-        await updateEducation(education.id, form);
+      let saved;
+      if (isEdit) {
+        saved = await updateEducation(education.id, form);
       } else {
-        await createEducation(form);
+        saved = await createEducation(form);
       }
-
-      refresh();
+      onSave(saved);
       onClose();
-
     } catch (err) {
       console.error("Education save error:", err);
     } finally {
@@ -47,15 +43,12 @@ const EducationForm = ({ education, onClose, refresh }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center">
-
-      <div className="bg-white w-130 p-6 rounded-xl shadow-lg space-y-4">
-
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+      <div className="bg-white w-125 p-6 rounded-xl shadow-lg space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">
-          {education ? "Edit Education" : "Add Education"}
+          {isEdit ? "Edit Education" : "Add Education"}
         </h2>
 
-        {/* Degree */}
         <input
           name="degree"
           placeholder="Degree (B.Tech, MBA...)"
@@ -64,7 +57,6 @@ const EducationForm = ({ education, onClose, refresh }) => {
           className="w-full border p-2 rounded-md"
         />
 
-        {/* Field */}
         <input
           name="fieldOfStudy"
           placeholder="Field of Study"
@@ -73,7 +65,6 @@ const EducationForm = ({ education, onClose, refresh }) => {
           className="w-full border p-2 rounded-md"
         />
 
-        {/* Institution */}
         <input
           name="institutionName"
           placeholder="Institution Name"
@@ -82,7 +73,6 @@ const EducationForm = ({ education, onClose, refresh }) => {
           className="w-full border p-2 rounded-md"
         />
 
-        {/* University */}
         <input
           name="university"
           placeholder="University"
@@ -91,9 +81,7 @@ const EducationForm = ({ education, onClose, refresh }) => {
           className="w-full border p-2 rounded-md"
         />
 
-        {/* Dates */}
         <div className="grid grid-cols-2 gap-3">
-
           <input
             type="date"
             name="startDate"
@@ -101,7 +89,6 @@ const EducationForm = ({ education, onClose, refresh }) => {
             onChange={handleChange}
             className="border p-2 rounded-md"
           />
-
           <input
             type="date"
             name="endDate"
@@ -109,10 +96,8 @@ const EducationForm = ({ education, onClose, refresh }) => {
             onChange={handleChange}
             className="border p-2 rounded-md"
           />
-
         </div>
 
-        {/* Percentage */}
         <input
           name="percentage"
           placeholder="Percentage"
@@ -122,7 +107,6 @@ const EducationForm = ({ education, onClose, refresh }) => {
           className="w-full border p-2 rounded-md"
         />
 
-        {/* Grade */}
         <input
           name="grade"
           placeholder="Grade / CGPA"
@@ -133,27 +117,22 @@ const EducationForm = ({ education, onClose, refresh }) => {
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 pt-2">
-
           <button
             onClick={onClose}
             className="px-4 py-2 border rounded-md hover:bg-gray-100"
           >
             Cancel
           </button>
-
           <button
             onClick={handleSave}
-            className="px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            className="px-5 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
             {loading ? "Saving..." : "Save"}
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
-};
+}
 
 export default EducationForm;
