@@ -87,7 +87,7 @@ function JobSearchBar() {
         value={location}
         onChange={(e) => setLocation(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="px-3 py-2 outline-none w-[180px]"
+        className="px-3 py-2 outline-none w-45"
       />
 
       <div className="w-px h-6 bg-gray-300"></div>
@@ -99,7 +99,7 @@ function JobSearchBar() {
         value={companyName}
         onChange={(e) => setCompanyName(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="px-3 py-2 outline-none w-[180px]"
+        className="px-3 py-2 outline-none w-45"
       />
 
       {/* SEARCH BUTTON */}

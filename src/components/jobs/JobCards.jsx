@@ -25,7 +25,7 @@ function JobCards({ job, recentlyOpened = false }) {
   return (
     <div
       onClick={handleClick}
-      className="bg-white rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex justify-between items-start px-5 py-4 gap-4 w-full min-h-[100px]"
+      className="bg-white rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex justify-between items-start px-5 py-4 gap-4 w-full min-h-25"
     >
       {/* Left side: Job info */}
       <div className="flex-1 flex flex-col gap-2 overflow-hidden">
