@@ -28,6 +28,8 @@ import MyApplications from "./components/profile/MyApplication/MyApplications";
 import Education from "./components/profile/Education";
 import Internship from "./components/profile/Internship";
 import Project from "./components/profile/Project";
+import Resume from "./components/profile/ResumeUpload";
+import CareerObjective from "./components/profile/CareerObjective";
 
 import AddStatus from "./pages/profile/components/AddStatus";
 import VerifyEmail from "./pages/profile/components/VerifyEmail";
@@ -47,6 +49,7 @@ import ManageJobs from "./components/jobs/ManageJobs";
 import CreateJob from "./components/jobs/CreateJob";
 import EditJob from "./components/jobs/EditJob";
 import JobApplicationList from "./components/jobApplications/JobApplicationList";
+import JobAnalytics from "./components/jobs/JobAnalytics";
 
 import RecruiterAdminDashboard from "./pages/recruiter-admin/RecruiterAdminDashboard";
 import RecruiterAdminHome from "./components/recruiter-admin/RecruiterAdminHome";
@@ -56,7 +59,6 @@ import RecruiterList from "./components/recruiter-admin/RecruiterList";
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
 import RecruiterHome from "./components/recruiter/RecruiterHome";
 import RecruiterJobSeekerSearch from "./components/Searching/JobSeekerSearch/RecruiterJobSeekerSearch";
-import JobAnalytics from "./components/jobs/JobAnalytics";
 import RecruiterCompanyRequest from "./components/recruiter/RecruiterCompanyRequest";
 
 function App() {
@@ -65,6 +67,7 @@ function App() {
       <NavBar />
 
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -85,6 +88,9 @@ function App() {
         <Route path="/education" element={<Education />} />
         <Route path="/internship" element={<Internship />} />
         <Route path="/project" element={<Project />} />
+        <Route path="/resume" element={<Resume />} />
+        <Route path="/resume" element={<Resume />} />
+        <Route path="/career=Objective" element={<CareerObjective />} />
 
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/status" element={<AddStatus />} />
@@ -104,11 +110,9 @@ function App() {
         <Route path="/suggestions" element={<Suggestions />} />
         <Route path="/pricing" element={<Pricing />} />
 
-<<<<<<< HEAD
         <Route path="/jobs/updatejob/:id" element={<EditJob />} />
 
-        {/* ADMIN */}
-
+        {/* ADMIN Routes */}
         <Route path="/admin" element={<AdminDashboard />}>
           <Route index element={<AdminHome />} />
           <Route path="users" element={<UserManagementPage />} />
@@ -121,8 +125,7 @@ function App() {
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
         </Route>
 
-        {/* RECRUITER ADMIN */}
-
+        {/* RECRUITER ADMIN Routes */}
         <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />}>
           <Route index element={<RecruiterAdminHome />} />
           <Route path="company-profile" element={<CompanyProfilePage />} />
@@ -134,8 +137,7 @@ function App() {
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
         </Route>
 
-        {/* RECRUITER */}
-
+        {/* RECRUITER Routes */}
         <Route path="/recruiter" element={<RecruiterDashboard />}>
           <Route index element={<RecruiterHome />} />
           <Route path="company-profile" element={<CompanyProfilePage />} />
@@ -144,26 +146,8 @@ function App() {
           <Route path="createjob" element={<CreateJob />} />
           <Route path="applications" element={<JobApplicationList />} />
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
+          <Route path="companyrequest" element={<RecruiterCompanyRequest />} />
         </Route>
-=======
-      <Route path="/recruiter" element={<RecruiterDashboard />} >
-        <Route index element={ <RecruiterHome /> } />
-        <Route path="/recruiter/company-profile" element={<CompanyProfilePage />} />
-        <Route path="/recruiter/managejob" element={<ManageJobs />} />
-        <Route path="/recruiter/managejob/:jobId/analytics" element={<JobAnalytics />} /> 
-        <Route path="/recruiter/createjob" element={<CreateJob />}  />
-        <Route path="/recruiter/applications" element={<JobApplicationList />} />
-        <Route path="/recruiter/job-seekers" element={<RecruiterJobSeekerSearch />} />
-      </Route>
-    </Routes>      
-    
-    <Footer />
->>>>>>> 936249b1aae7cbca867280d36ca54df9cffd14d7
-
-        <Route
-          path="/recruiter/companyrequest"
-          element={<RecruiterCompanyRequest />}
-        />
       </Routes>
 
       <Footer />

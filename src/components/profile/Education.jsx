@@ -40,54 +40,60 @@ function Education({ userId, editable }) {
     setEditingId(null);
   };
 
-  if (loading) return <p className="p-6 text-gray-500">Loading education...</p>;
+  if (loading) return <p className="p-3 text-gray-500">Loading education...</p>;
 
   return (
-    <div className="bg-white shadow rounded-lg p-4">
+    <div className="bg-gray-100 shadow-sm rounded-lg p-4 space-y-3">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Education</h2>
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800">Education</h2>
         {editable && (
           <button
             onClick={() => setEditingId("new")}
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           >
             + Add
           </button>
         )}
       </div>
 
-      {/* List */}
+      {/* No education */}
       {educationList.length === 0 && (
-        <p className="text-gray-500 text-sm">No education added.</p>
+        <p className="text-gray-500">No education added.</p>
       )}
 
-      <div className="space-y-3 hover:shadow transition">
+      {/* List */}
+      <div className="space-y-3">
         {educationList.map((edu) => (
           <div
             key={edu.id}
-            className="p-4 rounded-lg flex justify-between items-start"
+            className="flex justify-between items-start p-4 bg-white rounded-md hover:shadow transition"
           >
-            <div>
-              <h3 className="font-semibold text-gray-800">
-                {edu.degree} {edu.fieldOfStudy && `- ${edu.fieldOfStudy}`}
-              </h3>
-              <p className="text-indigo-600 text-sm">{edu.institutionName}</p>
-              <p className="text-gray-500 text-sm">
-                {edu.startDate} - {edu.endDate || "Present"}
-              </p>
-              {edu.grade && <p className="text-gray-500 text-sm">Grade: {edu.grade}</p>}
-              {edu.percentage && <p className="text-gray-500 text-sm">Percentage: {edu.percentage}</p>}
-            </div>
+            <div className="flex-1 space-y-1">
+              {/* Heading + edit button same line */}
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold text-gray-800 text-base">
+                  {edu.degree} {edu.fieldOfStudy && `- ${edu.fieldOfStudy}`}
+                </h3>
+                {editable && (
+                  <button
+                    onClick={() => setEditingId(edu.id)}
+                    className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                )}
+              </div>
 
-            {editable && (
-              <button
-                onClick={() => setEditingId(edu.id)}
-                className="p-1.5 rounded-lg text-gray-600 hover:bg-blue-50 transition"
-              >
-                <Pencil size={16} />
-              </button>
-            )}
+              {edu.institutionName && <p className="text-indigo-600">{edu.institutionName}</p>}
+              {(edu.startDate || edu.endDate) && (
+                <p className="text-gray-600">
+                  {edu.startDate} - {edu.endDate || "Present"}
+                </p>
+              )}
+              {edu.grade && <p className="text-gray-600">Grade: {edu.grade}</p>}
+              {edu.percentage && <p className="text-gray-600">Percentage: {edu.percentage}</p>}
+            </div>
           </div>
         ))}
       </div>

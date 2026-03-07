@@ -209,9 +209,9 @@ function Jobs() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-15 0 min-h-screen">
 
-      <div className="mt-8 px-5 max-w-5xl mx-auto">
+      <div className="mt-8 px-5 max-w-6xl mx-auto">
         <JobSearchBar />
       </div>
 
@@ -225,7 +225,7 @@ function Jobs() {
       )}
 
       <div
-        className={`mt-4 px-5 max-w-4xl mx-auto grid grid-cols-1 ${
+        className={`mt-4 px-5 max-w-6xl mx-auto grid grid-cols-1 ${
           showFilters ? "md:grid-cols-4" : "md:grid-cols-1"
         } gap-6`}
       >

@@ -25,7 +25,7 @@ const JobFilters = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="space-y-4 bg-white p-4 rounded-lg shadow-md">
+    <div className="space-y-4 w-68 bg-white p-4 rounded-lg shadow-md">
 
       <h3 className="text-lg font-semibold">Filter Jobs</h3>
 
