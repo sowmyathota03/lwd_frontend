@@ -49,6 +49,12 @@ const MyApplications = () => {
     }
   };
 
+  const getSourceColor = (source) => {
+    return source === "EXTERNAL"
+      ? "bg-purple-100 text-purple-700"
+      : "bg-indigo-100 text-indigo-700";
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl p-6">
@@ -73,6 +79,8 @@ const MyApplications = () => {
                     <th className="py-3 px-4 text-left">Company</th>
                     <th className="py-3 px-4 text-left">Applied At</th>
                     <th className="py-3 px-4 text-left">Status</th>
+                    <th className="py-3 px-4 text-left">Source</th>
+                    <th className="py-3 px-4 text-left">Link</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -84,12 +92,15 @@ const MyApplications = () => {
                       <td className="py-3 px-4 font-medium">
                         {app.job?.title || "N/A"}
                       </td>
+
                       <td className="py-3 px-4">
-                        {app.company?.companyName  || "N/A"}
+                        {app.company?.companyName || "N/A"}
                       </td>
+
                       <td className="py-3 px-4">
                         {formatDate(app.appliedAt)}
                       </td>
+
                       <td className="py-3 px-4">
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(
@@ -98,6 +109,33 @@ const MyApplications = () => {
                         >
                           {app.status}
                         </span>
+                      </td>
+
+                      {/* SOURCE */}
+                      <td className="py-3 px-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${getSourceColor(
+                            app.applicationSource
+                          )}`}
+                        >
+                          {app.applicationSource || "PORTAL"}
+                        </span>
+                      </td>
+
+                      {/* URL */}
+                      <td className="py-3 px-4">
+                        {app.applicationSource === "EXTERNAL" && app.externalApplicationUrl ? (
+                          <a
+                            href={app.externalApplicationUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            View Job
+                          </a>
+                        ) : (
+                          <span className="text-gray-400">Internal</span>
+                        )}
                       </td>
                     </tr>
                   ))}

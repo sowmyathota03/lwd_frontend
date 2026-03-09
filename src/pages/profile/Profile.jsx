@@ -125,7 +125,7 @@ const Profile = () => {
         </div>
 
         {/* PROFILE COMPLETION */}
-        {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />}
+        {/* {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />} */}
 
         <div className="p-10 space-y-8">
 

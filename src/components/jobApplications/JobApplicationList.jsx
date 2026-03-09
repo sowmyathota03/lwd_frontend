@@ -13,12 +13,14 @@ export default function JobApplicationList() {
 
   const navigate = useNavigate();
 
+  // ================= FETCH APPLICATIONS =================
   const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
 
       const data = await getApplicationsByRole(page, size);
 
+      console.log("Fetched applications:", data);
       setApplications(data?.applications || []);
       setTotalPages(data?.totalPages ?? 0);
     } catch (error) {
@@ -44,36 +46,44 @@ export default function JobApplicationList() {
 
   return (
     <div className="md:p-4 p-0">
+
+      {/* ================= HEADER ================= */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
           Job Applications
         </h2>
       </div>
 
+      {/* ================= TABLE ================= */}
       <div className="bg-white rounded-xl shadow-md overflow-x-auto">
         <table className="min-w-full text-sm text-left border-collapse">
+
+          {/* ================= TABLE HEADER ================= */}
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
             <tr>
               <th className="px-4 py-2">Applicant</th>
               <th className="px-4 py-2">Email</th>
               <th className="px-4 py-2">Job Title</th>
               <th className="px-4 py-2">Company</th>
+              <th className="px-4 py-2">Source</th>
+              <th className="px-4 py-2 hidden lg:table-cell">External URL</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Applied On</th>
               <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
 
+          {/* ================= TABLE BODY ================= */}
           <tbody className="divide-y divide-gray-200">
             {loading ? (
               <tr>
-                <td colSpan="7" className="text-center py-6">
+                <td colSpan="9" className="text-center py-6">
                   <Loader fullScreen={false} />
                 </td>
               </tr>
             ) : applications.length === 0 ? (
               <tr>
-                <td colSpan="7" className="text-center py-6 text-gray-500">
+                <td colSpan="9" className="text-center py-6 text-gray-500">
                   No applications found
                 </td>
               </tr>
@@ -83,6 +93,8 @@ export default function JobApplicationList() {
                   key={app.applicationId}
                   className="hover:bg-gray-50 transition"
                 >
+
+                  {/* ================= APPLICANT ================= */}
                   <td
                     className="text-blue-600 p-2 cursor-pointer hover:underline font-medium whitespace-nowrap"
                     onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
@@ -90,6 +102,7 @@ export default function JobApplicationList() {
                     {app.applicantName}
                   </td>
 
+                  {/* ================= EMAIL ================= */}
                   <td
                     className="text-blue-600 p-2 cursor-pointer hover:underline"
                     onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
@@ -97,6 +110,7 @@ export default function JobApplicationList() {
                     {app.email}
                   </td>
 
+                  {/* ================= JOB TITLE ================= */}
                   <td
                     className="px-4 py-2 truncate max-w-xs text-blue-600 cursor-pointer hover:underline"
                     onClick={() =>
@@ -107,10 +121,44 @@ export default function JobApplicationList() {
                     {app.job?.title || "-"}
                   </td>
 
+                  {/* ================= COMPANY ================= */}
                   <td className="px-4 py-2 truncate max-w-xs">
                     {app.company?.companyName || "-"}
                   </td>
 
+                  {/* ================= APPLICATION SOURCE ================= */}
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold uppercase
+                        ${
+                          app.applicationSource === "EXTERNAL"
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-blue-100 text-blue-700"
+                        }
+                      `}
+                    >
+                      {app.applicationSource || "PORTAL"}
+                    </span>
+                  </td>
+
+                  {/* ================= EXTERNAL URL ================= */}
+                  <td className="px-4 py-2 hidden lg:table-cell truncate max-w-xs">
+                    {app.applicationSource === "EXTERNAL" &&
+                    app.externalApplicationUrl ? (
+                      <a
+                        href={app.externalApplicationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  {/* ================= STATUS ================= */}
                   <td className="px-4 py-2">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -125,12 +173,14 @@ export default function JobApplicationList() {
                     </span>
                   </td>
 
+                  {/* ================= APPLIED DATE ================= */}
                   <td className="px-4 py-2">
                     {app.appliedAt
                       ? new Date(app.appliedAt).toLocaleDateString("en-IN")
                       : "-"}
                   </td>
 
+                  {/* ================= ACTION ================= */}
                   <td className="px-4 py-2">
                     <ApplicationStatusDropdown
                       applicationId={app.applicationId}
@@ -146,6 +196,7 @@ export default function JobApplicationList() {
                       }}
                     />
                   </td>
+
                 </tr>
               ))
             )}
@@ -153,6 +204,7 @@ export default function JobApplicationList() {
         </table>
       </div>
 
+      {/* ================= PAGINATION ================= */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center px-6 py-4 border-t gap-4 border-gray-200">
           <button

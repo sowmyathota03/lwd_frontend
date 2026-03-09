@@ -18,10 +18,11 @@ export default function AdminDashboard() {
   const navItems = [
     { to: "/admin", label: "Dashboard", icon: "📊" },
     { to: "/admin/users", label: "Users", icon: "👥" },
+    { to: "/admin/search", label: "Search", icon: "🔍" },
     { to: "/admin/companies", label: "Companies", icon: "🏢" },
     { to: "/admin/managejob", label: "Jobs", icon: "📄" },
     { to: "/admin/applications", label: "Applications", icon: "📑" },
-    { to: "/admin/job-seekers", label: "Job Seekers", icon: "📑" },
+    { to: "/admin/job-seekers", label: "Job Seekers", icon: "👤" },
   ];
 
   return (
