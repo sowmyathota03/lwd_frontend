@@ -23,7 +23,7 @@ function Experience({ userId, editable }) {
   });
 
   if (isLoading) {
-    return <p>Loading experience...</p>;
+    return <p className="p-3 text-gray-500">Loading experience...</p>;
   }
 
   /* ================= GET EXPERIENCE DATA FOR EDIT ================= */
@@ -33,14 +33,14 @@ function Experience({ userId, editable }) {
       : experiences.find((exp) => exp.id === editingId);
 
   return (
-    <div className="bg-white shadow rounded-lg p-4">
+    <div className="bg-gray-100 shadow-sm rounded-lg p-4 space-y-3">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Experience</h2>
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800">Experience</h2>
 
         {editable && (
           <button
-            className="text-white bg-blue-500 px-3 py-1 rounded"
+            className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
             onClick={() => setEditingId("new")}
           >
             + Add
@@ -48,47 +48,55 @@ function Experience({ userId, editable }) {
         )}
       </div>
 
-      {/* Experience List */}
+      {/* No experience */}
       {experiences.length === 0 && (
-        <p className="text-gray-500">No experience added.</p>
+        <p className="text-gray-500 text-sm">No experience added.</p>
       )}
 
-      {experiences.map((exp) => (
-        <div key={exp.id} className=" flex justify-between items-start">
-          <div className="p-4 rounded-lg hover:shadow transition">
-            <h3 className="font-semibold">{exp.jobTitle}</h3>
-            <div className="text-sm flex items-center text-gray-600">
-              <span>{exp.companyName}</span>
+      {/* Experience List */}
+      <div className="space-y-3">
+        {experiences.map((exp) => (
+          <div
+            key={exp.id}
+            className="flex justify-between items-start bg-white rounded-md p-4 hover:shadow transition"
+          >
+            <div className="flex-1 space-y-1">
+              {/* Heading + Edit button same line */}
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold text-gray-800 text-base">{exp.jobTitle}</h3>
+                {editable && (
+                  <button
+                    onClick={() => setEditingId(exp.id)}
+                    className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                )}
+              </div>
 
-              {exp.location && (
-                <>
-                  <span className="mx-2 text-gray-400">•</span>
-                  <span>{exp.location}</span>
-                </>
+              <div className="text-gray-700 text-sm flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span>{exp.companyName}</span>
+                {exp.location && (
+                  <>
+                    <span className="text-gray-400">•</span>
+                    <span>{exp.location}</span>
+                  </>
+                )}
+              </div>
+
+              {(exp.startDate || exp.endDate) && (
+                <p className="text-gray-600 text-sm">
+                  {exp.startDate} - {exp.currentlyWorking ? "Present" : exp.endDate}
+                </p>
               )}
+
+              {exp.jobDescription && <p className="text-gray-600 text-sm">{exp.jobDescription}</p>}
             </div>
-
-            <p className="text-sm text-gray-500">
-              {exp.startDate} - {exp.currentlyWorking ? "Present" : exp.endDate}
-            </p>
-            {exp.jobDescription && (
-              <p className="text-sm text-gray-600 mt-1">{exp.jobDescription}</p>
-            )}
           </div>
+        ))}
+      </div>
 
-          {/* Edit Button */}
-          {editable && (
-            <button
-              onClick={() => setEditingId(exp.id)}
-              className="p-1.5 rounded-lg text-gray-600 hover:bg-blue-50 transition"
-            >
-              <Pencil size={16} />
-            </button>
-          )}
-        </div>
-      ))}
-
-      {/* ================= RENDER MODAL FORM ================= */}
+      {/* Modal Form */}
       {editingId && (
         <ExperienceForm
           experience={experienceToEdit}

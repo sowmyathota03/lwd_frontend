@@ -28,9 +28,7 @@ function Project({ userId, editable }) {
 
   /* ================= GET CURRENT EDIT ================= */
   const projectToEdit =
-    editingId === "new"
-      ? null
-      : projects.find((p) => p.id === editingId);
+    editingId === "new" ? null : projects.find((p) => p.id === editingId);
 
   /* ================= HANDLE SAVE (CREATE / UPDATE) ================= */
   const handleSave = (savedProject) => {
@@ -44,16 +42,17 @@ function Project({ userId, editable }) {
     setEditingId(null);
   };
 
-  if (loading) return <p>Loading projects...</p>;
+  if (loading)
+    return <p className="p-3 text-gray-500 text-sm">Loading projects...</p>;
 
   return (
-    <div className="bg-white shadow rounded-lg p-4">
+    <div className="bg-gray-100 shadow-sm rounded-lg p-4 space-y-3">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Projects</h2>
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800">Projects</h2>
         {editable && (
           <button
-            className="text-white bg-blue-500 px-3 py-1 rounded"
+            className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
             onClick={() => setEditingId("new")}
           >
             + Add
@@ -61,60 +60,63 @@ function Project({ userId, editable }) {
         )}
       </div>
 
-      {/* List */}
+      {/* No projects */}
       {projects.length === 0 && (
-        <p className="text-gray-500">No projects added.</p>
+        <p className="text-gray-500 text-sm">No projects added.</p>
       )}
 
-      {projects.map((p) => (
-        <div key={p.id} className="py-3 flex justify-between items-start hover:shadow transition rounded-lg">
-          <div className="p-4 rounded-lg">
-            <h3 className="font-semibold">{p.projectTitle}</h3>
-            {p.role && (
-              <p className="text-sm text-gray-600 mt-1">Role: {p.role}</p>
-            )}
-            {p.teamSize != null && (
-              <p className="text-sm text-gray-600 mt-1">Team Size: {p.teamSize}</p>
-            )}
-            {p.description && (
-              <p className="text-sm text-gray-600 mt-1">{p.description}</p>
-            )}
-            {p.technologiesUsed && (
-              <p className="text-sm text-gray-500 mt-1">
-                Technologies: {p.technologiesUsed}
-              </p>
-            )}
-            {p.projectUrl && (
-              <p className="text-sm text-blue-500 mt-1">
-                <a href={p.projectUrl} target="_blank" rel="noreferrer">
-                  Project URL
-                </a>
-              </p>
-            )}
-            {p.githubUrl && (
-              <p className="text-sm text-blue-500 mt-1">
-                <a href={p.githubUrl} target="_blank" rel="noreferrer">
-                  GitHub URL
-                </a>
-              </p>
-            )}
-            {(p.startDate || p.endDate) && (
-              <p className="text-sm text-gray-500 mt-1">
-                {p.startDate} - {p.endDate || "Present"}
-              </p>
-            )}
-          </div>
+      {/* Project List */}
+      <div className="space-y-3">
+        {projects.map((p) => (
+          <div
+            key={p.id}
+            className="flex justify-between items-start bg-white rounded-md p-4 hover:shadow transition"
+          >
+            <div className="flex-1 space-y-1">
+              {/* Heading + Edit button same line */}
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold text-gray-800 text-base">{p.projectTitle}</h3>
+                {editable && (
+                  <button
+                    onClick={() => setEditingId(p.id)}
+                    className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                )}
+              </div>
 
-          {editable && (
-            <button
-              onClick={() => setEditingId(p.id)}
-              className="p-1.5 rounded-lg text-gray-600 hover:bg-blue-50 transition"
-            >
-              <Pencil size={16} />
-            </button>
-          )}
-        </div>
-      ))}
+              {p.role && <p className="text-gray-700 text-sm">Role: {p.role}</p>}
+              {p.teamSize != null && (
+                <p className="text-gray-700 text-sm">Team Size: {p.teamSize}</p>
+              )}
+              {p.description && <p className="text-gray-700 text-sm">{p.description}</p>}
+              {p.technologiesUsed && (
+                <p className="text-gray-600 text-sm">Technologies: {p.technologiesUsed}</p>
+              )}
+              {p.projectUrl && (
+                <p className="text-blue-600 text-sm">
+                  <a href={p.projectUrl} target="_blank" rel="noreferrer">
+                    Project URL
+                  </a>
+                </p>
+              )}
+              {p.githubUrl && (
+                <p className="text-blue-600 text-sm">
+                  <a href={p.githubUrl} target="_blank" rel="noreferrer">
+                    GitHub URL
+                  </a>
+                </p>
+              )}
+              {(p.startDate || p.endDate) && (
+                <p className="text-gray-600 text-sm">
+                  {p.startDate} - {p.endDate || "Present"}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* Modal Form */}
       {editingId && (

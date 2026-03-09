@@ -9,7 +9,6 @@ import { Section, Field } from "./Helpers";
 import AboutInfoForm from "./AboutInfoForm";
 
 const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
-
   const [openForm, setOpenForm] = useState(false);
   const [aboutData, setAboutData] = useState(null);
 
@@ -17,13 +16,11 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
   const loadAboutInfo = async () => {
     try {
       let res;
-
       if (isOwnProfile) {
         res = await getMyAboutInfo();
       } else {
         res = await getAboutInfoByUserId(userId);
       }
-
       setAboutData(res);
     } catch (error) {
       console.error("Error loading about info", error);
@@ -51,11 +48,20 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
         title="About"
         editable={editable}
         onEdit={() => setOpenForm(true)}
+        className="p-3 md:p-4"
       >
-        <Field label="Headline" value={profile?.headline || "—"} />
-        <p className="text-sm">
-          About: <span className="font-medium">{profile?.about || "—"}</span>
-        </p>
+        {/* Compact Fields */}
+        <div className="flex flex-col gap-1">
+          <Field
+            label="Headline"
+            value={profile?.headline || "—"}
+            className="text-sm md:text-base"
+          />
+          <p className="text-sm md:text-sm leading-snug">
+            <span className="font-medium">About:</span>{" "}
+            {profile?.about || "—"}
+          </p>
+        </div>
       </Section>
 
       {/* Modal Form */}

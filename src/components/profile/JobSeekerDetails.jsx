@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 import { createOrUpdateProfile } from "../../api/JobSeekerApi";
-import {
-  Section,
-  Grid,
-  Field,
-  Input,
-  Buttons,
-  Select,
-  Checkbox,
-} from "./Helpers";
+import { Section, Input, Buttons, Select, Checkbox, Field } from "./Helpers";
 
 const JobSeekerDetails = ({ profile, setProfile, editable }) => {
   const [editing, setEditing] = useState(false);
@@ -25,9 +17,7 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
   ];
 
   useEffect(() => {
-    if (profile) {
-      setFormData(profile);
-    }
+    if (profile) setFormData(profile);
   }, [profile]);
 
   if (!profile && !editable) return null;
@@ -68,10 +58,10 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
       {!editing ? (
         <>
           {/* ================= NOTICE ================= */}
-          <h3 className="text-md font-semibold text-gray-700 mt-8 mb-4">
+          <h3 className="text-md font-semibold text-gray-700 mt-4 mb-2">
             Notice & Availability
           </h3>
-          <Grid mdCols={2} lgCols={3}>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Field label="Notice Status" value={profile?.noticeStatus} />
             <Field label="Notice Period (Days)" value={profile?.noticePeriod} />
             <Field label="Last Working Day" value={profile?.lastWorkingDay} />
@@ -84,32 +74,29 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
               label="Immediate Joiner"
               value={profile?.immediateJoiner ? "Yes" : "No"}
             />
-          </Grid>
+          </div>
 
           {/* ================= PROFESSIONAL ================= */}
-          <h3 className="text-md font-semibold text-gray-700 mt-8 mb-4 border-t-4 pt-4 border-gray-200">
+          <h3 className="text-md font-semibold text-gray-700 mt-6 mb-3 border-t-4 pt-4 border-gray-200">
             Professional Information
           </h3>
-          <Grid mdCols={2} lgCols={3}>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Field label="Current Company" value={profile?.currentCompany} />
             <Field label="Total Experience" value={profile?.totalExperience} />
             <Field label="Current CTC" value={profile?.currentCTC} />
             <Field label="Expected CTC" value={profile?.expectedCTC} />
             <Field label="Current Location" value={profile?.currentLocation} />
-            <Field
-              label="Preferred Location"
-              value={profile?.preferredLocation}
-            />
+            <Field label="Preferred Location" value={profile?.preferredLocation} />
             <Field label="Resume URL" value={profile?.resumeUrl} />
-          </Grid>
+          </div>
         </>
       ) : (
         <>
           {/* ================= NOTICE ================= */}
-          <h3 className="text-md font-semibold text-gray-700 mt-8 mb-4">
+          <h3 className="text-md font-semibold text-gray-700 mt-4 mb-4">
             Notice & Availability
           </h3>
-          <Grid>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Select
               label="Notice Status"
               name="noticeStatus"
@@ -117,23 +104,6 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
               onChange={handleChange}
               options={NOTICE_STATUS_OPTIONS}
             />
-
-            <div className="flex justify-around">
-              <Checkbox
-                label="Serving Notice"
-                name="isServingNotice"
-                checked={formData.isServingNotice || false}
-                onChange={handleChange}
-              />
-
-              <Checkbox
-                label="Immediate Joiner"
-                name="immediateJoiner"
-                checked={formData.immediateJoiner || false}
-                onChange={handleChange}
-              />
-            </div>
-
             <Input
               label="Notice Period (Days)"
               name="noticePeriod"
@@ -154,13 +124,28 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
               value={formData.availableFrom || ""}
               onChange={handleChange}
             />
-          </Grid>
+            <div className="flex space-x-4 items-center">
+              <Checkbox
+                label="Serving Notice"
+                name="isServingNotice"
+                checked={formData.isServingNotice || false}
+                onChange={handleChange}
+              />
+              <Checkbox
+                label="Immediate Joiner"
+                name="immediateJoiner"
+                checked={formData.immediateJoiner || false}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
           {/* ================= PROFESSIONAL ================= */}
-          <h3 className="text-md font-semibold text-gray-700 mt-8 mb-4">
+          <h3 className="text-md font-semibold text-gray-700 mt-6 mb-3 border-t-4 pt-4 border-gray-200">
             Professional Information
           </h3>
-          <Grid>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Input
               label="Current Company"
               name="currentCompany"
@@ -168,15 +153,15 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
               onChange={handleChange}
             />
             <Input
-              label="Total Experience"
-              name="totalExperience"
-              value={formData.totalExperience || ""}
-              onChange={handleChange}
-            />
-            <Input
               label="Current CTC"
               name="currentCTC"
               value={formData.currentCTC || ""}
+              onChange={handleChange}
+            />
+            <Input
+              label="Total Experience"
+              name="totalExperience"
+              value={formData.totalExperience || ""}
               onChange={handleChange}
             />
             <Input
@@ -203,7 +188,7 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
               value={formData.resumeUrl || ""}
               onChange={handleChange}
             />
-          </Grid>
+          </div>
 
           <Buttons
             onCancel={handleCancel}

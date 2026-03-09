@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../api/CompanyApi";
-import Loader from "../../components/common/Loader"; // adjust path if needed
+import Loader from "../../components/common/Loader";
 
 function Companies() {
   const navigate = useNavigate();
@@ -33,10 +33,10 @@ function Companies() {
   );
 
   return (
-    <div className="min-h-screen bg-pink-100 px-6 md:px-12 py-10">
-      
+    <div className="min-h-screen bg-gray-50 px-6 md:px-12 py-10">
+
       {/* Heading */}
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">
         Companies
       </h1>
 
@@ -46,7 +46,7 @@ function Companies() {
         placeholder="Search company name"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full md:w-80 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-8"
+        className="w-full md:w-80 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-8"
       />
 
       {/* Loader */}
@@ -59,9 +59,9 @@ function Companies() {
           {filteredCompanies.map((company) => (
             <div
               key={company.id}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col md:flex-row gap-6 items-center"
+              className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col md:flex-row gap-6 items-center border border-gray-200"
             >
-              
+
               {/* Logo */}
               <div className="w-20 flex justify-center">
                 {company.logoUrl ? (
@@ -71,7 +71,7 @@ function Companies() {
                     className="w-16 h-16 object-cover rounded-xl"
                   />
                 ) : (
-                  <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center text-xs text-gray-500">
+                  <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center text-xs text-gray-400">
                     No Logo
                   </div>
                 )}
@@ -79,7 +79,7 @@ function Companies() {
 
               {/* Details */}
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-xl font-semibold text-gray-800">
+                <h3 className="text-xl font-semibold text-gray-900">
                   {company.companyName}
                 </h3>
 
@@ -87,7 +87,7 @@ function Companies() {
                   {company.description}
                 </p>
 
-                <p className="mt-2 text-sm">
+                <p className="mt-2 text-sm text-gray-700">
                   <span className="font-semibold">Location:</span>{" "}
                   {company.location}
                 </p>
@@ -97,7 +97,7 @@ function Companies() {
                     href={company.website}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-purple-600 text-sm hover:underline mt-1 inline-block"
+                    className="text-blue-600 text-sm hover:underline mt-1 inline-block"
                   >
                     Visit Website
                   </a>
@@ -106,9 +106,8 @@ function Companies() {
                 <p className="mt-2 text-sm">
                   <span className="font-semibold">Status:</span>{" "}
                   <span
-                    className={`font-semibold ${
-                      company.isActive ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`font-semibold ${company.isActive ? "text-green-600" : "text-red-600"
+                      }`}
                   >
                     {company.isActive ? "Active" : "Inactive"}
                   </span>
@@ -123,7 +122,7 @@ function Companies() {
                       `/jobs?companyId=${company.id}&companyName=${company.companyName}`
                     )
                   }
-                  className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
                 >
                   View Jobs →
                 </button>
@@ -139,11 +138,10 @@ function Companies() {
           <button
             disabled={page === 0}
             onClick={() => setPage(page - 1)}
-            className={`px-4 py-2 rounded-lg font-medium transition ${
-              page === 0
+            className={`px-4 py-2 rounded-lg font-medium transition ${page === 0
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-purple-600 text-white hover:bg-purple-700"
-            }`}
+                : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
           >
             Previous
           </button>
@@ -155,11 +153,10 @@ function Companies() {
           <button
             disabled={page + 1 === totalPages}
             onClick={() => setPage(page + 1)}
-            className={`px-4 py-2 rounded-lg font-medium transition ${
-              page + 1 === totalPages
+            className={`px-4 py-2 rounded-lg font-medium transition ${page + 1 === totalPages
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-purple-600 text-white hover:bg-purple-700"
-            }`}
+                : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
           >
             Next
           </button>
