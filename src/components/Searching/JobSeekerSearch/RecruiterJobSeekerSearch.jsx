@@ -185,7 +185,7 @@ function RecruiterJobSeekerSearch() {
           <div className="col-span-3">
             <div className="bg-white rounded-lg shadow sticky top-8 flex flex-col max-h-[70vh]">
               {/* FILTER TITLE */}
-              <div className="p-2">
+              <div className="mt-6 ml-6 p-2">
                 <h3 className="text-lg font-semibold">Filters</h3>
               </div>
 

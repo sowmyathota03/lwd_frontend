@@ -250,6 +250,41 @@ const Profile = () => {
                 ? "My Profile"
                 : `${basicProfile?.name || "User Profile"}`}
             </h2>
+
+            <div className="flex flex-col text-sm text-gray-100 gap-1 items-end">
+              <AddStatus updatedAt={basicProfile?.updatedAt} />
+
+              {basicProfile?.updatedAt && (
+                <span className="flex items-center gap-1">
+                  <span>Last updated</span>
+                  <span className="font-medium">
+                    {new Date(basicProfile.updatedAt).toLocaleDateString(
+                      "en-IN",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
+                  </span>
+                </span>
+              )}
+            </div>
+
+          </div>
+        </div>
+
+        {/* PROFILE COMPLETION */}
+        {/* {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />} */}
+
+        <div className="p-10 space-y-8">
+
+          {/* BASIC INFO */}
+          <div className="rounded-xl shadow-sm border border-gray-200">
+            <BasicInfo
+              profile={basicProfile}
+              editable={isOwnProfile}
+            />
           </div>
 
           {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />}

@@ -102,3 +102,20 @@ export const getMyJobs = async (page = 0) => {
   return response.data; // ✅ return only data
 };
 
+
+// ===============================
+// GET MY JOBS BY ROLE (with optional search)
+// ===============================
+export const getMyJobsByRole = async (page = 0, keyword = "") => {
+  const params = { page };
+
+  if (keyword && keyword.trim() !== "") {
+    params.keyword = keyword;
+  }
+
+  const response = await api.get("/jobs/my-jobs-by-roll", { params });
+
+  return response.data; // ✅ return only data
+};
+
+
