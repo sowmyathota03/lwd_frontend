@@ -1,7 +1,7 @@
 import NavBar from './components/common/NavBar'
 import Footer from './components/common/Footer';
 import "./index.css";
-import { Routes,Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 
 import Login from './auth/Login';
 // import AuthSelection from './auth/AuthSelection';
@@ -114,7 +114,7 @@ function App() {
        <Route path="/pricing" element={<Pricing/>}/>
 
       
-      <Route path="/jobs/updatejob/:id" element={<EditJob />} />
+      <Route path="/managejob/updatejob/:id" element={<EditJob />} />
 
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<AdminHome />} />
@@ -134,7 +134,8 @@ function App() {
         <Route index element={ <RecruiterAdminHome /> } />
         <Route path="/recruiter-admin/company-profile" element={<CompanyProfilePage />} />
         <Route path="/recruiter-admin/manage-recruiter" element={<RecruiterList />} />
-        <Route path="/recruiter-admin/managejob" element={<ManageJobs />} />
+        {/* <Route path="/recruiter-admin/managejob" element={<ManageJobs />} /> */}
+        <Route path="/recruiter-admin/managejob" element={<ManageJobSearch />} />
         <Route path="/recruiter-admin/managejob/:jobId/analytics" element={<JobAnalytics />} />
         <Route path="/recruiter-admin/createjob" element={<CreateJob />}  />
         <Route path="/recruiter-admin/applications" element={<JobApplicationList />} />
@@ -147,7 +148,8 @@ function App() {
       <Route path="/recruiter" element={<RecruiterDashboard />} >
         <Route index element={ <RecruiterHome /> } />
         <Route path="/recruiter/company-profile" element={<CompanyProfilePage />} />
-        <Route path="/recruiter/managejob" element={<ManageJobs />} />
+        {/* <Route path="/recruiter/managejob" element={<ManageJobs />} /> */}
+        <Route path="/recruiter/managejob" element={<ManageJobSearch />} /> 
         <Route path="/recruiter/managejob/:jobId/analytics" element={<JobAnalytics />} /> 
         <Route path="/recruiter/createjob" element={<CreateJob />}  />
         <Route path="/recruiter/applications" element={<JobApplicationList />} />

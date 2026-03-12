@@ -7,6 +7,7 @@ import {
   blockRecruiter,
 } from "../../api/RecruiterAdminApi";
 import ConfirmDialog from "./ConfirmDialog";
+import Loader from "../common/Loader";
 
 export default function RecruiterList() {
   const [allRecruiters, setAllRecruiters] = useState([]);
@@ -100,7 +101,7 @@ export default function RecruiterList() {
   if (loading) {
     return (
       <p className="text-blue-600 font-medium">
-        Loading recruiters...
+       <Loader/>
       </p>
     );
   }

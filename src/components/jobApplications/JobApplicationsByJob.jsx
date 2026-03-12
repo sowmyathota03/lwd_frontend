@@ -16,10 +16,8 @@ export default function JobApplicationsByJob({ jobId }) {
   const fetchApplications = async () => {
     try {
       setLoading(true);
-
       const res = await getApplicationsByJobId(jobId, page, size);
       const data = res.data;
-
       setApplications(data.applications || []);
       setTotalPages(data.totalPages || 0);
     } catch (error) {
@@ -40,112 +38,135 @@ export default function JobApplicationsByJob({ jobId }) {
   if (loading) return <Loader />;
 
   return (
-    <div className="mt-8 bg-white shadow rounded-lg overflow-x-auto">
-      <h2 className="text-xl font-semibold p-4 border-b">Applications List</h2>
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <h2 className="text-lg font-semibold text-gray-800">
+          Applications ({applications.length})
+        </h2>
+      </div>
 
-      <table className="min-w-full text-sm text-left">
-        <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
-          <tr>
-            <th className="px-4 py-2">Applicant</th>
-            <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Phone</th>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Applied On</th>
-            <th className="px-4 py-2">Update Status</th>
-          </tr>
-        </thead>
-
-        <tbody className="divide-y divide-gray-200">
-          {applications.length === 0 ? (
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm">
+          <thead className="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider">
             <tr>
-              <td colSpan="5" className="text-center py-6 text-gray-500">
-                No applications found
-              </td>
+              <th className="px-6 py-3 text-left font-medium">Applicant</th>
+              <th className="px-6 py-3 text-left font-medium">Email</th>
+              <th className="px-6 py-3 text-left font-medium">Phone</th>
+              <th className="px-6 py-3 text-left font-medium">Status</th>
+              <th className="px-6 py-3 text-left font-medium">Applied On</th>
+              <th className="px-6 py-3 text-left font-medium">Update Status</th>
             </tr>
-          ) : (
-            applications.map((app) => (
-              <tr key={app.applicationId} className="hover:bg-gray-50">
-                <td className="p-2 font-medium overflow-hidden whitespace-nowrap">
-                  {app.jobSeekerId ? (
-                    <span
-                      onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-                      className="text-blue-600 cursor-pointer hover:underline"
-                    >
-                      {app.applicantName}
-                    </span>
-                  ) : (
-                    <span className="text-gray-500">
-                      {app.applicantName || "-"}
-                    </span>
-                  )}
-                </td>
-
-                <td className="p-2 font-medium overflow-hidden whitespace-nowrap">
-                  {app.jobSeekerId ? (
-                    <span
-                      onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-                      className="text-blue-600 cursor-pointer hover:underline"
-                    >
-                      {app.email}
-                    </span>
-                  ) : (
-                    <span className="text-gray-500">{app.email || "-"}</span>
-                  )}
-                </td>
-
-                <td className="px-4 py-2">{app.phone || "-"}</td>
-
-                <td className="px-4 py-2">
-                  <span className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
-                    {app.status}
-                  </span>
-                </td>
-
-                <td className="px-4 py-2">
-                  {app.appliedAt
-                    ? new Date(app.appliedAt).toLocaleDateString("en-IN")
-                    : "-"}
-                </td>
-                <td className="px-4 py-2">
-                  <ApplicationStatusDropdown
-                    applicationId={app.applicationId}
-                    currentStatus={app.status}
-                    onStatusUpdated={(id, newStatus) => {
-                      setApplications((prev) =>
-                        prev.map((a) =>
-                          a.applicationId === id
-                            ? { ...a, status: newStatus }
-                            : a,
-                        ),
-                      );
-                    }}
-                  />
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {applications.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="6"
+                  className="px-6 py-8 text-center text-gray-500"
+                >
+                  No applications found
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              applications.map((app) => (
+                <tr
+                  key={app.applicationId}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  {/* Applicant Name (clickable if jobSeekerId exists) */}
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    {app.jobSeekerId ? (
+                      <button
+                        onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
+                        className="text-blue-600 hover:underline font-medium"
+                      >
+                        {app.applicantName || "-"}
+                      </button>
+                    ) : (
+                      <span className="text-gray-700">
+                        {app.applicantName || "-"}
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Email (clickable if jobSeekerId exists) */}
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    {app.jobSeekerId ? (
+                      <button
+                        onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {app.email || "-"}
+                      </button>
+                    ) : (
+                      <span className="text-gray-700">{app.email || "-"}</span>
+                    )}
+                  </td>
+
+                  <td className="px-6 py-3 whitespace-nowrap text-gray-700">
+                    {app.phone || "-"}
+                  </td>
+
+                  {/* Status Badge */}
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {app.status}
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-3 whitespace-nowrap text-gray-700">
+                    {app.appliedAt
+                      ? new Date(app.appliedAt).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "-"}
+                  </td>
+
+                  {/* Status Dropdown */}
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    <ApplicationStatusDropdown
+                      applicationId={app.applicationId}
+                      currentStatus={app.status}
+                      onStatusUpdated={(id, newStatus) => {
+                        setApplications((prev) =>
+                          prev.map((a) =>
+                            a.applicationId === id
+                              ? { ...a, status: newStatus }
+                              : a
+                          )
+                        );
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-4 p-4 border-t">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
           <button
             onClick={() => setPage((prev) => prev - 1)}
             disabled={page === 0}
-            className="px-4 py-1 border rounded disabled:opacity-50"
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
-
-          <span>
-            Page {page + 1} of {totalPages}
+          <span className="text-sm text-gray-700">
+            Page <span className="font-medium">{page + 1}</span> of{" "}
+            <span className="font-medium">{totalPages}</span>
           </span>
-
           <button
             onClick={() => setPage((prev) => prev + 1)}
             disabled={page + 1 >= totalPages}
-            className="px-4 py-1 border rounded disabled:opacity-50"
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>

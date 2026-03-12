@@ -1,13 +1,6 @@
 import { motion } from "framer-motion";
 
-function Loader({ fullScreen = false, size = 16 }) {
-  const colors = [
-    "bg-blue-500",
-    "bg-purple-500",
-    "bg-pink-500",
-    "bg-green-500",
-  ];
-
+function Loader({ fullScreen = false, size = 40, borderWidth = 3, color = "border-blue-500" }) {
   return (
     <div
       className={`w-full flex items-center justify-center ${
@@ -15,32 +8,17 @@ function Loader({ fullScreen = false, size = 16 }) {
       }`}
     >
       <motion.div
-        className="flex space-x-3"
-        initial="start"
-        animate="end"
-        transition={{
-          staggerChildren: 0.15,
-          repeat: Infinity,
+        className={`rounded-full border-t-${borderWidth} border-${borderWidth} border-gray-200 ${color}`}
+        style={{
+          width: size,
+          height: size,
+          borderWidth: borderWidth,
+          borderStyle: "solid",
+          borderTopColor: "currentColor",
         }}
-      >
-        {colors.map((color, index) => (
-          <motion.span
-            key={index}
-            className={`rounded-full ${color}`}
-            style={{ width: size, height: size }}
-            variants={{
-              start: { y: 0 },
-              end: { y: -12 },
-            }}
-            transition={{
-              duration: 0.5,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </motion.div>
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+      />
     </div>
   );
 }

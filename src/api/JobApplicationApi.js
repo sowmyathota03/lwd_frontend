@@ -63,12 +63,11 @@ export const getMyCompanyApplications = (page = 0, size = 10) =>
 // ADMIN → all applications
 // RECRUITER_ADMIN → own company applications
 // RECRUITER → only own created job applications
-export const getApplicationsByRole = (page = 0, size = 10) =>
-  axiosInstance
-    .get("/job-applications/my-applications", {
-      params: { page, size },
-    })
-    .then((res) => res.data);
+export const getApplicationsByRole = (page = 0, size = 10, search = "") => {
+  return axiosInstance.get("/job-applications/my-applications", {
+    params: { page, size, search },
+  }).then(res => res.data);
+};
 
 /* ==================================================
    JOB SEEKER
