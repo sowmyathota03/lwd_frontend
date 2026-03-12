@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getMyExperience,
   getExperienceByUserId,
-} from "../../api/ExperienceApi";
+} from "../../../api/ExperienceApi";
 
 import ExperienceForm from "./ExperienceForm";
 import { Pencil } from "lucide-react";

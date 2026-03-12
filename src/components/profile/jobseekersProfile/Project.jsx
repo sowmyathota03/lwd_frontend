@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
-import { getMyProjects, getProjectsByUserId } from "../../api/ProjectApi";
+import { getMyProjects, getProjectsByUserId } from "../../../api/ProjectApi";
 import ProjectForm from "./ProjectForm";
 
 function Project({ userId, editable }) {

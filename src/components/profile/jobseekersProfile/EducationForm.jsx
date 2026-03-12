@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createEducation, updateEducation } from "../../api/EducationApi";
+import { createEducation, updateEducation } from "../../../api/EducationApi";
 
 function EducationForm({ education, onClose, onSave }) {
   const isEdit = !!education?.id;

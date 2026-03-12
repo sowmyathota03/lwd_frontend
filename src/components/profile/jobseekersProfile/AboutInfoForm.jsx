@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { updateAboutInfo } from "../../api/JobSeekerApi";
+import { updateAboutInfo } from "../../../api/JobSeekerApi";
 
 function AboutInfoForm({ profile, setProfile, onClose }) {
 

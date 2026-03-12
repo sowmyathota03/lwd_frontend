@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createCertification, updateCertification } from "../../api/CertificationApi";
+import { createCertification, updateCertification } from "../../../api/CertificationApi";
 
 function CertificationForm({ certification, onClose, onSave }) {
   const isEdit = !!certification?.id;

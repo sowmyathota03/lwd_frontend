@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
-import { getMyEducation, getEducationByUserId } from "../../api/EducationApi";
+import { getMyEducation, getEducationByUserId } from "../../../api/EducationApi";
 import EducationForm from "./EducationForm";
 
 function Education({ userId, editable }) {

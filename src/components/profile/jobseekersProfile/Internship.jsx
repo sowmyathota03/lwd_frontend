@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
-import { getMyInternships, getInternshipsByUserId } from "../../api/InternshipApi";
+import { getMyInternships, getInternshipsByUserId } from "../../../api/InternshipApi";
 import InternshipForm from "./InternshipForm";
 
 function Internship({ userId, editable }) {

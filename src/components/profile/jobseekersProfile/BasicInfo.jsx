@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { updateMyProfile } from "../../api/UserApi";
+import { updateMyProfile } from "../../../api/UserApi";
 import { Section, Grid, Field, Input, Buttons } from "./Helpers";   
 
 const BasicInfo = ({ profile, setProfile, editable }) => {

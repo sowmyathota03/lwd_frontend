@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createOrUpdateProfile } from "../../api/JobSeekerApi";
+import { createOrUpdateProfile } from "../../../api/JobSeekerApi";
 import { Section, Input, Buttons, Select, Checkbox, Field } from "./Helpers";
 
 const JobSeekerDetails = ({ profile, setProfile, editable }) => {
