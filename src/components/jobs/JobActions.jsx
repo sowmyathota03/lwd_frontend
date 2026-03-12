@@ -109,7 +109,7 @@ export default function JobActions({ job, onDelete, onStatusChange }) {
             {job.status === "OPEN" && (
               <button
                 onClick={() =>
-                  navigate(`/jobs/updatejob/${job.id}`, { state: job })
+                  navigate(`/managejob/updatejob/${job.id}`, { state: job })
                 }
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
               >

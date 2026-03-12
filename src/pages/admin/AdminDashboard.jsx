@@ -1,10 +1,22 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 
+// Navigation items extracted as a constant – won't be recreated on every render
+const NAV_ITEMS = [
+  { to: "/admin", label: "Dashboard", icon: "📊" },
+  { to: "/admin/users", label: "Users", icon: "👥" },
+  { to: "/admin/search", label: "Search", icon: "🔍" },
+  { to: "/admin/companies", label: "Companies", icon: "🏢" },
+  { to: "/admin/managejob", label: "Jobs", icon: "📄" },
+  { to: "/admin/applications", label: "Applications", icon: "📑" },
+  { to: "/admin/job-seekers", label: "Job Seekers", icon: "👤" },
+];
+
 export default function AdminDashboard() {
   const [darkMode, setDarkMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Theme management: apply dark class to <html> and persist preference
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -15,30 +27,20 @@ export default function AdminDashboard() {
     }
   }, [darkMode]);
 
-  const navItems = [
-    { to: "/admin", label: "Dashboard", icon: "📊" },
-    { to: "/admin/users", label: "Users", icon: "👥" },
-    { to: "/admin/search", label: "Search", icon: "🔍" },
-    { to: "/admin/companies", label: "Companies", icon: "🏢" },
-    { to: "/admin/managejob", label: "Jobs", icon: "📄" },
-    { to: "/admin/applications", label: "Applications", icon: "📑" },
-    { to: "/admin/job-seekers", label: "Job Seekers", icon: "👤" },
-  ];
-
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-linear-to-br from-slate-300 via-blue-400 to-indigo-600">
-
       {/* Sidebar */}
       <aside
         className={`
           ${sidebarOpen ? "w-64" : "w-16"}
           md:w-64
           transition-all duration-300
-          bg-white/80 backdrop-blur-xl shadow-xl flex flex-col
+          bg-white/80 backdrop-blur-xl shadow-xl
+          flex flex-col
         `}
+        aria-label="Admin navigation sidebar"
       >
-
-        {/* Logo + Toggle */}
+        {/* Logo & toggle */}
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
           <h2
             className={`
@@ -50,18 +52,19 @@ export default function AdminDashboard() {
             Admin Panel
           </h2>
 
-          {/* Mobile Toggle */}
+          {/* Mobile sidebar toggle */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden text-xl"
+            className="md:hidden text-xl p-1 rounded-md hover:bg-gray-200 transition-colors"
+            aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
           >
             ☰
           </button>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation links */}
         <nav className="flex-1 p-2 space-y-2 overflow-y-auto">
-          {navItems.map((item) => (
+          {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -78,9 +81,9 @@ export default function AdminDashboard() {
                 `
               }
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="text-lg" aria-hidden="true">{item.icon}</span>
 
-              {/* Hide label on mobile when collapsed */}
+              {/* Label – hidden on mobile when sidebar is collapsed */}
               <span
                 className={`
                   ${sidebarOpen ? "block" : "hidden"}
@@ -93,13 +96,14 @@ export default function AdminDashboard() {
           ))}
         </nav>
 
-        {/* Theme Toggle */}
+        {/* Dark mode toggle */}
         <div className="p-3 border-t border-gray-200">
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="w-full py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 shadow-md text-sm"
+            className="w-full py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 shadow-md text-sm flex items-center justify-center"
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {darkMode ? "☀" : "🌙"}
+            <span aria-hidden="true">{darkMode ? "☀" : "🌙"}</span>
             <span
               className={`
                 ml-2
@@ -113,7 +117,7 @@ export default function AdminDashboard() {
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0">
         <main className="flex-1 overflow-y-auto bg-white/90 backdrop-blur-lg shadow-inner p-4">
           <Outlet />

@@ -2,11 +2,9 @@ import { useEffect } from "react";
 
 import BasicInfo from "../../pages/recruiterProfile/components/BasicInfo"
 import RecruiterDetails from "../../pages/recruiterProfile/components/RecruiterDetails";
-import CompanyDetails from "../../pages/recruiterProfile/components/CompanyDetails";
 import CompanyLogo from "../../pages/recruiterProfile/components/CompanyLogo";
 import CompanyWebsite from "../../pages/recruiterProfile/components/CompanyWebsite";
 import SocialLinks from "../../pages/recruiterProfile/components/SocialLinks";
-import PostedJobs from "../../pages/recruiterProfile/components/PostedJobs";
 
 const RecruiterProfile = ({ basicProfile, isOwnProfile, userId }) => {
 

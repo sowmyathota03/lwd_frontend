@@ -82,6 +82,8 @@ function App() {
         <Route path="/jobs/:type" element={<Jobs />} />
         <Route path="/job/:jobId" element={<JobDetails />} />
         <Route path="/apply/:jobId" element={<ApplyJob />} />
+      
+        <Route path="/managejob/updatejob/:id" element={<EditJob />} />
 
         <Route path="/companies" element={<Companies />} />
         <Route path="/career" element={<Career />} />
@@ -89,6 +91,18 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/recruiter/profile" element={<RecruiterProfile />} />
+
+      <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />} >
+        <Route index element={ <RecruiterAdminHome /> } />
+        <Route path="/recruiter-admin/company-profile" element={<CompanyProfilePage />} />
+        <Route path="/recruiter-admin/manage-recruiter" element={<RecruiterList />} />
+        {/* <Route path="/recruiter-admin/managejob" element={<ManageJobs />} /> */}
+        <Route path="/recruiter-admin/managejob" element={<ManageJobSearch />} />
+        <Route path="/recruiter-admin/managejob/:jobId/analytics" element={<JobAnalytics />} />
+        <Route path="/recruiter-admin/createjob" element={<CreateJob />}  />
+        <Route path="/recruiter-admin/applications" element={<JobApplicationList />} />
+        <Route path="/recruiter-admin/job-seekers" element={<RecruiterJobSeekerSearch />} />
+      </Route>
 
         <Route path="/resume-upload" element={<ResumeUpload />} />
         <Route path="/job-alert" element={<JobAlert />} />
@@ -101,6 +115,18 @@ function App() {
         <Route path="/education" element={<Education />} />
         <Route path="/internship" element={<Internship />} />
         <Route path="/project" element={<Project />} />
+
+
+      <Route path="/recruiter" element={<RecruiterDashboard />} >
+        <Route index element={ <RecruiterHome /> } />
+        <Route path="/recruiter/company-profile" element={<CompanyProfilePage />} />
+        {/* <Route path="/recruiter/managejob" element={<ManageJobs />} /> */}
+        <Route path="/recruiter/managejob" element={<ManageJobSearch />} /> 
+        <Route path="/recruiter/managejob/:jobId/analytics" element={<JobAnalytics />} /> 
+        <Route path="/recruiter/createjob" element={<CreateJob />}  />
+        <Route path="/recruiter/applications" element={<JobApplicationList />} />
+        <Route path="/recruiter/job-seekers" element={<RecruiterJobSeekerSearch />} />
+      </Route>
 
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/status" element={<AddStatus />} />
@@ -149,9 +175,8 @@ function App() {
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
           <Route path="company-request" element={<RecruiterCompanyRequest />} />
         </Route>
-
-      </Routes>
-
+      </Routes>      
+      
       <Footer />
     </>
   );

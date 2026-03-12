@@ -15,7 +15,6 @@ function JobCards({ job, recentlyOpened = false }) {
     e.stopPropagation();
 
     const savedJobs = JSON.parse(localStorage.getItem("savedJobs")) || [];
-
     const alreadySaved = savedJobs.some((j) => j.id === job.id);
 
     if (alreadySaved) {
@@ -25,116 +24,101 @@ function JobCards({ job, recentlyOpened = false }) {
 
     savedJobs.push(job);
     localStorage.setItem("savedJobs", JSON.stringify(savedJobs));
-
     alert("Job saved successfully");
   };
 
   const skills =
     typeof job.skills === "string"
-      ? job.skills.split(",")
+      ? job.skills.split(",").map((s) => s.trim())
       : job.skills || [];
 
   return (
-    <div
+    <article
       onClick={handleClick}
-      className="bg-white rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex justify-between items-start px-5 py-4 gap-4 w-full"
+      className="group bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col sm:flex-row justify-between items-start gap-4 w-full"
     >
-      {/* LEFT */}
-      <div className="flex-1 flex flex-col gap-2 overflow-hidden">
-
-        {/* TITLE */}
-        <h3 className="text-lg font-semibold text-gray-800 truncate">
+      {/* Left section */}
+      <div className="flex-1 w-full space-y-3">
+        {/* Title */}
+        <h3 className="text-xl font-semibold text-gray-900 line-clamp-1">
           {job.title || "Untitled Job"}
         </h3>
 
-        {/* COMPANY */}
-        <p className="text-sm text-gray-600 truncate">
+        {/* Company */}
+        <p className="text-sm text-gray-600 line-clamp-1">
           {job.company?.companyName || "Unknown Company"}
         </p>
 
-        {/* DETAILS */}
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600 mt-1">
-
-          {job.location && <span>{job.location}</span>}
-
-          {job.minExperience !== null &&
-            job.maxExperience !== null && (
-              <span>
-                {job.minExperience} - {job.maxExperience} yrs
-              </span>
-            )}
-
-          <span>
-            {job.salary
-              ? `₹${job.salary.toLocaleString()} LPA`
-              : "Salary Not Disclosed"}
+        {/* Details row */}
+        <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+          {job.location && <span className="bg-gray-100 px-2 py-1 rounded-md">{job.location}</span>}
+          {job.minExperience != null && job.maxExperience != null && (
+            <span className="bg-gray-100 px-2 py-1 rounded-md">
+              {job.minExperience}–{job.maxExperience} yrs
+            </span>
+          )}
+          <span className="bg-gray-100 px-2 py-1 rounded-md">
+            {job.salary ? `₹${job.salary.toLocaleString()} LPA` : "Salary N/A"}
           </span>
-
-          {job.jobType && <span>{job.jobType}</span>}
+          {job.jobType && <span className="bg-gray-100 px-2 py-1 rounded-md">{job.jobType}</span>}
         </div>
 
-        {/* DESCRIPTION */}
+        {/* Description */}
         {job.description && (
-          <p className="text-sm text-gray-500 line-clamp-2">
+          <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
             {job.description}
           </p>
         )}
 
-        {/* SKILLS */}
+        {/* Skills */}
         {skills.length > 0 && (
-          <div className="mt-2">
-
-            <p className="text-xs font-medium text-gray-600 mb-1">
-              Skills Required
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Skills
             </p>
-
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {skills.slice(0, 6).map((skill, index) => (
                 <span
                   key={index}
-                  className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-md"
+                  className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
                 >
                   {skill}
                 </span>
               ))}
-
               {skills.length > 6 && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-400 self-center">
                   +{skills.length - 6} more
                 </span>
               )}
             </div>
-
           </div>
         )}
-
       </div>
 
-      {/* RIGHT */}
-      <div className="flex flex-col justify-between items-end gap-2">
-
+      {/* Right section */}
+      <div className="flex flex-col items-end gap-3 w-full sm:w-auto">
         {recentlyOpened && (
-          <span className="text-xs text-blue-600 font-medium">
+          <span className="text-xs text-blue-600 font-medium bg-blue-50 px-3 py-1 rounded-full">
             Recently Opened
           </span>
         )}
 
-        {/* SAVE BUTTON */}
         <button
           onClick={handleSaveJob}
-          className="flex items-center gap-1 p-2 rounded-md hover:bg-gray-100 text-gray-600 text-sm"
+          aria-label="Save job"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
         >
           <Bookmark size={16} />
           <span>Save</span>
         </button>
 
-        {/* TIME */}
-        <span className="text-xs text-gray-400">
-          {job.createdAt ? `Posted ${timeAgo(job.createdAt)}` : ""}
-        </span>
-
+        {job.createdAt && (
+          <time className="text-xs text-gray-400" dateTime={job.createdAt}>
+            Posted {timeAgo(job.createdAt)}
+          </time>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
 

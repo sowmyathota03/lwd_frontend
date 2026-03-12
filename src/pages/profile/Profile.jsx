@@ -242,78 +242,72 @@ const Profile = () => {
         </div>
 
         {/* RIGHT CONTENT */}
-        <div className="flex-1 p-4 md:p-6 space-y-4 overflow-auto">
+        <div className="w-full md:w-3/4 border-r border-gray-200 bg-gray-50 p-4 space-y-2 sticky top-4 h-[calc(100vh-32px)] overflow-auto">
+          <div className="flex-1 px-6 md:px-6 space-y-2 overflow-auto">
 
-          <div className="bg-indigo-500 px-6 py-6 text-white rounded-xl mb-4">
-            <h2 className="text-2xl font-semibold">
-              {isOwnProfile
-                ? "My Profile"
-                : `${basicProfile?.name || "User Profile"}`}
-            </h2>
+            <div className="bg-indigo-500 p-4 text-white rounded-xl">
+              <h2 className="text-2xl font-semibold">
+                {isOwnProfile
+                  ? "My Profile"
+                  : `${basicProfile?.name || "User Profile"}`}
+              </h2>
 
-            <div className="flex flex-col text-sm text-gray-100 gap-1 items-end">
-              <AddStatus updatedAt={basicProfile?.updatedAt} />
+              <div className="flex flex-col text-sm text-gray-100 gap-1 items-end">
+                <AddStatus updatedAt={basicProfile?.updatedAt} />
 
-              {basicProfile?.updatedAt && (
-                <span className="flex items-center gap-1">
-                  <span>Last updated</span>
-                  <span className="font-medium">
-                    {new Date(basicProfile.updatedAt).toLocaleDateString(
-                      "en-IN",
-                      {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      }
-                    )}
+                {basicProfile?.updatedAt && (
+                  <span className="flex items-center gap-1">
+                    <span>Last updated</span>
+                    <span className="font-medium">
+                      {new Date(basicProfile.updatedAt).toLocaleDateString(
+                        "en-IN",
+                        {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )}
+                    </span>
                   </span>
-                </span>
-              )}
+                )}
+              </div>
+
             </div>
-
-          </div>
-        </div>
-
-        {/* PROFILE COMPLETION */}
-        {/* {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />} */}
-
-        <div className="p-10 space-y-8">
-
-          {/* BASIC INFO */}
-          <div className="rounded-xl shadow-sm border border-gray-200">
-            <BasicInfo
-              profile={basicProfile}
-              editable={isOwnProfile}
-            />
           </div>
 
-          {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />}
+          {/* PROFILE COMPLETION */}
+          {/* {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />} */}
 
-          {sections.map(
-            (section) =>
-              section.component && (
-                <div
-                  key={section.id}
-                  id={section.id}
-                  className="rounded-xl shadow-sm border border-gray-200 p-4"
-                >
-                  {section.component}
-                </div>
-              )
-          )}
+          <div className="p-10 space-y-8">
 
-          {basicProfile?.role === "RECRUITER" && (
-            <div className="rounded-xl shadow-sm border border-gray-200 p-4">
-              <RecruiterDetails editable={isOwnProfile} />
-            </div>
-          )}
+            {sections.map(
+              (section) =>
+                section.component && (
+                  <div
+                    key={section.id}
+                    id={section.id}
+                    className="rounded-xl shadow-sm border border-gray-200 p-4"
+                  >
+                    {section.component}
+                  </div>
+                )
+            )}
 
-          {basicProfile?.role === "ADMIN" && (
-            <div className="rounded-xl shadow-sm border border-gray-200 p-4">
-              <AdminDetails editable={isOwnProfile} />
-            </div>
-          )}
+            {basicProfile?.role === "RECRUITER" && (
+              <div className="rounded-xl shadow-sm border border-gray-200 p-4">
+                <RecruiterDetails editable={isOwnProfile} />
+              </div>
+            )}
+
+            {basicProfile?.role === "ADMIN" && (
+              <div className="rounded-xl shadow-sm border border-gray-200 p-4">
+                <AdminDetails editable={isOwnProfile} />
+              </div>
+            )}
+          </div>
+
         </div>
+
       </div>
     </div>
   );
