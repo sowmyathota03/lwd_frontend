@@ -1,4 +1,3 @@
-// pages/ProfilePage.jsx
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,7 +7,7 @@ import Loader from '../components/common/Loader';
 import JobSeekersProfile from '../../components/profile/JobSeekersProfile'; // adjust path as needed
 import RecruiterProfile from '../../components/profile/RecruiterProfile';   // adjust path as needed
 
-function ProfilePage() {
+function Profile() {
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
 
@@ -51,4 +50,4 @@ function ProfilePage() {
   return <p className="text-center">Profile type not supported.</p>;
 }
 
-export default ProfilePage;
+export default Profile; 
