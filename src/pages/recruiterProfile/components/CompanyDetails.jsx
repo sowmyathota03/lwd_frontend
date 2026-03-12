@@ -4,7 +4,7 @@ import { Pencil } from "lucide-react";
 import {
     getMyCompanyDetails,
     getCompanyDetailsByUserId,
-} from "../../../api/CompanyApi";
+} from "../../../api/CompanyDetailsApi";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";
 
@@ -13,7 +13,7 @@ function CompanyDetails({ userId, editable }) {
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
 
-    // ================= LOAD COMPANY =================
+    // Load company details
     useEffect(() => {
         fetchCompany();
     }, [userId]);
@@ -38,8 +38,11 @@ function CompanyDetails({ userId, editable }) {
         setEditing(false);
     };
 
-    if (loading)
-        return <p className="p-3 text-gray-500">Loading company details...</p>;
+    if (loading) {
+        return (
+            <p className="p-3 text-gray-500">Loading company details...</p>
+        );
+    }
 
     return (
         <div className="bg-gray-100 shadow-sm rounded-lg p-4 space-y-3">
@@ -60,7 +63,7 @@ function CompanyDetails({ userId, editable }) {
                 )}
             </div>
 
-            {/* No Data */}
+            {/* No company */}
             {!company && (
                 <p className="text-gray-500">No company details added.</p>
             )}
@@ -71,7 +74,7 @@ function CompanyDetails({ userId, editable }) {
 
                     <div className="flex-1 space-y-1">
 
-                        {/* Title + Edit */}
+                        {/* Title */}
                         <div className="flex justify-between items-center">
                             <h3 className="font-semibold text-gray-800 text-base">
                                 {company.companyName}
@@ -96,22 +99,33 @@ function CompanyDetails({ userId, editable }) {
                         )}
 
                         {company.website && (
-                            <p className="text-blue-600">{company.website}</p>
+                            <a
+                                href={company.website}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-blue-600 hover:underline"
+                            >
+                                {company.website}
+                            </a>
                         )}
 
                         {company.companySize && (
-                            <p className="text-gray-600">Size: {company.companySize}</p>
+                            <p className="text-gray-600">
+                                Size: {company.companySize}
+                            </p>
                         )}
 
                         {company.description && (
-                            <p className="text-gray-600">{company.description}</p>
+                            <p className="text-gray-600">
+                                {company.description}
+                            </p>
                         )}
 
                     </div>
                 </div>
             )}
 
-            {/* Modal Form */}
+            {/* Form Modal */}
             {editing && (
                 <CompanyDetailsForm
                     company={company}

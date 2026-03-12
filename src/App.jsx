@@ -14,7 +14,7 @@ import Companies from "./pages/public/Companies";
 import Career from "./pages/public/Career";
 
 import Profile from "./pages/profile/Profile";
-import RecruiterProfile from "./pages/profile/RecruiterProfile";
+import RecruiterProfile from "./pages/recruiterProfile/RecruiterProfile";
 
 import JobCard from "./components/jobs/JobCards";
 import JobSearchBlock from "./components/jobs/JobSearchBlock";

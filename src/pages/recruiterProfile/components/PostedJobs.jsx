@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {
     getMyPostedJobs,
     getPostedJobsByUserId,
-} from "../../../api/JobApi";
+} from "../../../api/PostedJobApi";
 
 function PostedJobs({ userId }) {
     const [jobs, setJobs] = useState([]);
