@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Section, formatSkill } from "./Helpers";
-import { getMySkills, getSkillsById } from "../../api/JobSeekerApi";
+import { getMySkills, getSkillsById } from "../../../api/JobSeekerApi";
 import JobSeekerSkillsForm from "./JobSeekerSkillsForm";
 
 const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {

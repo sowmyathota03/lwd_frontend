@@ -13,8 +13,8 @@ import JobDetails from "./pages/public/JobDetails";
 import Companies from "./pages/public/Companies";
 import Career from "./pages/public/Career";
 
-import Profile from "./pages/profile/Profile";
-import RecruiterProfile from "./pages/recruiterProfile/RecruiterProfile";
+import Profile from "./pages/profile/JobSeekersProfile";
+import RecruiterProfile from "./pages/profile/RecruiterProfile";
 
 import JobCard from "./components/jobs/JobCards";
 import JobSearchBlock from "./components/jobs/JobSearchBlock";
@@ -28,9 +28,9 @@ import JobList from "./components/jobs/JobList";
 
 import MyApplications from "./components/profile/MyApplication/MyApplications";
 
-import Education from "./components/profile/Education";
-import Internship from "./components/profile/Internship";
-import Project from "./components/profile/Project";
+import Education from "./components/profile/jobseekersProfile/Education";
+import Internship from "./components/profile/jobseekersProfile/Internship";
+import Project from "./components/profile/jobseekersProfile/Project";
 
 import AddStatus from "./pages/profile/components/AddStatus";
 import VerifyEmail from "./pages/profile/components/VerifyEmail";

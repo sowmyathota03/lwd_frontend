@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createExperience, updateExperience } from "../../api/ExperienceApi";
+import { createExperience, updateExperience } from "../../../api/ExperienceApi";
 
 function ExperienceForm({ experience, onClose, refetch }) {
   const isEdit = !!experience?.id;

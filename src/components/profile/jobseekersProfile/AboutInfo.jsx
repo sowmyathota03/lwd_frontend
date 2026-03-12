@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import {
   getMyAboutInfo,
   getAboutInfoByUserId,
-} from "../../api/JobSeekerApi";
+} from "../../../api/JobSeekerApi";
 
 import { Section, Field } from "./Helpers";
 import AboutInfoForm from "./AboutInfoForm";

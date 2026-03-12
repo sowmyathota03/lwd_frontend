@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   updateMySkills,
   getAllSkills
-} from "../../api/JobSeekerApi";
+} from "../../../api/JobSeekerApi";
 import { formatSkill } from "./Helpers";
 import { Search } from "lucide-react";
 

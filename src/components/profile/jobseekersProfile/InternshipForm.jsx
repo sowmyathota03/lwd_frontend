@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createInternship, updateInternship } from "../../api/InternshipApi";
+import { createInternship, updateInternship } from "../../../api/InternshipApi";
 
 function InternshipForm({ internship, onClose, onSave }) {
   const isEdit = !!internship?.id;

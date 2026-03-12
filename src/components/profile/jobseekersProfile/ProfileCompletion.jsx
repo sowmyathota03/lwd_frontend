@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProfileCompletion } from "../../api/JobSeekerApi";
+import { getProfileCompletion } from "../../../api/JobSeekerApi";
 
 function ProfileCompletion() {
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
-import { getMyCertifications, getCertificationsByUserId } from "../../api/CertificationApi";
+import { getMyCertifications, getCertificationsByUserId } from "../../../api/CertificationApi";
 import CertificationForm from "./CertificationForm";
 
 function Certification({ userId, editable }) {
