@@ -1,14 +1,16 @@
 
-import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { AuthContext } from '../context/AuthContext';
-import { getMyProfile, getUserById } from '../api/UserApi';
-import Loader from '../components/common/Loader';
-import JobSeekersProfile from '../../components/profile/JobSeekersProfile'; // adjust path as needed
-import RecruiterProfile from '../../components/profile/RecruiterProfile';   // adjust path as needed
+import { useContext } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { AuthContext } from "../../context/AuthContext";
 
-function Profile() {
+import Loader from "../../components/common/Loader";
+import JobSeekerProfile from "../../components/profile/JobSeekersProfile";
+import RecruiterProfile from "../../components/profile/RecruiterProfile";
+
+import { getMyProfile, getUserById } from "../../api/UserApi";
+
+const Profile = () => {
 
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
@@ -56,4 +58,3 @@ function Profile() {
 
 
 export default Profile; 
-
