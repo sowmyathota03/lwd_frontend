@@ -5,7 +5,7 @@ import {
   getAboutInfoByUserId,
 } from "../../../api/JobSeekerApi";
 
-import { Section, Field } from "./Helpers";
+import { Section, Field } from "../comman/Helpers";
 import AboutInfoForm from "./AboutInfoForm";
 
 const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {

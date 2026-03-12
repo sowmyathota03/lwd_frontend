@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createOrUpdateProfile } from "../../../api/JobSeekerApi";
-import { Section, Input, Buttons, Select, Checkbox, Field } from "./Helpers";
+import { Section, Input, Buttons, Select, Checkbox, Field } from "../comman/Helpers";
 
 const JobSeekerDetails = ({ profile, setProfile, editable }) => {
   const [editing, setEditing] = useState(false);

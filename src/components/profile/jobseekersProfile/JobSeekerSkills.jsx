@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Section, formatSkill } from "./Helpers";
+import { Section, formatSkill } from "../comman/Helpers";
 import { getMySkills, getSkillsById } from "../../../api/JobSeekerApi";
 import JobSeekerSkillsForm from "./JobSeekerSkillsForm";
 

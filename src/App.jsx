@@ -13,8 +13,7 @@ import JobDetails from "./pages/public/JobDetails";
 import Companies from "./pages/public/Companies";
 import Career from "./pages/public/Career";
 
-import Profile from "./pages/profile/JobSeekersProfile";
-import RecruiterProfile from "./pages/profile/RecruiterProfile";
+import Profile from "./components/profile/JobSeekersProfile";
 
 import JobCard from "./components/jobs/JobCards";
 import JobSearchBlock from "./components/jobs/JobSearchBlock";
@@ -90,7 +89,6 @@ function App() {
 
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/:userId" element={<Profile />} />
-        <Route path="/recruiter/profile" element={<RecruiterProfile />} />
 
       <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />} >
         <Route index element={ <RecruiterAdminHome /> } />

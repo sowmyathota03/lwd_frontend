@@ -3,7 +3,7 @@ import {
   updateMySkills,
   getAllSkills
 } from "../../../api/JobSeekerApi";
-import { formatSkill } from "./Helpers";
+import { formatSkill } from "../comman/Helpers";
 import { Search } from "lucide-react";
 
 function JobSeekerSkillsForm({ skills, setSkills, onClose }) {

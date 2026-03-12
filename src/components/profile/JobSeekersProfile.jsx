@@ -3,26 +3,26 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../context/AuthContext";
 
-import Loader from "../../components/common/Loader";
-import JobSeekerDetails from "../../components/profile/jobseekersProfile/JobSeekerDetails";
-import JobSeekerSkills from "../../components/profile/jobseekersProfile/JobSeekerSkills";
-import RecruiterDetails from "../../components/profile/jobseekersProfile/RecruiterDetails";
-import AdminDetails from "../../components/profile/AdminDetails";
-import Experience from "../../components/profile/jobseekersProfile/Experience";
-import BasicInfo from "../../components/profile/jobseekersProfile/BasicInfo";
-import Education from "../../components/profile/jobseekersProfile/Education";
-import Internship from "../../components/profile/jobseekersProfile/Internship";
-import Project from "../../components/profile/jobseekersProfile/Project";
-import Certification from "../../components/profile/jobseekersProfile/Certification";
-import AboutInfo from "../../components/profile/jobseekersProfile/AboutInfo";
-import ProfileCompletion from "../../components/profile/jobseekersProfile/ProfileCompletion";
-import ResumeUpload from "../../components/profile/jobseekersProfile/ResumeUpload";
-import LinkedInUrl from "../../components/profile/jobseekersProfile/LinkedInUrl";
-import GitHubUrl from "../../components/profile/jobseekersProfile/GitHubUrl";
-import CareerObjective from "../../components/profile/jobseekersProfile/CareerObjective";
-import Achievements from "../../components/profile/jobseekersProfile/Achievements";
+import Loader from "../common/Loader";
+import JobSeekerDetails from "./jobseekersProfile/JobSeekerDetails";
+import JobSeekerSkills from "./jobseekersProfile/JobSeekerSkills";
+import RecruiterDetails from "./jobseekersProfile/RecruiterDetails";
+import AdminDetails from "./AdminDetails";
+import Experience from "./jobseekersProfile/Experience";
+import BasicInfo from "../profile/comman/BasicInfo";
+import Education from "./jobseekersProfile/Education";
+import Internship from "./jobseekersProfile/Internship";
+import Project from "./jobseekersProfile/Project";
+import Certification from "./jobseekersProfile/Certification";
+import AboutInfo from "./jobseekersProfile/AboutInfo";
+import ProfileCompletion from "./jobseekersProfile/ProfileCompletion";
+import ResumeUpload from "./jobseekersProfile/ResumeUpload";
+import LinkedInUrl from "./jobseekersProfile/LinkedInUrl";
+import GitHubUrl from "./jobseekersProfile/GitHubUrl";
+import CareerObjective from "./jobseekersProfile/CareerObjective";
+import Achievements from "./jobseekersProfile/Achievements";
 
-import AddStatus from "./components/AddStatus";
+import AddStatus from "../../pages/profile/components/AddStatus";
 
 import { getMyProfile, getUserById } from "../../api/UserApi";
 import {
@@ -82,7 +82,7 @@ const Profile = () => {
     {
       id: "basic-info",
       title: "Basic Info",
-      component: <BasicInfo profile={basicProfile} editable={isOwnProfile} />,
+      component: <BasicInfo profile={basicProfile} setProfile={setJobSeekerProfile} editable={isOwnProfile} />,
     },
     {
       id: "job-seeker-details",
@@ -276,7 +276,7 @@ const Profile = () => {
           </div>
 
           {/* PROFILE COMPLETION */}
-          {/* {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />} */}
+          {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />}
 
           <div className="p-10 space-y-8">
 
