@@ -2,7 +2,7 @@ import axiosInstance from "./axiosInstance";
 
 // ===============================
 // JOB SEEKER APIs
-// ===============================
+// ===============================  
 
 // Create or Update Profile
 export const createOrUpdateProfile = (data) => {

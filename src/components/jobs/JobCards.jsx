@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { timeAgo } from "../../utils/timeAgo";
+import { formatNoticePeriod } from "../../utils/formatNoticePeriod";
 import { Bookmark } from "lucide-react";
 
 function JobCards({ job, recentlyOpened = false }) {
@@ -37,45 +38,85 @@ function JobCards({ job, recentlyOpened = false }) {
       onClick={handleClick}
       className="group bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col sm:flex-row justify-between items-start gap-4 w-full"
     >
-      {/* Left section */}
+      {/* LEFT SECTION */}
       <div className="flex-1 w-full space-y-3">
-        {/* Title */}
         <h3 className="text-xl font-semibold text-gray-900 line-clamp-1">
           {job.title || "Untitled Job"}
         </h3>
 
-        {/* Company */}
-        <p className="text-sm text-gray-600 line-clamp-1">
-          {job.company?.companyName || "Unknown Company"}
-        </p>
+        <div className="flex gap-2">
+          {job.company?.companyName && (
+            <p className="text-sm text-gray-600 line-clamp-1">
+              {job.company?.companyName}
+            </p>
+          )}
 
-        {/* Details row */}
+          {job.location && (
+            <p className="text-sm text-gray-600 line-clamp-1">
+              {job.location}
+            </p>
+          )}
+        </div>
+
+        {/* DETAILS */}
         <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-          {job.location && <span className="bg-gray-100 px-2 py-1 rounded-md">{job.location}</span>}
           {job.minExperience != null && job.maxExperience != null && (
             <span className="bg-gray-100 px-2 py-1 rounded-md">
               {job.minExperience}–{job.maxExperience} yrs
             </span>
           )}
-          <span className="bg-gray-100 px-2 py-1 rounded-md">
-            {job.salary ? `₹${job.salary.toLocaleString()} LPA` : "Salary N/A"}
-          </span>
-          {job.jobType && <span className="bg-gray-100 px-2 py-1 rounded-md">{job.jobType}</span>}
+
+          {job.minSalary && job.maxSalary && (
+            <span className="inline-flex items-center px-3 py-1.5 text-sm bg-gray-100 text-gray-800 rounded-full">
+              ₹{job.minSalary}L - ₹{job.maxSalary}L
+            </span>
+          )}
+
+          {job.jobType && (
+            <span className="bg-gray-100 px-2 py-1 rounded-md">
+              {job.jobType}
+            </span>
+          )}
+
+          {job.workplaceType && (
+            <span className="bg-gray-100 px-2 py-1 rounded-md">
+              {job.workplaceType}
+            </span>
+          )}
+
+          {job.noticePreference != null && (
+            <span className="bg-gray-100 px-2 py-1 rounded-md">
+              {job.noticePreference}
+            </span>
+          )}
+
+          {job.roleCategory && (
+            <span className="bg-gray-100 px-2 py-1 rounded-md">
+              {job.roleCategory}
+            </span>
+          )}
+
+          {job.maxNoticePeriod && (
+            <span className="inline-flex items-center px-3 py-1.5 text-sm bg-gray-100 text-gray-800 rounded-full">
+              Max Notice: {formatNoticePeriod(job.maxNoticePeriod)}
+            </span>
+          )}
         </div>
 
-        {/* Description */}
+        {/* DESCRIPTION */}
         {job.description && (
           <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
             {job.description}
           </p>
         )}
 
-        {/* Skills */}
+        {/* SKILLS */}
         {skills.length > 0 && (
           <div className="space-y-2">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
               Skills
             </p>
+
             <div className="flex flex-wrap gap-1.5">
               {skills.slice(0, 6).map((skill, index) => (
                 <span
@@ -85,6 +126,7 @@ function JobCards({ job, recentlyOpened = false }) {
                   {skill}
                 </span>
               ))}
+
               {skills.length > 6 && (
                 <span className="text-xs text-gray-400 self-center">
                   +{skills.length - 6} more
@@ -95,28 +137,40 @@ function JobCards({ job, recentlyOpened = false }) {
         )}
       </div>
 
-      {/* Right section */}
-      <div className="flex flex-col items-end gap-3 w-full sm:w-auto">
-        {recentlyOpened && (
-          <span className="text-xs text-blue-600 font-medium bg-blue-50 px-3 py-1 rounded-full">
-            Recently Opened
-          </span>
-        )}
+      {/* RIGHT SECTION */}
+      <div className="flex flex-col justify-between items-end h-full w-full sm:w-auto">
+        
+        {/* TOP ACTIONS */}
+        <div className="flex flex-col items-end gap-3">
+          {recentlyOpened && (
+            <span className="text-xs text-blue-600 font-medium bg-blue-50 px-3 py-1 rounded-full">
+              Recently Opened
+            </span>
+          )}
 
-        <button
-          onClick={handleSaveJob}
-          aria-label="Save job"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-        >
-          <Bookmark size={16} />
-          <span>Save</span>
-        </button>
+          <button
+            onClick={handleSaveJob}
+            aria-label="Save job"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+          >
+            <Bookmark size={16} />
+            <span>Save</span>
+          </button>
 
+          {job.totalApplications != null && (
+            <span className="inline-flex items-center px-3 py-1.5 text-sm text-gray-800">
+              {job.totalApplications} applications
+            </span>
+          )}
+        </div>
+
+        {/* BOTTOM RIGHT DATE */}
         {job.createdAt && (
-          <time className="text-xs text-gray-400" dateTime={job.createdAt}>
+          <time className="text-xs text-gray-400 mt-6" dateTime={job.createdAt}>
             Posted {timeAgo(job.createdAt)}
           </time>
         )}
+
       </div>
     </article>
   );

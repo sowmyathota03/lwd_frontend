@@ -1,5 +1,25 @@
 import axiosInstance from "./axiosInstance";
 
+// ===============================
+// RECRUITER APIs
+// ===============================
+
+// Create or Update Recruiter Profile
+export const createOrUpdateRecruiterProfile = (data) => {
+  return axiosInstance.post("/recruiter/profile", data);
+};
+
+// Get Logged-in Recruiter Profile
+export const getRecruiterProfile = () => {
+  return axiosInstance.get("/recruiter/me");
+};
+
+// Get Recruiter Profile by User ID (for admin or company)
+export const getRecruiterByUserId = (userId) => {
+  return axiosInstance.get(`/recruiter/user/${userId}`);
+};
+
+
 
 // ================= GET JOBS POSTED BY LOGGED-IN RECRUITER =================
 export const getMyRecruiterJobs = () =>

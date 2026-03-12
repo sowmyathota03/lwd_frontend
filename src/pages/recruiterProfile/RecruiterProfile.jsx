@@ -2,8 +2,6 @@ import { useEffect } from "react";
 
 import BasicInfo from "../../pages/recruiterProfile/components/BasicInfo"
 import RecruiterDetails from "../../pages/recruiterProfile/components/RecruiterDetails";
-import CompanyLogo from "../../pages/recruiterProfile/components/CompanyLogo";
-import CompanyWebsite from "../../pages/recruiterProfile/components/CompanyWebsite";
 import SocialLinks from "../../pages/recruiterProfile/components/SocialLinks";
 
 const RecruiterProfile = ({ basicProfile, isOwnProfile, userId }) => {
@@ -31,43 +29,13 @@ const RecruiterProfile = ({ basicProfile, isOwnProfile, userId }) => {
             ),
         },
         {
-            id: "company-details",
-            title: "Company Details",
-            component: (
-                <CompanyDetails
-                    userId={userId}
-                    editable={isOwnProfile}
-                />
-            ),
-        },
-        {
-            id: "company-logo",
-            title: "Company Logo",
-            component: (
-                <CompanyLogo editable={isOwnProfile} />
-            ),
-        },
-        {
-            id: "company-website",
-            title: "Company Website",
-            component: (
-                <CompanyWebsite editable={isOwnProfile} />
-            ),
-        },
-        {
             id: "social-links",
             title: "Social Links",
             component: (
                 <SocialLinks editable={isOwnProfile} />
             ),
         },
-        {
-            id: "posted-jobs",
-            title: "Posted Jobs",
-            component: (
-                <PostedJobs userId={userId} />
-            ),
-        },
+        
     ];
 
     return (
