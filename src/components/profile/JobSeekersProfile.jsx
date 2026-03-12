@@ -6,8 +6,6 @@ import { AuthContext } from "../../context/AuthContext";
 import Loader from "../common/Loader";
 import JobSeekerDetails from "./jobseekersProfile/JobSeekerDetails";
 import JobSeekerSkills from "./jobseekersProfile/JobSeekerSkills";
-import RecruiterDetails from "./jobseekersProfile/RecruiterDetails";
-import AdminDetails from "./AdminDetails";
 import Experience from "./jobseekersProfile/Experience";
 import BasicInfo from "../profile/comman/BasicInfo";
 import Education from "./jobseekersProfile/Education";
@@ -30,7 +28,7 @@ import {
   getJobSeekerByUserId,
 } from "../../api/JobSeekerApi";
 
-const Profile = () => {
+const JobSeekerProfile = () => {
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
 
@@ -82,56 +80,58 @@ const Profile = () => {
     {
       id: "basic-info",
       title: "Basic Info",
-      component: <BasicInfo profile={basicProfile} setProfile={setJobSeekerProfile} editable={isOwnProfile} />,
+      component: (
+        <BasicInfo
+          profile={basicProfile}
+          setProfile={setJobSeekerProfile}
+          editable={isOwnProfile}
+        />
+      ),
     },
     {
       id: "job-seeker-details",
       title: "Job Seeker Details",
-      component:
-        basicProfile?.role === "JOB_SEEKER" && (
-          <JobSeekerDetails
-            profile={jobSeekerProfile}
-            setProfile={setJobSeekerProfile}
-            editable={isOwnProfile}
-          />
-        ),
+      component: basicProfile?.role === "JOB_SEEKER" && (
+        <JobSeekerDetails
+          profile={jobSeekerProfile}
+          setProfile={setJobSeekerProfile}
+          editable={isOwnProfile}
+        />
+      ),
     },
     {
       id: "about",
       title: "About",
-      component:
-        basicProfile?.role === "JOB_SEEKER" && (
-          <AboutInfo
-            profile={jobSeekerProfile}
-            setProfile={setJobSeekerProfile}
-            editable={isOwnProfile}
-            userId={userId}
-            isOwnProfile={isOwnProfile}
-          />
-        ),
+      component: basicProfile?.role === "JOB_SEEKER" && (
+        <AboutInfo
+          profile={jobSeekerProfile}
+          setProfile={setJobSeekerProfile}
+          editable={isOwnProfile}
+          userId={userId}
+          isOwnProfile={isOwnProfile}
+        />
+      ),
     },
     {
       id: "career-objective",
       title: "Career Objective",
-      component:
-        basicProfile?.role === "JOB_SEEKER" && (
-          <CareerObjective
-            editable={isOwnProfile}
-            objective={jobSeekerProfile?.careerObjective}
-          />
-        ),
+      component: basicProfile?.role === "JOB_SEEKER" && (
+        <CareerObjective
+          editable={isOwnProfile}
+          objective={jobSeekerProfile?.careerObjective}
+        />
+      ),
     },
     {
       id: "skills",
       title: "Skills",
-      component:
-        basicProfile?.role === "JOB_SEEKER" && (
-          <JobSeekerSkills
-            editable={isOwnProfile}
-            isOwnProfile={isOwnProfile}
-            userId={basicProfile?.id}
-          />
-        ),
+      component: basicProfile?.role === "JOB_SEEKER" && (
+        <JobSeekerSkills
+          editable={isOwnProfile}
+          isOwnProfile={isOwnProfile}
+          userId={basicProfile?.id}
+        />
+      ),
     },
     {
       id: "experience",
@@ -147,28 +147,40 @@ const Profile = () => {
       id: "education",
       title: "Education",
       component: basicProfile?.role === "JOB_SEEKER" && (
-        <Education userId={isOwnProfile ? null : userId} editable={isOwnProfile} />
+        <Education
+          userId={isOwnProfile ? null : userId}
+          editable={isOwnProfile}
+        />
       ),
     },
     {
       id: "internship",
       title: "Internship",
       component: basicProfile?.role === "JOB_SEEKER" && (
-        <Internship userId={isOwnProfile ? null : userId} editable={isOwnProfile} />
+        <Internship
+          userId={isOwnProfile ? null : userId}
+          editable={isOwnProfile}
+        />
       ),
     },
     {
       id: "project",
       title: "Projects",
       component: basicProfile?.role === "JOB_SEEKER" && (
-        <Project userId={isOwnProfile ? null : userId} editable={isOwnProfile} />
+        <Project
+          userId={isOwnProfile ? null : userId}
+          editable={isOwnProfile}
+        />
       ),
     },
     {
       id: "certification",
       title: "Certifications",
-      component: basicProfile?.role === "JOB_SEEKER" &&(
-        <Certification userId={isOwnProfile ? null : userId} editable={isOwnProfile} />
+      component: basicProfile?.role === "JOB_SEEKER" && (
+        <Certification
+          userId={isOwnProfile ? null : userId}
+          editable={isOwnProfile}
+        />
       ),
     },
 
@@ -176,13 +188,12 @@ const Profile = () => {
     {
       id: "achievements",
       title: "Achievements",
-      component:
-        basicProfile?.role === "JOB_SEEKER" && (
-          <Achievements
-            editable={isOwnProfile}
-            achievements={jobSeekerProfile?.achievements}
-          />
-        ),
+      component: basicProfile?.role === "JOB_SEEKER" && (
+        <Achievements
+          editable={isOwnProfile}
+          achievements={jobSeekerProfile?.achievements}
+        />
+      ),
     },
 
     {
@@ -198,7 +209,7 @@ const Profile = () => {
     {
       id: "linkedin",
       title: "LinkedIn",
-      component: basicProfile?.role === "JOB_SEEKER" &&(
+      component: basicProfile?.role === "JOB_SEEKER" && (
         <LinkedInUrl
           editable={isOwnProfile}
           initialUrl={jobSeekerProfile?.linkedinUrl}
@@ -208,7 +219,7 @@ const Profile = () => {
     {
       id: "github",
       title: "GitHub",
-      component: basicProfile?.role === "JOB_SEEKER" &&(
+      component: basicProfile?.role === "JOB_SEEKER" && (
         <GitHubUrl
           editable={isOwnProfile}
           initialUrl={jobSeekerProfile?.githubUrl}
@@ -220,7 +231,6 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-4 px-4">
       <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row">
-
         {/* LEFT SIDEBAR */}
         <div className="w-full md:w-1/4 border-r border-gray-200 bg-gray-50 p-4 space-y-2 sticky top-4 h-[calc(100vh-32px)] overflow-auto">
           {sections.map(
@@ -237,20 +247,28 @@ const Profile = () => {
                 >
                   {section.title}
                 </button>
-              )
+              ),
           )}
         </div>
 
         {/* RIGHT CONTENT */}
         <div className="w-full md:w-3/4 border-r border-gray-200 bg-gray-50 p-4 space-y-2 sticky top-4 h-[calc(100vh-32px)] overflow-auto">
           <div className="flex-1 px-6 md:px-6 space-y-2 overflow-auto">
-
             <div className="bg-indigo-500 p-4 text-white rounded-xl">
-              <h2 className="text-2xl font-semibold">
-                {isOwnProfile
-                  ? "My Profile"
-                  : `${basicProfile?.name || "User Profile"}`}
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+
+                <h2 className="text-2xl font-semibold">
+                  {isOwnProfile
+                    ? "My Profile"
+                    : `${basicProfile?.name || "User Profile"}`}
+                </h2>
+                {/* ROLE BADGE */}
+                {basicProfile?.role && (
+                  <span className="inline-block px-3 py-1 text-xs font-semibold bg-white/20 rounded-full">
+                    {basicProfile.role.replace("_", " ")}
+                  </span>
+                )}
+              </div>
 
               <div className="flex flex-col text-sm text-gray-100 gap-1 items-end">
                 <AddStatus updatedAt={basicProfile?.updatedAt} />
@@ -265,13 +283,12 @@ const Profile = () => {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
-                        }
+                        },
                       )}
                     </span>
                   </span>
                 )}
               </div>
-
             </div>
           </div>
 
@@ -279,7 +296,6 @@ const Profile = () => {
           {basicProfile?.role === "JOB_SEEKER" && <ProfileCompletion />}
 
           <div className="p-10 space-y-8">
-
             {sections.map(
               (section) =>
                 section.component && (
@@ -290,27 +306,13 @@ const Profile = () => {
                   >
                     {section.component}
                   </div>
-                )
-            )}
-
-            {basicProfile?.role === "RECRUITER" && (
-              <div className="rounded-xl shadow-sm border border-gray-200 p-4">
-                <RecruiterDetails editable={isOwnProfile} />
-              </div>
-            )}
-
-            {basicProfile?.role === "ADMIN" && (
-              <div className="rounded-xl shadow-sm border border-gray-200 p-4">
-                <AdminDetails editable={isOwnProfile} />
-              </div>
+                ),
             )}
           </div>
-
         </div>
-
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default JobSeekerProfile;

@@ -1,3 +1,4 @@
+
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,14 +9,14 @@ import JobSeekersProfile from '../../components/profile/JobSeekersProfile'; // a
 import RecruiterProfile from '../../components/profile/RecruiterProfile';   // adjust path as needed
 
 function Profile() {
+
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
 
   const isOwnProfile = !userId || user?.userId === Number(userId);
 
-  // Fetch basic profile to determine role
-  const { data: basicProfile, isLoading, error } = useQuery({
-    queryKey: ['profile', userId || 'me'],
+  const { data: basicProfile, isLoading } = useQuery({
+    queryKey: ["profile", userId || "me"],
     queryFn: async () => {
       if (isOwnProfile) {
         const res = await getMyProfile();
@@ -28,15 +29,19 @@ function Profile() {
   });
 
   if (isLoading) return <Loader fullScreen />;
-  if (error) return <p className="text-center text-red-500">Failed to load profile.</p>;
-  if (!basicProfile) return <p className="text-center">No profile found.</p>;
 
-  // Render based on role
-  if (basicProfile.role === 'JOB_SEEKER') {
-    return <JobSeekersProfile />; // JobSeekersProfile already fetches its own data
+  // ROLE BASED PROFILE
+  if (basicProfile?.role === "JOB_SEEKER") {
+    return (
+      <JobSeekerProfile
+        basicProfile={basicProfile}
+        isOwnProfile={isOwnProfile}
+        userId={userId}
+      />
+    );
   }
 
-  if (basicProfile.role === 'RECRUITER') {
+  if (basicProfile?.role === "RECRUITER") {
     return (
       <RecruiterProfile
         basicProfile={basicProfile}
@@ -46,8 +51,9 @@ function Profile() {
     );
   }
 
-  // Handle admin or other roles if needed
-  return <p className="text-center">Profile type not supported.</p>;
-}
+  return null;
+};
+
 
 export default Profile; 
+

@@ -20,6 +20,22 @@ export const getRecruiterByUserId = (userId) => {
 };
 
 
+// Get Recruiter Profile Summary by User ID (for admin or company)
+export const getRecruiterProfileSummary = (userId) => {
+  return axiosInstance
+    .get(`/recruiter/${userId}/summary`)
+    .then((res) => res.data);
+};
+
+
+// Get Recruiter Profile Summary by User ID (for admin or company)
+export const getMyRecruiterProfile = () => {
+  return axiosInstance
+    .get(`/recruiter/summary`)
+    .then((res) => res.data);
+};
+
+
 
 // ================= GET JOBS POSTED BY LOGGED-IN RECRUITER =================
 export const getMyRecruiterJobs = () =>

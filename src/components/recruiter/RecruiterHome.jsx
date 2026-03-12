@@ -39,19 +39,19 @@ const RecentApplications = ({ applications }) => {
 const QuickActions = () => (
   <div className="flex flex-col gap-3">
     <button
-      onClick={() => (window.location.href = "/jobs/new")}
+      onClick={() => (window.location.href = "/recruiter/createjob")}
       className="bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
     >
       + Post New Job
     </button>
     <button
-      onClick={() => (window.location.href = "/applications")}
+      onClick={() => (window.location.href = "/recruiter/applications")}
       className="bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition font-medium shadow-sm"
     >
       View Applications
     </button>
     <button
-      onClick={() => (window.location.href = "/jobs/manage")}
+      onClick={() => (window.location.href = "/recruiter/managejob")}
       className="bg-purple-600 text-white py-2.5 rounded-lg hover:bg-purple-700 transition font-medium shadow-sm"
     >
       Manage Jobs
