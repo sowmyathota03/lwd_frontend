@@ -13,10 +13,8 @@ import JobDetails from "./pages/public/JobDetails";
 import Companies from "./pages/public/Companies";
 import Career from "./pages/public/Career";
 
-import Profile from "./components/profile/JobSeekersProfile";
+import Profile from "./pages/profile/Profile";
 
-import JobCard from "./components/jobs/JobCards";
-import JobSearchBlock from "./components/jobs/JobSearchBlock";
 import ResumeUpload from "./components/jobs/ResumeUpload";
 import JobAlert from "./components/jobs/JobAlert";
 import CareerAdvice from "./components/jobs/CareerAdvice";

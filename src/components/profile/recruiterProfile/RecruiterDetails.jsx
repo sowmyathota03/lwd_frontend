@@ -1,73 +1,129 @@
-import { useState } from "react";
-import { Pencil } from "lucide-react";
+import { useState, useEffect } from "react";
+import { createOrUpdateRecruiterProfile } from "../../../api/RecruiterApi";
+import { Section, Input, Buttons, Field } from "../comman/Helpers";
 
-function RecruiterDetails({ editable }) {
+const RecruiterDetails = ({ profile, setProfile, editable }) => {
+  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
 
-    const [editing, setEditing] = useState(false);
-    const [form, setForm] = useState({
-        designation: "",
-        department: "",
-        workEmail: "",
-    });
+  useEffect(() => {
+    if (profile) setFormData(profile);
+  }, [profile]);
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+  if (!profile && !editable) return null;
 
-    return (
-        <div className="bg-gray-100 shadow-sm rounded-lg p-4">
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-            <div className="flex justify-between mb-3">
-                <h2 className="text-lg font-semibold">Recruiter Details</h2>
+  const handleCancel = () => {
+    setFormData(profile || {});
+    setEditing(false);
+  };
 
-                {editable && (
-                    <button onClick={() => setEditing(true)}>
-                        <Pencil size={18} />
-                    </button>
-                )}
-            </div>
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      const res = await createOrUpdateRecruiterProfile(formData);
+      setProfile(res.data);
+      setEditing(false);
+    } catch (err) {
+      console.error("Update failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            {!editing ? (
-                <div className="space-y-2">
-                    <p><b>Designation:</b> {form.designation}</p>
-                    <p><b>Department:</b> {form.department}</p>
-                    <p><b>Work Email:</b> {form.workEmail}</p>
-                </div>
-            ) : (
-                <div className="space-y-2">
+  return (
+    <Section
+      title="Recruiter Details"
+      editable={editable}
+      editing={editing}
+      onEdit={() => setEditing(true)}
+    >
+      {!editing ? (
+        <>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Field label="Designation" value={profile?.designation} />
+            <Field label="Experience (Years)" value={profile?.experience} />
+            <Field label="Location" value={profile?.location} />
+            <Field label="Phone" value={profile?.phone} />
+            {/* LinkedIn Field */}
+            <Field
+              label="LinkedIn"
+              value={
+                profile?.linkedinUrl ? (
+                  <button
+                    onClick={() => window.open(profile.linkedinUrl, "_blank")}
+                    className="text-sm text-semibold text-blue-600 underline hover:text-blue-800"
+                  >
+                    View LinkedIn
+                  </button>
+                ) : (
+                  "Not Provided"
+                )
+              }
+            />
+            <Field label="About" value={profile?.about} />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              label="Designation"
+              name="designation"
+              value={formData.designation || ""}
+              onChange={handleChange}
+            />
+            <Input
+              label="Experience (Years)"
+              name="experience"
+              type="number"
+              value={formData.experience || ""}
+              onChange={handleChange}
+            />
+            <Input
+              label="Location"
+              name="location"
+              value={formData.location || ""}
+              onChange={handleChange}
+            />
+            <Input
+              label="Phone"
+              name="phone"
+              type="tel"
+              value={formData.phone || ""}
+              onChange={handleChange}
+            />
+            <Input
+              label="LinkedIn URL"
+              name="linkedinUrl"
+              value={formData.linkedinUrl || ""}
+              onChange={handleChange}
+            />
+            <Input
+              label="About"
+              name="about"
+              value={formData.about || ""}
+              onChange={handleChange}
+            />
+          </div>
 
-                    <input
-                        name="designation"
-                        placeholder="Designation"
-                        className="border p-2 w-full rounded"
-                        onChange={handleChange}
-                    />
-
-                    <input
-                        name="department"
-                        placeholder="Department"
-                        className="border p-2 w-full rounded"
-                        onChange={handleChange}
-                    />
-
-                    <input
-                        name="workEmail"
-                        placeholder="Work Email"
-                        className="border p-2 w-full rounded"
-                        onChange={handleChange}
-                    />
-
-                    <button
-                        onClick={() => setEditing(false)}
-                        className="bg-blue-500 text-white px-3 py-1 rounded"
-                    >
-                        Save
-                    </button>
-
-                </div>
-            )}
-        </div>
-    );
-}
+          <Buttons
+            onCancel={handleCancel}
+            onSave={handleSave}
+            loading={loading}
+          />
+        </>
+      )}
+    </Section>
+  );
+};
 
 export default RecruiterDetails;

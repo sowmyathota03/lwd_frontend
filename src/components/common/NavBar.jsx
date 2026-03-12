@@ -49,7 +49,6 @@ function NavBar() {
       <header className="sticky top-0 z-50 bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
-
             {/* Logo */}
             <Link to="/" className="text-2xl font-bold text-black">
               LWD
@@ -57,10 +56,18 @@ function NavBar() {
 
             {/* Desktop Menu */}
             <nav className="hidden md:flex space-x-8">
-              <NavLink to="/" end className={navItemClass}>Home</NavLink>
-              <NavLink to="/jobs" className={navItemClass}>Jobs</NavLink>
-              <NavLink to="/companies" className={navItemClass}>Companies</NavLink>
-              <NavLink to="/career" className={navItemClass}>Careers</NavLink>
+              <NavLink to="/" end className={navItemClass}>
+                Home
+              </NavLink>
+              <NavLink to="/jobs" className={navItemClass}>
+                Jobs
+              </NavLink>
+              <NavLink to="/companies" className={navItemClass}>
+                Companies
+              </NavLink>
+              <NavLink to="/career" className={navItemClass}>
+                Careers
+              </NavLink>
             </nav>
 
             {/* Right Section */}
@@ -93,12 +100,14 @@ function NavBar() {
                       viewBox="0 0 24 24"
                       className="w-5 h-5"
                     >
-                      <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/>
+                      <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z" />
                     </svg>
                   </div>
 
                   {/* Name / Email */}
-                  <span className="text-gray-700 font-medium">{displayName}</span>
+                  <span className="text-gray-700 font-medium">
+                    {displayName}
+                  </span>
 
                   {/* Dropdown Arrow */}
                   <svg
@@ -111,7 +120,12 @@ function NavBar() {
                     }`}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
 
                   {/* Dropdown Menu */}
@@ -133,18 +147,23 @@ function NavBar() {
                         Change Password
                       </Link>
 
-                      <Link
-                        to="/my/applications"
-                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onClick={handleDropdownClick}
-                      >
-                        My Applications
-                      </Link>
+                      {user?.role === "JOB_SEEKER" && (
+                        <Link
+                          to="/my/applications"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          onClick={handleDropdownClick}
+                        >
+                          My Applications
+                        </Link>
+                      )}
 
                       <hr className="my-2" />
 
                       <button
-                        onClick={() => { logout(); handleDropdownClick(); }}
+                        onClick={() => {
+                          logout();
+                          handleDropdownClick();
+                        }}
                         className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                       >
                         Logout
