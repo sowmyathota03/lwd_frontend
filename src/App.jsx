@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 
+
 import Home from "./pages/public/Home";
 import Jobs from "./pages/public/Jobs";
 import JobDetails from "./pages/public/JobDetails";
@@ -52,6 +53,7 @@ import JobAnalytics from "./components/jobs/JobAnalytics";
 
 import JobApplicationList from "./components/jobApplications/JobApplicationList";
 
+
 import RecruiterAdminDashboard from "./pages/recruiter-admin/RecruiterAdminDashboard";
 import RecruiterAdminHome from "./components/recruiter-admin/RecruiterAdminHome";
 import RecruiterList from "./components/recruiter-admin/RecruiterList";
@@ -62,6 +64,8 @@ import RecruiterHome from "./components/recruiter/RecruiterHome";
 import RecruiterCompanyRequest from "./components/recruiter/RecruiterCompanyRequest";
 
 import RecruiterJobSeekerSearch from "./components/Searching/JobSeekerSearch/RecruiterJobSeekerSearch";
+import ToggleDarkMode from "./components/settings/common/ToggleDarkMode"
+import Settings from "./components/settings/Settings";
 
 function App() {
   return (
@@ -74,6 +78,7 @@ function App() {
 
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+      
 
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/jobs/:type" element={<Jobs />} />
@@ -135,6 +140,7 @@ function App() {
         <Route path="/suggestions" element={<Suggestions />} />
 
         <Route path="/jobs/updatejob/:id" element={<EditJob />} />
+        <Route path="/toggle-button" element={<ToggleDarkMode />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<AdminDashboard />}>
@@ -171,6 +177,7 @@ function App() {
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
           <Route path="company-request" element={<RecruiterCompanyRequest />} />
         </Route>
+        <Route path="/settings" element={<Settings />} />
       </Routes>      
       
       <Footer />
