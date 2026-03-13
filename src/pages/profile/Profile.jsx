@@ -1,3 +1,4 @@
+
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import RecruiterProfile from "../../components/profile/RecruiterProfile";
 import { getMyProfile, getUserById } from "../../api/UserApi";
 
 const Profile = () => {
+
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
 
@@ -54,4 +56,5 @@ const Profile = () => {
   return null;
 };
 
-export default Profile;
+
+export default Profile; 

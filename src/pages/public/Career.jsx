@@ -3,135 +3,229 @@ import { useNavigate } from "react-router-dom";
 function Career() {
   const navigate = useNavigate();
 
-  const careerPaths = [
+  const categories = [
     {
-      id: 1,
       title: "Immediate Joiner Jobs",
       desc: "Jobs for candidates who can join within 0–15 days.",
       query: "?noticePreference=IMMEDIATE_JOINER",
     },
     {
-      id: 2,
       title: "Notice Period Friendly Jobs",
-      desc: "Companies accepting 30–90 day notice period candidates.",
+      desc: "Companies accepting candidates with notice period.",
       query: "?noticePreference=SERVING_NOTICE",
     },
     {
-      id: 3,
-      title: "Bench Candidate Hiring",
-      desc: "Special openings for employees currently on bench.",
-      query: "?lwdPreferred=true",
+      title: "Remote Jobs",
+      desc: "Work from anywhere opportunities.",
+      query: "?jobType=REMOTE",
     },
     {
-      id: 4,
-      title: "Skill Upgrade Opportunities",
-      desc: "Roles that allow learning React, Java, and Full Stack.",
-      query: "?industry=software",
-    },
-    {
-      id: 5,
-      title: "Freshers & Internships",
-      desc: "Entry-level jobs and internships for graduates.",
+      title: "Internships",
+      desc: "Opportunities for students and freshers.",
       query: "?minExp=0&maxExp=1",
     },
     {
-      id: 6,
-      title: "Remote & Contract Jobs",
-      desc: "Work-from-home and short-term contract roles.",
-      query: "?jobType=REMOTE",
+      title: "Startup Jobs",
+      desc: "Fast growing startup company openings.",
+      query: "?industry=startup",
+    },
+    {
+      title: "Experienced Professionals",
+      desc: "Roles for professionals with 3+ years experience.",
+      query: "?minExp=3",
     },
   ];
 
+  const lwdJobs = [
+    {
+      title: "Immediate Joiners",
+      query: "?noticePreference=IMMEDIATE_JOINER",
+    },
+    {
+      title: "15 Days Joiners",
+      query: "?noticePreference=15_DAYS",
+    },
+    {
+      title: "30 Days Notice Period",
+      query: "?noticePreference=30_DAYS",
+    },
+    {
+      title: "60 Days Notice Period",
+      query: "?noticePreference=60_DAYS",
+    },
+  ];
+
+  const roles = [
+    "Java Developer",
+    "Frontend Developer",
+    "Full Stack Developer",
+    "Data Analyst",
+    "DevOps Engineer",
+  ];
+
   return (
-    <div className="px-4 sm:px-6 md:px-12 py-8 md:py-10 min-h-screen bg-gray-50 text-slate-900">
+    <div className="min-h-screen bg-gray-50 px-6 py-10">
 
-      {/* HEADER */}
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-blue-700">
-        LWD Careers
-      </h1>
+      {/* HERO SECTION */}
+      <section className="text-center max-w-3xl mx-auto">
+        <h1 className="text-4xl font-bold text-blue-700">
+          Find the Right Career Opportunity Faster
+        </h1>
 
-      <p className="text-center max-w-3xl mx-auto mt-3 mb-8 md:mb-10 text-sm sm:text-base text-gray-600 leading-relaxed">
-        LWD (Last Working Day) portal helps bench and notice-period candidates
-        find quick and relevant job opportunities based on skills,
-        availability, and last working day timeline.
-      </p>
-
-      {/* WHY LWD */}
-      <section className="bg-white p-4 sm:p-6 rounded-xl shadow-md mb-10 md:mb-12">
-        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-blue-600 mb-4">
-          Why Use LWD Career Portal?
-        </h2>
-
-        <ul className="space-y-2 text-sm sm:text-base text-gray-600">
-          <li>✔ Jobs for Immediate Joiners</li>
-          <li>✔ Notice Period Friendly Companies</li>
-          <li>✔ Bench Employee Opportunities</li>
-          <li>✔ Quick Apply & Faster Hiring</li>
-          <li>✔ Resume & Career Support Tools</li>
-        </ul>
+        <p className="text-gray-600 mt-4">
+          Discover jobs based on your skills, experience, and Last Working Day
+          (LWD). Our platform helps you connect with employers who are ready
+          to hire fast.
+        </p>
       </section>
 
-      {/* CAREER PATHS */}
-      <section className="max-w-7xl mx-auto">
-        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-center text-blue-600">
-          Explore Opportunities
+      {/* CAREER CATEGORIES */}
+      <section className="mt-14 max-w-6xl mx-auto">
+        <h2 className="text-2xl font-semibold text-blue-700 text-center">
+          Job Categories
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 mt-6 md:mt-8">
-          {careerPaths.map((career) => (
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
+          {categories.map((item, index) => (
             <div
-              key={career.id}
-              className="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 border border-gray-200"
+              key={index}
+              className="bg-white p-6 rounded-lg shadow hover:shadow-lg cursor-pointer"
+              onClick={() => navigate(`/jobs${item.query}`)}
             >
-              <h3 className="text-base sm:text-lg font-semibold text-blue-700">
-                {career.title}
+              <h3 className="font-semibold text-lg text-blue-600">
+                {item.title}
               </h3>
 
-              <p className="text-sm sm:text-base text-gray-500 mt-2">
-                {career.desc}
+              <p className="text-gray-500 mt-2 text-sm">
+                {item.desc}
               </p>
-
-              <button
-                onClick={() => navigate(`/jobs${career.query}`)}
-                className="w-full sm:w-auto mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
-              >
-                View Jobs
-              </button>
             </div>
           ))}
         </div>
       </section>
 
-      {/* TOOLS */}
-      <section className="mt-14 md:mt-16 bg-white p-4 sm:p-6 rounded-xl shadow-md">
-        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-blue-600 mb-4">
-          Career Support Tools
+      {/* LWD SPECIAL SECTION */}
+      <section className="mt-16 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-semibold text-blue-700 text-center">
+          Jobs by Last Working Day
         </h2>
 
-        <ul className="space-y-2 text-sm sm:text-base text-gray-600">
-          <li>📄 Resume Building Tips</li>
-          <li>🧮 Last Working Day Calculator</li>
-          <li>🎯 Interview Preparation Guides</li>
-          <li>📢 Immediate Job Alerts</li>
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          {lwdJobs.map((item, index) => (
+            <div
+              key={index}
+              onClick={() => navigate(`/jobs${item.query}`)}
+              className="bg-blue-600 text-white text-center p-5 rounded-lg cursor-pointer hover:bg-blue-700"
+            >
+              {item.title}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* WHY CHOOSE LWD */}
+      <section className="mt-16 max-w-6xl mx-auto">
+        <h2 className="text-2xl font-semibold text-blue-700 text-center">
+          Why Choose LWD
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="font-semibold text-blue-600">
+              Faster Hiring
+            </h3>
+            <p className="text-gray-500 mt-2">
+              Find companies that need candidates immediately.
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="font-semibold text-blue-600">
+              One-Click Apply
+            </h3>
+            <p className="text-gray-500 mt-2">
+              Apply instantly using your saved profile.
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="font-semibold text-blue-600">
+              Smart Job Matching
+            </h3>
+            <p className="text-gray-500 mt-2">
+              AI suggests jobs based on your skills.
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="font-semibold text-blue-600">
+              Transparent Hiring
+            </h3>
+            <p className="text-gray-500 mt-2">
+              Clear joining timelines and hiring stages.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CAREER TIPS */}
+      <section className="mt-16 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-semibold text-blue-700 text-center">
+          Career Advice
+        </h2>
+
+        <ul className="mt-6 space-y-3 text-gray-600 text-center">
+          <li>Keep your resume updated</li>
+          <li>Complete your profile details</li>
+          <li>Apply to jobs matching your skills</li>
+          <li>Set job alerts for faster opportunities</li>
         </ul>
       </section>
 
-      {/* CTA */}
-      <section className="text-center mt-14 md:mt-16">
-        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-blue-700">
-          Restart Your Career Faster
+      {/* POPULAR ROLES */}
+      <section className="mt-16 max-w-6xl mx-auto">
+        <h2 className="text-2xl font-semibold text-blue-700 text-center">
+          Popular Job Roles
         </h2>
 
-        <p className="text-sm sm:text-base text-gray-600 mt-2">
-          Create your profile and apply for jobs aligned with your LWD.
+        <div className="flex flex-wrap justify-center gap-4 mt-6">
+          {roles.map((role, index) => (
+            <button
+              key={index}
+              onClick={() => navigate(`/jobs?role=${role}`)}
+              className="bg-white border px-4 py-2 rounded-lg shadow hover:bg-blue-600 hover:text-white"
+            >
+              {role}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mt-20 text-center">
+        <h2 className="text-3xl font-bold text-blue-700">
+          Start Your Career Journey Today
+        </h2>
+
+        <p className="text-gray-600 mt-2">
+          Create your profile and apply for jobs that match your skills.
         </p>
 
-        <button
-          onClick={() => navigate("/profile")}
-          className="w-full sm:w-auto mt-4 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg text-base sm:text-lg transition"
-        >
-          Create Profile
-        </button>
+        <div className="mt-6 space-x-4">
+          <button
+            onClick={() => navigate("/jobs")}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          >
+            Browse Jobs
+          </button>
+
+          <button
+            onClick={() => navigate("/register")}
+            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700"
+          >
+            Create Profile
+          </button>
+        </div>
       </section>
     </div>
   );
