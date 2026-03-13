@@ -1,13 +1,27 @@
 export const Section = ({ title, children, onEdit, editing, editable }) => (
-  <div className="bg-gray-100 p-6 rounded-xl space-y-4">
+  <div className="bg-white border border-gray-200 p-6 rounded-xl space-y-4">
     <div className="flex justify-between items-center">
       <h3 className="text-lg font-semibold">{title}</h3>
 
       {editable && !editing && (
         <button
           onClick={onEdit}
-          className="text-sm bg-blue-600 text-white px-4 py-1 rounded-md hover:bg-blue-700 transition"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition"
+          aria-label="Edit section"
         >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+            />
+          </svg>
           Edit
         </button>
       )}

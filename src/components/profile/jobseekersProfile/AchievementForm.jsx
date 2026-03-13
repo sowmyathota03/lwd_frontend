@@ -1,34 +1,39 @@
 import { useState, useEffect } from "react";
 
 /**
- * CareerObjectiveForm component – modal for editing career objective.
+ * AchievementForm component - Modal for adding/editing an achievement
  *
  * @param {Object} props
- * @param {string} props.objective - Current objective text
- * @param {Function} props.onClose - Function to close modal
- * @param {Function} props.onSave - Async function to save objective
+ * @param {string} props.achievement - Current achievement text (empty for new)
+ * @param {Function} props.onClose - Function to close the modal
+ * @param {Function} props.onSave - Callback with new text
+ * @param {boolean} props.loading - External loading state
  */
-function CareerObjectiveForm({ objective, onClose, onSave }) {
-  const [text, setText] = useState(objective || "");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+function AchievementForm({ achievement = "", onClose, onSave, loading: externalLoading }) {
+  const [text, setText] = useState(achievement);
+  const [internalLoading, setInternalLoading] = useState(false);
+
+  const loading = externalLoading !== undefined ? externalLoading : internalLoading;
 
   useEffect(() => {
-    setText(objective || "");
-  }, [objective]);
+    setText(achievement);
+  }, [achievement]);
 
   const handleSave = async () => {
     if (!text.trim()) return;
-    setLoading(true);
-    setError(null);
+
     try {
+      if (externalLoading === undefined) {
+        setInternalLoading(true);
+      }
       await onSave(text.trim());
       onClose();
-    } catch (err) {
-      console.error("Failed to save career objective:", err);
-      setError("Failed to save. Please try again.");
+    } catch (error) {
+      console.error("Save failed:", error);
     } finally {
-      setLoading(false);
+      if (externalLoading === undefined) {
+        setInternalLoading(false);
+      }
     }
   };
 
@@ -43,30 +48,28 @@ function CareerObjectiveForm({ objective, onClose, onSave }) {
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Edit Career Objective</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            {achievement ? "Edit Achievement" : "Add Achievement"}
+          </h2>
           <p className="text-sm text-gray-500 mt-1">
-            Write a brief summary of your career goals and aspirations.
+            {achievement
+              ? "Update your achievement."
+              : "Add a new achievement to your profile."}
           </p>
         </div>
 
         {/* Form */}
         <div className="p-6 space-y-5">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-
           <div>
-            <label htmlFor="objective" className="block text-sm font-medium text-gray-700 mb-1">
-              Career Objective
+            <label htmlFor="achievement" className="block text-sm font-medium text-gray-700 mb-1">
+              Achievement
             </label>
             <textarea
-              id="objective"
-              rows={5}
+              id="achievement"
+              rows={4}
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="e.g. To leverage my skills in software development to build innovative solutions..."
+              placeholder="e.g. Won first prize in Hackathon 2023"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow resize-y disabled:bg-gray-50 disabled:text-gray-500"
               disabled={loading}
               autoFocus
@@ -111,4 +114,4 @@ function CareerObjectiveForm({ objective, onClose, onSave }) {
   );
 }
 
-export default CareerObjectiveForm;
+export default AchievementForm;

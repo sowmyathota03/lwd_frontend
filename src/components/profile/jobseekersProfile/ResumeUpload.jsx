@@ -1,127 +1,82 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
+import ResumeUploadForm from "./ResumeUploadForm";
 
+/**
+ * ResumeUpload component – displays and edits the resume file.
+ *
+ * @param {Object} props
+ * @param {boolean} props.editable - Whether the current user can edit
+ * @param {File|string} props.initialFile - Current resume file or file name/url
+ * @param {Function} props.onSave - Async function to save new file
+ */
 function ResumeUpload({ editable, initialFile, onSave }) {
-    const [file, setFile] = useState(initialFile || null);
-    const [tempFile, setTempFile] = useState(null);
-    const [editing, setEditing] = useState(false);
+  const [file, setFile] = useState(initialFile || null);
+  const [editing, setEditing] = useState(false);
 
-    const uploadRef = useRef(null);
-    const editRef = useRef(null);
+  // Sync with prop changes
+  useEffect(() => {
+    setFile(initialFile || null);
+  }, [initialFile]);
 
-    useEffect(() => {
-        setFile(initialFile || null);
-    }, [initialFile]);
+  const handleSave = async (newFile) => {
+    await onSave(newFile);
+    setFile(newFile);
+    setEditing(false);
+  };
 
-    const handleFileSelect = (e) => {
-        const selected = e.target.files[0];
-        if (!selected) return;
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-semibold text-gray-800">Resume</h2>
+        {editable && file && (
+          <button
+            onClick={() => setEditing(true)}
+            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Edit resume"
+          >
+            <Pencil size={18} />
+          </button>
+        )}
+      </div>
 
-        setTempFile(selected);
-        setEditing(true);
-    };
-
-    const handleSave = () => {
-        setFile(tempFile);
-        onSave?.(tempFile);
-        setTempFile(null);
-        setEditing(false);
-    };
-
-    const handleCancel = () => {
-        setTempFile(null);
-        setEditing(false);
-    };
-
-    return (
-        <div className="bg-gray-100 shadow-sm rounded-lg p-4 space-y-3">
-
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <h2 className="text-lg md:text-xl font-semibold text-gray-800">
-                    Resume
-                </h2>
-
-                {editable && file && (
-                    <>
-                        <button
-                            onClick={() => editRef.current.click()}
-                            className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
-                        >
-                            <Pencil size={18} />
-                        </button>
-
-                        <input
-                            type="file"
-                            ref={editRef}
-                            accept=".pdf,.doc,.docx"
-                            onChange={handleFileSelect}
-                            className="hidden"
-                        />
-                    </>
-                )}
-            </div>
-
-            {/* Current Resume */}
-            {file && (
-                <p className="text-gray-700 text-sm font-medium">{file.name}</p>
-            )}
-
-            {/* Selected file before saving */}
-            {tempFile && (
-                <p className="text-blue-600 text-sm">{tempFile.name}</p>
-            )}
-
-            {/* Upload button (only if no resume yet) */}
-            {editable && !file && !editing && (
-                <>
-                    <button
-                        onClick={() => uploadRef.current.click()}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-                    >
-                        Upload Resume
-                    </button>
-
-                    <input
-                        type="file"
-                        ref={uploadRef}
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                    />
-                </>
-            )}
-
-            {/* Save Cancel buttons */}
-            {editing && (
-                <div className="flex gap-2">
-                    <button
-                        onClick={handleSave}
-                        className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-                    >
-                        Save
-                    </button>
-
-                    <button
-                        onClick={handleCancel}
-                        className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
-                    >
-                        Cancel
-                    </button>
-                </div>
-            )}
-
-            {/* Format info */}
-            <p className="text-gray-500 text-xs">
-                Allowed formats: .pdf, .doc, .docx
-            </p>
-
-            {!file && !tempFile && (
-                <p className="text-gray-500 text-sm">No resume uploaded yet.</p>
-            )}
-
+      {/* Current file display */}
+      {file ? (
+        <div className="flex items-center gap-2 text-sm">
+          <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2-10H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z" />
+          </svg>
+          <span className="text-gray-700 font-medium">{file.name || file}</span>
         </div>
-    );
+      ) : (
+        <p className="text-sm text-gray-500">
+          {editable
+            ? "No resume uploaded. Click the button below to upload."
+            : "No resume provided."}
+        </p>
+      )}
+
+      {/* Upload button (if editable and no file) */}
+      {editable && !file && (
+        <button
+          onClick={() => setEditing(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-sm font-medium transition-colors"
+        >
+          Upload Resume
+        </button>
+      )}
+
+      {/* Edit Modal */}
+      {editing && (
+        <ResumeUploadForm
+          currentFile={file}
+          onClose={() => setEditing(false)}
+          onSave={handleSave}
+        />
+      )}
+    </div>
+  );
 }
 
 export default ResumeUpload;

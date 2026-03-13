@@ -83,6 +83,11 @@ export const getProfileCompletion = async () => {
   return res.data;
 };
 
+export const getProfileCompletionByUserId = async (userId) => {
+  const res = await axiosInstance.get(`/job-seekers/${userId}/profile-completion`);
+  return res.data;
+};
+
 
 // ===============================
 // ABOUT INFO

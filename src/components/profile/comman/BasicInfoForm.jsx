@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { updateAboutInfo } from "../../../api/JobSeekerApi";
+import { updateMyProfile } from "../../../api/UserApi";
 
-function AboutInfoForm({ profile, setProfile, onClose }) {
+function BasicInfoForm({ profile, setProfile, onClose }) {
   const [formData, setFormData] = useState({
-    headline: "",
-    about: ""
+    name: "",
+    phone: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -12,8 +12,8 @@ function AboutInfoForm({ profile, setProfile, onClose }) {
   useEffect(() => {
     if (profile) {
       setFormData({
-        headline: profile.headline || "",
-        about: profile.about || ""
+        name: profile.name || "",
+        phone: profile.phone || "",
       });
     }
   }, [profile]);
@@ -22,7 +22,7 @@ function AboutInfoForm({ profile, setProfile, onClose }) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -30,17 +30,16 @@ function AboutInfoForm({ profile, setProfile, onClose }) {
     e.preventDefault();
     try {
       setLoading(true);
-      const updated = await updateAboutInfo(formData);
-      // Update parent state with the response
-      setProfile((prev) => ({
-        ...prev,
-        headline: updated.headline,
-        about: updated.about
-      }));
+      const res = await updateMyProfile({
+        name: formData.name,
+        phone: formData.phone,
+      });
+      // Update parent state with response
+      setProfile(res.data);
       onClose();
     } catch (error) {
-      console.error("Update failed", error);
-      // Optionally show a user-friendly error message
+      console.error("Update failed:", error);
+      // Optionally show error message to user
     } finally {
       setLoading(false);
     }
@@ -49,50 +48,65 @@ function AboutInfoForm({ profile, setProfile, onClose }) {
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose} // Click outside to close
+      onClick={onClose}
     >
       <div
         className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-auto overflow-hidden"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Edit About Information</h2>
-          <p className="text-sm text-gray-500 mt-1">Update your headline and professional summary.</p>
+          <h2 className="text-xl font-semibold text-gray-800">Edit Basic Information</h2>
+          <p className="text-sm text-gray-500 mt-1">Update your name and phone number.</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Headline field */}
+          {/* Name field */}
           <div>
-            <label htmlFor="headline" className="block text-sm font-medium text-gray-700 mb-1">
-              Headline
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Name
             </label>
             <input
               type="text"
-              id="headline"
-              name="headline"
-              value={formData.headline}
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              placeholder="e.g. Senior Software Engineer at XYZ"
+              placeholder="Your full name"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
               disabled={loading}
             />
           </div>
 
-          {/* About textarea */}
+          {/* Email field (read-only) */}
           <div>
-            <label htmlFor="about" className="block text-sm font-medium text-gray-700 mb-1">
-              About
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
             </label>
-            <textarea
-              id="about"
-              name="about"
-              rows={5}
-              value={formData.about}
+            <input
+              type="email"
+              id="email"
+              value={profile.email}
+              disabled
+              className="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-500 cursor-not-allowed"
+            />
+            <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+          </div>
+
+          {/* Phone field */}
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              Phone
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
-              placeholder="Write a brief description about yourself, your skills, and experience..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow resize-y"
+              placeholder="Your phone number"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
               disabled={loading}
             />
           </div>
@@ -131,4 +145,4 @@ function AboutInfoForm({ profile, setProfile, onClose }) {
   );
 }
 
-export default AboutInfoForm;
+export default BasicInfoForm;

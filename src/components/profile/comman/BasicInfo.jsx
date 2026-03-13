@@ -1,106 +1,51 @@
-import { useState, useEffect } from "react";
-import { updateMyProfile } from "../../../api/UserApi";
-import { Section, Grid, Field, Input, Buttons } from "./Helpers";   
+import { useState } from "react";
+import BasicInfoForm from "./BasicInfoForm";
+import { Section } from "../comman/Helpers"; // adjust import path
 
 const BasicInfo = ({ profile, setProfile, editable }) => {
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-  });
-  const [loading, setLoading] = useState(false);
-
-  // ✅ Sync formData when profile changes
-  useEffect(() => {
-    if (profile) {
-      setFormData({
-        name: profile.name || "",
-        phone: profile.phone || "",
-      });
-    }
-  }, [profile]);
+  const [openForm, setOpenForm] = useState(false);
 
   if (!profile) return null;
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleCancel = () => {
-    setFormData({
-      name: profile.name || "",
-      phone: profile.phone || "",
-    });
-    setEditing(false);
-  };
-
-  const handleSave = async () => {
-    try {
-      setLoading(true);
-
-      const res = await updateMyProfile({
-        name: formData.name,
-        phone: formData.phone,
-      });
-
-      setProfile(res.data);
-      setEditing(false);
-    } catch (err) {
-      console.error("Update failed:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <Section
-      title="Basic Information"
-      editable={editable}
-      editing={editing}
-      onEdit={() => setEditing(true)}
-    >
-      {!editing ? (
-        <Grid mdCols={2} lgCols={3}>
-          <Field label="Name" value={profile.name} />
-          <Field label="Email" value={profile.email} />
-          <Field label="Phone" value={profile.phone} />
-        </Grid>
-      ) : (
-        <>
-          <Grid mdCols={2} lgCols={3}>
-            <Input
-              label="Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            />
+    <>
+      <div className="bg-white rounded-xl shadow-sm space-y-4">
+        <Section
+          title="Basic Information"
+          editable={editable}
+          onEdit={() => setOpenForm(true)}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name
+              </p>
+              <p className="mt-1 text-gray-900">{profile.name || "—"}</p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email
+              </p>
+              <p className="mt-1 text-gray-900">{profile.email}</p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Phone
+              </p>
+              <p className="mt-1 text-gray-900">{profile.phone || "—"}</p>
+            </div>
+          </div>
+        </Section>
 
-            {/* Email is read-only */}
-            <Input
-              label="Email"
-              value={profile.email}
-              disabled
-            />
-
-            <Input
-              label="Phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Buttons
-            onCancel={handleCancel}
-            onSave={handleSave}
-            loading={loading}
+        {openForm && (
+          <BasicInfoForm
+            profile={profile}
+            setProfile={setProfile}
+            onClose={() => setOpenForm(false)}
           />
-        </>
-      )}
-    </Section>
+        )}
+      </div>
+    </>
   );
 };
 
