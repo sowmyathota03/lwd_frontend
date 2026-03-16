@@ -65,3 +65,131 @@
 .dark .lwd-btn-secondary {
   @apply bg-gray-700 hover:bg-gray-600;
 }
+@import "tailwindcss";
+
+/* enable dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* smooth theme transition */
+* {
+  transition-property: background-color, color, border-color, fill, stroke;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
+
+/* ===== LWD THEME CLASSES ===== */
+
+/* Page background */
+.lwd-page {
+  @apply bg-slate-50 text-slate-900 min-h-screen;
+}
+
+.dark .lwd-page {
+  @apply bg-slate-900 text-slate-100;
+}
+
+/* Card container */
+.lwd-card {
+  @apply bg-white rounded-lg shadow-md border border-gray-200 p-4;
+}
+
+.dark .lwd-card {
+  @apply bg-slate-800 border-gray-700;
+}
+
+/* Section titles */
+.lwd-title {
+  @apply text-slate-800 font-semibold text-lg;
+}
+
+.dark .lwd-title {
+  @apply text-slate-100;
+}
+
+/* Paragraph text */
+.lwd-text {
+  @apply text-gray-600 text-sm;
+}
+
+.dark .lwd-text {
+  @apply text-gray-300;
+}
+
+/* Input fields */
+.lwd-input {
+  @apply w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-slate-800;
+}
+
+.dark .lwd-input {
+  @apply bg-slate-800 border-gray-600 text-slate-100;
+}
+
+/* Table */
+.lwd-table {
+  @apply w-full border-collapse bg-white;
+}
+
+.dark .lwd-table {
+  @apply bg-slate-800;
+}
+
+.lwd-table th {
+  @apply text-left text-sm font-semibold text-slate-700 border-b border-gray-200 p-2;
+}
+
+.dark .lwd-table th {
+  @apply text-slate-200 border-gray-600;
+}
+
+.lwd-table td {
+  @apply text-sm text-gray-600 border-b border-gray-100 p-2;
+}
+
+.dark .lwd-table td {
+  @apply text-gray-300 border-gray-700;
+}
+
+/* Badge */
+.lwd-badge {
+  @apply px-2 py-1 text-xs rounded-md bg-gray-200 text-gray-700;
+}
+
+.dark .lwd-badge {
+  @apply bg-gray-700 text-gray-200;
+}
+
+/* Primary button */
+.lwd-btn-primary {
+  @apply px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700;
+}
+
+.dark .lwd-btn-primary {
+  @apply bg-blue-500 hover:bg-blue-600;
+}
+
+/* Secondary button */
+.lwd-btn-secondary {
+  @apply px-5 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900;
+}
+
+.dark .lwd-btn-secondary {
+  @apply bg-gray-700 hover:bg-gray-600;
+}
+
+/* Outline button */
+.lwd-btn-outline {
+  @apply px-5 py-2 border border-gray-300 text-slate-700 rounded-md bg-transparent;
+}
+
+.dark .lwd-btn-outline {
+  @apply border-gray-600 text-slate-200;
+}
+
+/* Divider */
+.lwd-divider {
+  @apply border-t border-gray-200 my-4;
+}
+
+.dark .lwd-divider {
+  @apply border-gray-700;
+}
