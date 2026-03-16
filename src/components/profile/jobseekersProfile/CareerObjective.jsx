@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Pencil } from "lucide-react";
 import CareerObjectiveForm from "./CareerObjectiveForm";
-import {Section} from "../comman/Helpers";
 
 /**
  * CareerObjective component – displays and edits the career objective.

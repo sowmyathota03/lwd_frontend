@@ -1,12 +1,12 @@
-import NavBar from "./components/common/NavBar";
-import Footer from "./components/common/Footer";
+import { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import "./index.css";
 
-import { Routes, Route } from "react-router-dom";
+import NavBar from "./components/common/NavBar";
+import Footer from "./components/common/Footer";
 
 import Login from "./auth/Login";
 import Register from "./auth/Register";
-
 
 import Home from "./pages/public/Home";
 import Jobs from "./pages/public/Jobs";
@@ -68,8 +68,21 @@ import ToggleDarkMode from "./components/settings/common/ToggleDarkMode"
 import Settings from "./components/settings/Settings";
 
 function App() {
+
+  
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
   return (
     <>
+      <ScrollToTop />
       <NavBar />
 
       <Routes>
@@ -90,8 +103,9 @@ function App() {
         <Route path="/companies" element={<Companies />} />
         <Route path="/career" element={<Career />} />
 
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/profile" element={<Profile key={location.pathname}  />} />
+        <Route path="/profile/:userId" element={<Profile key={location.pathname}  />} />
+
 
       <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />} >
         <Route index element={ <RecruiterAdminHome /> } />
@@ -116,18 +130,6 @@ function App() {
         <Route path="/education" element={<Education />} />
         <Route path="/internship" element={<Internship />} />
         <Route path="/project" element={<Project />} />
-
-
-      <Route path="/recruiter" element={<RecruiterDashboard />} >
-        <Route index element={ <RecruiterHome /> } />
-        <Route path="/recruiter/company-profile" element={<CompanyProfilePage />} />
-        {/* <Route path="/recruiter/managejob" element={<ManageJobs />} /> */}
-        <Route path="/recruiter/managejob" element={<ManageJobSearch />} /> 
-        <Route path="/recruiter/managejob/:jobId/analytics" element={<JobAnalytics />} /> 
-        <Route path="/recruiter/createjob" element={<CreateJob />}  />
-        <Route path="/recruiter/applications" element={<JobApplicationList />} />
-        <Route path="/recruiter/job-seekers" element={<RecruiterJobSeekerSearch />} />
-      </Route>
 
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/status" element={<AddStatus />} />

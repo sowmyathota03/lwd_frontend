@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Pencil } from "lucide-react";
 import LinkedInUrlForm from "./LinkedInUrlForm";
 
 /**

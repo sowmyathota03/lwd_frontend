@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../context/AuthContext";
 
 import Loader from "../common/Loader";
@@ -18,7 +17,6 @@ import ResumeUpload from "./jobseekersProfile/ResumeUpload";
 import LinkedInUrl from "./jobseekersProfile/LinkedInUrl";
 import GitHubUrl from "./jobseekersProfile/GitHubUrl";
 import CareerObjective from "./jobseekersProfile/CareerObjective";
-import Achievements from "./jobseekersProfile/Achievements";
 
 import AddStatus from "../../pages/profile/components/AddStatus";
 
@@ -28,21 +26,26 @@ import {
   getJobSeekerByUserId,
 } from "../../api/JobSeekerApi";
 
-// Map backend missing‑section messages to section ID and field name
 const MISSING_ITEM_MAP = {
-  "Add headline":        { sectionId: "basic-info", field: "headline" },
-  "Add about section":   { sectionId: "about",      field: "about" },
-  "Add location":        { sectionId: "basic-info", field: "location" },
-  "Add skills":          { sectionId: "skills",     field: "skills" },
-  "Add education":       { sectionId: "education",  field: "education" },
-  "Add experience":      { sectionId: "experience", field: "experience" },
-  "Upload resume":       { sectionId: "resume",     field: "resume" },
-  "Add availability details": { sectionId: "job-seeker-details", field: "availability" },
-  "Add expected salary": { sectionId: "job-seeker-details", field: "expectedCtc" },
-  "Upload profile photo":{ sectionId: "basic-info", field: "profileImage" },
-  "Add internships":     { sectionId: "internship", field: "internship" },
-  "Add projects":        { sectionId: "project",    field: "project" },
-  "Add certifications":  { sectionId: "certification", field: "certification" },
+  "Add headline": { sectionId: "basic-info", field: "headline" },
+  "Add about section": { sectionId: "about", field: "about" },
+  "Add location": { sectionId: "basic-info", field: "location" },
+  "Add skills": { sectionId: "skills", field: "skills" },
+  "Add education": { sectionId: "education", field: "education" },
+  "Add experience": { sectionId: "experience", field: "experience" },
+  "Upload resume": { sectionId: "resume", field: "resume" },
+  "Add availability details": {
+    sectionId: "job-seeker-details",
+    field: "availability",
+  },
+  "Add expected salary": {
+    sectionId: "job-seeker-details",
+    field: "expectedCtc",
+  },
+  "Upload profile photo": { sectionId: "basic-info", field: "profileImage" },
+  "Add internships": { sectionId: "internship", field: "internship" },
+  "Add projects": { sectionId: "project", field: "project" },
+  "Add certifications": { sectionId: "certification", field: "certification" },
 };
 
 const JobSeekerProfile = () => {
@@ -54,56 +57,83 @@ const JobSeekerProfile = () => {
 
   const [focusTarget, setFocusTarget] = useState(null);
 
+  const [basicProfile, setBasicProfile] = useState(null);
+  const [jobSeekerProfile, setJobSeekerProfile] = useState(null);
+
+  const [basicLoading, setBasicLoading] = useState(true);
+  const [extendedLoading, setExtendedLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    if (focusTarget?.sectionId && scrollContainerRef.current) {
+    if (focusTarget?.sectionId) {
       const element = document.getElementById(focusTarget.sectionId);
+
       if (element) {
-        scrollContainerRef.current.scrollTo({
-          top: element.offsetTop - 20,
+        element.scrollIntoView({
           behavior: "smooth",
+          block: "start",
         });
       }
     }
   }, [focusTarget]);
 
   /* ================= BASIC PROFILE ================= */
-  const { data: basicProfile, isLoading: basicLoading } = useQuery({
-    queryKey: ["profile", userId || "me"],
-    queryFn: async () => {
-      if (isOwnProfile) {
-        const res = await getMyProfile();
-        return res.data;
-      } else {
-        const res = await getUserById(userId);
-        return res.data;
+  useEffect(() => {
+    const fetchBasicProfile = async () => {
+      try {
+        setBasicLoading(true);
+
+        let res;
+
+        if (isOwnProfile) {
+          res = await getMyProfile();
+        } else {
+          res = await getUserById(userId);
+        }
+        console.log("Basic Profile:", res.data);
+
+        setBasicProfile(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setBasicLoading(false);
       }
-    },
-  });
+    };
+
+    fetchBasicProfile();
+  }, [userId, isOwnProfile]);
 
   /* ================= JOB SEEKER PROFILE ================= */
-  const { data: extendedProfile, isLoading: extendedLoading } = useQuery({
-    queryKey: ["jobSeekerProfile", basicProfile?.id],
-    queryFn: async () => {
-      if (isOwnProfile) {
-        const res = await getJobSeekerProfile();
-        return res.data;
-      } else {
-        const res = await getJobSeekerByUserId(userId);
-        return res.data;
-      }
-    },
-    enabled: !!basicProfile && basicProfile.role === "JOB_SEEKER",
-  });
-
-  const [jobSeekerProfile, setJobSeekerProfile] = useState(null);
-
   useEffect(() => {
-    if (extendedProfile) setJobSeekerProfile(extendedProfile);
-  }, [extendedProfile]);
+    const fetchExtendedProfile = async () => {
+      if (!basicProfile || basicProfile.role !== "JOB_SEEKER") {
+        setExtendedLoading(false);
+        return;
+      }
+
+      try {
+        setExtendedLoading(true);
+
+        let res;
+
+        if (isOwnProfile) {
+          res = await getJobSeekerProfile();
+        } else {
+          res = await getJobSeekerByUserId(userId);
+        }
+        setJobSeekerProfile(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setExtendedLoading(false);
+      }
+    };
+
+    fetchExtendedProfile();
+  }, [basicProfile, userId, isOwnProfile]);
 
   if (basicLoading || extendedLoading) return <Loader fullScreen />;
 
@@ -126,7 +156,9 @@ const JobSeekerProfile = () => {
           profile={basicProfile}
           setProfile={setJobSeekerProfile}
           editable={isOwnProfile}
-          focusField={focusTarget?.sectionId === "basic-info" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "basic-info" ? focusTarget.field : null
+          }
         />
       ),
     },
@@ -138,10 +170,15 @@ const JobSeekerProfile = () => {
           profile={jobSeekerProfile}
           setProfile={setJobSeekerProfile}
           editable={isOwnProfile}
-          focusField={focusTarget?.sectionId === "job-seeker-details" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "job-seeker-details"
+              ? focusTarget.field
+              : null
+          }
         />
       ),
     },
+
     {
       id: "about",
       title: "About",
@@ -152,10 +189,13 @@ const JobSeekerProfile = () => {
           editable={isOwnProfile}
           userId={userId}
           isOwnProfile={isOwnProfile}
-          focusField={focusTarget?.sectionId === "about" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "about" ? focusTarget.field : null
+          }
         />
       ),
     },
+
     {
       id: "career-objective",
       title: "Career Objective",
@@ -166,6 +206,7 @@ const JobSeekerProfile = () => {
         />
       ),
     },
+
     {
       id: "skills",
       title: "Skills",
@@ -174,10 +215,13 @@ const JobSeekerProfile = () => {
           editable={isOwnProfile}
           isOwnProfile={isOwnProfile}
           userId={basicProfile?.id}
-          focusField={focusTarget?.sectionId === "skills" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "skills" ? focusTarget.field : null
+          }
         />
       ),
     },
+
     {
       id: "experience",
       title: "Experience",
@@ -185,10 +229,13 @@ const JobSeekerProfile = () => {
         <Experience
           userId={isOwnProfile ? null : userId}
           editable={isOwnProfile}
-          focusField={focusTarget?.sectionId === "experience" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "experience" ? focusTarget.field : null
+          }
         />
       ),
     },
+
     {
       id: "education",
       title: "Education",
@@ -196,10 +243,13 @@ const JobSeekerProfile = () => {
         <Education
           userId={isOwnProfile ? null : userId}
           editable={isOwnProfile}
-          focusField={focusTarget?.sectionId === "education" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "education" ? focusTarget.field : null
+          }
         />
       ),
     },
+
     {
       id: "internship",
       title: "Internship",
@@ -207,10 +257,13 @@ const JobSeekerProfile = () => {
         <Internship
           userId={isOwnProfile ? null : userId}
           editable={isOwnProfile}
-          focusField={focusTarget?.sectionId === "internship" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "internship" ? focusTarget.field : null
+          }
         />
       ),
     },
+
     {
       id: "project",
       title: "Projects",
@@ -218,10 +271,13 @@ const JobSeekerProfile = () => {
         <Project
           userId={isOwnProfile ? null : userId}
           editable={isOwnProfile}
-          focusField={focusTarget?.sectionId === "project" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "project" ? focusTarget.field : null
+          }
         />
       ),
     },
+
     {
       id: "certification",
       title: "Certifications",
@@ -229,31 +285,30 @@ const JobSeekerProfile = () => {
         <Certification
           userId={isOwnProfile ? null : userId}
           editable={isOwnProfile}
-          focusField={focusTarget?.sectionId === "certification" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "certification"
+              ? focusTarget.field
+              : null
+          }
         />
       ),
     },
-    {
-      id: "achievements",
-      title: "Achievements",
-      component: basicProfile?.role === "JOB_SEEKER" && (
-        <Achievements
-          editable={isOwnProfile}
-          achievements={jobSeekerProfile?.achievements}
-        />
-      ),
-    },
+
     {
       id: "resume",
       title: "Resume",
       component: basicProfile?.role === "JOB_SEEKER" && (
         <ResumeUpload
+          userId={isOwnProfile ? null : userId}
           editable={isOwnProfile}
           initialFile={jobSeekerProfile?.resume}
-          focusField={focusTarget?.sectionId === "resume" ? focusTarget.field : null}
+          focusField={
+            focusTarget?.sectionId === "resume" ? focusTarget.field : null
+          }
         />
       ),
     },
+
     {
       id: "linkedin",
       title: "LinkedIn",
@@ -264,6 +319,7 @@ const JobSeekerProfile = () => {
         />
       ),
     },
+
     {
       id: "github",
       title: "GitHub",
@@ -290,11 +346,15 @@ const JobSeekerProfile = () => {
                 section.component && (
                   <button
                     key={section.id}
-                    onClick={() =>
-                      document
-                        .getElementById(section.id)
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
+                    onClick={() => {
+                      const el = document.getElementById(section.id);
+                      if (el) {
+                        el.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }
+                    }}
                     className="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {section.title}
@@ -307,7 +367,7 @@ const JobSeekerProfile = () => {
         {/* RIGHT CONTENT - Profile sections */}
         <main
           ref={scrollContainerRef}
-          className="w-full lg:w-3/4 bg-white p-6 lg:p-8 overflow-y-auto lg:h-[calc(100vh-3rem)]"
+          className="w-full lg:w-3/4 bg-white p-6 lg:p-8"
         >
           {/* Profile Header Card */}
           <div className="mb-8 bg-linear-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
@@ -331,14 +391,24 @@ const JobSeekerProfile = () => {
                 />
                 {basicProfile?.updatedAt && (
                   <div className="flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                     <span>
                       Last updated{" "}
                       {new Date(basicProfile.updatedAt).toLocaleDateString(
                         "en-IN",
-                        { day: "numeric", month: "short", year: "numeric" }
+                        { day: "numeric", month: "short", year: "numeric" },
                       )}
                     </span>
                   </div>

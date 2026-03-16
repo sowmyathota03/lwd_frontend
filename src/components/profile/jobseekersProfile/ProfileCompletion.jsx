@@ -1,46 +1,42 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from "react";
 import {
   getProfileCompletion,
   getProfileCompletionByUserId,
-} from '../../../api/JobSeekerApi';
+} from "../../../api/JobSeekerApi";
 
-/**
- * ProfileCompletion component displays a user's profile completion percentage
- * and a list of missing sections. It handles both the current user's profile
- * and viewing other users' profiles.
- *
- * @param {Object} props
- * @param {string|number} [props.userId] - ID of the user whose profile is being viewed
- * @param {boolean} [props.isOwnProfile] - Whether the profile belongs to the logged-in user
- * @param {Function} [props.onMissingClick] - Callback when a missing section is clicked
- */
 function ProfileCompletion({ userId, isOwnProfile, onMissingClick }) {
-  // Fetch profile completion data based on ownership
-  const { data, isLoading } = useQuery({
-    queryKey: ['profileCompletion', userId],
-    queryFn: () =>
-      isOwnProfile
-        ? getProfileCompletion()
-        : getProfileCompletionByUserId(userId),
-    enabled: isOwnProfile || Boolean(userId),
-  });
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Show nothing while loading – keeps UI clean.
-  // In a more advanced version, a skeleton could be shown.
+  useEffect(() => {
+    const fetchProfileCompletion = async () => {
+      try {
+        if (!(isOwnProfile || userId)) return;
+
+        setIsLoading(true);
+
+        const response = isOwnProfile
+          ? await getProfileCompletion()
+          : await getProfileCompletionByUserId(userId);
+
+        setData(response);
+      } catch (error) {
+        console.error("Failed to fetch profile completion", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfileCompletion();
+  }, [userId, isOwnProfile]);
+
   if (isLoading) {
     return null;
   }
 
-  // Safely extract percentage and missing sections with defaults
   const percentage = data?.percentage ?? 0;
   const missing = data?.missingSections ?? [];
 
-  /**
-   * Handles click on a missing section item.
-   * Calls the parent callback with the clicked item.
-   *
-   * @param {string} item - The missing section identifier
-   */
   const handleMissingClick = (item) => {
     if (onMissingClick) {
       onMissingClick(item);
@@ -49,7 +45,7 @@ function ProfileCompletion({ userId, isOwnProfile, onMissingClick }) {
 
   return (
     <div className="bg-white border rounded-xl p-5 shadow-sm">
-      {/* Header with title and percentage */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-sm font-semibold text-gray-800">
           Profile Completion
@@ -73,7 +69,7 @@ function ProfileCompletion({ userId, isOwnProfile, onMissingClick }) {
         />
       </div>
 
-      {/* Missing sections list */}
+      {/* Missing sections */}
       {missing.length > 0 && (
         <div className="mt-4">
           <p className="text-sm font-medium text-gray-700 mb-2">
@@ -83,12 +79,10 @@ function ProfileCompletion({ userId, isOwnProfile, onMissingClick }) {
           <ul className="flex flex-wrap gap-2 text-sm">
             {missing.map((item, index) => (
               <li
-                // Use a combination of item and index as key – items are expected to be unique strings
                 key={`${item}-${index}`}
                 onClick={() => handleMissingClick(item)}
                 onKeyDown={(e) => {
-                  // Allow keyboard activation with Enter or Space
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     handleMissingClick(item);
                   }
