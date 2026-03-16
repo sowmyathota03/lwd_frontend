@@ -192,7 +192,7 @@ function Career() {
           {roles.map((role, index) => (
             <button
               key={index}
-              onClick={() => navigate(`/jobs?role=${role}`)}
+              onClick={() => navigate(`/jobs?keyword=${encodeURIComponent(role)}`)}
               className="bg-white border px-4 py-2 rounded-lg shadow hover:bg-blue-600 hover:text-white"
             >
               {role}
