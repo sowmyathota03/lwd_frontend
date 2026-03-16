@@ -1,31 +1,35 @@
 import { useState, useEffect } from "react";
 
 /**
- * CareerObjectiveForm component – modal for editing career objective.
+ * LinkedInUrlForm component – modal for editing LinkedIn URL.
  *
  * @param {Object} props
- * @param {string} props.objective - Current objective text
+ * @param {string} props.initialUrl - Current URL
  * @param {Function} props.onClose - Function to close modal
- * @param {Function} props.onSave - Async function to save objective
+ * @param {Function} props.onSave - Async function to save new URL
  */
-function CareerObjectiveForm({ objective, onClose, onSave }) {
-  const [text, setText] = useState(objective || "");
+function LinkedInUrlForm({ initialUrl, onClose, onSave }) {
+  const [url, setUrl] = useState(initialUrl || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setText(objective || "");
-  }, [objective]);
+    setUrl(initialUrl || "");
+  }, [initialUrl]);
 
   const handleSave = async () => {
-    if (!text.trim()) return;
+    if (!url.trim()) {
+      setError("URL cannot be empty.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
-      await onSave(text.trim());
+      await onSave(url.trim());
       onClose();
     } catch (err) {
-      console.error("Failed to save career objective:", err);
+      console.error("Failed to save LinkedIn URL:", err);
       setError("Failed to save. Please try again.");
     } finally {
       setLoading(false);
@@ -43,9 +47,9 @@ function CareerObjectiveForm({ objective, onClose, onSave }) {
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Edit Career Objective</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Edit LinkedIn URL</h2>
           <p className="text-sm text-gray-500 mt-1">
-            Write a brief summary of your career goals and aspirations.
+            Add or update your LinkedIn profile link.
           </p>
         </div>
 
@@ -58,22 +62,19 @@ function CareerObjectiveForm({ objective, onClose, onSave }) {
           )}
 
           <div>
-            <label htmlFor="objective" className="block text-sm font-medium text-gray-700 mb-1">
-              Career Objective
+            <label htmlFor="linkedinUrl" className="block text-sm font-medium text-gray-700 mb-1">
+              LinkedIn Profile URL
             </label>
-            <textarea
-              id="objective"
-              rows={5}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="e.g. To leverage my skills in software development to build innovative solutions..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow resize-y disabled:bg-gray-50 disabled:text-gray-500"
+            <input
+              type="url"
+              id="linkedinUrl"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://www.linkedin.com/in/username"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow disabled:bg-gray-50 disabled:text-gray-500"
               disabled={loading}
               autoFocus
             />
-            <p className="text-xs text-gray-400 mt-1">
-              {text.length} characters
-            </p>
           </div>
 
           {/* Action buttons */}
@@ -89,7 +90,7 @@ function CareerObjectiveForm({ objective, onClose, onSave }) {
             <button
               type="button"
               onClick={handleSave}
-              disabled={loading || !text.trim()}
+              disabled={loading}
               className="px-5 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-20 justify-center"
             >
               {loading ? (
@@ -111,4 +112,4 @@ function CareerObjectiveForm({ objective, onClose, onSave }) {
   );
 }
 
-export default CareerObjectiveForm;
+export default LinkedInUrlForm;

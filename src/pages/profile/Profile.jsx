@@ -1,4 +1,3 @@
-
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -32,29 +31,25 @@ const Profile = () => {
 
   if (isLoading) return <Loader fullScreen />;
 
-  // ROLE BASED PROFILE
-  if (basicProfile?.role === "JOB_SEEKER") {
-    return (
-      <JobSeekerProfile
-        basicProfile={basicProfile}
-        isOwnProfile={isOwnProfile}
-        userId={userId}
-      />
-    );
-  }
+  return (
+    <div key={userId || "me"}>
+      {basicProfile?.role === "JOB_SEEKER" && (
+        <JobSeekerProfile
+          basicProfile={basicProfile}
+          isOwnProfile={isOwnProfile}
+          userId={userId}
+        />
+      )}
 
-  if (basicProfile?.role === "RECRUITER") {
-    return (
-      <RecruiterProfile
-        basicProfile={basicProfile}
-        isOwnProfile={isOwnProfile}
-        userId={userId}
-      />
-    );
-  }
-
-  return null;
+      {basicProfile?.role === "RECRUITER" && (
+        <RecruiterProfile
+          basicProfile={basicProfile}
+          isOwnProfile={isOwnProfile}
+          userId={userId}
+        />
+      )}
+    </div>
+  );
 };
 
-
-export default Profile; 
+export default Profile;
