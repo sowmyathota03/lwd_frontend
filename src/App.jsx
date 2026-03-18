@@ -67,6 +67,7 @@ import RecruiterJobSeekerSearch from "./components/Searching/JobSeekerSearch/Rec
 import ToggleDarkMode from "./components/settings/common/ToggleDarkMode"
 import Settings from "./components/settings/Settings";
 
+
 function App() {
 
   
