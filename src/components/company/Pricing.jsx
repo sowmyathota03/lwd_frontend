@@ -1,23 +1,57 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 
 const Pricing = () => {
-  const [plans, setPlans] = useState([]);
-
-  useEffect(() => {
-    fetchPlans();
-  }, []);
-
-  const fetchPlans = async () => {
-    try {
-      const res = await axios.get(
-        "http://localhost:8080/api/plans/RECRUITER"
-      );
-      setPlans(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const plans = [
+    {
+      name: "Basic",
+      price: 4999,
+      subtitle: "For Small Teams",
+      features: [
+        "Post Jobs",
+        "3 jobs per month",
+        "500 resumes/day",
+        "Up to 100 resumes/day",
+        "Basic Filters ❌",
+        "Basic Support ❌",
+        "No Profile Boosting ❌",
+      ],
+      button: "Get Started",
+      color: "blue",
+    },
+    {
+      name: "Standard",
+      price: 9999,
+      subtitle: "For Growing Companies",
+      popular: true,
+      features: [
+        "Post Jobs",
+        "10 jobs per month",
+        "500 resumes/day",
+        "Up to 300 resumes/day",
+        "Basic Filters ✔",
+        "CRM & Email Tools ✔",
+        "Premium Support ✔",
+      ],
+      button: "Choose Plan",
+      color: "yellow",
+    },
+    {
+      name: "Premium",
+      price: 14999,
+      subtitle: "For High-Volume Hiring",
+      features: [
+        "Unlimited Job Posts ✔",
+        "Unlimited Resume Search ✔",
+        "All 1,000,000+ resumes ✔",
+        "Unlimited search ✔",
+        "Advanced Filters ✔",
+        "CRM & Email Tools ✔",
+        "Premium Support ✔",
+      ],
+      button: "Choose Plan",
+      color: "purple",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-linear-to-r from-purple-200 via-pink-200 to-blue-200 py-16">
@@ -35,9 +69,9 @@ const Pricing = () => {
 
         {/* Cards */}
         <div className="grid md:grid-cols-3 gap-8 mt-14">
-          {plans.map((plan) => (
+          {plans.map((plan, index) => (
             <div
-              key={plan.id}
+              key={index}
               className={`relative bg-white rounded-2xl shadow-xl p-8 text-center transition hover:scale-105 ${plan.popular ? "border-4 border-yellow-400 scale-105" : ""
                 }`}
             >
@@ -53,21 +87,18 @@ const Pricing = () => {
                 {plan.name}
               </h2>
 
+              {/* Subtitle */}
+              <p className="text-gray-500 mt-1">{plan.subtitle}</p>
+
               {/* Price */}
               <p className="text-4xl font-bold text-gray-900 mt-4">
                 ₹{plan.price}
-                <span className="text-sm text-gray-500">
-                  {" "}
-                  / {plan.duration}
-                </span>
+                <span className="text-sm text-gray-500"> / month</span>
               </p>
-
-              {/* Limit */}
-              <p className="text-gray-500 mt-2">{plan.limit}</p>
 
               {/* Features */}
               <ul className="mt-6 space-y-3 text-left">
-                {plan.features?.map((feature, i) => (
+                {plan.features.map((feature, i) => (
                   <li key={i} className="flex gap-2 items-center">
                     <span className="text-green-500">✔</span>
                     {feature}
@@ -82,9 +113,7 @@ const Pricing = () => {
                     : "bg-gray-200 hover:bg-gray-300"
                   }`}
               >
-                {plan.name === "Basic"
-                  ? "Get Started"
-                  : "Choose Plan"}
+                {plan.button}
               </button>
             </div>
           ))}

@@ -24,19 +24,15 @@ const cardVariants = {
 };
 
 function Jobs() {
-
   const { type } = useParams();
   const [searchParams] = useSearchParams();
   const observer = useRef(null);
   const navigate = useNavigate();
 
   const [pageGroup, setPageGroup] = useState(0);
-
   const MAX_PAGES = 5;
 
-  // ===============================
-  // URL PARAMS
-  // ===============================
+  // URL params
   const keyword = searchParams.get("keyword") || "";
   const location = searchParams.get("location") || "";
   const companyName = searchParams.get("companyName") || "";
@@ -49,21 +45,19 @@ function Jobs() {
 
   const isSearchMode = Boolean(
     keyword ||
-      location ||
-      companyName ||
-      minExp ||
-      maxExp ||
-      jobType ||
-      industry ||
-      noticeStatus ||
-      lwdPreferred
+    location ||
+    companyName ||
+    minExp ||
+    maxExp ||
+    jobType ||
+    industry ||
+    noticeStatus ||
+    lwdPreferred
   );
 
   const showFilters = isSearchMode || type;
 
-  // ===============================
   // JOB QUERY
-  // ===============================
   const {
     data,
     fetchNextPage,
@@ -72,7 +66,6 @@ function Jobs() {
     isLoading,
     isError,
   } = useInfiniteQuery({
-
     queryKey: [
       "jobs",
       keyword,
@@ -87,15 +80,11 @@ function Jobs() {
       type,
       pageGroup,
     ],
-
     queryFn: async ({ pageParam = 0 }) => {
-
       const apiPage = pageParam + pageGroup * MAX_PAGES;
 
       if (isSearchMode) {
-
         const filters = {};
-
         if (keyword) filters.keyword = keyword;
         if (location) filters.location = location;
         if (companyName) filters.companyName = companyName;
@@ -107,7 +96,6 @@ function Jobs() {
         if (lwdPreferred) filters.lwdPreferred = true;
 
         filters.page = apiPage;
-
         const response = await searchJobs(filters);
         return response.data;
       }
@@ -120,31 +108,21 @@ function Jobs() {
       const response = await getAllJobs(apiPage);
       return response.data;
     },
-
     getNextPageParam: (lastPage, pages) => {
-
       if (lastPage.last) return undefined;
-
       if (pages.length >= MAX_PAGES) return undefined;
-
       return pages.length;
     },
-
   });
 
   const jobs = data?.pages.flatMap((p) => p.content) || [];
   const totalCount = data?.pages?.[0]?.totalElements || 0;
-
   const infiniteEndReached = data?.pages?.length >= MAX_PAGES;
 
-  // ===============================
-  // INFINITE SCROLL
-  // ===============================
+  // Infinite scroll
   const lastJobRef = useCallback(
     (node) => {
-
       if (isFetchingNextPage || !hasNextPage) return;
-
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
@@ -152,29 +130,15 @@ function Jobs() {
       });
 
       if (node) observer.current.observe(node);
-
     },
     [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
 
-  // ===============================
-  // PAGINATION HANDLERS
-  // ===============================
-  const goToNextGroup = () => {
-    setPageGroup((prev) => prev + 1);
-  };
+  const goToNextGroup = () => setPageGroup((prev) => prev + 1);
+  const goToPrevGroup = () => pageGroup > 0 && setPageGroup((prev) => prev - 1);
+  const goToPage = (page) => setPageGroup(page);
 
-  const goToPrevGroup = () => {
-    if (pageGroup > 0) setPageGroup((prev) => prev - 1);
-  };
-
-  const goToPage = (page) => {
-    setPageGroup(page);
-  };
-
-  // ===============================
-  // POPULAR JOB CATEGORIES
-  // ===============================
+  // categories
   const { data: categoriesData } = useQuery({
     queryKey: ["topCategories"],
     queryFn: async () => {
@@ -189,58 +153,55 @@ function Jobs() {
   const titleText = isSearchMode
     ? "Search Results"
     : type
-    ? `${type.toUpperCase()} Jobs`
-    : "All Jobs";
+      ? `${type.toUpperCase()} Jobs`
+      : "All Jobs";
 
-  // ===============================
-  // FILTER HANDLER
-  // ===============================
   const handleFilterChange = (filters) => {
-
     const params = new URLSearchParams(searchParams);
-
     Object.keys(filters).forEach((key) => {
       if (filters[key]) params.set(key, filters[key]);
       else params.delete(key);
     });
-
     navigate(`/jobs?${params.toString()}`);
-
   };
 
   return (
-    <div className="bg-gray-15 0 min-h-screen">
+    <div className="lwd-page min-h-screen">
 
+      {/* SEARCH */}
       <div className="mt-8 px-5 max-w-6xl mx-auto">
-        <JobSearchBar />
+        <div className="lwd-card p-4">
+          <JobSearchBar />
+        </div>
       </div>
 
+      {/* POPULAR */}
       {!isSearchMode && !type && categoriesData && (
         <div className="mt-6 px-5 max-w-7xl mx-auto">
-          <PopularJobs
-            title="Popular Job Categories"
-            categories={categoriesData}
-          />
+          <div className="lwd-card p-4">
+            <PopularJobs
+              title="Popular Job Categories"
+              categories={categoriesData}
+            />
+          </div>
         </div>
       )}
 
+      {/* MAIN */}
       <div
-        className={`mt-4 px-5 max-w-6xl mx-auto grid grid-cols-1 ${
-          showFilters ? "md:grid-cols-4" : "md:grid-cols-1"
-        } gap-6`}
+        className={`mt-4 px-5 max-w-6xl mx-auto grid ${showFilters ? "md:grid-cols-4" : "md:grid-cols-1"
+          } gap-6`}
       >
-
         {showFilters && (
-          <div>
+          <div className="lwd-card p-4">
             <JobFilters onFilterChange={handleFilterChange} />
           </div>
         )}
 
-        <div className={showFilters ? "md:col-span-3" : "md:col-span-1"}>
+        <div className={showFilters ? "md:col-span-3" : ""}>
+          <div className="lwd-card p-6">
 
-          <div className="bg-white p-6 rounded-xl shadow-md">
-
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="lwd-title mb-6">
               {titleText} ({totalCount})
             </h2>
 
@@ -251,9 +212,7 @@ function Jobs() {
             )}
 
             <div className="space-y-6">
-
               {jobs.map((job, index) => {
-
                 if (index === jobs.length - 1) {
                   return (
                     <motion.div
@@ -278,61 +237,56 @@ function Jobs() {
                     <JobCard job={job} />
                   </motion.div>
                 );
-
               })}
 
               {isLoading &&
                 Array.from({ length: 6 }).map((_, i) => (
                   <JobSkeleton key={i} />
                 ))}
-
             </div>
 
             {isFetchingNextPage && <Loader />}
 
             {!hasNextPage && !isLoading && (
-              <p className="text-center mt-6 text-gray-500">
+              <p className="lwd-text text-center mt-6">
                 No more jobs
               </p>
             )}
 
+            {/* PAGINATION */}
             {infiniteEndReached && (
-              <div className="flex justify-center items-center gap-3 mt-8">
+              <div className="flex justify-center gap-3 mt-8">
 
                 <button
                   onClick={goToPrevGroup}
                   disabled={pageGroup === 0}
-                  className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                  className="lwd-btn-secondary disabled:opacity-50"
                 >
                   Previous
                 </button>
 
                 {[...Array(MAX_PAGES)].map((_, i) => {
-
                   const pageNumber = pageGroup * MAX_PAGES + i + 1;
-
                   return (
                     <button
                       key={i}
                       onClick={() => goToPage(pageGroup + i)}
-                      className="px-3 py-2 rounded bg-gray-200"
+                      className="lwd-btn-secondary px-3"
                     >
                       {pageNumber}
                     </button>
                   );
-
                 })}
 
                 <button
                   onClick={goToNextGroup}
-                  className="px-4 py-2 bg-gray-200 rounded"
+                  className="lwd-btn-primary"
                 >
                   Next
                 </button>
 
               </div>
             )}
-
           </div>
         </div>
       </div>

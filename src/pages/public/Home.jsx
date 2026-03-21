@@ -31,9 +31,9 @@ function Home() {
   }, []);
 
   return (
-    <div className="font-sans">
+    <div className="lwd-page font-sans">
 
- 
+      {/* HERO SECTION */}
       <section
         className="relative h-[500px] bg-cover bg-center flex items-center justify-center text-center"
         style={{
@@ -41,10 +41,9 @@ function Home() {
             "url('https://img.freepik.com/free-vector/futuristic-background-design_23-2148503793.jpg')",
         }}
       >
-        
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/50"></div>
 
-        <div className="relative z-10 text-white px-6 max-w-3xl">
+        <div className="relative z-10 px-6 max-w-3xl text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Welcome to LWD Portal
           </h1>
@@ -58,7 +57,7 @@ function Home() {
           ) : (
             <button
               onClick={() => navigate("/register")}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium transition duration-300"
+              className="lwd-btn-primary"
             >
               Create Profile
             </button>
@@ -66,30 +65,36 @@ function Home() {
         </div>
       </section>
 
-      <div className="mt-8">
-        <JobSearchBlock />
+      {/* SEARCH */}
+      <div className="mt-8 px-5">
+        <div className="lwd-card p-4">
+          <JobSearchBlock />
+        </div>
       </div>
 
-    
-      <div className="mt-10">
-        <PopularJobs title="Popular Job Categories" categories={categories} />
+      {/* POPULAR JOBS */}
+      <div className="mt-10 px-5">
+        <div className="lwd-card p-4">
+          <h2 className="lwd-title mb-4">Popular Job Categories</h2>
+          <PopularJobs title="" categories={categories} />
+        </div>
       </div>
 
-      
-      <section className="bg-teal-100 py-12 px-5 text-center mt-10">
-        <h2 className="text-2xl font-semibold mb-8">Why Choose LWD?</h2>
+      {/* WHY CHOOSE */}
+      <section className="py-12 px-5 text-center mt-10 lwd-card mx-5">
+        <h2 className="lwd-title mb-8">Why Choose LWD?</h2>
 
         <div className="flex justify-center gap-10 flex-wrap">
-          <div className="text-base font-medium">✔ Verified Jobs</div>
-          <div className="text-base font-medium">✔ Trusted Companies</div>
-          <div className="text-base font-medium">✔ Career Guidance</div>
-          <div className="text-base font-medium">✔ Free Job Alerts</div>
+          <div className="lwd-text font-medium">✔ Verified Jobs</div>
+          <div className="lwd-text font-medium">✔ Trusted Companies</div>
+          <div className="lwd-text font-medium">✔ Career Guidance</div>
+          <div className="lwd-text font-medium">✔ Free Job Alerts</div>
         </div>
       </section>
 
-    
-      <section className="py-12 px-5 text-center bg-gray-50">
-        <h2 className="text-2xl font-semibold mb-8">Top Companies Hiring</h2>
+      {/* TOP COMPANIES */}
+      <section className="py-12 px-5 text-center mt-10">
+        <h2 className="lwd-title mb-8">Top Companies Hiring</h2>
 
         <div className="flex justify-center gap-6 flex-wrap">
           {[
@@ -103,15 +108,13 @@ function Home() {
           ].map((company, index) => (
             <div
               key={index}
-              className="bg-white shadow-md border border-gray-200 px-8 py-4 rounded-lg font-semibold hover:shadow-xl transition duration-300"
+              className="lwd-card px-8 py-4 font-semibold hover:shadow-xl transition"
             >
               {company}
             </div>
           ))}
         </div>
       </section>
-
-     
 
     </div>
   );
