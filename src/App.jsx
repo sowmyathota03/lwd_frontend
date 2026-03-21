@@ -53,7 +53,6 @@ import JobAnalytics from "./components/jobs/JobAnalytics";
 
 import JobApplicationList from "./components/jobApplications/JobApplicationList";
 
-
 import RecruiterAdminDashboard from "./pages/recruiter-admin/RecruiterAdminDashboard";
 import RecruiterAdminHome from "./components/recruiter-admin/RecruiterAdminHome";
 import RecruiterList from "./components/recruiter-admin/RecruiterList";
@@ -64,21 +63,24 @@ import RecruiterHome from "./components/recruiter/RecruiterHome";
 import RecruiterCompanyRequest from "./components/recruiter/RecruiterCompanyRequest";
 
 import RecruiterJobSeekerSearch from "./components/Searching/JobSeekerSearch/RecruiterJobSeekerSearch";
-import ToggleDarkMode from "./components/settings/common/ToggleDarkMode"
+import ToggleDarkMode from "./components/settings/common/ToggleDarkMode";
 import Settings from "./components/settings/Settings";
+import AdminPlansPage from "./pages/admin/AdminPlansPage";
+import AdminPlanFeaturesPage from "./pages/admin/AdminPlanFeaturesPage";
+import RecruiterPlans from "./pages/pricing/RecruiterPlans";
+import CandidatePlans from "./pages/pricing/CandidatePlans";
+import AdminManageFeatures from "./pages/admin/ManagePricingFeaturesPage";
 
 function App() {
+  function ScrollToTop() {
+    const { pathname } = useLocation();
 
-  
-function ScrollToTop() {
-  const { pathname } = useLocation();
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [pathname]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-}
+    return null;
+  }
 
   return (
     <>
@@ -86,38 +88,26 @@ function ScrollToTop() {
       <NavBar />
 
       <Routes>
-
         <Route path="/" element={<Home />} />
 
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-      
 
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/jobs/:type" element={<Jobs />} />
         <Route path="/job/:jobId" element={<JobDetails />} />
         <Route path="/apply/:jobId" element={<ApplyJob />} />
-      
+
         <Route path="/managejob/updatejob/:id" element={<EditJob />} />
 
         <Route path="/companies" element={<Companies />} />
         <Route path="/career" element={<Career />} />
 
-        <Route path="/profile" element={<Profile key={location.pathname}  />} />
-        <Route path="/profile/:userId" element={<Profile key={location.pathname}  />} />
-
-
-      <Route path="/recruiter-admin" element={<RecruiterAdminDashboard />} >
-        <Route index element={ <RecruiterAdminHome /> } />
-        <Route path="/recruiter-admin/company-profile" element={<CompanyProfilePage />} />
-        <Route path="/recruiter-admin/manage-recruiter" element={<RecruiterList />} />
-        {/* <Route path="/recruiter-admin/managejob" element={<ManageJobs />} /> */}
-        <Route path="/recruiter-admin/managejob" element={<ManageJobSearch />} />
-        <Route path="/recruiter-admin/managejob/:jobId/analytics" element={<JobAnalytics />} />
-        <Route path="/recruiter-admin/createjob" element={<CreateJob />}  />
-        <Route path="/recruiter-admin/applications" element={<JobApplicationList />} />
-        <Route path="/recruiter-admin/job-seekers" element={<RecruiterJobSeekerSearch />} />
-      </Route>
+        <Route path="/profile" element={<Profile key={location.pathname} />} />
+        <Route
+          path="/profile/:userId"
+          element={<Profile key={location.pathname} />}
+        />
 
         <Route path="/resume-upload" element={<ResumeUpload />} />
         <Route path="/job-alert" element={<JobAlert />} />
@@ -138,11 +128,13 @@ function ScrollToTop() {
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
-        <Route path="/pricing" element={<Pricing />} />
         <Route path="/suggestions" element={<Suggestions />} />
 
         <Route path="/jobs/updatejob/:id" element={<EditJob />} />
         <Route path="/toggle-button" element={<ToggleDarkMode />} />
+
+        <Route path="/plans/candidate" element={<CandidatePlans />} />
+        <Route path="/plans/recruiter" element={<RecruiterPlans />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<AdminDashboard />}>
@@ -154,6 +146,12 @@ function ScrollToTop() {
           <Route path="managejob/:jobId/analytics" element={<JobAnalytics />} />
           <Route path="applications" element={<JobApplicationList />} />
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
+          <Route path="pricing" element={<AdminPlansPage />} />
+          <Route path="plans/features" element={<AdminManageFeatures />} />
+          <Route
+            path="plans/:planId/features"
+            element={<AdminPlanFeaturesPage />}
+          />
         </Route>
 
         {/* RECRUITER ADMIN */}
@@ -180,8 +178,8 @@ function ScrollToTop() {
           <Route path="company-request" element={<RecruiterCompanyRequest />} />
         </Route>
         <Route path="/settings" element={<Settings />} />
-      </Routes>      
-      
+      </Routes>
+
       <Footer />
     </>
   );

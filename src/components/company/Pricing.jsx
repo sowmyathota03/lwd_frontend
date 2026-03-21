@@ -1,157 +1,90 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Pricing = () => {
-  const [role, setRole] = useState("RECRUITER");
   const [plans, setPlans] = useState([]);
 
   useEffect(() => {
-    if (role === "RECRUITER") {
-      setPlans([
-        {
-          id: 1,
-          name: "Basic",
-          price: 999,
-          duration: "30 Days",
-          limit: "Post up to 5 Jobs",
-          features: [
-            "Standard Job Listing",
-            "Basic Support",
-            "Manage Applications",
-          ],
-        },
-        {
-          id: 2,
-          name: "Premium",
-          price: 1999,
-          duration: "30 Days",
-          limit: "Unlimited Job Posting",
-          popular: true,
-          features: [
-            "Featured Job Listing",
-            "Priority Support",
-            "Access Candidate Database",
-            "Unlimited Job Posts",
-          ],
-        },
-      ]);
-    } else {
-      setPlans([
-        {
-          id: 3,
-          name: "Free",
-          price: 0,
-          duration: "30 Days",
-          limit: "Apply to 10 Jobs",
-          features: [
-            "Basic Profile Visibility",
-            "Standard Resume Upload",
-            "Limited Applications",
-          ],
-        },
-        {
-          id: 4,
-          name: "Premium",
-          price: 499,
-          duration: "30 Days",
-          limit: "Unlimited Applications",
-          popular: true,
-          features: [
-            "Profile Highlight",
-            "Unlimited Job Applications",
-            "Application Insights",
-            "Priority Visibility",
-          ],
-        },
-      ]);
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8080/api/plans/RECRUITER"
+      );
+      setPlans(res.data);
+    } catch (err) {
+      console.error(err);
     }
-  }, [role]);
+  };
 
   return (
-    <div className="bg-white py-20">
-      <div className="max-w-5xl mx-auto px-6">
+    <div className="min-h-screen bg-linear-to-r from-purple-200 via-pink-200 to-blue-200 py-16">
+      <div className="max-w-6xl mx-auto px-6">
 
         {/* Heading */}
         <div className="text-center">
-          <h2 className="text-3xl font-semibold text-gray-800">
-            Choose the Right Plan
-          </h2>
-          <p className="text-gray-500 mt-2">
-            Simple and transparent pricing for recruiters and job seekers
+          <h1 className="text-4xl font-bold text-gray-800">
+            Recruiter Pricing
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Find and hire top talent with our flexible plans.
           </p>
         </div>
 
-        {/* Role Toggle */}
-        <div className="flex justify-center mt-10">
-          <div className="border rounded-md flex">
-            <button
-              onClick={() => setRole("RECRUITER")}
-              className={`px-6 py-2 text-sm font-medium transition ${
-                role === "RECRUITER"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700"
-              }`}
-            >
-              Recruiter
-            </button>
-            <button
-              onClick={() => setRole("JOB_SEEKER")}
-              className={`px-6 py-2 text-sm font-medium transition ${
-                role === "JOB_SEEKER"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700"
-              }`}
-            >
-              Job Seeker
-            </button>
-          </div>
-        </div>
-
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mt-14">
+        {/* Cards */}
+        <div className="grid md:grid-cols-3 gap-8 mt-14">
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`border rounded-lg p-8 relative ${
-                plan.popular ? "border-blue-600" : "border-gray-200"
-              }`}
+              className={`relative bg-white rounded-2xl shadow-xl p-8 text-center transition hover:scale-105 ${plan.popular ? "border-4 border-yellow-400 scale-105" : ""
+                }`}
             >
+              {/* MOST POPULAR */}
               {plan.popular && (
-                <span className="absolute top-0 right-0 bg-blue-600 text-white text-xs px-3 py-1 rounded-bl-md">
-                  Recommended
-                </span>
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-white px-4 py-1 text-sm rounded-full shadow">
+                  ⭐ MOST POPULAR
+                </div>
               )}
 
-              <h3 className="text-xl font-semibold text-gray-800">
+              {/* Plan Name */}
+              <h2 className="text-2xl font-bold text-gray-800">
                 {plan.name}
-              </h3>
+              </h2>
 
-              <p className="mt-6 text-3xl font-bold text-blue-600">
+              {/* Price */}
+              <p className="text-4xl font-bold text-gray-900 mt-4">
                 ₹{plan.price}
-                <span className="text-base text-gray-500 font-normal">
+                <span className="text-sm text-gray-500">
                   {" "}
                   / {plan.duration}
                 </span>
               </p>
 
-              <p className="mt-4 text-gray-600 text-sm">{plan.limit}</p>
+              {/* Limit */}
+              <p className="text-gray-500 mt-2">{plan.limit}</p>
 
-              <ul className="mt-6 space-y-3 text-gray-600 text-sm">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex gap-2">
-                    <span className="text-blue-600">✓</span>
+              {/* Features */}
+              <ul className="mt-6 space-y-3 text-left">
+                {plan.features?.map((feature, i) => (
+                  <li key={i} className="flex gap-2 items-center">
+                    <span className="text-green-500">✔</span>
                     {feature}
                   </li>
                 ))}
               </ul>
 
+              {/* Button */}
               <button
-                className={`mt-8 w-full py-2 rounded text-sm font-medium transition ${
-                  plan.popular
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "border border-gray-300 text-gray-700 hover:bg-gray-100"
-                }`}
+                className={`mt-8 w-full py-2 rounded-lg font-semibold ${plan.popular
+                    ? "bg-yellow-400 text-white hover:bg-yellow-500"
+                    : "bg-gray-200 hover:bg-gray-300"
+                  }`}
               >
-                Select Plan
+                {plan.name === "Basic"
+                  ? "Get Started"
+                  : "Choose Plan"}
               </button>
             </div>
           ))}
