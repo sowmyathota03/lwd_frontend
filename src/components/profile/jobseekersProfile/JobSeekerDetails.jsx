@@ -18,11 +18,16 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
 
   return (
     <>
-      <Section title="Job Seeker Details" editable={editable} onEdit={() => setOpenForm(true)}>
+      <Section
+        title="Job Seeker Details"
+        editable={editable}
+        onEdit={() => setOpenForm(true)}
+      >
         {/* ================= NOTICE ================= */}
-        <h3 className="text-md font-semibold text-gray-700 mt-4 mb-2">
+        <h3 className="lwd-title mt-4 mb-2">
           Notice & Availability
         </h3>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Field label="Notice Status" value={profile?.noticeStatus} />
           <Field label="Notice Period (Days)" value={profile?.noticePeriod} />
@@ -39,9 +44,10 @@ const JobSeekerDetails = ({ profile, setProfile, editable }) => {
         </div>
 
         {/* ================= PROFESSIONAL ================= */}
-        <h3 className="text-md font-semibold text-gray-700 mt-6 mb-3 border-t-4 pt-4 border-gray-200">
+        <h3 className="lwd-title mt-6 mb-3 border-t pt-4 border-gray-200 dark:border-gray-700">
           Professional Information
         </h3>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Field label="Current Company" value={profile?.currentCompany} />
           <Field label="Total Experience" value={profile?.totalExperience} />

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerJobSeeker } from "../api/AuthApi";
 
-function Register() {
+function RegisterJobSeeker() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -14,6 +14,7 @@ function Register() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -26,12 +27,18 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
 
     try {
       const response = await registerJobSeeker(formData);
       console.log("Job Seeker Registered:", response);
-      alert("Job Seeker Registration Successful!");
-      navigate("/login");
+
+      setSuccessMessage("Registration successful! Redirecting to login...");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+
     } catch (error) {
       setError(error.response?.data || "Registration Failed");
     } finally {
@@ -40,13 +47,12 @@ function Register() {
   };
 
   return (
-    <div className="lwd-page flex justify-center items-center px-4">
-
-      <div className="lwd-card w-full max-w-md p-10">
+    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center px-4">
+      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
 
         {/* Title */}
-        <h2 className="lwd-title text-center text-2xl mb-6">
-          Register
+        <h2 className="text-2xl font-semibold text-center text-slate-900 mb-6">
+          Register as Job Seeker
         </h2>
 
         {/* Error */}
@@ -56,9 +62,16 @@ function Register() {
           </div>
         )}
 
+        {/* Success */}
+        {successMessage && (
+          <div className="bg-green-100 text-green-600 text-sm text-center p-3 rounded-lg mb-4">
+            {successMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
 
-          {/* Full Name */}
+          {/* Name */}
           <div className="mb-4">
             <input
               type="text"
@@ -66,7 +79,7 @@ function Register() {
               placeholder="Full Name"
               required
               onChange={handleChange}
-              className="lwd-input"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
@@ -78,7 +91,7 @@ function Register() {
               placeholder="Email"
               required
               onChange={handleChange}
-              className="lwd-input"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
@@ -90,11 +103,11 @@ function Register() {
               placeholder="Password"
               required
               onChange={handleChange}
-              className="lwd-input"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
-          {/* Contact Number */}
+          {/* Contact */}
           <div className="mb-4">
             <input
               type="text"
@@ -102,25 +115,25 @@ function Register() {
               placeholder="Contact Number"
               required
               onChange={handleChange}
-              className="lwd-input"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
           {/* Button */}
           <button
             type="submit"
-            disabled={loading}
-            className="w-full lwd-btn-primary disabled:opacity-70"
+            disabled={loading || successMessage}
+            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
           >
             {loading ? "Registering..." : "Register"}
           </button>
 
-          {/* Login Redirect */}
+          {/* Login Link */}
           <div className="mt-4 text-center text-sm">
-            <p className="lwd-text">
+            <p>
               Already have an account?{" "}
               <span
-                className="lwd-link"
+                className="text-sky-500 cursor-pointer hover:underline"
                 onClick={() => navigate("/login")}
               >
                 Login here
@@ -134,4 +147,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default RegisterJobSeeker;

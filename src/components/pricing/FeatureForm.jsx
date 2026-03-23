@@ -1,0 +1,159 @@
+// ./src/components/admin/FeatureForm.jsx
+import { useState, useEffect } from "react";
+import { createFeature, updateFeature } from "../../api/pricingFeatureApi";
+
+export default function FeatureForm({ feature, planId, onSuccess, onCancel }) {
+  /**
+   * feature: optional object { id, code, planType, description }
+   * planId: required for bulk association
+   * onSuccess: callback after create/update
+   * onCancel: callback to close modal
+   */
+
+  const [code, setCode] = useState(feature?.featureCode || "");
+  const [planType, setPlanType] = useState(feature?.planType || "");
+  const [description, setDescription] = useState(feature?.description || "");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (feature) {
+      setCode(feature.featureCode || "");
+      setPlanType(feature.planType || "");
+      setDescription(feature.description || "");
+    }
+  }, [feature]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!code || !planType) {
+      setError("Feature code and plan type are required.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = {
+        code: code.toUpperCase().replace(/\s+/g, "_"),
+        planType,
+        description,
+      };
+
+      if (feature?.id) {
+        // Update existing feature
+        await updateFeature(feature.id, payload);
+      } else {
+        // Create new feature
+        await createFeature(payload);
+      }
+
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "An error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-auto">
+      <div className="p-6 border-b border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800">
+          {feature ? "Update Feature" : "Create Feature"}
+        </h3>
+        <p className="text-sm text-gray-500 mt-1">
+          {feature ? "Edit feature details" : "Add a new pricing feature"}
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        {error && (
+          <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600">
+            {error}
+          </div>
+        )}
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Feature Code *
+          </label>
+          <input
+            type="text"
+            placeholder="e.g., APPLY_JOB"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            disabled={loading}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Will be automatically formatted as UPPERCASE with underscores
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Plan Type *
+          </label>
+          <select
+            value={planType}
+            onChange={(e) => setPlanType(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            disabled={loading}
+          >
+            <option value="">Select Plan Type</option>
+            <option value="JOB_SEEKER">JOB_SEEKER</option>
+            <option value="RECRUITER">RECRUITER</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Description (optional)
+          </label>
+          <input
+            type="text"
+            placeholder="What does this feature do?"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            disabled={loading}
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
+            disabled={loading}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Saving...
+              </span>
+            ) : feature ? (
+              "Update Feature"
+            ) : (
+              "Create Feature"
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

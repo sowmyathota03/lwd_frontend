@@ -1,12 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  getAllUsers,
+  searchUsers,
   blockUser,
   unblockUser,
   approveRecruiter,
 } from "../../api/AdminApi";
 import UserTable from "./UserTable";
 import ConfirmModal from "../common/ConfirmModal";
+
+const roleOptions = ["ADMIN", "RECRUITER_ADMIN", "RECRUITER", "JOB_SEEKER"];
+const statusOptions = ["PENDING", "ACTIVE", "SUSPENDED", "BLOCKED"];
+
+const formatLabel = (value) =>
+  value
+    ?.toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState([]);
@@ -16,17 +26,57 @@ export default function UserManagementPage() {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
 
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [role, setRole] = useState("");
+  const [status, setStatus] = useState("");
+  const [isActive, setIsActive] = useState("");
+  const [emailVerified, setEmailVerified] = useState("");
+  const [locked, setLocked] = useState("");
+
   const [confirmConfig, setConfirmConfig] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedKeyword, role, status, isActive, emailVerified, locked]);
+
+  const filters = useMemo(
+    () => ({
+      keyword: debouncedKeyword || null,
+      role: role || null,
+      status: status || null,
+      isActive: isActive === "" ? null : isActive === "true",
+      emailVerified: emailVerified === "" ? null : emailVerified === "true",
+      locked: locked === "" ? null : locked === "true",
+    }),
+    [debouncedKeyword, role, status, isActive, emailVerified, locked]
+  );
+
+  const hasActiveFilters = !!(
+    keyword.trim() ||
+    role ||
+    status ||
+    isActive !== "" ||
+    emailVerified !== "" ||
+    locked !== ""
+  );
 
   const loadUsers = async (pageNumber = page) => {
     try {
       setLoading(true);
-      const data = await getAllUsers(pageNumber, size);
+      const data = await searchUsers(filters, pageNumber, size);
 
-      setUsers(data.content);
-      setTotalPages(data.totalPages);
-      setPage(data.pageNumber);
+      setUsers(data.content || []);
+      setTotalPages(data.totalPages || 0);
+      setPage(data.pageNumber ?? data.page ?? pageNumber);
     } catch (err) {
       console.error("Failed to load users", err);
     } finally {
@@ -35,15 +85,15 @@ export default function UserManagementPage() {
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    loadUsers(page);
+  }, [page, filters]);
 
   const handleNext = () => {
-    if (page < totalPages - 1) loadUsers(page + 1);
+    if (page < totalPages - 1) setPage((prev) => prev + 1);
   };
 
   const handlePrev = () => {
-    if (page > 0) loadUsers(page - 1);
+    if (page > 0) setPage((prev) => prev - 1);
   };
 
   const openConfirm = (user, type) => {
@@ -53,6 +103,12 @@ export default function UserManagementPage() {
   const closeConfirm = () => {
     if (actionLoadingId) return;
     setConfirmConfig(null);
+  };
+
+  const updateUserStatus = (userId, newStatus) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, status: newStatus } : u))
+    );
   };
 
   const handleBlockUnblock = async (user) => {
@@ -66,7 +122,8 @@ export default function UserManagementPage() {
         await blockUser(user.id);
         updateUserStatus(user.id, "SUSPENDED");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Failed to update user status");
     } finally {
       setActionLoadingId(null);
@@ -79,18 +136,13 @@ export default function UserManagementPage() {
       setActionLoadingId(user.id);
       await approveRecruiter(user.id);
       updateUserStatus(user.id, "ACTIVE");
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Failed to approve user");
     } finally {
       setActionLoadingId(null);
       closeConfirm();
     }
-  };
-
-  const updateUserStatus = (userId, status) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, status } : u))
-    );
   };
 
   const confirmAction = async () => {
@@ -105,16 +157,82 @@ export default function UserManagementPage() {
     }
   };
 
-  return (
-    <div className="lwd-page min-h-screen p-6">
+  const clearFilters = () => {
+    setKeyword("");
+    setDebouncedKeyword("");
+    setRole("");
+    setStatus("");
+    setIsActive("");
+    setEmailVerified("");
+    setLocked("");
+    setPage(0);
+  };
 
-      {/* Heading */}
-      <h1 className="lwd-title text-2xl text-center mb-8">
+  return (
+    <div className="min-h-screen bg-blue-50 font-sans p-4 md:p-6">
+
+      <h1 className="text-2xl font-semibold text-blue-900 text-center mb-6">
         User Management
       </h1>
 
+      {/* Filters */}
+      <div className="bg-white rounded-xl shadow-lg p-4 mb-6 space-y-4">
+        <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+          <input
+            type="text"
+            placeholder="Search by name, email..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className="w-full lg:w-80 px-4 py-2 border border-gray-300 rounded-lg"
+          />
+
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 rounded-lg bg-red-50 text-red-600"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
+          <select value={role} onChange={(e) => setRole(e.target.value)} className="px-3 py-2 border rounded-lg">
+            <option value="">All Roles</option>
+            {roleOptions.map((item) => (
+              <option key={item} value={item}>{formatLabel(item)}</option>
+            ))}
+          </select>
+
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="px-3 py-2 border rounded-lg">
+            <option value="">All Status</option>
+            {statusOptions.map((item) => (
+              <option key={item} value={item}>{formatLabel(item)}</option>
+            ))}
+          </select>
+
+          <select value={isActive} onChange={(e) => setIsActive(e.target.value)} className="px-3 py-2 border rounded-lg">
+            <option value="">All Activity</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+
+          <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="px-3 py-2 border rounded-lg">
+            <option value="">Email Verification</option>
+            <option value="true">Verified</option>
+            <option value="false">Not Verified</option>
+          </select>
+
+          <select value={locked} onChange={(e) => setLocked(e.target.value)} className="px-3 py-2 border rounded-lg">
+            <option value="">Lock Status</option>
+            <option value="true">Locked</option>
+            <option value="false">Unlocked</option>
+          </select>
+        </div>
+      </div>
+
       {/* Table */}
-      <div className="lwd-card overflow-hidden">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
         <UserTable
           users={users}
           loading={loading}
@@ -125,30 +243,20 @@ export default function UserManagementPage() {
 
       {/* Pagination */}
       <div className="flex items-center justify-center gap-6 mt-6">
-
-        <button
-          onClick={handlePrev}
-          disabled={page === 0}
-          className="lwd-btn-secondary disabled:opacity-50"
-        >
+        <button onClick={handlePrev} disabled={page === 0} className="px-4 py-2 bg-gray-200 rounded">
           Previous
         </button>
 
-        <span className="lwd-text font-semibold">
+        <span className="font-semibold">
           Page {page + 1} of {totalPages}
         </span>
 
-        <button
-          onClick={handleNext}
-          disabled={page >= totalPages - 1}
-          className="lwd-btn-primary disabled:opacity-50"
-        >
+        <button onClick={handleNext} disabled={page >= totalPages - 1} className="px-4 py-2 bg-blue-500 text-white rounded">
           Next
         </button>
-
       </div>
 
-      {/* Confirm Modal */}
+      {/* Modal */}
       <ConfirmModal
         isOpen={!!confirmConfig}
         title={
@@ -168,18 +276,11 @@ export default function UserManagementPage() {
             } ${confirmConfig.user.name}?`
             : ""
         }
-        confirmText={
-          confirmConfig?.type === "block"
-            ? confirmConfig.user.status === "SUSPENDED"
-              ? "Yes, Unblock"
-              : "Yes, Block"
-            : "Yes, Approve"
-        }
+        confirmText="Confirm"
         onConfirm={confirmAction}
         onCancel={closeConfirm}
         loading={!!actionLoadingId}
       />
-
     </div>
   );
 }

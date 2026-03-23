@@ -2,8 +2,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  // baseURL: "https://lwd-backend-production.up.railway.app/api",
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://lwd-backend-production-85cd.up.railway.app/api",
+  // baseURL: "http://localhost:8080/api",
   // baseURL: "http://192.168.1.77:8080/api",
   headers: {
     "Content-Type": "application/json",

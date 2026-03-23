@@ -6,22 +6,17 @@ function Achievements({ achievements = [], editable, onSave }) {
   const [localAchievements, setLocalAchievements] = useState(() => achievements || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [editingIndex, setEditingIndex] = useState(null); // null | "new" | number
+  const [editingIndex, setEditingIndex] = useState(null);
 
-  // Sync with prop changes (safe check to avoid infinite loop)
   useEffect(() => {
     if (JSON.stringify(localAchievements) !== JSON.stringify(achievements)) {
       setLocalAchievements(achievements || []);
     }
   }, [achievements, localAchievements]);
 
-  const handleAdd = () => {
-    setEditingIndex("new");
-  };
+  const handleAdd = () => setEditingIndex("new");
 
-  const handleEdit = (index) => {
-    setEditingIndex(index);
-  };
+  const handleEdit = (index) => setEditingIndex(index);
 
   const handleSave = async (newAchievement) => {
     setLoading(true);
@@ -56,49 +51,45 @@ function Achievements({ achievements = [], editable, onSave }) {
       ? localAchievements[editingIndex]
       : "";
 
+  // ===== Loading State =====
   if (loading && localAchievements.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-gray-800">Achievements</h2>
-        <div className="space-y-3">
-          {[1, 2].map((i) => (
-            <div key={i} className="bg-gray-50 rounded-lg p-4 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4" />
-            </div>
-          ))}
-        </div>
+      <div className="lwd-card space-y-4">
+        <h2 className="lwd-title">Achievements</h2>
+
+        {[1, 2].map((i) => (
+          <div key={i} className="lwd-skeleton h-10 w-3/4" />
+        ))}
       </div>
     );
   }
 
+  // ===== Error State =====
   if (error) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">Achievements</h2>
-        <p className="text-sm text-red-600">{error}</p>
+      <div className="lwd-card">
+        <h2 className="lwd-title mb-2">Achievements</h2>
+        <p className="text-sm text-red-500">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5">
+    <div className="lwd-card space-y-5">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-gray-800">Achievements</h2>
+        <h2 className="lwd-title">Achievements</h2>
 
         {editable && (
-          <button
-            onClick={handleAdd}
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition"
-          >
+          <button onClick={handleAdd} className="lwd-btn-primary text-sm">
             Add
           </button>
         )}
       </div>
 
-      {/* Empty state */}
+      {/* Empty State */}
       {localAchievements.length === 0 && (
-        <div className="text-center py-6 text-gray-500 text-sm">
+        <div className="text-center py-6 lwd-text">
           {editable
             ? "No achievements added yet. Click 'Add' to get started."
             : "No achievements listed."}
@@ -110,18 +101,20 @@ function Achievements({ achievements = [], editable, onSave }) {
         {localAchievements.map((achievement, index) => (
           <div
             key={index}
-            className="group relative bg-gray-50 rounded-lg p-4 hover:shadow-md"
+            className="group relative lwd-card-hover bg-gray-50 dark:bg-slate-700 rounded-lg p-4"
           >
             {editable && (
               <button
                 onClick={() => handleEdit(index)}
-                className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600"
+                className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500"
               >
                 <Pencil size={18} />
               </button>
             )}
 
-            <p className="text-gray-700 pr-8">{achievement}</p>
+            <p className="text-gray-700 dark:text-gray-300 pr-8">
+              {achievement}
+            </p>
           </div>
         ))}
       </div>

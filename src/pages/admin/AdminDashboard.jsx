@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: "/admin/managejob", label: "Jobs", icon: "📄" },
   { to: "/admin/applications", label: "Applications", icon: "📑" },
   { to: "/admin/job-seekers", label: "Job Seekers", icon: "👤" },
+  { to: "/admin/pricing", label: "Pricing", icon: "💰" },
 ];
 
 export default function AdminDashboard() {

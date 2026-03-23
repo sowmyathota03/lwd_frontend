@@ -1,26 +1,19 @@
 import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
-import { getMyCertifications, getCertificationsByUserId } from "../../../api/CertificationApi";
+import {
+  getMyCertifications,
+  getCertificationsByUserId,
+} from "../../../api/CertificationApi";
 import CertificationForm from "./CertificationForm";
 
-/**
- * Certification component – displays a list of certifications.
- * Supports viewing own or other user's certifications, with add/edit for own profile.
- *
- * @param {Object} props
- * @param {string|number} [props.userId] - ID of the user whose certifications are being viewed
- * @param {boolean} props.editable - Whether the current user can edit (if own profile)
- */
 function Certification({ userId, editable }) {
   const [certifications, setCertifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [editingId, setEditingId] = useState(null); // null | "new" | cert.id
+  const [editingId, setEditingId] = useState(null);
 
-  // Determine if the current user can add/edit (own profile and editable)
   const canEdit = editable && !userId;
 
-  // Fetch certifications data
   useEffect(() => {
     const fetchCertifications = async () => {
       setLoading(true);
@@ -41,35 +34,38 @@ function Certification({ userId, editable }) {
     fetchCertifications();
   }, [userId]);
 
-  // Get certification data for editing
-  const certToEdit = editingId === "new" ? null : certifications.find(c => c.id === editingId);
+  const certToEdit =
+    editingId === "new"
+      ? null
+      : certifications.find((c) => c.id === editingId);
 
-  // Handle save from form (optimistic update)
   const handleSave = (savedCert) => {
     if (editingId === "new") {
       setCertifications([savedCert, ...certifications]);
     } else {
       setCertifications(
-        certifications.map(c => (c.id === savedCert.id ? savedCert : c))
+        certifications.map((c) =>
+          c.id === savedCert.id ? savedCert : c
+        )
       );
     }
     setEditingId(null);
   };
 
-  // Loading state with skeleton
+  // ================= LOADING =================
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+      <div className="lwd-card space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-800">Certifications</h2>
-          {canEdit && <div className="h-9 w-20 bg-gray-200 rounded animate-pulse" />}
+          <h2 className="lwd-title">Certifications</h2>
+          {canEdit && <div className="lwd-skeleton h-9 w-20" />}
         </div>
+
         <div className="space-y-3">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-gray-50 rounded-lg p-4 space-y-2 animate-pulse">
-              <div className="h-5 bg-gray-200 rounded w-1/3" />
-              <div className="h-4 bg-gray-200 rounded w-1/2" />
-              <div className="h-4 bg-gray-200 rounded w-1/4" />
+            <div key={i} className="lwd-skeleton p-4 space-y-2">
+              <div className="h-4 w-1/3 bg-gray-300 dark:bg-slate-700 rounded" />
+              <div className="h-4 w-1/2 bg-gray-300 dark:bg-slate-700 rounded" />
             </div>
           ))}
         </div>
@@ -77,25 +73,26 @@ function Certification({ userId, editable }) {
     );
   }
 
-  // Error state
+  // ================= ERROR =================
   if (error) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">Certifications</h2>
-        <p className="text-sm text-red-600">{error}</p>
+      <div className="lwd-card">
+        <h2 className="lwd-title mb-2">Certifications</h2>
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5">
-      {/* Header with add button */}
+    <div className="lwd-card space-y-5">
+      {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-gray-800">Certifications</h2>
+        <h2 className="lwd-title">Certifications</h2>
+
         {canEdit && (
           <button
             onClick={() => setEditingId("new")}
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            className="lwd-btn-primary flex items-center gap-1"
           >
             <svg
               className="h-4 w-4"
@@ -103,22 +100,17 @@ function Certification({ userId, editable }) {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
+              <path strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Add
           </button>
         )}
       </div>
 
-      {/* Empty state */}
+      {/* Empty */}
       {certifications.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500 text-sm">
+        <div className="text-center py-6">
+          <p className="lwd-text">
             {canEdit
               ? "No certifications added yet. Click 'Add' to get started."
               : "No certifications listed."}
@@ -126,19 +118,18 @@ function Certification({ userId, editable }) {
         </div>
       )}
 
-      {/* Certification list */}
+      {/* List */}
       <div className="space-y-4">
         {certifications.map((cert) => (
           <div
             key={cert.id}
-            className="group relative bg-gray-50 rounded-lg p-5 hover:shadow-md transition-shadow"
+            className="lwd-card lwd-card-hover relative bg-gray-50 dark:bg-slate-800"
           >
-            {/* Edit button (visible on hover) */}
+            {/* Edit */}
             {canEdit && (
               <button
                 onClick={() => setEditingId(cert.id)}
-                className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Edit certification"
+                className="absolute top-3 right-3 text-gray-400 hover:text-blue-600 opacity-0 group-hover:opacity-100"
               >
                 <Pencil size={18} />
               </button>
@@ -146,53 +137,51 @@ function Certification({ userId, editable }) {
 
             {/* Content */}
             <div className="space-y-2">
-              <h3 className="font-semibold text-gray-800 text-base pr-8">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 pr-8">
                 {cert.certificateName}
               </h3>
 
               {cert.issuingOrganization && (
-                <p className="text-gray-700 text-sm font-medium">
+                <p className="lwd-text font-medium">
                   {cert.issuingOrganization}
                 </p>
               )}
 
               {(cert.issueDate || cert.expiryDate) && (
-                <p className="text-gray-600 text-sm">
+                <p className="lwd-text">
                   {cert.issueDate} — {cert.expiryDate || "Present"}
                 </p>
               )}
 
               {cert.credentialId && (
-                <p className="text-gray-600 text-sm">
-                  <span className="font-medium">Credential ID:</span> {cert.credentialId}
+                <p className="lwd-text">
+                  <span className="font-medium">Credential ID:</span>{" "}
+                  {cert.credentialId}
                 </p>
               )}
 
               {cert.skillTag && (
-                <p className="text-gray-600 text-sm">
-                  <span className="font-medium">Skill:</span> {cert.skillTag}
+                <p className="lwd-text">
+                  <span className="font-medium">Skill:</span>{" "}
+                  {cert.skillTag}
                 </p>
               )}
 
               {cert.credentialUrl && (
-                <p className="text-sm">
-                  <a
-                    href={cert.credentialUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
-                  >
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                    Credential URL
-                  </a>
-                </p>
+                <a
+                  href={cert.credentialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="lwd-link flex items-center gap-1 text-sm"
+                >
+                  Credential URL
+                </a>
               )}
 
               {cert.certificateFile && (
-                <p className="text-gray-600 text-sm">
-                  <span className="font-medium">File:</span> {cert.certificateFile}
+                <p className="lwd-text">
+                  <span className="font-medium">File:</span>{" "}
+                  {cert.certificateFile}
                 </p>
               )}
             </div>
@@ -200,7 +189,7 @@ function Certification({ userId, editable }) {
         ))}
       </div>
 
-      {/* Modal Form */}
+      {/* Modal */}
       {editingId && (
         <CertificationForm
           certification={certToEdit}

@@ -8,25 +8,27 @@ export const getAllUsers = (page = 0, size = 20) =>
     })
     .then((res) => res.data);
 
+export const searchUsers = async (filters = {}, page = 0, size = 20) => {
+  const response = await axiosInstance.post("/admin/users/search", filters, {
+    params: { page, size },
+  });
+  console.log("Search response:", response.data);
+  return response.data;
+};
+
 export const blockUser = (id) =>
   axiosInstance.patch(`/admin/users/${id}/block`).then((res) => res.data);
 
 export const unblockUser = (id) =>
   axiosInstance.patch(`/admin/users/${id}/unblock`).then((res) => res.data);
 
-
 // ================= RECRUITERS =================
-export const getRecruitersByCompanyId = (
-  companyId,
-  page = 0,
-  size = 20
-) =>
+export const getRecruitersByCompanyId = (companyId, page = 0, size = 20) =>
   axiosInstance
     .get(`/admin/company/${companyId}/recruiters`, {
       params: { page, size },
     })
     .then((res) => res.data);
-
 
 export const approveRecruiter = (id) =>
   axiosInstance
@@ -40,7 +42,6 @@ export const blockRecruiter = (id, block) =>
     })
     .then((res) => res.data);
 
-
 /// ================= COMPANIES =================
 export const getAllCompanies = (page = 0, size = 20) =>
   axiosInstance
@@ -50,15 +51,10 @@ export const getAllCompanies = (page = 0, size = 20) =>
     .then((res) => res.data);
 
 export const blockCompany = (id) =>
-  axiosInstance
-    .patch(`/admin/companies/${id}/block`)
-    .then((res) => res.data);
+  axiosInstance.patch(`/admin/companies/${id}/block`).then((res) => res.data);
 
 export const unblockCompany = (id) =>
-  axiosInstance
-    .patch(`/admin/companies/${id}/unblock`)
-    .then((res) => res.data);
-
+  axiosInstance.patch(`/admin/companies/${id}/unblock`).then((res) => res.data);
 
 // ================= JOBS =================
 export const getAllJobs = (page = 0, size = 20) =>
@@ -70,4 +66,3 @@ export const getAllJobs = (page = 0, size = 20) =>
 
 export const closeJob = (id) =>
   axiosInstance.patch(`/admin/jobs/${id}/close`).then((res) => res.data);
-
