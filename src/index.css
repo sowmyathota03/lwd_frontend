@@ -26,6 +26,10 @@
     @apply bg-white rounded-lg shadow-md border border-gray-200 dark:bg-slate-800 dark:border-gray-700;
   }
 
+  .lwd-card-hover {
+    @apply hover:shadow-lg hover:-translate-y-1 transition-all duration-300;
+  }
+
   /* ===== Titles ===== */
   .lwd-title {
     @apply text-slate-800 font-semibold text-lg dark:text-slate-100;
@@ -34,6 +38,16 @@
   /* ===== Text ===== */
   .lwd-text {
     @apply text-gray-600 text-sm dark:text-gray-300;
+  }
+
+  /* ===== Labels ===== */
+  .lwd-label {
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+  }
+
+  /* ===== Icons (FIX for visibility issue) ===== */
+  .lwd-icon {
+    @apply h-5 w-5 text-gray-400 dark:text-gray-400;
   }
 
   /* ===== Buttons ===== */
@@ -47,16 +61,25 @@
 
   /* ===== Input Fields ===== */
   .lwd-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-800 outline-none dark:bg-slate-800 dark:border-gray-600 dark:text-white;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-800 outline-none text-sm placeholder-gray-400 dark:bg-slate-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500;
   }
 
   .lwd-input:focus {
-    @apply border-blue-500 ring-2 ring-blue-200;
+    @apply border-blue-500 ring-2 ring-blue-200 dark:ring-blue-900;
   }
 
-  /* ===== Labels ===== */
-  .lwd-label {
-    @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+  /* ===== Small Input (dropdowns) ===== */
+  .lwd-input-sm {
+    @apply px-2 py-1 text-xs rounded-md border border-gray-300 bg-white text-gray-800 outline-none dark:bg-slate-800 dark:border-gray-600 dark:text-white;
+  }
+
+  .lwd-input-sm:focus {
+    @apply ring-2 ring-blue-200 border-blue-500 dark:ring-blue-900;
+  }
+
+  /* ===== Checkbox (NEW) ===== */
+  .lwd-checkbox {
+    @apply h-4 w-4 text-blue-600 border-gray-300 rounded dark:border-gray-600 dark:bg-slate-800 focus:ring-blue-500;
   }
 
   /* ===== Navbar ===== */
@@ -90,6 +113,16 @@
   /* ===== Badge ===== */
   .lwd-badge {
     @apply px-2 py-1 text-xs rounded-md bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300;
+  }
+
+  /* ===== Section Header (NEW - useful for forms) ===== */
+  .lwd-section-header {
+    @apply px-6 py-4 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-800 dark:text-gray-200;
+  }
+
+  /* ===== Skeleton ===== */
+  .lwd-skeleton {
+    @apply bg-gray-200 rounded-lg animate-pulse dark:bg-slate-700;
   }
 
   /* ===== Loader ===== */

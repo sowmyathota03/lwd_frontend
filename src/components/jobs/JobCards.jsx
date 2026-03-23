@@ -36,68 +36,58 @@ function JobCards({ job, recentlyOpened = false }) {
   return (
     <article
       onClick={handleClick}
-      className="group bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col sm:flex-row justify-between items-start gap-4 w-full"
+      className="lwd-card lwd-card-hover p-5 cursor-pointer flex flex-col sm:flex-row justify-between gap-4"
     >
-      {/* LEFT SECTION */}
-      <div className="flex-1 w-full space-y-3">
-        <h3 className="text-xl font-semibold text-gray-900 line-clamp-1">
+      {/* LEFT */}
+      <div className="flex-1 space-y-3">
+        <h3 className="text-xl font-semibold">
           {job.title || "Untitled Job"}
         </h3>
 
         <div className="flex gap-2">
           {job.company?.companyName && (
-            <p className="text-sm text-gray-600 line-clamp-1">
-              {job.company?.companyName}
-            </p>
+            <p className="lwd-text">{job.company.companyName}</p>
           )}
 
           {job.location && (
-            <p className="text-sm text-gray-600 line-clamp-1">
-              {job.location}
-            </p>
+            <p className="lwd-text">{job.location}</p>
           )}
         </div>
 
         {/* DETAILS */}
-        <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+        <div className="flex flex-wrap gap-2 text-sm">
           {job.minExperience != null && job.maxExperience != null && (
-            <span className="bg-gray-100 px-2 py-1 rounded-md">
+            <span className="lwd-badge">
               {job.minExperience}–{job.maxExperience} yrs
             </span>
           )}
 
           {job.minSalary && job.maxSalary && (
-            <span className="inline-flex items-center px-3 py-1.5 text-sm bg-gray-100 text-gray-800 rounded-full">
+            <span className="lwd-badge">
               ₹{job.minSalary}L - ₹{job.maxSalary}L
             </span>
           )}
 
           {job.jobType && (
-            <span className="bg-gray-100 px-2 py-1 rounded-md">
-              {job.jobType}
-            </span>
+            <span className="lwd-badge">{job.jobType}</span>
           )}
 
           {job.workplaceType && (
-            <span className="bg-gray-100 px-2 py-1 rounded-md">
-              {job.workplaceType}
-            </span>
+            <span className="lwd-badge">{job.workplaceType}</span>
           )}
 
-          {job.noticePreference != null && (
-            <span className="bg-gray-100 px-2 py-1 rounded-md">
-              {job.noticePreference}
+          {job.noticePreference && (
+            <span className="lwd-badge">
+              {job.noticePreference.replaceAll("_", " ")}
             </span>
           )}
 
           {job.roleCategory && (
-            <span className="bg-gray-100 px-2 py-1 rounded-md">
-              {job.roleCategory}
-            </span>
+            <span className="lwd-badge">{job.roleCategory}</span>
           )}
 
           {job.maxNoticePeriod && (
-            <span className="inline-flex items-center px-3 py-1.5 text-sm bg-gray-100 text-gray-800 rounded-full">
+            <span className="lwd-badge">
               Max Notice: {formatNoticePeriod(job.maxNoticePeriod)}
             </span>
           )}
@@ -105,7 +95,7 @@ function JobCards({ job, recentlyOpened = false }) {
 
         {/* DESCRIPTION */}
         {job.description && (
-          <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
+          <p className="lwd-text line-clamp-2 leading-relaxed">
             {job.description}
           </p>
         )}
@@ -113,16 +103,13 @@ function JobCards({ job, recentlyOpened = false }) {
         {/* SKILLS */}
         {skills.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               Skills
             </p>
 
             <div className="flex flex-wrap gap-1.5">
               {skills.slice(0, 6).map((skill, index) => (
-                <span
-                  key={index}
-                  className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
-                >
+                <span key={index} className="lwd-badge text-xs">
                   {skill}
                 </span>
               ))}
@@ -137,40 +124,43 @@ function JobCards({ job, recentlyOpened = false }) {
         )}
       </div>
 
-      {/* RIGHT SECTION */}
-      <div className="flex flex-col justify-between items-end h-full w-full sm:w-auto">
-        
-        {/* TOP ACTIONS */}
-        <div className="flex flex-col items-end gap-3">
+      {/* RIGHT */}
+      <div className="flex flex-col justify-between items-end gap-3 sm:w-auto w-full">
+
+        {/* TOP */}
+        <div className="flex flex-col items-end gap-2">
           {recentlyOpened && (
-            <span className="text-xs text-blue-600 font-medium bg-blue-50 px-3 py-1 rounded-full">
+            <span className="lwd-badge bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
               Recently Opened
             </span>
           )}
 
           <button
             onClick={handleSaveJob}
-            aria-label="Save job"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md 
+            text-gray-600 hover:text-blue-600 hover:bg-blue-50 
+            dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-slate-700 transition"
           >
             <Bookmark size={16} />
-            <span>Save</span>
+            Save
           </button>
 
           {job.totalApplications != null && (
-            <span className="inline-flex items-center px-3 py-1.5 text-sm text-gray-800">
+            <span className="text-sm text-gray-700 dark:text-gray-300">
               {job.totalApplications} applications
             </span>
           )}
         </div>
 
-        {/* BOTTOM RIGHT DATE */}
+        {/* DATE */}
         {job.createdAt && (
-          <time className="text-xs text-gray-400 mt-6" dateTime={job.createdAt}>
+          <time
+            className="text-xs text-gray-400"
+            dateTime={job.createdAt}
+          >
             Posted {timeAgo(job.createdAt)}
           </time>
         )}
-
       </div>
     </article>
   );

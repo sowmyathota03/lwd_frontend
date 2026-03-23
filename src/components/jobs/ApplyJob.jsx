@@ -22,15 +22,13 @@ function ApplyJob() {
 
   const [loading, setLoading] = useState(false);
 
-  // ================= FETCH JOB DETAILS =================
+  // FETCH JOB
   useEffect(() => {
     const fetchJob = async () => {
       try {
         const response = await getJobById(jobId);
         setJob(response.data);
-        console.log("Fetched job details:", response.data);
       } catch (err) {
-        console.error(err);
         alert("Failed to load job details.");
       } finally {
         setLoadingJob(false);
@@ -40,21 +38,16 @@ function ApplyJob() {
     fetchJob();
   }, [jobId]);
 
-  // ================= HANDLE INPUT =================
+  // INPUT
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ================= APPLY JOB =================
+  // APPLY
   const handleApply = async () => {
     if (!job) return;
 
-    // Validation only for portal jobs
     if (job.applicationSource === "PORTAL") {
       if (!form.fullName || !form.email || !form.phone) {
         alert("Full Name, Email, and Phone are required.");
@@ -65,91 +58,72 @@ function ApplyJob() {
     setLoading(true);
 
     try {
-      const payload = {
-        jobId,
-        ...form,
-      };
-
+      const payload = { jobId, ...form };
       const response = await applyForJob(payload);
-
       const result = response.data;
 
-      // ================= EXTERNAL JOB =================
       if (job.applicationSource === "EXTERNAL") {
-
-        alert("Redirecting to company website...");
-
+        alert("Redirecting...");
         window.open(result, "_blank");
-
         navigate(`/jobs/${jobId}`);
-
         return;
       }
 
-      // ================= PORTAL JOB =================
       alert(result || "Application submitted successfully");
-
       navigate(`/jobs/${jobId}`);
-
     } catch (err) {
-
-      console.error(err);
-
       const message =
         err?.response?.data?.message ||
         "Please complete your profile before applying.";
-
       alert(message);
-
     } finally {
       setLoading(false);
     }
   };
 
-  // ================= LOADING =================
   if (loadingJob) return <Loader />;
 
   if (!job) {
     return (
-      <p className="text-center mt-10 text-gray-600">
+      <p className="text-center mt-10 lwd-text">
         Job not found.
       </p>
     );
   }
 
   return (
-    <div className="flex justify-center items-center px-4 py-16 min-h-[80vh] bg-linear-to-br from-slate-100 to-blue-200">
+    <div className="lwd-page flex justify-center items-center px-4 py-16 min-h-[80vh]">
 
-      <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-xl">
+      <div className="w-full max-w-lg lwd-card p-8 rounded-2xl">
 
-        {/* BACK BUTTON */}
+        {/* BACK */}
         <button
           onClick={() => navigate(-1)}
-          className="text-sm text-blue-600 hover:underline mb-4"
+          className="lwd-link mb-4 text-sm"
         >
           ← Back to Job Details
         </button>
 
         {/* JOB INFO */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">
+          <h2 className="text-2xl font-semibold lwd-title">
             {job.title}
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="lwd-text mt-1">
             {job.company?.companyName || "Company"} • {job.location}
           </p>
         </div>
 
-        {/* EXTERNAL JOB NOTICE */}
+        {/* EXTERNAL NOTICE */}
         {job.applicationSource === "EXTERNAL" && (
-          <p className="text-center text-sm text-orange-600 mb-6">
-            Your profile details will be used automatically and you will be redirected to the company website.
+          <p className="text-center text-sm text-orange-600 dark:text-orange-400 mb-6">
+            You will be redirected to the company website.
           </p>
         )}
 
-        {/* ================= PORTAL APPLICATION FORM ================= */}
-       {(job?.applicationSource === "PORTAL" || !job?.applicationSource) && (
+        {/* FORM */}
+        {(job?.applicationSource === "PORTAL" || !job?.applicationSource) && (
           <div className="flex flex-col gap-4">
 
             <input
@@ -158,7 +132,7 @@ function ApplyJob() {
               placeholder="Full Name"
               value={form.fullName}
               onChange={handleChange}
-              className="px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="lwd-input"
             />
 
             <input
@@ -167,7 +141,7 @@ function ApplyJob() {
               placeholder="Email"
               value={form.email}
               onChange={handleChange}
-              className="px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="lwd-input"
             />
 
             <input
@@ -176,7 +150,7 @@ function ApplyJob() {
               placeholder="Phone"
               value={form.phone}
               onChange={handleChange}
-              className="px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="lwd-input"
             />
 
             <input
@@ -185,7 +159,7 @@ function ApplyJob() {
               placeholder="Skills (comma separated)"
               value={form.skills}
               onChange={handleChange}
-              className="px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="lwd-input"
             />
 
             <textarea
@@ -193,7 +167,7 @@ function ApplyJob() {
               placeholder="Cover Letter"
               value={form.coverLetter}
               onChange={handleChange}
-              className="px-4 py-3 border border-gray-300 rounded-lg text-sm min-h-25 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="lwd-input min-h-24 resize-y"
             />
 
             <input
@@ -202,27 +176,26 @@ function ApplyJob() {
               placeholder="Resume URL"
               value={form.resumeUrl}
               onChange={handleChange}
-              className="px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="lwd-input"
             />
 
           </div>
         )}
 
-        {/* ================= APPLY BUTTON ================= */}
+        {/* BUTTON */}
         <button
           onClick={handleApply}
           disabled={loading}
-          className="mt-6 py-3 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition disabled:bg-blue-300 w-full"
+          className="mt-6 w-full lwd-btn-primary disabled:opacity-50"
         >
           {loading
             ? "Submitting..."
             : job.applicationSource === "EXTERNAL"
-            ? "Apply on Company Website"
-            : "Submit Application"}
+              ? "Apply on Company Website"
+              : "Submit Application"}
         </button>
 
       </div>
-
     </div>
   );
 }

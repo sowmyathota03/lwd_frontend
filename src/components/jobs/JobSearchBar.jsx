@@ -50,9 +50,9 @@ function JobSearchBar() {
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-full px-5 py-3 max-w-5xl mx-auto flex items-center gap-3">
+    <div className="lwd-card flex items-center gap-3 rounded-full p-3 max-w-5xl mx-auto shadow-md">
 
-      {/* SKILLS */}
+      {/* SKILLS / KEYWORD */}
       <div className="relative flex-1">
         <input
           type="text"
@@ -60,16 +60,15 @@ function JobSearchBar() {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full px-3 py-2 outline-none"
+          className="lwd-input rounded-full pr-3"
         />
-
         {suggestions.length > 0 && (
-          <div className="absolute top-12 w-full bg-white shadow-lg rounded-lg z-50">
+          <div className="absolute top-12 w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
             {suggestions.map((s, i) => (
               <div
                 key={i}
                 onClick={() => selectSuggestion(s)}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                className="px-4 py-2 text-sm lwd-link hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer"
               >
                 {s}
               </div>
@@ -78,7 +77,7 @@ function JobSearchBar() {
         )}
       </div>
 
-      <div className="w-px h-6 bg-gray-300"></div>
+      <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
 
       {/* LOCATION */}
       <input
@@ -87,10 +86,10 @@ function JobSearchBar() {
         value={location}
         onChange={(e) => setLocation(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="px-3 py-2 outline-none w-40"
+        className="lwd-input rounded-full w-40"
       />
 
-      <div className="w-px h-6 bg-gray-300"></div>
+      <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
 
       {/* COMPANY */}
       <input
@@ -99,13 +98,13 @@ function JobSearchBar() {
         value={companyName}
         onChange={(e) => setCompanyName(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="px-3 py-2 outline-none w-40"
+        className="lwd-input rounded-full w-40"
       />
 
       {/* SEARCH BUTTON */}
       <button
         onClick={handleSearch}
-        className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700"
+        className="lwd-btn-primary rounded-full"
       >
         Search
       </button>

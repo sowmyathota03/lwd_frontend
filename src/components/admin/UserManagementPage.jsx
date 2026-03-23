@@ -89,7 +89,7 @@ export default function UserManagementPage() {
 
   const updateUserStatus = (userId, status) => {
     setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, status } : u)),
+      prev.map((u) => (u.id === userId ? { ...u, status } : u))
     );
   };
 
@@ -106,12 +106,15 @@ export default function UserManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-blue-50 font-sans">
-      <h1 className="text-2xl font-semibold text-blue-900 text-center mb-10">
+    <div className="lwd-page min-h-screen p-6">
+
+      {/* Heading */}
+      <h1 className="lwd-title text-2xl text-center mb-8">
         User Management
       </h1>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      {/* Table */}
+      <div className="lwd-card overflow-hidden">
         <UserTable
           users={users}
           loading={loading}
@@ -122,27 +125,30 @@ export default function UserManagementPage() {
 
       {/* Pagination */}
       <div className="flex items-center justify-center gap-6 mt-6">
+
         <button
           onClick={handlePrev}
           disabled={page === 0}
-          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+          className="lwd-btn-secondary disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span className="text-sm text-gray-700">
+        <span className="lwd-text font-semibold">
           Page {page + 1} of {totalPages}
         </span>
 
         <button
           onClick={handleNext}
           disabled={page >= totalPages - 1}
-          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+          className="lwd-btn-primary disabled:opacity-50"
         >
           Next
         </button>
+
       </div>
 
+      {/* Confirm Modal */}
       <ConfirmModal
         isOpen={!!confirmConfig}
         title={
@@ -154,13 +160,12 @@ export default function UserManagementPage() {
         }
         message={
           confirmConfig
-            ? `Are you sure you want to ${
-                confirmConfig.type === "block"
-                  ? confirmConfig.user.status === "SUSPENDED"
-                    ? "unblock"
-                    : "block"
-                  : "approve"
-              } ${confirmConfig.user.name}?`
+            ? `Are you sure you want to ${confirmConfig.type === "block"
+              ? confirmConfig.user.status === "SUSPENDED"
+                ? "unblock"
+                : "block"
+              : "approve"
+            } ${confirmConfig.user.name}?`
             : ""
         }
         confirmText={
@@ -175,66 +180,6 @@ export default function UserManagementPage() {
         loading={!!actionLoadingId}
       />
 
-      {/* Confirm Modal */}
-      {/* {confirmUser && confirmType && (
-        <div
-          onClick={closeConfirm}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white w-95 max-w-[92%] p-6 rounded-2xl shadow-2xl animate-scaleIn"
-          >
-            <h3 className="text-lg font-semibold text-blue-900 mb-3">
-              {confirmType === "block"
-                ? confirmUser.status === "SUSPENDED"
-                  ? "Unblock User?"
-                  : "Block User?"
-                : "Approve User?"}
-            </h3>
-
-            <p className="text-sm text-gray-600 mb-6">
-              Are you sure you want to{" "}
-              <strong>
-                {confirmType === "block"
-                  ? confirmUser.status === "SUSPENDED"
-                    ? "unblock"
-                    : "block"
-                  : "approve"}
-              </strong>{" "}
-              <br />
-              <span className="font-semibold text-gray-900">
-                {confirmUser.name}
-              </span>
-              ?
-            </p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={closeConfirm}
-                disabled={actionLoadingId}
-                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={confirmAction}
-                disabled={actionLoadingId}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                {actionLoadingId
-                  ? "Please wait..."
-                  : confirmType === "block"
-                  ? confirmUser.status === "SUSPENDED"
-                    ? "Yes, Unblock"
-                    : "Yes, Block"
-                  : "Yes, Approve"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -16,7 +16,6 @@ const Pricing = () => {
         "No Profile Boosting ❌",
       ],
       button: "Get Started",
-      color: "blue",
     },
     {
       name: "Standard",
@@ -33,7 +32,6 @@ const Pricing = () => {
         "Premium Support ✔",
       ],
       button: "Choose Plan",
-      color: "yellow",
     },
     {
       name: "Premium",
@@ -42,27 +40,27 @@ const Pricing = () => {
       features: [
         "Unlimited Job Posts ✔",
         "Unlimited Resume Search ✔",
-        "All 1,000,000+ resumes ✔",
+        "All resumes access ✔",
         "Unlimited search ✔",
         "Advanced Filters ✔",
         "CRM & Email Tools ✔",
         "Premium Support ✔",
       ],
       button: "Choose Plan",
-      color: "purple",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-200 via-pink-200 to-blue-200 py-16">
-      <div className="max-w-6xl mx-auto px-6">
+    <div className="lwd-page py-16 px-4">
+
+      <div className="max-w-6xl mx-auto">
 
         {/* Heading */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800">
+          <h1 className="lwd-title text-4xl">
             Recruiter Pricing
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="lwd-text mt-2">
             Find and hire top talent with our flexible plans.
           </p>
         </div>
@@ -72,7 +70,7 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative bg-white rounded-2xl shadow-xl p-8 text-center transition hover:scale-105 ${plan.popular ? "border-4 border-yellow-400 scale-105" : ""
+              className={`relative lwd-card p-8 text-center transition hover:scale-105 ${plan.popular ? "border-2 border-yellow-400 scale-105" : ""
                 }`}
             >
               {/* MOST POPULAR */}
@@ -83,23 +81,23 @@ const Pricing = () => {
               )}
 
               {/* Plan Name */}
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h2 className="lwd-title text-2xl">
                 {plan.name}
               </h2>
 
               {/* Subtitle */}
-              <p className="text-gray-500 mt-1">{plan.subtitle}</p>
+              <p className="lwd-text mt-1">{plan.subtitle}</p>
 
               {/* Price */}
-              <p className="text-4xl font-bold text-gray-900 mt-4">
+              <p className="text-4xl font-bold mt-4">
                 ₹{plan.price}
-                <span className="text-sm text-gray-500"> / month</span>
+                <span className="text-sm lwd-text"> / month</span>
               </p>
 
               {/* Features */}
               <ul className="mt-6 space-y-3 text-left">
                 {plan.features.map((feature, i) => (
-                  <li key={i} className="flex gap-2 items-center">
+                  <li key={i} className="flex gap-2 items-center text-sm">
                     <span className="text-green-500">✔</span>
                     {feature}
                   </li>
@@ -108,9 +106,9 @@ const Pricing = () => {
 
               {/* Button */}
               <button
-                className={`mt-8 w-full py-2 rounded-lg font-semibold ${plan.popular
+                className={`mt-8 w-full py-2 rounded-md font-semibold ${plan.popular
                     ? "bg-yellow-400 text-white hover:bg-yellow-500"
-                    : "bg-gray-200 hover:bg-gray-300"
+                    : "lwd-btn-secondary"
                   }`}
               >
                 {plan.button}

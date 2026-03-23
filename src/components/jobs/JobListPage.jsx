@@ -34,32 +34,32 @@ export default function JobListPage() {
 
   if (loading)
     return (
-      <p className="mt-6 text-center text-gray-600 font-medium">
-       <Loader fullScreen={false} />
-      </p>
+      <div className="flex justify-center items-center mt-6">
+        <Loader fullScreen={false} />
+      </div>
     );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className="p-6 max-w-7xl mx-auto lwd-page">
+      <h2 className="text-2xl font-bold mb-6 lwd-title">
         Jobs Posted by Recruiter
       </h2>
 
       {error && (
-        <p className="mb-4 text-center text-red-500 font-medium">
+        <p className="mb-4 text-center lwd-text text-red-500 font-medium">
           {error}
         </p>
       )}
 
       {jobs.length === 0 ? (
-        <p className="mt-6 text-center text-gray-500">
+        <p className="mt-6 text-center lwd-text text-gray-500">
           No jobs found
         </p>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-xl shadow-md">
-          <table className="min-w-full border-collapse">
+        <div className="overflow-x-auto lwd-card">
+          <table className="min-w-full border-collapse lwd-table">
             <thead>
-              <tr className="bg-blue-50 text-gray-700">
+              <tr className="lwd-table-header">
                 <th className="px-4 py-3 text-left font-semibold">Title</th>
                 <th className="px-4 py-3 text-left font-semibold">Company</th>
                 <th className="px-4 py-3 text-left font-semibold">Location</th>
@@ -70,14 +70,9 @@ export default function JobListPage() {
             </thead>
             <tbody>
               {jobs.map((job) => (
-                <tr
-                  key={job.id}
-                  className="border-b hover:bg-blue-50 transition"
-                >
+                <tr key={job.id} className="lwd-table-row hover:bg-blue-50 transition">
                   <td className="px-4 py-3">{job.title}</td>
-                  <td className="px-4 py-3">
-                    {job.company?.companyName || "-"}
-                  </td>
+                  <td className="px-4 py-3">{job.company?.companyName || "-"}</td>
                   <td className="px-4 py-3">{job.location}</td>
                   <td className="px-4 py-3">
                     {job.minExperience} - {job.maxExperience} yrs
@@ -85,11 +80,10 @@ export default function JobListPage() {
                   <td className="px-4 py-3">{job.jobType}</td>
                   <td className="px-4 py-3">
                     <span
-                      className={`font-semibold ${
-                        job.status.toLowerCase() === "active"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
+                      className={`font-semibold ${job.status.toLowerCase() === "active"
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-red-600 dark:text-red-400"
+                        }`}
                     >
                       {job.status}
                     </span>

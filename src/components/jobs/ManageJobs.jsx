@@ -45,20 +45,19 @@ export default function ManageJobs() {
 
   const handleStatusChange = (id, newStatus) => {
     setJobs((prev) =>
-      prev.map((job) => (job.id === id ? { ...job, status: newStatus } : job)),
+      prev.map((job) => (job.id === id ? { ...job, status: newStatus } : job))
     );
   };
 
   return (
-    <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-      <h2 className="text-left text-xl font-semibold text-gray-800 px-6 py-4 border-b border-gray-200">
-        Manage Jobs
-      </h2>
-      <div className="w-full overflow-x-auto">
-        <table className="w-full text-xs text-left border-collapse">
+    <div className="lwd-card">
+      <h2 className="lwd-section-header">Manage Jobs</h2>
+
+      <div className="overflow-x-auto">
+        <table className="lwd-table text-sm text-left">
           {/* ================= HEADER ================= */}
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr className="text-gray-600 uppercase tracking-wide">
+          <thead className="lwd-table-header">
+            <tr>
               <th className="px-4 py-2">Title</th>
               <th className="px-4 py-2">Location</th>
               <th className="px-4 py-2">Company</th>
@@ -68,24 +67,22 @@ export default function ManageJobs() {
               <th className="px-4 py-2">Source</th>
               <th className="px-4 py-2 hidden lg:table-cell">External URL</th>
               <th className="px-4 py-2 hidden md:table-cell">Created</th>
-              <th className="px-4 py-2 hidden md:table-cell">
-                Total Applications
-              </th>
+              <th className="px-4 py-2 hidden md:table-cell">Total Applications</th>
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
 
           {/* ================= BODY ================= */}
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {loading ? (
               <tr>
-                <td colSpan="8" className="text-center py-4 text-gray-500">
-                  <Loader fullScreen={false} />
+                <td colSpan="11" className="text-center py-4 lwd-text">
+                  <Loader fullScreen={false} className="lwd-loader" />
                 </td>
               </tr>
             ) : jobs.length === 0 ? (
               <tr>
-                <td colSpan="8" className="text-center py-4 text-gray-500">
+                <td colSpan="11" className="text-center py-4 lwd-text">
                   No jobs found
                 </td>
               </tr>
@@ -93,18 +90,17 @@ export default function ManageJobs() {
               jobs.map((job) => (
                 <tr
                   key={job.id}
-                  className={`transition
-                    ${
-                      job.deleted
-                        ? "bg-red-400 text-gray-950 opacity-80"
-                        : job.status === "CLOSED"
-                          ? "bg-red-200"
-                          : "hover:bg-gray-50"
+                  className={`lwd-table-row transition
+                    ${job.deleted
+                      ? "bg-red-400 text-gray-950 opacity-80"
+                      : job.status === "CLOSED"
+                        ? "bg-red-200"
+                        : "hover:lwd-card-hover"
                     }
                   `}
                 >
                   <td
-                    className="px-4 py-2 font-medium truncate max-w-xs cursor-pointer hover:underline"
+                    className="px-4 py-2 font-medium truncate max-w-xs cursor-pointer lwd-text hover:underline"
                     onClick={() =>
                       navigate(`/admin/managejob/${job.id}/analytics`)
                     }
@@ -112,12 +108,12 @@ export default function ManageJobs() {
                     {job.title}
                   </td>
 
-                  <td className="px-4 py-2 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap lwd-text">
                     {job.location || "-"}
                   </td>
 
                   <td
-                    className="px-4 py-2 truncate max-w-xs cursor-pointer hover:underline"
+                    className="px-4 py-2 truncate max-w-xs cursor-pointer lwd-text hover:underline"
                     onClick={() =>
                       navigate(`/admin/${job.company?.id}/companyprofile`)
                     }
@@ -125,11 +121,11 @@ export default function ManageJobs() {
                     {job.company?.companyName || "-"}
                   </td>
 
-                  <td className="px-4 py-2 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap lwd-text">
                     {job.jobType || "-"}
                   </td>
 
-                  <td className="px-4 py-2 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap lwd-text">
                     {job.minExperience ?? 0} - {job.maxExperience ?? 0} yrs
                   </td>
 
@@ -137,12 +133,10 @@ export default function ManageJobs() {
                   <td className="px-4 py-2 whitespace-nowrap">
                     <span
                       className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase
-                    ${
-                      job.status === "OPEN"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-600"
-                    }
-                  `}
+                        ${job.status === "OPEN"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-600"
+                        }`}
                     >
                       {job.status}
                     </span>
@@ -151,24 +145,23 @@ export default function ManageJobs() {
                   <td className="px-4 py-2 whitespace-nowrap">
                     <span
                       className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase
-                      ${
-                        job.applicationSource === "EXTERNAL"
+                        ${job.applicationSource === "EXTERNAL"
                           ? "bg-purple-100 text-purple-700"
                           : "bg-blue-100 text-blue-700"
-                      }`}
+                        }`}
                     >
                       {job.applicationSource || "PORTAL"}
                     </span>
                   </td>
 
-                  <td className="px-4 py-2 hidden lg:table-cell truncate max-w-xs">
+                  <td className="px-4 py-2 hidden lg:table-cell truncate max-w-xs lwd-text">
                     {job.applicationSource === "EXTERNAL" &&
-                    job.externalApplicationUrl ? (
+                      job.externalApplicationUrl ? (
                       <a
                         href={job.externalApplicationUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
+                        className="lwd-link"
                       >
                         View
                       </a>
@@ -177,13 +170,13 @@ export default function ManageJobs() {
                     )}
                   </td>
 
-                  <td className="px-4 py-2  hidden md:table-cell whitespace-nowrap">
+                  <td className="px-4 py-2 hidden md:table-cell whitespace-nowrap lwd-text">
                     {job.createdAt
                       ? new Date(job.createdAt).toLocaleDateString("en-IN")
                       : "-"}
                   </td>
 
-                  <td className="px-4 py-2 text-center">
+                  <td className="px-4 py-2 text-center lwd-text">
                     {job.totalApplications ?? 0}
                   </td>
 
@@ -201,19 +194,20 @@ export default function ManageJobs() {
           </tbody>
         </table>
       </div>
+
       {/* ================= PAGINATION ================= */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center px-6 py-4 border-t gap-3 border-gray-200">
+        <div className="flex items-center justify-center px-6 py-4 border-t gap-3 border-gray-200 dark:border-gray-700">
           <button
             onClick={() => fetchJobs(page - 1)}
             disabled={page === 0}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="lwd-btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm">
+            <span className="lwd-text">
               Page {page + 1} of {totalPages}
             </span>
           </div>
@@ -221,7 +215,7 @@ export default function ManageJobs() {
           <button
             onClick={() => fetchJobs(page + 1)}
             disabled={page + 1 >= totalPages}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="lwd-btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>

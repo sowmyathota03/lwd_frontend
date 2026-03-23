@@ -1,4 +1,3 @@
-
 import UserRow from "./UserRow";
 import Loader from "../common/Loader";
 
@@ -10,15 +9,16 @@ export default function UserTable({
   onApprove,
 }) {
   if (loading) {
-    return (
-      <Loader fullScreen={false} />
-    );
+    return <Loader fullScreen={false} />;
   }
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full text-sm text-left border-collapse">
-        <thead className="bg-blue-50 text-gray-700 uppercase text-xs tracking-wide">
+
+      <table className="lwd-table text-sm text-left">
+
+        {/* TABLE HEADER */}
+        <thead className="lwd-table-header uppercase text-xs tracking-wide">
           <tr>
             <th className="px-4 py-2 font-semibold">Name</th>
             <th className="px-4 py-2 font-semibold">Email</th>
@@ -30,12 +30,13 @@ export default function UserTable({
           </tr>
         </thead>
 
-        <tbody className="divide-y divide-gray-200">
+        {/* TABLE BODY */}
+        <tbody>
           {users.length === 0 ? (
-            <tr>
+            <tr className="lwd-table-row">
               <td
                 colSpan="7"
-                className="px-6 py-8 text-center text-gray-500"
+                className="px-6 py-8 text-center lwd-text"
               >
                 No users found
               </td>
@@ -52,7 +53,9 @@ export default function UserTable({
             ))
           )}
         </tbody>
+
       </table>
+
     </div>
   );
 }

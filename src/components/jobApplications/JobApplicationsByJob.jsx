@@ -28,44 +28,55 @@ export default function JobApplicationsByJob({ jobId }) {
   };
 
   useEffect(() => {
-    if (jobId) {
-      fetchApplications();
-    }
+    if (jobId) fetchApplications();
   }, [jobId, page]);
 
   if (!jobId) return null;
-
   if (loading) return <Loader />;
 
+  const getStatusBadge = (status) => {
+    const base =
+      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border";
+
+    switch (status) {
+      case "SELECTED":
+        return `${base} bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700`;
+      case "REJECTED":
+        return `${base} bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700`;
+      default:
+        return `${base} bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700`;
+    }
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="lwd-card overflow-hidden">
+
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-        <h2 className="text-lg font-semibold text-gray-800">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800">
+        <h2 className="text-lg font-semibold lwd-title">
           Applications ({applications.length})
         </h2>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider">
+        <table className="min-w-full text-sm lwd-text">
+
+          <thead className="bg-gray-100 dark:bg-slate-800 text-xs uppercase">
             <tr>
-              <th className="px-6 py-3 text-left font-medium">Applicant</th>
-              <th className="px-6 py-3 text-left font-medium">Email</th>
-              <th className="px-6 py-3 text-left font-medium">Phone</th>
-              <th className="px-6 py-3 text-left font-medium">Status</th>
-              <th className="px-6 py-3 text-left font-medium">Applied On</th>
-              <th className="px-6 py-3 text-left font-medium">Update Status</th>
+              <th className="px-6 py-3 text-left">Applicant</th>
+              <th className="px-6 py-3 text-left">Email</th>
+              <th className="px-6 py-3 text-left">Phone</th>
+              <th className="px-6 py-3 text-left">Status</th>
+              <th className="px-6 py-3 text-left">Applied On</th>
+              <th className="px-6 py-3 text-left">Update</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {applications.length === 0 ? (
               <tr>
-                <td
-                  colSpan="6"
-                  className="px-6 py-8 text-center text-gray-500"
-                >
+                <td colSpan="6" className="px-6 py-8 text-center lwd-text">
                   No applications found
                 </td>
               </tr>
@@ -73,61 +84,59 @@ export default function JobApplicationsByJob({ jobId }) {
               applications.map((app) => (
                 <tr
                   key={app.applicationId}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:bg-gray-50 dark:hover:bg-slate-800 transition"
                 >
-                  {/* Applicant Name (clickable if jobSeekerId exists) */}
-                  <td className="px-6 py-3 whitespace-nowrap">
+                  {/* Applicant */}
+                  <td className="px-6 py-3">
                     {app.jobSeekerId ? (
                       <button
                         onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-                        className="text-blue-600 hover:underline font-medium"
+                        className="lwd-link font-medium"
                       >
                         {app.applicantName || "-"}
                       </button>
                     ) : (
-                      <span className="text-gray-700">
-                        {app.applicantName || "-"}
-                      </span>
+                      <span>{app.applicantName || "-"}</span>
                     )}
                   </td>
 
-                  {/* Email (clickable if jobSeekerId exists) */}
-                  <td className="px-6 py-3 whitespace-nowrap">
+                  {/* Email */}
+                  <td className="px-6 py-3">
                     {app.jobSeekerId ? (
                       <button
                         onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-                        className="text-blue-600 hover:underline"
+                        className="lwd-link"
                       >
                         {app.email || "-"}
                       </button>
                     ) : (
-                      <span className="text-gray-700">{app.email || "-"}</span>
+                      <span>{app.email || "-"}</span>
                     )}
                   </td>
 
-                  <td className="px-6 py-3 whitespace-nowrap text-gray-700">
-                    {app.phone || "-"}
-                  </td>
+                  {/* Phone */}
+                  <td className="px-6 py-3">{app.phone || "-"}</td>
 
-                  {/* Status Badge */}
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {/* Status */}
+                  <td className="px-6 py-3">
+                    <span className={getStatusBadge(app.status)}>
                       {app.status}
                     </span>
                   </td>
 
-                  <td className="px-6 py-3 whitespace-nowrap text-gray-700">
+                  {/* Date */}
+                  <td className="px-6 py-3">
                     {app.appliedAt
                       ? new Date(app.appliedAt).toLocaleDateString("en-IN", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
                       : "-"}
                   </td>
 
-                  {/* Status Dropdown */}
-                  <td className="px-6 py-3 whitespace-nowrap">
+                  {/* Dropdown */}
+                  <td className="px-6 py-3">
                     <ApplicationStatusDropdown
                       applicationId={app.applicationId}
                       currentStatus={app.status}
@@ -151,22 +160,23 @@ export default function JobApplicationsByJob({ jobId }) {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-gray-700">
           <button
-            onClick={() => setPage((prev) => prev - 1)}
+            onClick={() => setPage((p) => p - 1)}
             disabled={page === 0}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="lwd-btn-secondary"
           >
             Previous
           </button>
-          <span className="text-sm text-gray-700">
-            Page <span className="font-medium">{page + 1}</span> of{" "}
-            <span className="font-medium">{totalPages}</span>
+
+          <span className="lwd-text">
+            Page {page + 1} / {totalPages}
           </span>
+
           <button
-            onClick={() => setPage((prev) => prev + 1)}
+            onClick={() => setPage((p) => p + 1)}
             disabled={page + 1 >= totalPages}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="lwd-btn-secondary"
           >
             Next
           </button>

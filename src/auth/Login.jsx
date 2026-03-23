@@ -47,14 +47,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center font-sans">
-      
-      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
+    <div className="lwd-page flex justify-center items-center">
 
-        <h3 className="text-center text-2xl font-semibold text-slate-900 mb-6">
+      <div className="lwd-card w-full max-w-md p-10">
+
+        {/* Title */}
+        <h3 className="lwd-title text-center text-2xl mb-6">
           Login
         </h3>
 
+        {/* Error */}
         {error && (
           <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
             {error}
@@ -65,27 +67,51 @@ export default function Login() {
 
           {/* Email */}
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-slate-700">
+            <label className="lwd-label mb-2 block">
               Email
             </label>
-            <input type="email" name="email" placeholder="Enter email" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              required
+              onChange={handleChange}
+              className="lwd-input"
+            />
           </div>
 
           {/* Password */}
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-slate-700">Password</label>
-            <input type="password" name="password" placeholder="Enter password" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+            <label className="lwd-label mb-2 block">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              required
+              onChange={handleChange}
+              className="lwd-input"
+            />
           </div>
 
           {/* Button */}
-          <button type="submit" disabled={loading} className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full lwd-btn-primary disabled:opacity-70"
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
 
-          {/* Register Redirect */}
+          {/* Register */}
           <div className="mt-4 text-center text-sm">
-            <p>Don't have an account?{" "}<span className="text-sky-500 cursor-pointer hover:underline"
-                onClick={() => navigate("/register")}>
+            <p className="lwd-text">
+              Don't have an account?{" "}
+              <span
+                className="lwd-link"
+                onClick={() => navigate("/register")}
+              >
                 Register here
               </span>
             </p>

@@ -5,13 +5,13 @@ import Loader from "../common/Loader";
 import { Pencil } from "lucide-react";
 import JobApplicationsByJob from "../jobApplications/JobApplicationsByJob";
 
-// Helper component for displaying a single meta field
+// ===== Meta Field =====
 const MetaField = ({ label, value }) => {
   if (!value) return null;
   return (
     <div>
-      <span className="text-sm text-gray-500">{label}:</span>
-      <p className="font-medium text-gray-800">{value}</p>
+      <span className="lwd-text">{label}:</span>
+      <p className="font-medium">{value}</p>
     </div>
   );
 };
@@ -33,46 +33,50 @@ export default function JobAnalytics() {
         Failed to load analytics
       </p>
     );
+
   if (!data) return null;
 
   const { job, totalApplications, statusCounts } = data;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 space-y-8">
-      {/* Job Details Card */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
+    <div className="lwd-page p-6 space-y-8">
+
+      {/* ================= JOB DETAILS ================= */}
+      <div className="lwd-card p-6 space-y-6">
+
         {/* Header */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{job.title}</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold">{job.title}</h1>
+            <p className="lwd-text mt-1">
               {job.company?.companyName} • {job.location}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             {job.deleted && (
-              <span className="bg-gray-600 text-white text-xs px-3 py-1 rounded-full">
+              <span className="lwd-badge bg-gray-600 text-white dark:bg-gray-700">
                 Deleted
               </span>
             )}
+
             {!job.deleted && (
               <span
-                className={`text-xs px-3 py-1 rounded-full font-medium ${
-                  job.open
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
+                className={`lwd-badge ${job.open
+                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                  }`}
               >
                 {job.open ? "Open" : "Closed"}
               </span>
             )}
+
             {!job.deleted && job.open && (
               <button
                 onClick={() =>
                   navigate(`/jobs/updatejob/${job.id}`, { state: job })
                 }
-                className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                className="flex items-center gap-1 px-3 py-1 text-sm rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition"
               >
                 <Pencil className="w-3.5 h-3.5" />
                 Edit
@@ -81,8 +85,8 @@ export default function JobAnalytics() {
           </div>
         </div>
 
-        {/* Meta Information Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm border-t border-gray-200 pt-6">
+        {/* Meta Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-t pt-6 dark:border-gray-700">
           <MetaField
             label="Salary"
             value={
@@ -125,7 +129,7 @@ export default function JobAnalytics() {
                   href={job.externalApplicationUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline break-all"
+                  className="lwd-link break-all"
                 >
                   {job.externalApplicationUrl}
                 </a>
@@ -142,79 +146,43 @@ export default function JobAnalytics() {
           />
         </div>
 
-        {/* Description Sections */}
-        {job.description && (
-          <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">
-              Description
-            </h2>
-            <p className="text-gray-700 whitespace-pre-line leading-relaxed">
-              {job.description}
-            </p>
-          </div>
-        )}
-
-        {job.responsibilities && (
-          <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">
-              Responsibilities
-            </h2>
-            <p className="text-gray-700 whitespace-pre-line leading-relaxed">
-              {job.responsibilities}
-            </p>
-          </div>
-        )}
-
-        {job.requirements && (
-          <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">
-              Requirements
-            </h2>
-            <p className="text-gray-700 whitespace-pre-line leading-relaxed">
-              {job.requirements}
-            </p>
-          </div>
-        )}
-
-        {job.benefits && (
-          <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">
-              Benefits
-            </h2>
-            <p className="text-gray-700 whitespace-pre-line leading-relaxed">
-              {job.benefits}
-            </p>
-          </div>
+        {/* Sections */}
+        {["description", "responsibilities", "requirements", "benefits"].map(
+          (field) =>
+            job[field] && (
+              <div key={field} className="border-t pt-6 dark:border-gray-700">
+                <h2 className="lwd-title mb-3 capitalize">{field}</h2>
+                <p className="lwd-text whitespace-pre-line leading-relaxed">
+                  {job[field]}
+                </p>
+              </div>
+            )
         )}
       </div>
 
-      {/* Analytics Cards */}
+      {/* ================= ANALYTICS ================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Total Applications */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm">
-          <p className="text-sm font-medium text-blue-600 uppercase tracking-wide">
+
+        {/* Total */}
+        <div className="lwd-card p-6">
+          <p className="text-sm uppercase tracking-wide text-blue-500">
             Total Applications
           </p>
-          <p className="text-3xl font-bold text-blue-900 mt-2">
-            {totalApplications}
-          </p>
+          <p className="text-3xl font-bold mt-2">{totalApplications}</p>
         </div>
 
-        {/* Status Breakdown */}
+        {/* Status Cards */}
         {Object.entries(statusCounts).map(([status, count]) => (
-          <div
-            key={status}
-            className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm"
-          >
-            <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+          <div key={status} className="lwd-card p-6">
+            <p className="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {status}
             </p>
-            <p className="text-3xl font-bold text-gray-900 mt-2">{count}</p>
+            <p className="text-3xl font-bold mt-2">{count}</p>
           </div>
         ))}
       </div>
 
-      {/* Applications List */}
+      {/* ================= APPLICATIONS ================= */}
       <JobApplicationsByJob jobId={jobId} />
     </div>
   );

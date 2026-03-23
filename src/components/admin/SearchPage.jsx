@@ -17,18 +17,13 @@ const SearchPage = () => {
 
   const searchRef = useRef(null);
 
-  /* ================= DEBOUNCE SEARCH ================= */
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchKeyword(keyword);
       setPage(0);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, [keyword]);
-
-  /* ================= FETCH SUGGESTIONS ================= */
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -36,7 +31,6 @@ const SearchPage = () => {
         setSuggestions([]);
         return;
       }
-
       try {
         const data = await getSearchSuggestions(keyword);
         setSuggestions(data || []);
@@ -45,13 +39,8 @@ const SearchPage = () => {
         console.error(err);
       }
     };
-
     fetchSuggestions();
   }, [keyword]);
-
-  
-  
-  /* ================= CLOSE SUGGESTIONS OUTSIDE CLICK ================= */
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -59,23 +48,16 @@ const SearchPage = () => {
         setShowSuggestions(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  /* ================= INPUT CHANGE ================= */
-
   const handleInputChange = (e) => {
-    const value = e.target.value;
-    setKeyword(value);
+    setKeyword(e.target.value);
     setSelectedIndex(-1);
   };
-
-  /* ================= INSTANT SEARCH ================= */
 
   const handleSearch = () => {
     setSearchKeyword(keyword);
@@ -83,13 +65,8 @@ const SearchPage = () => {
     setPage(0);
   };
 
-  /* ================= KEYBOARD NAVIGATION ================= */
-
   const handleKeyDown = (e) => {
-    if (e.key === "Escape") {
-      setShowSuggestions(false);
-      return;
-    }
+    if (e.key === "Escape") return setShowSuggestions(false);
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -105,30 +82,24 @@ const SearchPage = () => {
 
     if (e.key === "Enter") {
       e.preventDefault();
+      const selected =
+        selectedIndex >= 0
+          ? suggestions[selectedIndex].label
+          : keyword;
 
-      if (selectedIndex >= 0) {
-        const selected = suggestions[selectedIndex].label;
-        setKeyword(selected);
-        setSearchKeyword(selected);
-      } else {
-        setSearchKeyword(keyword);
-      }
-      
+      setKeyword(selected);
+      setSearchKeyword(selected);
       setShowSuggestions(false);
       setPage(0);
     }
   };
-  
-  /* ================= CLICK SUGGESTION ================= */
-  
+
   const handleSuggestionClick = (text) => {
     setKeyword(text);
     setSearchKeyword(text);
     setShowSuggestions(false);
     setPage(0);
   };
-
-  /* ================= GLOBAL SEARCH ================= */
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["globalSearch", activeTab, searchKeyword || "all", page],
@@ -139,19 +110,14 @@ const SearchPage = () => {
         page,
         pageSize
       ),
-    keepPreviousData: true,
-    staleTime: 5 * 60 * 1000,
   });
-
 
   useEffect(() => {
     setPage(0);
   }, [activeTab]);
-  
+
   const results = data?.[activeTab.toLowerCase()] ?? [];
   const totalPages = data?.totalPages ?? 1;
-  
-  /* ================= PAGINATION ================= */
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
@@ -160,12 +126,10 @@ const SearchPage = () => {
     }
   };
 
-  /* ================= RESULTS ================= */
-
   const renderResults = () => {
     if (results.length === 0) {
       return (
-        <p className="text-gray-500 mt-4 text-center">
+        <p className="lwd-text text-center mt-4">
           No results found
         </p>
       );
@@ -176,7 +140,7 @@ const SearchPage = () => {
         {results.map((item) => (
           <div
             key={item.id}
-            className="flex justify-between items-center border-b px-2 py-2 text-sm hover:bg-gray-50"
+            className="lwd-table-row px-3 py-2 flex justify-between text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             {activeTab === "Jobs" && (
               <>
@@ -197,13 +161,13 @@ const SearchPage = () => {
 
             {(activeTab === "Candidates" ||
               activeTab === "Recruiters") && (
-              <>
-                <span className="w-1/4 font-medium">{item.name}</span>
-                <span className="w-1/4">{item.email}</span>
-                <span className="w-1/4">{item.phone}</span>
-                <span className="w-1/4">{item.companyName || "-"}</span>
-              </>
-            )}
+                <>
+                  <span className="w-1/4 font-medium">{item.name}</span>
+                  <span className="w-1/4">{item.email}</span>
+                  <span className="w-1/4">{item.phone}</span>
+                  <span className="w-1/4">{item.companyName || "-"}</span>
+                </>
+              )}
 
             {activeTab === "Skills" && (
               <span className="font-medium">{item.name}</span>
@@ -214,99 +178,75 @@ const SearchPage = () => {
     );
   };
 
-  /* ================= PAGINATION UI ================= */
+  const renderPagination = () => {
+    if (!totalPages || totalPages < 2) return null;
 
-/* ================= PAGINATION UI ================= */
+    return (
+      <div className="flex justify-center gap-2 mt-6 flex-wrap">
 
-const renderPagination = () => {
-
-  if (!totalPages || totalPages < 2) return null;
-
-  const pages = [];
-
-  for (let i = 0; i < totalPages; i++) {
-    pages.push(i);
-  }
-
-  return (
-    <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
-
-      {/* Previous */}
-      <button
-        disabled={page === 0}
-        onClick={() => handlePageChange(page - 1)}
-        className="px-3 py-1 border rounded disabled:opacity-40 hover:bg-gray-100"
-      >
-        Previous
-      </button>
-
-      {/* Page Numbers */}
-      {pages.map((p) => (
         <button
-          key={p}
-          onClick={() => handlePageChange(p)}
-          className={`px-3 py-1 border rounded ${
-            page === p
-              ? "bg-blue-600 text-white border-blue-600"
-              : "hover:bg-gray-100"
-          }`}
+          disabled={page === 0}
+          onClick={() => handlePageChange(page - 1)}
+          className="lwd-btn-secondary disabled:opacity-40"
         >
-          {p + 1}
+          Previous
         </button>
-      ))}
 
-      {/* Next */}
-      <button
-        disabled={page === totalPages - 1}
-        onClick={() => handlePageChange(page + 1)}
-        className="px-3 py-1 border rounded disabled:opacity-40 hover:bg-gray-100"
-      >
-        Next
-      </button>
+        {[...Array(totalPages)].map((_, p) => (
+          <button
+            key={p}
+            onClick={() => handlePageChange(p)}
+            className={`px-3 py-1 rounded ${page === p
+                ? "lwd-btn-primary"
+                : "lwd-card"
+              }`}
+          >
+            {p + 1}
+          </button>
+        ))}
 
-    </div>
-  );
-};
+        <button
+          disabled={page === totalPages - 1}
+          onClick={() => handlePageChange(page + 1)}
+          className="lwd-btn-primary disabled:opacity-40"
+        >
+          Next
+        </button>
 
-
-
-  /* ================= UI ================= */
+      </div>
+    );
+  };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="lwd-page max-w-6xl mx-auto p-6">
 
-      {/* SEARCH BAR */}
-
+      {/* SEARCH */}
       <div className="flex gap-2 mb-6" ref={searchRef}>
 
         <div className="relative flex-1">
-
           <input
             type="text"
             placeholder="Search jobs, companies, skills..."
             value={keyword}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            onFocus={() => keyword && setShowSuggestions(true)}
-            className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+            className="lwd-input"
           />
 
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute w-full bg-white border rounded-lg shadow mt-1 z-50 max-h-60 overflow-auto">
+            <div className="absolute w-full lwd-card mt-1 z-50 max-h-60 overflow-auto">
 
               {suggestions.map((s, i) => (
                 <div
                   key={s.id}
                   onClick={() => handleSuggestionClick(s.label)}
-                  className={`px-4 py-2 cursor-pointer flex justify-between ${
-                    i === selectedIndex
-                      ? "bg-blue-100"
-                      : "hover:bg-gray-100"
-                  }`}
+                  className={`px-4 py-2 cursor-pointer flex justify-between ${i === selectedIndex
+                      ? "bg-blue-100 dark:bg-blue-900"
+                      : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                    }`}
                 >
                   <span>{s.label}</span>
-
-                  <span className="text-xs text-gray-400 capitalize">
+                  <span className="text-xs opacity-60 capitalize">
                     {s.type}
                   </span>
                 </div>
@@ -314,30 +254,23 @@ const renderPagination = () => {
 
             </div>
           )}
-
         </div>
 
-        <button
-          onClick={handleSearch}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-        >
+        <button onClick={handleSearch} className="lwd-btn-primary">
           Search
         </button>
-
       </div>
 
       {/* TABS */}
-
       <div className="flex gap-4 border-b pb-2 mb-4">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveTab(cat)}
-            className={`pb-1 ${
-              activeTab === cat
-                ? "border-b-2 border-blue-600 text-blue-600 font-semibold"
-                : "text-gray-500"
-            }`}
+            className={`pb-1 ${activeTab === cat
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "lwd-text"
+              }`}
           >
             {cat}
           </button>
@@ -345,18 +278,16 @@ const renderPagination = () => {
       </div>
 
       {/* RESULTS */}
-
-      {isLoading && <p className="text-center">Loading...</p>}
+      {isLoading && <p className="text-center lwd-text">Loading...</p>}
 
       {isError && (
-        <p className="text-red-600 text-center">
-          {error?.message || "Error loading data"}
+        <p className="text-red-500 text-center">
+          {error?.message || "Error"}
         </p>
       )}
 
       {!isLoading && !isError && renderResults()}
       {!isLoading && !isError && renderPagination()}
-
 
     </div>
   );

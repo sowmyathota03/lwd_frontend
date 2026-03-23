@@ -1,4 +1,3 @@
-// ./src/components/dashboard/AdminDashboard.jsx
 import { useDashboardData } from "../../hooks/useDashboardData";
 import { fetchAdminDashboard } from "../../api/DashboardApi";
 import KPICard from "../dashboard/KPICard";
@@ -13,6 +12,7 @@ import {
   UserCog,
   CheckCircle,
 } from "lucide-react";
+
 import {
   BarChart,
   Bar,
@@ -33,10 +33,13 @@ const AdminDashboard = () => {
   const { data, loading, error } = useDashboardData(fetchAdminDashboard);
 
   if (loading) return <SkeletonLoader />;
+
   if (error)
     return (
-      <div className="p-6 text-red-600">
-        Error loading dashboard: {error.message}
+      <div className="lwd-page p-6">
+        <p className="text-red-500">
+          Error loading dashboard: {error.message}
+        </p>
       </div>
     );
 
@@ -104,18 +107,16 @@ const AdminDashboard = () => {
     { label: "New companies", value: data.newCompaniesThisMonth },
   ];
 
-  // Transform jobsPerIndustry map to array for bar chart
   const industryData = Object.entries(data.jobsPerIndustry || {}).map(
-    ([name, value]) => ({ name, value }),
+    ([name, value]) => ({ name, value })
   );
 
-  // Applications trend is already array of {day, count}
   const trendData = data.applicationsTrend || [];
 
-  // Users by role map to pie data
   const roleData = Object.entries(data.usersByRole || {}).map(
-    ([name, value]) => ({ name, value }),
+    ([name, value]) => ({ name, value })
   );
+
   const COLORS = [
     "#3b82f6",
     "#10b981",
@@ -126,7 +127,8 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="lwd-page p-6 space-y-6">
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {kpiCards.map((card, index) => (
@@ -138,31 +140,28 @@ const AdminDashboard = () => {
             color={card.color}
             bgColor={card.bgColor}
             borderColor={card.borderColor}
-            navigateTo={card.path} // ✅ correct prop
+            navigateTo={card.path}
           />
         ))}
       </div>
 
-      {/* Growth Metrics Row */}
+      {/* Growth Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {growthMetrics.map((metric, idx) => (
-          <div
-            key={idx}
-            className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500"
-          >
-            <p className="text-sm text-gray-500">{metric.label}</p>
-            <p className="text-2xl font-bold">
+          <div key={idx} className="lwd-card p-4 border-l-4 border-blue-500">
+            <p className="lwd-text text-sm">{metric.label}</p>
+            <p className="lwd-title text-xl">
               {metric.value.toLocaleString()}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Charts Row */}
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Jobs per Industry */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Jobs per Industry</h3>
+
+        <div className="lwd-card p-4">
+          <h3 className="lwd-title mb-4">Jobs per Industry</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={industryData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -175,9 +174,8 @@ const AdminDashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Applications Trend */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">
+        <div className="lwd-card p-4">
+          <h3 className="lwd-title mb-4">
             Applications (Last 7 days)
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -198,9 +196,9 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Users by Role Pie Chart */}
-      <div className="bg-white p-4 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-4">Users by Role</h3>
+      {/* Pie */}
+      <div className="lwd-card p-4">
+        <h3 className="lwd-title mb-4">Users by Role</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -208,17 +206,10 @@ const AdminDashboard = () => {
               cx="50%"
               cy="50%"
               outerRadius={100}
-              fill="#8884d8"
               dataKey="value"
-              label={({ name, percent }) =>
-                `${name}: ${(percent * 100).toFixed(0)}%`
-              }
             >
               {roleData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip />
@@ -226,65 +217,34 @@ const AdminDashboard = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Recent Activity Tables */}
+      {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <RecentTable
-          title="Recent Users"
-          columns={[
-            { key: "name", label: "Name" },
-            { key: "email", label: "Email" },
-            { key: "role", label: "Role" },
-            { key: "joined", label: "Joined" },
-          ]}
-          data={data.recentUsers || []}
-        />
-        <RecentTable
-          title="Recent Jobs"
-          columns={[
-            { key: "title", label: "Title" },
-            { key: "companyName", label: "Company" },
-            { key: "location", label: "Location" },
-            { key: "posted", label: "Posted" },
-          ]}
-          data={data.recentJobs || []}
-        />
+        <RecentTable title="Recent Users" data={data.recentUsers || []} />
+        <RecentTable title="Recent Jobs" data={data.recentJobs || []} />
         <RecentTable
           title="Recent Applications"
-          columns={[
-            { key: "candidateName", label: "Candidate" },
-            { key: "jobTitle", label: "Job" },
-            { key: "appliedDate", label: "Applied" },
-            { key: "status", label: "Status" },
-          ]}
           data={data.recentApplications || []}
         />
       </div>
 
       {/* System Health */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-          <p className="text-sm text-yellow-800 font-medium">
-            Jobs expiring soon
-          </p>
-          <p className="text-2xl font-bold text-yellow-900">
-            {data.jobsExpiringSoon}
-          </p>
+        <div className="lwd-card p-4 border border-yellow-200">
+          <p className="lwd-text">Jobs expiring soon</p>
+          <p className="lwd-title">{data.jobsExpiringSoon}</p>
         </div>
-        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-          <p className="text-sm text-red-800 font-medium">
-            Jobs without applications
-          </p>
-          <p className="text-2xl font-bold text-red-900">
-            {data.jobsWithoutApplications}
-          </p>
+
+        <div className="lwd-card p-4 border border-red-200">
+          <p className="lwd-text">Jobs without applications</p>
+          <p className="lwd-title">{data.jobsWithoutApplications}</p>
         </div>
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-800 font-medium">Active Recruiters</p>
-          <p className="text-2xl font-bold text-blue-900">
-            {data.activeRecruiters}
-          </p>
+
+        <div className="lwd-card p-4 border border-blue-200">
+          <p className="lwd-text">Active Recruiters</p>
+          <p className="lwd-title">{data.activeRecruiters}</p>
         </div>
       </div>
+
     </div>
   );
 };
