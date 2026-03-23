@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerJobSeeker } from "../api/AuthApi";
 
-function Register() {
+function RegisterJobSeeker() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -14,6 +14,7 @@ function Register() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // ✅ NEW
 
   const handleChange = (e) => {
     setFormData({
@@ -26,12 +27,20 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
 
     try {
       const response = await registerJobSeeker(formData);
       console.log("Job Seeker Registered:", response);
-      alert("Job Seeker Registration Successful!");
-      navigate("/login");
+
+      // ✅ Show success message
+      setSuccessMessage("Registration successful! Redirecting to login...");
+
+      // ✅ Redirect after 2 seconds
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+
     } catch (error) {
       setError(error.response?.data || "Registration Failed");
     } finally {
@@ -45,46 +54,52 @@ function Register() {
       <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
 
         <h2 className="text-2xl font-semibold text-center text-slate-900 mb-6">
-          Register
+          Register as Job Seeker
         </h2>
 
+        {/* ❌ Error Message */}
         {error && (
           <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
             {error}
           </div>
         )}
 
+        {/* ✅ Success Message */}
+        {successMessage && (
+          <div className="bg-green-100 text-green-600 text-sm text-center p-3 rounded-lg mb-4">
+            {successMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
 
-          {/* Full Name */}
           <div className="mb-4">
-            <input type="text" name="name" placeholder="Full Name" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+            <input type="text" name="name" placeholder="Full Name" required onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
           </div>
 
-          {/* Email */}
           <div className="mb-4">
-            <input type="email" name="email" placeholder="Email" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+            <input type="email" name="email" placeholder="Email" required onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
           </div>
 
-          {/* Password */}
           <div className="mb-4">
-            <input type="password" name="password" placeholder="Password" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+            <input type="password" name="password" placeholder="Password" required onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
           </div>
 
-          {/* Contact Number */}
           <div className="mb-4">
-            <input type="text" name="contactNumber" placeholder="Contact Number" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+            <input type="text" name="contactNumber" placeholder="Contact Number" required onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
           </div>
 
-          {/* Button */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || successMessage} // prevent double submit
             className="w-full py-3 rounded-lg font-semibold text-white bg-linear-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70">
             {loading ? "Registering..." : "Register"}
           </button>
 
-          {/* Login Redirect */}
           <div className="mt-4 text-center text-sm">
             <p>
               Already have an account?{" "}
@@ -103,4 +118,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default RegisterJobSeeker;

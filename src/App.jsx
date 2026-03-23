@@ -6,7 +6,11 @@ import NavBar from "./components/common/NavBar";
 import Footer from "./components/common/Footer";
 
 import Login from "./auth/Login";
-import Register from "./auth/Register";
+import ForgotPassword from "./auth/ForgotPassword";
+import ResetPassword from "./auth/ResetPassword";
+import AuthSelection from "./auth/AuthSelection";
+import RegisterJobSeeker from "./auth/RegisterJobSeeker";
+import RegisterRecruiter from "./auth/RegisterRecruiter";
 
 import Home from "./pages/public/Home";
 import Jobs from "./pages/public/Jobs";
@@ -37,7 +41,6 @@ import ContactUs from "./components/company/ContactUs";
 import AboutUs from "./components/company/AboutUs";
 import PrivacyPolicy from "./components/company/PrivacyPolicy";
 import TermsAndConditions from "./components/company/TermsAndConditions";
-import Pricing from "./components/company/Pricing";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminHome from "./components/admin/AdminHome";
@@ -90,8 +93,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
 
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<AuthSelection />} />
+        <Route path="/register/jobseeker" element={<RegisterJobSeeker />} />
+        <Route path="/register/recruiter" element={<RegisterRecruiter />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/jobs/:type" element={<Jobs />} />

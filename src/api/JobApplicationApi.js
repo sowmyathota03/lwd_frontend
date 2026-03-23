@@ -69,6 +69,23 @@ export const getApplicationsByRole = (page = 0, size = 10, search = "") => {
   }).then(res => res.data);
 };
 
+
+/* ==================================================
+   SEARCH / FILTER APPLICATIONS
+================================================== */
+
+// POST /api/job-applications/search?page=0&size=10
+export const searchApplications = (filters = {}, page = 0, size = 10) => {
+  return axiosInstance
+    .post("/job-applications/search", filters, {
+      params: { page, size },
+    })
+    .then((res) => res.data);
+};
+
+/* ==================================================
+
+
 /* ==================================================
    JOB SEEKER
 ================================================== */

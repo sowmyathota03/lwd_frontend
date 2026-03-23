@@ -1,12 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  getAllUsers,
+  searchUsers,
   blockUser,
   unblockUser,
   approveRecruiter,
 } from "../../api/AdminApi";
 import UserTable from "./UserTable";
 import ConfirmModal from "../common/ConfirmModal";
+
+const roleOptions = ["ADMIN", "RECRUITER_ADMIN", "RECRUITER", "JOB_SEEKER"];
+const statusOptions = ["PENDING", "ACTIVE", "SUSPENDED", "BLOCKED"];
+
+const formatLabel = (value) =>
+  value
+    ?.toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState([]);
@@ -16,17 +26,59 @@ export default function UserManagementPage() {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
 
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [role, setRole] = useState("");
+  const [status, setStatus] = useState("");
+  const [isActive, setIsActive] = useState("");
+  const [emailVerified, setEmailVerified] = useState("");
+  const [locked, setLocked] = useState("");
+
   const [confirmConfig, setConfirmConfig] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedKeyword, role, status, isActive, emailVerified, locked]);
+
+  const filters = useMemo(
+    () => ({
+      keyword: debouncedKeyword || null,
+      role: role || null,
+      status: status || null,
+      isActive: isActive === "" ? null : isActive === "true",
+      emailVerified: emailVerified === "" ? null : emailVerified === "true",
+      locked: locked === "" ? null : locked === "true",
+    }),
+    [debouncedKeyword, role, status, isActive, emailVerified, locked]
+  );
+
+  const hasActiveFilters = !!(
+    keyword.trim() ||
+    role ||
+    status ||
+    isActive !== "" ||
+    emailVerified !== "" ||
+    locked !== ""
+  );
 
   const loadUsers = async (pageNumber = page) => {
     try {
       setLoading(true);
-      const data = await getAllUsers(pageNumber, size);
 
-      setUsers(data.content);
-      setTotalPages(data.totalPages);
-      setPage(data.pageNumber);
+      const data = await searchUsers(filters, pageNumber, size);
+
+      setUsers(data.content || []);
+      setTotalPages(data.totalPages || 0);
+      setPage(data.pageNumber ?? data.page ?? pageNumber);
     } catch (err) {
       console.error("Failed to load users", err);
     } finally {
@@ -35,15 +87,19 @@ export default function UserManagementPage() {
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    loadUsers(page);
+  }, [page, filters]);
 
   const handleNext = () => {
-    if (page < totalPages - 1) loadUsers(page + 1);
+    if (page < totalPages - 1) {
+      setPage((prev) => prev + 1);
+    }
   };
 
   const handlePrev = () => {
-    if (page > 0) loadUsers(page - 1);
+    if (page > 0) {
+      setPage((prev) => prev - 1);
+    }
   };
 
   const openConfirm = (user, type) => {
@@ -53,6 +109,12 @@ export default function UserManagementPage() {
   const closeConfirm = () => {
     if (actionLoadingId) return;
     setConfirmConfig(null);
+  };
+
+  const updateUserStatus = (userId, newStatus) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, status: newStatus } : u))
+    );
   };
 
   const handleBlockUnblock = async (user) => {
@@ -66,7 +128,8 @@ export default function UserManagementPage() {
         await blockUser(user.id);
         updateUserStatus(user.id, "SUSPENDED");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Failed to update user status");
     } finally {
       setActionLoadingId(null);
@@ -79,18 +142,13 @@ export default function UserManagementPage() {
       setActionLoadingId(user.id);
       await approveRecruiter(user.id);
       updateUserStatus(user.id, "ACTIVE");
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Failed to approve user");
     } finally {
       setActionLoadingId(null);
       closeConfirm();
     }
-  };
-
-  const updateUserStatus = (userId, status) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, status } : u)),
-    );
   };
 
   const confirmAction = async () => {
@@ -105,11 +163,101 @@ export default function UserManagementPage() {
     }
   };
 
+  const clearFilters = () => {
+    setKeyword("");
+    setDebouncedKeyword("");
+    setRole("");
+    setStatus("");
+    setIsActive("");
+    setEmailVerified("");
+    setLocked("");
+    setPage(0);
+  };
+
   return (
-    <div className="min-h-screen bg-blue-50 font-sans">
-      <h1 className="text-2xl font-semibold text-blue-900 text-center mb-10">
+    <div className="min-h-screen bg-blue-50 font-sans p-4 md:p-6">
+      <h1 className="text-2xl font-semibold text-blue-900 text-center mb-6">
         User Management
       </h1>
+
+      <div className="bg-white rounded-xl shadow-lg p-4 mb-6 space-y-4">
+        <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+          <input
+            type="text"
+            placeholder="Search by name, email, phone..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className="w-full lg:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
+          >
+            <option value="">All Roles</option>
+            {roleOptions.map((item) => (
+              <option key={item} value={item}>
+                {formatLabel(item)}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
+          >
+            <option value="">All Status</option>
+            {statusOptions.map((item) => (
+              <option key={item} value={item}>
+                {formatLabel(item)}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={isActive}
+            onChange={(e) => setIsActive(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
+          >
+            <option value="">All Activity</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+
+          <select
+            value={emailVerified}
+            onChange={(e) => setEmailVerified(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
+          >
+            <option value="">Email Verification</option>
+            <option value="true">Verified</option>
+            <option value="false">Not Verified</option>
+          </select>
+
+          <select
+            value={locked}
+            onChange={(e) => setLocked(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
+          >
+            <option value="">Lock Status</option>
+            <option value="true">Locked</option>
+            <option value="false">Unlocked</option>
+          </select>
+        </div>
+      </div>
 
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
         <UserTable
@@ -120,7 +268,6 @@ export default function UserManagementPage() {
         />
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-center gap-6 mt-6">
         <button
           onClick={handlePrev}
@@ -174,67 +321,6 @@ export default function UserManagementPage() {
         onCancel={closeConfirm}
         loading={!!actionLoadingId}
       />
-
-      {/* Confirm Modal */}
-      {/* {confirmUser && confirmType && (
-        <div
-          onClick={closeConfirm}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white w-95 max-w-[92%] p-6 rounded-2xl shadow-2xl animate-scaleIn"
-          >
-            <h3 className="text-lg font-semibold text-blue-900 mb-3">
-              {confirmType === "block"
-                ? confirmUser.status === "SUSPENDED"
-                  ? "Unblock User?"
-                  : "Block User?"
-                : "Approve User?"}
-            </h3>
-
-            <p className="text-sm text-gray-600 mb-6">
-              Are you sure you want to{" "}
-              <strong>
-                {confirmType === "block"
-                  ? confirmUser.status === "SUSPENDED"
-                    ? "unblock"
-                    : "block"
-                  : "approve"}
-              </strong>{" "}
-              <br />
-              <span className="font-semibold text-gray-900">
-                {confirmUser.name}
-              </span>
-              ?
-            </p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={closeConfirm}
-                disabled={actionLoadingId}
-                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={confirmAction}
-                disabled={actionLoadingId}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                {actionLoadingId
-                  ? "Please wait..."
-                  : confirmType === "block"
-                  ? confirmUser.status === "SUSPENDED"
-                    ? "Yes, Unblock"
-                    : "Yes, Block"
-                  : "Yes, Approve"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -119,3 +119,15 @@ export const getMyJobsByRole = async (page = 0, keyword = "") => {
 };
 
 
+// ===============================
+// SEARCH MY JOBS BY ROLE (filters + search)
+// ===============================
+export const searchMyJobsByRole = async (filters = {}, page = 0) => {
+  const response = await api.post("/jobs/my-jobs-by-role/search", filters, {
+    params: { page },
+  });
+
+  return response.data;
+};
+
+

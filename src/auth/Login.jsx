@@ -38,7 +38,6 @@ export default function Login() {
 
       const decoded = jwtDecode(res.token);
       redirectBasedOnRole(decoded.role);
-
     } catch (err) {
       setError("Invalid email or password");
     } finally {
@@ -47,10 +46,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center font-sans">
-      
+    <div className="min-h-[80vh] bg-linear-to-br from-sky-100 to-blue-50 flex justify-center items-center font-sans">
       <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
-
         <h3 className="text-center text-2xl font-semibold text-slate-900 mb-6">
           Login
         </h3>
@@ -62,35 +59,63 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit}>
-
-          {/* Email */}
           <div className="mb-4">
             <label className="block mb-2 text-sm font-medium text-slate-700">
               Email
             </label>
-            <input type="email" name="email" placeholder="Enter email" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              required
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+            />
           </div>
 
-          {/* Password */}
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-slate-700">Password</label>
-            <input type="password" name="password" placeholder="Enter password" required onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"/>
+          <div className="mb-2">
+            <label className="block mb-2 text-sm font-medium text-slate-700">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              required
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+            />
           </div>
 
-          {/* Button */}
-          <button type="submit" disabled={loading} className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70">
+          <div className="mb-4 text-right">
+            <button
+              type="button"
+              onClick={() => navigate("/forgot-password")}
+              className="text-sm text-sky-500 hover:underline"
+            >
+              Forgot Password?
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-lg font-semibold text-white bg-linear-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
 
-          {/* Register Redirect */}
           <div className="mt-4 text-center text-sm">
-            <p>Don't have an account?{" "}<span className="text-sky-500 cursor-pointer hover:underline"
-                onClick={() => navigate("/register")}>
+            <p>
+              Don't have an account?{" "}
+              <span
+                className="text-sky-500 cursor-pointer hover:underline"
+                onClick={() => navigate("/register")}
+              >
                 Register here
               </span>
             </p>
           </div>
-
         </form>
       </div>
     </div>
