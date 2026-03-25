@@ -9,7 +9,7 @@ function RegisterRecruiter() {
     name: "",
     email: "",
     password: "",
-    contactNumber: "",
+    contactNumber: "",  
   });
 
   const [loading, setLoading] = useState(false);

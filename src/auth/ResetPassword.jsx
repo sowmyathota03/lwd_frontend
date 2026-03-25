@@ -21,7 +21,6 @@ export default function ResetPassword() {
     confirmPassword: "",
   });
 
-  // Update token in formData if it changes (e.g., URL updates)
   useEffect(() => {
     if (token) {
       setFormData((prev) => ({ ...prev, token }));
@@ -32,11 +31,10 @@ export default function ResetPassword() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear field-specific error when user starts typing
     if (name === "confirmPassword" && fieldErrors.confirmPassword) {
       setFieldErrors((prev) => ({ ...prev, confirmPassword: "" }));
     }
-    // Clear general error when any field changes
+
     if (error) setError("");
   };
 
@@ -72,42 +70,56 @@ export default function ResetPassword() {
         token: formData.token,
         newPassword: formData.newPassword,
       });
-      setSuccessMessage(res || "Password reset successful. Redirecting to login...");
+
+      setSuccessMessage(
+        res || "Password reset successful. Redirecting to login..."
+      );
 
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (err) {
-      setError(err.response?.data || "Invalid or expired token. Please request a new password reset link.");
+      setError(
+        err.response?.data ||
+        "Invalid or expired token. Please request a new password reset link."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[80vh] bg-linear-to-br from-sky-100 to-blue-50 flex justify-center items-center px-4">
-      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
-        <h2 className="text-2xl font-semibold text-center text-slate-900 mb-6">
+    <div className="lwd-page flex justify-center items-center px-4">
+
+      <div className="lwd-card w-full max-w-md p-8">
+
+        {/* Title */}
+        <h2 className="lwd-title text-2xl text-center mb-6">
           Reset Password
         </h2>
 
+        {/* Error */}
         {error && (
-          <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
+          <div className="mb-4 text-sm text-center p-3 rounded-lg bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300">
             {error}
           </div>
         )}
 
+        {/* Success */}
         {successMessage && (
-          <div className="bg-green-100 text-green-600 text-sm text-center p-3 rounded-lg mb-4">
+          <div className="mb-4 text-sm text-center p-3 rounded-lg bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300">
             {successMessage}
           </div>
         )}
 
         <form onSubmit={handleSubmit} noValidate>
+
+          {/* New Password */}
           <div className="mb-4">
-            <label htmlFor="newPassword" className="block mb-2 text-sm font-medium text-slate-700">
+            <label htmlFor="newPassword" className="lwd-label block mb-2">
               New Password
             </label>
+
             <input
               id="newPassword"
               type="password"
@@ -116,15 +128,17 @@ export default function ResetPassword() {
               required
               value={formData.newPassword}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="lwd-input"
               aria-invalid={!!fieldErrors.confirmPassword}
             />
           </div>
 
+          {/* Confirm Password */}
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium text-slate-700">
+            <label htmlFor="confirmPassword" className="lwd-label block mb-2">
               Confirm Password
             </label>
+
             <input
               id="confirmPassword"
               type="password"
@@ -133,28 +147,35 @@ export default function ResetPassword() {
               required
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-lg border transition ${
-                fieldErrors.confirmPassword
-                  ? "border-red-500 focus:border-red-500 focus:ring-red-200"
-                  : "border-slate-300 focus:border-sky-400 focus:ring-sky-200"
-              } focus:outline-none focus:ring-4`}
+              className={`lwd-input ${fieldErrors.confirmPassword
+                  ? "border-red-500 focus:border-red-500 dark:border-red-500"
+                  : ""
+                }`}
               aria-invalid={!!fieldErrors.confirmPassword}
-              aria-describedby={fieldErrors.confirmPassword ? "confirm-error" : undefined}
+              aria-describedby={
+                fieldErrors.confirmPassword ? "confirm-error" : undefined
+              }
             />
+
             {fieldErrors.confirmPassword && (
-              <p id="confirm-error" className="mt-1 text-xs text-red-600">
+              <p
+                id="confirm-error"
+                className="mt-1 text-xs text-red-600 dark:text-red-400"
+              >
                 {fieldErrors.confirmPassword}
               </p>
             )}
           </div>
 
+          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg font-semibold text-white bg-linear-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70 disabled:hover:translate-y-0"
+            className="w-full lwd-btn-primary disabled:opacity-70"
           >
             {loading ? "Resetting..." : "Reset Password"}
           </button>
+
         </form>
       </div>
     </div>

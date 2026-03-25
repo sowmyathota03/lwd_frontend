@@ -46,17 +46,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center font-sans">
-      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
+    <div className="lwd-page flex justify-center items-center font-sans px-4">
+
+      <div className="lwd-card w-full max-w-md p-8 backdrop-blur-xl">
 
         {/* Title */}
-        <h3 className="text-center text-2xl font-semibold text-slate-900 mb-6">
+        <h3 className="lwd-title text-center text-2xl mb-6">
           Login
         </h3>
 
         {/* Error */}
         {error && (
-          <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
+          <div className="mb-4 text-sm text-center p-3 rounded-lg bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300">
             {error}
           </div>
         )}
@@ -65,7 +66,7 @@ export default function Login() {
 
           {/* Email */}
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-slate-700">
+            <label className="lwd-label block mb-2">
               Email
             </label>
             <input
@@ -74,13 +75,13 @@ export default function Login() {
               placeholder="Enter email"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="lwd-input"
             />
           </div>
 
           {/* Password */}
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-slate-700">
+            <label className="lwd-label block mb-2">
               Password
             </label>
             <input
@@ -89,7 +90,7 @@ export default function Login() {
               placeholder="Enter password"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="lwd-input"
             />
           </div>
 
@@ -98,7 +99,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => navigate("/forgot-password")}
-              className="text-sm text-sky-500 hover:underline"
+              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
             >
               Forgot Password?
             </button>
@@ -108,17 +109,17 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
+            className="w-full lwd-btn-primary disabled:opacity-70"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
 
           {/* Register */}
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-4 text-center text-sm lwd-text">
             <p>
               Don't have an account?{" "}
               <span
-                className="text-sky-500 cursor-pointer hover:underline"
+                className="text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
                 onClick={() => navigate("/register")}
               >
                 Register here

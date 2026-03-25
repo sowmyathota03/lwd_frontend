@@ -7,7 +7,7 @@ function AuthSelection() {
     <div className="lwd-page flex flex-col items-center justify-center px-5">
 
       {/* Title */}
-      <h2 className="lwd-title text-3xl mb-10">
+      <h2 className="lwd-title text-3xl mb-10 text-center">
         Join Our Platform
       </h2>
 
@@ -17,9 +17,9 @@ function AuthSelection() {
         {/* Job Seeker Card */}
         <div
           onClick={() => navigate("/register/jobseeker")}
-          className="lwd-card w-80 p-10 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+          className="lwd-card lwd-card-hover w-80 p-10 text-center cursor-pointer"
         >
-          <h3 className="text-xl font-semibold mb-4">
+          <h3 className="text-xl font-semibold mb-4 text-slate-800 dark:text-white">
             Register as Job Seeker
           </h3>
 
@@ -31,9 +31,9 @@ function AuthSelection() {
         {/* Recruiter Card */}
         <div
           onClick={() => navigate("/register/recruiter")}
-          className="lwd-card w-80 p-10 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+          className="lwd-card lwd-card-hover w-80 p-10 text-center cursor-pointer"
         >
-          <h3 className="text-xl font-semibold mb-4">
+          <h3 className="text-xl font-semibold mb-4 text-slate-800 dark:text-white">
             Register as Recruiter
           </h3>
 
