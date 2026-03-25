@@ -6,18 +6,13 @@ import { AuthContext } from "../../context/AuthContext";
 import Loader from "../common/Loader";
 import BasicInfo from "../profile/comman/BasicInfo";
 import RecruiterDetails from "./recruiterProfile/RecruiterDetails";
-import CompanyLogo from "./recruiterProfile/CompanyLogo";
-import CompanyWebsite from "./recruiterProfile/CompanyWebsite";
-import SocialLinks from "./recruiterProfile/SocialLinks";
-import CompanyDetails from "./recruiterProfile/CompanyDetails";
-import PostedJobs from "./recruiterProfile/PostedJobs";
+import RecruiterProfileAnalyst from "./recruiterProfile/RecruiterProfileAnalyst";
 
 import { getMyProfile, getUserById } from "../../api/UserApi";
 import {
   getRecruiterProfile,
   getRecruiterByUserId,
 } from "../../api/RecruiterApi";
-import RecruiterProfileAnalyst from "./recruiterProfile/RecruiterProfileAnalyst";
 
 const RecruiterProfile = () => {
   const { userId } = useParams();
@@ -93,25 +88,29 @@ const RecruiterProfile = () => {
         />
       ),
     },
-
     {
       id: "recruiter-analytics",
       title: "Recruiter Analytics",
       component: basicProfile.role === "RECRUITER" && (
         <RecruiterProfileAnalyst
-          userId={isOwnProfile ? null : userId} // null for logged-in recruiter
-          editable={isOwnProfile} // if self-profile
+          userId={isOwnProfile ? null : userId}
+          editable={isOwnProfile}
         />
       ),
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 py-4 px-4">
-      <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row">
-        {/* LEFT SIDEBAR */}
+    <div className="lwd-page py-6 px-4">
+      <div className="max-w-7xl mx-auto lwd-card flex flex-col md:flex-row overflow-hidden">
 
-        <div className="w-full md:w-1/4 border-r border-gray-200 bg-gray-50 p-4 space-y-2 sticky top-4 h-[calc(100vh-32px)] overflow-auto">
+        {/* LEFT SIDEBAR */}
+        <aside className="w-full md:w-1/4 lwd-sidebar sticky top-4 h-[calc(100vh-32px)] overflow-auto">
+
+          <h3 className="lwd-label mb-4 uppercase">
+            Profile Sections
+          </h3>
+
           {sections.map(
             (section) =>
               section.component && (
@@ -122,20 +121,22 @@ const RecruiterProfile = () => {
                       .getElementById(section.id)
                       ?.scrollIntoView({ behavior: "smooth" })
                   }
-                  className="w-full text-left px-3 py-2 rounded hover:bg-gray-200 transition font-medium text-gray-700"
+                  className="w-full text-left px-3 py-2 rounded-md text-sm font-medium
+                  text-gray-700 hover:bg-blue-50 hover:text-blue-700
+                  dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-blue-400
+                  transition"
                 >
                   {section.title}
                 </button>
               ),
           )}
-        </div>
+        </aside>
 
         {/* RIGHT CONTENT */}
+        <main className="w-full md:w-3/4 p-6 space-y-6">
 
-        <div className="w-full md:w-3/4 border-r border-gray-200 bg-gray-50 p-4 space-y-2 sticky top-4 h-[calc(100vh-32px)] overflow-auto">
           {/* HEADER */}
-
-          <div className="bg-indigo-500 p-4 text-white rounded-xl">
+          <div className="lwd-card bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
             <h2 className="text-2xl font-semibold">
               {isOwnProfile
                 ? "My Recruiter Profile"
@@ -144,22 +145,27 @@ const RecruiterProfile = () => {
           </div>
 
           {/* SECTIONS */}
-
-          <div className="p-10 space-y-8">
+          <div className="space-y-6">
             {sections.map(
               (section) =>
                 section.component && (
-                  <div
-                    key={section.id}
-                    id={section.id}
-                    className="rounded-xl shadow-sm border border-gray-200 p-4"
-                  >
-                    {section.component}
-                  </div>
+                  <section key={section.id} id={section.id}>
+                    <div className="lwd-card lwd-card-hover">
+
+                      <div className="lwd-section-header">
+                        {section.title}
+                      </div>
+
+                      <div className="p-4">
+                        {section.component}
+                      </div>
+
+                    </div>
+                  </section>
                 ),
             )}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

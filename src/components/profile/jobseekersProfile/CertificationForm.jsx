@@ -194,7 +194,7 @@ function CertificationForm({ certification, onClose, onSave }) {
           </div>
         </form>
       </div>
-    </div>
+    </div> 
   );
 }
 

@@ -2,33 +2,40 @@ import { Briefcase, FileText, Calendar, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchRecruiterDashboard } from "../../api/DashboardApi";
 
-// ─── Helper Sub‑Components ─────────────────────────────────────────────
-
+/* ================= STAT CARD ================= */
 const StatCard = ({ title, value, icon, color }) => (
-  <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-between hover:shadow-lg transition duration-200 border border-gray-100">
+  <div className="lwd-card lwd-card-hover flex items-center justify-between">
     <div>
-      <p className="text-sm text-gray-500">{title}</p>
-      <h3 className="text-2xl font-bold text-gray-800 mt-2">{value}</h3>
+      <p className="lwd-text">{title}</p>
+      <h3 className="text-2xl font-bold text-slate-800 dark:text-white mt-2">
+        {value}
+      </h3>
     </div>
-    <div className={`${color} text-white p-4 rounded-lg shadow-sm`}>{icon}</div>
+    <div className={`${color} text-white p-4 rounded-lg shadow-sm`}>
+      {icon}
+    </div>
   </div>
 );
 
+/* ================= RECENT APPLICATIONS ================= */
 const RecentApplications = ({ applications }) => {
   if (!applications?.length) {
-    return <p className="text-gray-500">No recent applications</p>;
+    return <p className="lwd-text">No recent applications</p>;
   }
 
   return (
     <ul className="space-y-4">
       {applications.map((app, idx) => (
-        <li key={idx} className="border-b border-gray-100 pb-3 last:border-0">
-          <p className="font-medium text-gray-800">{app.candidateName}</p>
-          <p className="text-sm text-gray-600">
+        <li
+          key={idx}
+          className="border-b border-gray-200 dark:border-gray-700 pb-3 last:border-0"
+        >
+          <p className="font-medium text-slate-800 dark:text-white">
+            {app.candidateName}
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             {app.jobTitle} • {app.appliedDate} •{" "}
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700">
-              {app.status}
-            </span>
+            <span className="lwd-badge">{app.status}</span>
           </p>
         </li>
       ))}
@@ -36,69 +43,66 @@ const RecentApplications = ({ applications }) => {
   );
 };
 
+/* ================= QUICK ACTIONS ================= */
 const QuickActions = () => (
   <div className="flex flex-col gap-3">
     <button
       onClick={() => (window.location.href = "/recruiter/createjob")}
-      className="bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+      className="lwd-btn-primary"
     >
       + Post New Job
     </button>
+
     <button
       onClick={() => (window.location.href = "/recruiter/applications")}
-      className="bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition font-medium shadow-sm"
+      className="lwd-btn-secondary"
     >
       View Applications
     </button>
+
     <button
       onClick={() => (window.location.href = "/recruiter/managejob")}
-      className="bg-purple-600 text-white py-2.5 rounded-lg hover:bg-purple-700 transition font-medium shadow-sm"
+      className="lwd-btn-primary"
     >
       Manage Jobs
     </button>
   </div>
 );
 
+/* ================= TABLE ================= */
 const PerJobStatsTable = ({ stats }) => (
   <div className="overflow-x-auto">
-    <table className="min-w-full divide-y divide-gray-200">
-      <thead className="bg-gray-50">
+    <table className="lwd-table">
+      <thead className="lwd-table-header">
         <tr>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
             Job Title
           </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
             Applications
           </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
             Shortlisted
           </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
             Rejected
           </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
             Pending
           </th>
         </tr>
       </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
+
+      <tbody>
         {stats.map((job, idx) => (
-          <tr key={idx}>
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+          <tr key={idx} className="lwd-table-row">
+            <td className="px-6 py-4 text-sm font-medium">
               {job.jobTitle}
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {job.applications}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {job.shortlisted}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {job.rejected}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {job.pending}
-            </td>
+            <td className="px-6 py-4 text-sm">{job.applications}</td>
+            <td className="px-6 py-4 text-sm">{job.shortlisted}</td>
+            <td className="px-6 py-4 text-sm">{job.rejected}</td>
+            <td className="px-6 py-4 text-sm">{job.pending}</td>
           </tr>
         ))}
       </tbody>
@@ -106,8 +110,7 @@ const PerJobStatsTable = ({ stats }) => (
   </div>
 );
 
-// ─── Main Component ────────────────────────────────────────────────────
-
+/* ================= MAIN ================= */
 export default function RecruiterHome() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -117,8 +120,8 @@ export default function RecruiterHome() {
     fetchRecruiterDashboard()
       .then((res) => setDashboardData(res.data))
       .catch((err) => {
-        console.error("Failed to fetch recruiter dashboard", err);
-        setError("Unable to load dashboard data. Please try again later.");
+        console.error(err);
+        setError("Unable to load dashboard data.");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -126,21 +129,14 @@ export default function RecruiterHome() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div
-          className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"
-          role="status"
-          aria-label="Loading"
-        />
+        <div className="lwd-loader animate-spin h-12 w-12 border-t-2 border-b-2 border-blue-500 rounded-full" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div
-        className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"
-        role="alert"
-      >
+      <div className="lwd-card border-red-300 text-red-600">
         {error}
       </div>
     );
@@ -180,47 +176,42 @@ export default function RecruiterHome() {
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Section */}
-      <div className="bg-blue-600 text-white rounded-xl p-8 shadow-md">
+    <div className="lwd-page space-y-8 p-6">
+
+      {/* HEADER */}
+      <div className="lwd-card bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <h2 className="text-3xl font-bold mb-2">Welcome Back 👋</h2>
-        <p className="text-blue-50">
+        <p className="text-blue-100">
           Here's what's happening with your recruitment activity today.
         </p>
       </div>
 
-      {/* Statistics Cards */}
+      {/* STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         {stats.map((item, index) => (
           <StatCard key={index} {...item} />
         ))}
       </div>
 
-      {/* Activity Section */}
+      {/* ACTIVITY */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Applications */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-          <h4 className="text-lg font-semibold text-gray-800 mb-4">
-            Recent Applications
-          </h4>
+
+        <div className="lwd-card">
+          <h4 className="lwd-title mb-4">Recent Applications</h4>
           <RecentApplications applications={dashboardData.recentApplications} />
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-          <h4 className="text-lg font-semibold text-gray-800 mb-4">
-            Quick Actions
-          </h4>
+        <div className="lwd-card">
+          <h4 className="lwd-title mb-4">Quick Actions</h4>
           <QuickActions />
         </div>
+
       </div>
 
-      {/* Optional: Per‑Job Statistics */}
+      {/* TABLE */}
       {dashboardData.perJobStats?.length > 0 && (
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-          <h4 className="text-lg font-semibold text-gray-800 mb-4">
-            Job‑wise Statistics
-          </h4>
+        <div className="lwd-card">
+          <h4 className="lwd-title mb-4">Job-wise Statistics</h4>
           <PerJobStatsTable stats={dashboardData.perJobStats} />
         </div>
       )}

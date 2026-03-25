@@ -29,11 +29,7 @@ export default function RecruiterList() {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    if (activeTab === "ALL") {
-      fetchAllRecruiters();
-    } else {
-      fetchPendingRecruiters();
-    }
+    activeTab === "ALL" ? fetchAllRecruiters() : fetchPendingRecruiters();
   }, [activeTab, page]);
 
   const fetchAllRecruiters = async () => {
@@ -72,23 +68,14 @@ export default function RecruiterList() {
     try {
       setActionLoading(true);
 
-      if (action === "approve") {
-        await approveRecruiter(recruiter.id);
-        fetchAllRecruiters();
-        fetchPendingRecruiters();
-      }
+      if (action === "approve") await approveRecruiter(recruiter.id);
+      if (action === "block") await blockRecruiter(recruiter.id, true);
+      if (action === "unblock") await blockRecruiter(recruiter.id, false);
 
-      if (action === "block") {
-        await blockRecruiter(recruiter.id, true);
-        fetchAllRecruiters();
-      }
-
-      if (action === "unblock") {
-        await blockRecruiter(recruiter.id, false);
-        fetchAllRecruiters();
-      }
+      fetchAllRecruiters();
+      fetchPendingRecruiters();
     } catch {
-      alert("Action failed");
+      setError("Action failed");
     } finally {
       setActionLoading(false);
       setConfirm({ open: false, action: null, recruiter: null });
@@ -100,128 +87,108 @@ export default function RecruiterList() {
 
   if (loading) {
     return (
-      <p className="text-blue-600 font-medium">
-       <Loader/>
-      </p>
+      <div className="lwd-page flex justify-center py-10">
+        <Loader />
+      </div>
     );
   }
 
   return (
-    <div className="bg-blue-50 p-6 rounded-xl shadow-lg">
-      <h2 className="text-xl font-semibold text-blue-900 mb-4">
-        Recruiters
-      </h2>
+    <div className="lwd-page space-y-6">
 
-      {/* ===== Tabs ===== */}
-      <div className="flex gap-3 mb-5">
-        <button
-          onClick={() => {
-            setActiveTab("ALL");
-            setPage(0);
-          }}
-          className={`px-5 py-2 rounded font-medium transition-all ${
-            activeTab === "ALL"
-              ? "bg-linear-to-r from-blue-400 to-blue-600 text-white shadow-md"
-              : "bg-blue-100 text-blue-900 hover:bg-blue-200"
-          }`}
-        >
-          All Recruiters
-        </button>
-
-        <button
-          onClick={() => {
-            setActiveTab("PENDING");
-            setPage(0);
-          }}
-          className={`px-5 py-2 rounded font-medium transition-all ${
-            activeTab === "PENDING"
-              ? "bg-linear-to-r from-blue-400 to-blue-600 text-white shadow-md"
-              : "bg-blue-100 text-blue-900 hover:bg-blue-200"
-          }`}
-        >
-          Pending Approval
-        </button>
+      {/* Header */}
+      <div className="lwd-card">
+        <h2 className="lwd-title">Recruiters</h2>
       </div>
 
-      {error && (
-        <p className="text-red-600 mb-3">{error}</p>
-      )}
+      {/* Tabs */}
+      <div className="flex gap-3">
+        {["ALL", "PENDING"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => {
+              setActiveTab(tab);
+              setPage(0);
+            }}
+            className={`lwd-tab ${activeTab === tab ? "lwd-tab-active" : ""
+              }`}
+          >
+            {tab === "ALL" ? "All Recruiters" : "Pending Approval"}
+          </button>
+        ))}
+      </div>
 
-      {/* ===== Table ===== */}
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
-        <table className="w-full text-sm">
-          <thead className="bg-blue-100 text-blue-900">
+      {/* Error */}
+      {error && <div className="lwd-card text-red-600">{error}</div>}
+
+      {/* Table */}
+      <div className="lwd-card overflow-x-auto">
+        <table className="lwd-table">
+          <thead>
             <tr>
-              <th className="p-4 text-left font-semibold">Name</th>
-              <th className="p-4 text-left font-semibold">Email</th>
-              <th className="p-4 text-left font-semibold">Role</th>
-              <th className="p-4 text-left font-semibold">Status</th>
-              <th className="p-4 text-left font-semibold">Created At</th>
-              <th className="p-4 text-left font-semibold">Actions</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {recruiters.length === 0 ? (
               <tr>
-                <td
-                  colSpan="6"
-                  className="text-center p-6 text-gray-500"
-                >
+                <td colSpan="6" className="text-center py-6 lwd-text">
                   No recruiters found
                 </td>
               </tr>
             ) : (
               recruiters.map((rec) => (
-                <tr
-                  key={rec.id}
-                  className="border-t hover:bg-blue-50 transition"
-                >
-                  <td className="p-4">
+                <tr key={rec.id}>
+                  <td>
                     <NavLink
                       to={`/recruiters-admin/recruiter/${rec.id}/jobs`}
-                      className="text-blue-600 hover:underline"
+                      className="lwd-link"
                     >
                       {rec.name}
                     </NavLink>
                   </td>
 
-                  <td className="p-4">
+                  <td>
                     <NavLink
                       to={`/recruiters-admin/recruiter/${rec.id}/jobs`}
-                      className="text-blue-600 hover:underline"
+                      className="lwd-link"
                     >
                       {rec.email}
                     </NavLink>
                   </td>
 
-                  <td className="p-4">{rec.role}</td>
+                  <td>{rec.role}</td>
 
-                  <td className="p-4">
+                  <td>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
-                        rec.status === "PENDING_APPROVAL"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : rec.status === "ACTIVE"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
+                      className={`lwd-badge ${rec.status === "ACTIVE"
+                          ? "lwd-badge-success"
+                          : rec.status === "PENDING_APPROVAL"
+                            ? "lwd-badge-warning"
+                            : "lwd-badge-danger"
+                        }`}
                     >
                       {rec.status}
                     </span>
                   </td>
 
-                  <td className="p-4">
+                  <td>
                     {rec.createdAt
                       ? new Date(rec.createdAt).toLocaleDateString()
                       : "-"}
                   </td>
 
-                  <td className="p-4 flex gap-2 flex-wrap">
+                  <td className="flex gap-2 flex-wrap">
                     {rec.status === "PENDING_APPROVAL" && (
                       <button
                         onClick={() => openConfirm("approve", rec)}
-                        className="px-4 py-1 rounded text-sm text-white bg-linear-to-r from-green-500 to-green-700 hover:opacity-90 transition"
+                        className="lwd-btn-success-sm"
                       >
                         Approve
                       </button>
@@ -230,14 +197,14 @@ export default function RecruiterList() {
                     {rec.status !== "SUSPENDED" ? (
                       <button
                         onClick={() => openConfirm("block", rec)}
-                        className="px-4 py-1 rounded text-sm text-white bg-linear-to-r from-red-500 to-red-700 hover:opacity-90 transition"
+                        className="lwd-btn-danger-sm"
                       >
                         Block
                       </button>
                     ) : (
                       <button
                         onClick={() => openConfirm("unblock", rec)}
-                        className="px-4 py-1 rounded-full text-sm text-white bg-linear-to-r from-blue-500 to-blue-700 hover:opacity-90 transition"
+                        className="lwd-btn-primary-sm"
                       >
                         Unblock
                       </button>
@@ -250,29 +217,30 @@ export default function RecruiterList() {
         </table>
       </div>
 
-      {/* ===== Pagination ===== */}
-      <div className="flex items-center justify-center mt-6 gap-2">
+      {/* Pagination */}
+      <div className="flex justify-center items-center gap-4">
         <button
           disabled={page === 0}
-          onClick={() => setPage((prev) => prev - 1)}
-          className="px-2 py-1 rounded border-2 text-gray-600 disabled:opacity-50"
+          onClick={() => setPage((p) => p - 1)}
+          className="lwd-btn-secondary-sm"
         >
-          Previous
+          Prev
         </button>
 
-        <span className="text-sm text-gray-600">
-          Page {page + 1} of {totalPages}
+        <span className="lwd-text">
+          Page {page + 1} / {totalPages}
         </span>
 
         <button
           disabled={page + 1 >= totalPages}
-          onClick={() => setPage((prev) => prev + 1)}
-          className="px-2 py-1 rounded border-2 text-gray-600 disabled:opacity-50"
+          onClick={() => setPage((p) => p + 1)}
+          className="lwd-btn-secondary-sm"
         >
           Next
         </button>
       </div>
 
+      {/* Confirm Dialog */}
       <ConfirmDialog
         open={confirm.open}
         title={`${confirm.action?.toUpperCase()} Recruiter`}

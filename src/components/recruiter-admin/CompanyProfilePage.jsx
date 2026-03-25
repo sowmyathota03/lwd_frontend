@@ -10,7 +10,6 @@ import { AuthContext } from "../../context/AuthContext";
 import Loader from "../common/Loader";
 import CompanyAnalytics from "../company/CompanyAnalytics";
 
-// Heroicons v2 outline – make sure @heroicons/react is installed
 import {
   BuildingOfficeIcon,
   GlobeAltIcon,
@@ -19,7 +18,6 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   DocumentTextIcon,
-  ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 import { CheckCircleIcon as CheckCircleSolid } from "@heroicons/react/24/solid";
 
@@ -52,14 +50,10 @@ export default function CompanyProfile() {
     try {
       setLoading(true);
       let data;
-      if (companyId) {
-        // 🔹 Admin viewing specific company
-        data = await getCompanyById(companyId);
-      } else {
-        // 🔹 Recruiter viewing own company
-        data = await getMyCompany();
-        console.log("My Company:", data);
-      }
+
+      data = companyId
+        ? await getCompanyById(companyId)
+        : await getMyCompany();
 
       setCompany(data);
       setFormData({
@@ -101,10 +95,10 @@ export default function CompanyProfile() {
 
       if (company?.id) {
         await updateCompany(company.id, formData);
-        setSuccess("Company profile updated successfully ✅");
+        setSuccess("Company updated successfully ✅");
       } else {
         await createCompany(formData);
-        setSuccess("Company profile created successfully 🎉");
+        setSuccess("Company created successfully 🎉");
       }
 
       await loadCompany();
@@ -115,291 +109,205 @@ export default function CompanyProfile() {
     }
   };
 
-  const canEdit = user?.role === "ADMIN" || user?.role === "RECRUITER_ADMIN";
+  const canEdit =
+    user?.role === "ADMIN" || user?.role === "RECRUITER_ADMIN";
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="lwd-page flex items-center justify-center">
         <div className="text-center">
           <Loader />
-          <p className="mt-4 text-sm text-gray-500">Loading company profile...</p>
+          <p className="lwd-text mt-4">Loading company profile...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6 md:py-10">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back button (optional - you can add navigation) */}
-        {/* <button
-          onClick={() => window.history.back()}
-          className="mb-4 inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeftIcon className="h-4 w-4 mr-1" />
-          Back
-        </button> */}
+    <div className="lwd-page py-6">
+      <div className="max-w-5xl mx-auto space-y-6">
 
-        {/* Error / Success Messages */}
+        {/* Alerts */}
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 border border-red-200">
-            <div className="flex items-center">
-              <XCircleIcon className="h-5 w-5 text-red-400 mr-2" />
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
+          <div className="lwd-card border-red-300">
+            <p className="text-red-600">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 rounded-lg bg-green-50 p-4 border border-green-200">
-            <div className="flex items-center">
-              <CheckCircleIcon className="h-5 w-5 text-green-400 mr-2" />
-              <p className="text-sm text-green-700">{success}</p>
-            </div>
+          <div className="lwd-card border-green-300">
+            <p className="text-green-600">{success}</p>
           </div>
         )}
 
-        {/* View Mode */}
+        {/* VIEW MODE */}
         {!isEditing && company && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            {/* Header with logo and basic info */}
-            <div className="bg-linear-to-r from-blue-50 to-indigo-50 px-6 py-6 md:px-8 md:py-8 border-b border-gray-200">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  {/* Logo */}
-                  <div className="w-20 h-20 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden text-3xl font-bold text-blue-600 border border-gray-200">
-                    {company.logoUrl ? (
-                      <img
-                        src={company.logoUrl}
-                        alt={company.companyName}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <BuildingOfficeIcon className="h-10 w-10 text-blue-500" />
-                    )}
-                  </div>
-                  <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-                      {company.companyName}
-                    </h1>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span
-                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                          company.isActive
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {company.isActive ? (
-                          <CheckCircleSolid className="h-3 w-3" />
-                        ) : (
-                          <XCircleIcon className="h-3 w-3" />
-                        )}
-                        {company.isActive ? "Active" : "Inactive"}
-                      </span>
-                      {company.industry && (
-                        <span className="text-xs text-gray-500">
-                          {company.industry}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+          <div className="lwd-card lwd-card-hover">
+
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-4">
+
+                <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
+                  {company.logoUrl ? (
+                    <img src={company.logoUrl} className="w-full h-full object-cover rounded-lg" />
+                  ) : (
+                    <BuildingOfficeIcon className="w-8 h-8 text-blue-500" />
+                  )}
                 </div>
 
-                {/* Edit button */}
-                {canEdit && (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition shadow-sm"
-                  >
-                    <PencilSquareIcon className="h-4 w-4" />
-                    Edit Company
-                  </button>
-                )}
+                <div>
+                  <h1 className="lwd-title text-xl">{company.companyName}</h1>
+
+                  <span className={`lwd-badge ${company.isActive
+                      ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                      : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                    }`}>
+                    {company.isActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+              </div>
+
+              {canEdit && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="lwd-btn-primary flex items-center gap-2"
+                >
+                  <PencilSquareIcon className="w-4 h-4" />
+                  Edit
+                </button>
+              )}
+            </div>
+
+            {/* Details */}
+            <div className="grid md:grid-cols-2 gap-6">
+
+              <div className="flex gap-2">
+                <GlobeAltIcon className="lwd-icon" />
+                <div>
+                  <p className="lwd-label">Website</p>
+                  <p className="lwd-text">{company.website || "-"}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <MapPinIcon className="lwd-icon" />
+                <div>
+                  <p className="lwd-label">Location</p>
+                  <p className="lwd-text">{company.location || "-"}</p>
+                </div>
               </div>
             </div>
 
-            {/* Company Details */}
-            <div className="p-6 md:p-8 space-y-6">
-              {/* Key details grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3">
-                  <GlobeAltIcon className="h-5 w-5 text-gray-400 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Website
-                    </p>
-                    {company.website ? (
-                      <a
-                        href={company.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline text-sm"
-                      >
-                        {company.website}
-                      </a>
-                    ) : (
-                      <p className="text-sm text-gray-500">-</p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <MapPinIcon className="h-5 w-5 text-gray-400 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Location
-                    </p>
-                    <p className="text-sm text-gray-800">
-                      {company.location || "-"}
-                    </p>
-                  </div>
-                </div>
-              </div>
+            {/* Description */}
+            <div className="mt-6">
+              <h3 className="lwd-title flex items-center gap-2">
+                <DocumentTextIcon className="w-4 h-4" />
+                About Company
+              </h3>
+              <p className="lwd-text mt-2">
+                {company.description || "No description provided"}
+              </p>
+            </div>
 
-              {/* Description */}
-              <div className="pt-4 border-t border-gray-100">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                  <DocumentTextIcon className="h-4 w-4 text-gray-400" />
-                  About Company
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {company.description || "No description provided."}
-                </p>
-              </div>
-
-              {/* Analytics Section */}
-              <div className="pt-4 border-t border-gray-100">
-                <CompanyAnalytics companyId={company.id} />
-              </div>
+            {/* Analytics */}
+            <div className="mt-6">
+              <CompanyAnalytics companyId={company.id} />
             </div>
           </div>
         )}
 
-        {/* Edit / Create Mode */}
+        {/* EDIT MODE */}
         {isEditing && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              {company ? (
-                <>
-                  <PencilSquareIcon className="h-5 w-5 text-blue-500" />
-                  Edit Company
-                </>
-              ) : (
-                <>
-                  <BuildingOfficeIcon className="h-5 w-5 text-blue-500" />
-                  Create New Company
-                </>
-              )}
+          <div className="lwd-card">
+            <h2 className="lwd-title mb-4">
+              {company ? "Edit Company" : "Create Company"}
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Company Name <span className="text-red-500">*</span>
-                </label>
+                <label className="lwd-label">Company Name</label>
                 <input
-                  type="text"
                   name="companyName"
                   value={formData.companyName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  placeholder="e.g., Acme Inc."
+                  className="lwd-input"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
+                <label className="lwd-label">Description</label>
                 <textarea
                   name="description"
                   rows={4}
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  placeholder="Tell us about your company..."
+                  className="lwd-input"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Website
-                  </label>
-                  <input
-                    type="url"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="https://example.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="City, Country"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Logo URL
-                </label>
+              <div className="grid md:grid-cols-2 gap-4">
                 <input
-                  type="url"
-                  name="logoUrl"
-                  value={formData.logoUrl}
+                  name="website"
+                  placeholder="Website"
+                  value={formData.website}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  placeholder="https://example.com/logo.png"
+                  className="lwd-input"
+                />
+
+                <input
+                  name="location"
+                  placeholder="Location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  className="lwd-input"
                 />
               </div>
 
-              {/* Checkbox for isActive (optional, might be hidden for non-admins) */}
-              {(user?.role === "ADMIN" || user?.role === "RECRUITER_ADMIN") && (
+              <input
+                name="logoUrl"
+                placeholder="Logo URL"
+                value={formData.logoUrl}
+                onChange={handleChange}
+                className="lwd-input"
+              />
+
+              {/* Checkbox */}
+              {canEdit && (
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     name="isActive"
-                    id="isActive"
                     checked={formData.isActive}
                     onChange={handleChange}
-                    className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    className="lwd-checkbox"
                   />
-                  <label htmlFor="isActive" className="text-sm text-gray-700">
-                    Company is active
-                  </label>
+                  <label className="lwd-text">Company Active</label>
                 </div>
               )}
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 pt-3">
                 <button
                   type="submit"
+                  className="lwd-btn-primary"
                   disabled={saving}
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {saving ? "Saving..." : company ? "Save Changes" : "Create Company"}
+                  {saving ? "Saving..." : "Save"}
                 </button>
+
                 {company && (
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition"
+                    className="lwd-btn-secondary"
                   >
                     Cancel
                   </button>
                 )}
               </div>
+
             </form>
           </div>
         )}

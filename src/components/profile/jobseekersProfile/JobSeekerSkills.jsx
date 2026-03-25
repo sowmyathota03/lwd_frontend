@@ -10,23 +10,19 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
   const [loading, setLoading] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
-  // Load Skills
   useEffect(() => {
     const fetchSkills = async () => {
       setLoading(true);
       try {
         if (isOwnProfile) {
           const res = await getMySkills();
-          const normalized = res.data.map(normalizeSkill);
-          setSkills(normalized);
+          setSkills(res.data.map(normalizeSkill));
         } else if (userId) {
           const res = await getSkillsById(userId);
-          const normalized = res.data.map(normalizeSkill);
-          setSkills(normalized);
+          setSkills(res.data.map(normalizeSkill));
         }
       } catch (err) {
         console.error("Failed to fetch skills:", err);
-        // Optionally show user feedback
       } finally {
         setLoading(false);
       }
@@ -44,27 +40,31 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
       editing={false}
       onEdit={() => setOpenForm(true)}
     >
+      {/* Loading */}
       {loading ? (
-        <div className="flex bg-gray-50 flex-wrap gap-3 animate-pulse">
+        <div className="flex flex-wrap gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <span
-              key={i}
-              className="bg-gray-50 text-transparent px-4 py-1.5 rounded-full text-sm"
-            >
-              Loading
+            <span key={i} className="lwd-skeleton px-4 py-1.5 rounded-full text-sm w-20">
+              &nbsp;
             </span>
           ))}
         </div>
       ) : skills.length === 0 ? (
-        <div className="text-center text-gray-400 py-4">
-          {canEdit ? "No skills added yet. Click edit to add." : "No skills listed."}
+        /* Empty */
+        <div className="text-center py-4">
+          <p className="lwd-text">
+            {canEdit
+              ? "No skills added yet. Click edit to add."
+              : "No skills listed."}
+          </p>
         </div>
       ) : (
+        /* Skills */
         <div className="flex flex-wrap gap-3">
           {skills.map((skill, index) => (
             <span
               key={index}
-              className="bg-linear-to-r from-blue-100 to-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-medium shadow-sm"
+              className="lwd-badge"
             >
               {formatSkill(skill)}
             </span>
@@ -72,6 +72,7 @@ const JobSeekerSkills = ({ editable, isOwnProfile, userId }) => {
         </div>
       )}
 
+      {/* Modal */}
       {openForm && (
         <JobSeekerSkillsForm
           skills={skills}

@@ -3,7 +3,6 @@ import SearchCompanies from "../company/SearchCompanies";
 import { requestCompanyApproval } from "../../api/RecruiterApi";
 
 function RecruiterCompanyRequest() {
-
   const [loadingCompanyId, setLoadingCompanyId] = useState(null);
 
   const handleRequestApproval = async (companyId) => {
@@ -13,7 +12,6 @@ function RecruiterCompanyRequest() {
       await requestCompanyApproval(companyId);
 
       alert("Company approval request sent successfully");
-
     } catch (error) {
       console.error("Error sending request", error);
       alert("Failed to send request");
@@ -23,22 +21,31 @@ function RecruiterCompanyRequest() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="lwd-page p-6">
 
-      <h2 className="text-2xl font-semibold">
-        Request Company Access
-      </h2>
+      <div className="max-w-5xl mx-auto space-y-6">
 
-      <p className="text-gray-600">
-        Search your company and request job posting access.
-      </p>
+        {/* HEADER */}
+        <div className="lwd-card">
+          <h2 className="lwd-title text-2xl">
+            Request Company Access
+          </h2>
 
-      <SearchCompanies
-        showRequestButton={true}
-        onRequestCompany={handleRequestApproval}
-        loadingCompanyId={loadingCompanyId}
-      />
+          <p className="lwd-text mt-2">
+            Search your company and request job posting access.
+          </p>
+        </div>
 
+        {/* SEARCH SECTION */}
+        <div className="lwd-card lwd-card-hover">
+          <SearchCompanies
+            showRequestButton={true}
+            onRequestCompany={handleRequestApproval}
+            loadingCompanyId={loadingCompanyId}
+          />
+        </div>
+
+      </div>
     </div>
   );
 }
