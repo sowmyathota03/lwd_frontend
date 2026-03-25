@@ -1,13 +1,14 @@
+// ================= SECTION =================
 export const Section = ({ title, children, onEdit, editing, editable }) => (
-  <div className="bg-white border border-gray-200 p-6 rounded-xl space-y-4">
+  <div className="lwd-card space-y-4">
+
     <div className="flex justify-between items-center">
-      <h3 className="text-lg font-semibold">{title}</h3>
+      <h3 className="lwd-section-title">{title}</h3>
 
       {editable && !editing && (
         <button
           onClick={onEdit}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition"
-          aria-label="Edit section"
+          className="lwd-btn-primary-sm flex items-center gap-2"
         >
           <svg
             className="w-4 h-4"
@@ -31,36 +32,39 @@ export const Section = ({ title, children, onEdit, editing, editable }) => (
   </div>
 );
 
+// ================= GRID =================
 export const Grid = ({ children }) => (
   <div className="grid md:grid-cols-2 gap-6">{children}</div>
 );
 
+// ================= FIELD =================
 export const Field = ({ label, value }) => (
-  <div className="flex gap-2">
-    <p className="text-xs uppercase text-gray-500 mt-1">{label}:</p>
-    <p className="font-medium">{value || "-"}</p>
+  <div>
+    <p className="lwd-label uppercase tracking-wider">{label}</p>
+    <p className="lwd-text mt-1">{value || "—"}</p>
   </div>
 );
 
+// ================= INPUT =================
 export const Input = ({ label, ...props }) => (
   <div>
     {label && (
-      <label className="text-xs uppercase text-gray-500 mb-1 block">
-        {label}
-      </label>
+      <label className="lwd-label mb-1 block">{label}</label>
     )}
     <input
       {...props}
-      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+      className="lwd-input"
     />
   </div>
 );
 
+// ================= BUTTONS =================
 export const Buttons = ({ onCancel, onSave, loading }) => (
   <div className="flex gap-4 mt-4">
+
     <button
       onClick={onCancel}
-      className="px-5 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 transition"
+      className="lwd-btn-outline"
     >
       Cancel
     </button>
@@ -68,24 +72,24 @@ export const Buttons = ({ onCancel, onSave, loading }) => (
     <button
       onClick={onSave}
       disabled={loading}
-      className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-60"
+      className="lwd-btn-primary disabled:opacity-60"
     >
       {loading ? "Saving..." : "Save"}
     </button>
+
   </div>
 );
 
+// ================= SELECT =================
 export const Select = ({ label, options = [], ...props }) => (
   <div>
     {label && (
-      <label className="text-xs uppercase text-gray-500 mb-1 block">
-        {label}
-      </label>
+      <label className="lwd-label mb-1 block">{label}</label>
     )}
 
     <select
       {...props}
-      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+      className="lwd-input"
     >
       <option value="">Select {label}</option>
 
@@ -98,14 +102,23 @@ export const Select = ({ label, options = [], ...props }) => (
   </div>
 );
 
+// ================= CHECKBOX =================
 export const Checkbox = ({ label, ...props }) => (
   <div className="flex items-center gap-2 mt-2">
-    <input type="checkbox" {...props} className="w-4 h-4 accent-blue-600" />
 
-    {label && <label className="text-sm text-gray-700">{label}</label>}
+    <input
+      type="checkbox"
+      {...props}
+      className="w-4 h-4 accent-blue-600"
+    />
+
+    {label && (
+      <label className="lwd-text">{label}</label>
+    )}
   </div>
 );
 
+// ================= FORMAT SKILL =================
 export const formatSkill = (skill) => {
   if (!skill) return "";
   return skill

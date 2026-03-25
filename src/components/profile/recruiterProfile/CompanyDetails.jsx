@@ -24,7 +24,6 @@ function CompanyDetails({ userId, editable }) {
             const data = userId
                 ? await getCompanyDetailsByUserId(userId)
                 : await getMyCompanyDetails();
-
             setCompany(data);
         } catch (err) {
             console.error("Error fetching company details", err);
@@ -40,23 +39,24 @@ function CompanyDetails({ userId, editable }) {
 
     if (loading) {
         return (
-            <p className="p-3 text-gray-500">Loading company details...</p>
+            <p className="p-4 text-gray-500 dark:text-gray-400">
+                Loading company details...
+            </p>
         );
     }
 
     return (
-        <div className="bg-gray-100 shadow-sm rounded-lg p-4 space-y-3">
-
+        <div className="bg-white dark:bg-slate-800 shadow-xl rounded-2xl p-6 space-y-4 transition-colors">
             {/* Header */}
-            <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-100">
                     Company Details
                 </h2>
 
                 {editable && !company && (
                     <button
                         onClick={() => setEditing(true)}
-                        className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                        className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
                     >
                         + Add
                     </button>
@@ -65,25 +65,25 @@ function CompanyDetails({ userId, editable }) {
 
             {/* No company */}
             {!company && (
-                <p className="text-gray-500">No company details added.</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                    No company details added.
+                </p>
             )}
 
             {/* Company Card */}
             {company && (
-                <div className="flex justify-between items-start p-4 bg-white rounded-md hover:shadow transition">
-
-                    <div className="flex-1 space-y-1">
-
-                        {/* Title */}
+                <div className="flex flex-col md:flex-row justify-between items-start p-6 bg-gray-50 dark:bg-slate-700 rounded-xl hover:shadow-lg transition-shadow">
+                    <div className="flex-1 space-y-2">
+                        {/* Title & Edit */}
                         <div className="flex justify-between items-center">
-                            <h3 className="font-semibold text-gray-800 text-base">
+                            <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-lg">
                                 {company.companyName}
                             </h3>
-
                             {editable && (
                                 <button
                                     onClick={() => setEditing(true)}
-                                    className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                                    className="p-1 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors"
+                                    aria-label="Edit Company Details"
                                 >
                                     <Pencil size={18} />
                                 </button>
@@ -91,11 +91,13 @@ function CompanyDetails({ userId, editable }) {
                         </div>
 
                         {company.industry && (
-                            <p className="text-indigo-600">{company.industry}</p>
+                            <p className="text-indigo-600 dark:text-indigo-400 font-medium">
+                                {company.industry}
+                            </p>
                         )}
 
                         {company.location && (
-                            <p className="text-gray-600">{company.location}</p>
+                            <p className="text-gray-600 dark:text-gray-300">{company.location}</p>
                         )}
 
                         {company.website && (
@@ -103,24 +105,21 @@ function CompanyDetails({ userId, editable }) {
                                 href={company.website}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-blue-600 hover:underline"
+                                className="text-blue-600 dark:text-blue-400 hover:underline"
                             >
                                 {company.website}
                             </a>
                         )}
 
                         {company.companySize && (
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 dark:text-gray-300">
                                 Size: {company.companySize}
                             </p>
                         )}
 
                         {company.description && (
-                            <p className="text-gray-600">
-                                {company.description}
-                            </p>
+                            <p className="text-gray-600 dark:text-gray-300">{company.description}</p>
                         )}
-
                     </div>
                 </div>
             )}
@@ -133,7 +132,6 @@ function CompanyDetails({ userId, editable }) {
                     onSave={handleSave}
                 />
             )}
-
         </div>
     );
 }

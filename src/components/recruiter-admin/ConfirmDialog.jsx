@@ -24,21 +24,25 @@ export default function ConfirmDialog({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.2 }}
-            className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6"
+            className="lwd-card w-full max-w-md"
           >
-            <h3 className="text-xl font-semibold text-gray-800">
+            {/* Title */}
+            <h3 className="lwd-title text-lg">
               {title}
             </h3>
 
-            <p className="mt-3 text-gray-600 text-sm leading-relaxed">
+            {/* Message */}
+            <p className="lwd-text mt-3">
               {message}
             </p>
 
+            {/* Actions */}
             <div className="mt-6 flex justify-end gap-3">
+
               <button
                 onClick={onCancel}
                 disabled={loading}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="lwd-btn-secondary"
               >
                 {cancelText}
               </button>
@@ -46,10 +50,11 @@ export default function ConfirmDialog({
               <button
                 onClick={onConfirm}
                 disabled={loading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="lwd-btn-danger"
               >
                 {loading ? "Processing..." : confirmText}
               </button>
+
             </div>
           </motion.div>
         </motion.div>

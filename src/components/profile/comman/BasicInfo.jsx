@@ -1,6 +1,6 @@
 import { useState } from "react";
 import BasicInfoForm from "./BasicInfoForm";
-import { Section } from "../comman/Helpers"; // adjust import path
+import { Section } from "../comman/Helpers";
 
 const BasicInfo = ({ profile, setProfile, editable }) => {
   const [openForm, setOpenForm] = useState(false);
@@ -8,34 +8,43 @@ const BasicInfo = ({ profile, setProfile, editable }) => {
   if (!profile) return null;
 
   return (
-    <div className="lwd-card space-y-4 p-6">
+    <>
       <Section
         title="Basic Information"
         editable={editable}
         onEdit={() => setOpenForm(true)}
+        className="lwd-card lwd-card-hover"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
           {/* Name */}
           <div>
             <p className="lwd-label uppercase tracking-wider">Name</p>
-            <p className="lwd-text mt-1">{profile.name || "—"}</p>
+            <p className="lwd-text mt-1">
+              {profile.name || "—"}
+            </p>
           </div>
 
           {/* Email */}
           <div>
             <p className="lwd-label uppercase tracking-wider">Email</p>
-            <p className="lwd-text mt-1">{profile.email || "—"}</p>
+            <p className="lwd-text mt-1 break-all">
+              {profile.email || "—"}
+            </p>
           </div>
 
           {/* Phone */}
           <div>
             <p className="lwd-label uppercase tracking-wider">Phone</p>
-            <p className="lwd-text mt-1">{profile.phone || "—"}</p>
+            <p className="lwd-text mt-1">
+              {profile.phone || "—"}
+            </p>
           </div>
+
         </div>
       </Section>
 
-      {/* Editable Form */}
+      {/* ===== MODAL FORM ===== */}
       {openForm && (
         <BasicInfoForm
           profile={profile}
@@ -43,7 +52,7 @@ const BasicInfo = ({ profile, setProfile, editable }) => {
           onClose={() => setOpenForm(false)}
         />
       )}
-    </div>
+    </>
   );
 };
 

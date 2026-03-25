@@ -6,18 +6,6 @@ import {
 import { Section, Field } from "../comman/Helpers";
 import AboutInfoForm from "./AboutInfoForm";
 
-/** 
- * AboutInfo component displays the user's headline and about section.
- * It fetches data based on ownership (own profile or other user's profile)
- * and allows editing when `editable` is true.
- *
- * @param {Object} props
- * @param {Object} props.profile - The current profile object (containing headline and about)
- * @param {Function} props.setProfile - State setter to update profile
- * @param {boolean} props.editable - Whether the current user can edit this section
- * @param {string|number} props.userId - ID of the user whose profile is being viewed
- * @param {boolean} props.isOwnProfile - Whether this is the logged-in user's profile
- */
 const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
   const [openForm, setOpenForm] = useState(false);
   const [aboutData, setAboutData] = useState(null);
@@ -26,7 +14,6 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
 
   // ================= FETCH ABOUT INFO =================
   const loadAboutInfo = async () => {
-    // Only fetch if we have the necessary identifiers
     if (!isOwnProfile && !userId) return;
 
     setLoading(true);
@@ -62,56 +49,66 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
     }
   }, [aboutData, setProfile]);
 
-  // Show loading skeleton
+  // ================= LOADING =================
   if (loading) {
     return (
-      <Section title="About" editable={false} className="p-3 md:p-4">
-        <div className="animate-pulse space-y-3">
-          <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+      <Section title="About" editable={false} className="lwd-card">
+        <div className="lwd-skeleton space-y-3 p-3">
+          <div className="h-4 rounded w-1/3"></div>
+          <div className="h-4 rounded w-2/3"></div>
         </div>
       </Section>
     );
   }
 
-  // Show error state
+  // ================= ERROR =================
   if (error) {
     return (
-      <Section title="About" editable={false} className="p-3 md:p-4">
-        <p className="text-sm text-red-600">{error}</p>
+      <Section title="About" editable={false} className="lwd-card">
+        <p className="text-sm text-red-600 dark:text-red-400 p-3">
+          {error}
+        </p>
       </Section>
     );
   }
 
+  // ================= UI =================
   return (
     <>
       <Section
         title="About"
         editable={editable}
         onEdit={() => setOpenForm(true)}
-        className="p-3 md:p-4"
+        className="lwd-card lwd-card-hover"
       >
-        <div className="space-y-3">
-          {/* Headline field */}
-          <Field
-            label="Headline"
-            value={profile?.headline || "—"}
-            className="text-sm md:text-base"
-          />
+        <div className="space-y-4">
 
-          {/* About text */}
-          <div className="text-sm md:text-sm leading-relaxed">
-            <span className="font-medium text-gray-700">About:</span>{" "}
+          {/* Headline */}
+          <div>
+            <p className="lwd-label mb-1">Headline</p>
+            <p className="lwd-text text-sm md:text-base">
+              {profile?.headline || "—"}
+            </p>
+          </div>
+
+          {/* About */}
+          <div>
+            <p className="lwd-label mb-1">About</p>
             {profile?.about ? (
-              <span className="text-gray-600">{profile.about}</span>
+              <p className="lwd-text leading-relaxed">
+                {profile.about}
+              </p>
             ) : (
-              <span className="text-gray-400 italic">Not provided</span>
+              <p className="text-gray-400 italic text-sm dark:text-gray-500">
+                Not provided
+              </p>
             )}
           </div>
+
         </div>
       </Section>
 
-      {/* Modal Form for editing */}
+      {/* ===== MODAL ===== */}
       {openForm && (
         <AboutInfoForm
           profile={profile}
