@@ -27,6 +27,7 @@ import ApplyJob from "./components/jobs/ApplyJob";
 import Suggestions from "./components/jobs/Suggestions";
 import SavedJobs from "./components/jobs/SavedJobs";
 import JobList from "./components/jobs/JobList";
+import RecommendedJobs from "./pages/public/RecommendedJobs";
 
 import MyApplications from "./components/profile/MyApplication/MyApplications";
 
@@ -104,6 +105,7 @@ function App() {
         <Route path="/jobs/:type" element={<Jobs />} />
         <Route path="/job/:jobId" element={<JobDetails />} />
         <Route path="/apply/:jobId" element={<ApplyJob />} />
+        <Route path="/recommended" element={<RecommendedJobs />} />
 
         <Route path="/managejob/updatejob/:id" element={<EditJob />} />
 
@@ -142,6 +144,8 @@ function App() {
 
         <Route path="/plans/candidate" element={<CandidatePlans />} />
         <Route path="/plans/recruiter" element={<RecruiterPlans />} />
+
+        <Route path="/settings" element={<Settings />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<AdminDashboard />}>
@@ -184,7 +188,7 @@ function App() {
           <Route path="job-seekers" element={<RecruiterJobSeekerSearch />} />
           <Route path="company-request" element={<RecruiterCompanyRequest />} />
         </Route>
-        <Route path="/settings" element={<Settings />} />
+       
       </Routes>
 
       <Footer />

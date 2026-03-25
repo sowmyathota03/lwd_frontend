@@ -91,6 +91,12 @@ export const getTrendingJobs = () => {
   return api.get(`/jobs/trending`);
 };
 
+
+// TRENDING JOBS
+export const getRecommendedJobs = () => {
+  return api.get(`/jobs/recommended`);
+};
+
 // ===============================
 // GET MY JOBS (ADMIN / RECRUITER_ADMIN / RECRUITER)
 // ===============================
