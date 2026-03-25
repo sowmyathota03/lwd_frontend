@@ -6,7 +6,7 @@ import {
 import { Section, Field } from "../comman/Helpers";
 import AboutInfoForm from "./AboutInfoForm";
 
-/**
+/** 
  * AboutInfo component displays the user's headline and about section.
  * It fetches data based on ownership (own profile or other user's profile)
  * and allows editing when `editable` is true.

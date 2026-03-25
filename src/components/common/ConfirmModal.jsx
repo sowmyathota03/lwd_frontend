@@ -11,7 +11,6 @@ export default function ConfirmModal({
   onCancel,
   loading = false,
 }) {
-  // ESC close
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") onCancel();
@@ -37,28 +36,33 @@ export default function ConfirmModal({
           transition={{ duration: 0.2 }}
           onClick={onCancel}
         >
+
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white p-6 w-96 max-w-[92%] max-h-[80vh] overflow-hidden break-all rounded-2xl shadow-2xl flex flex-col"
+            className="lwd-card w-96 max-w-[92%] max-h-[80vh] p-6 rounded-2xl shadow-2xl flex flex-col"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            >
+          >
+
             {/* Title */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            <h3 className="lwd-title mb-3">
               {title}
             </h3>
 
             {/* Message */}
-            <p className="text-sm text-gray-600 mb-6">{message}</p>
+            <p className="lwd-text mb-6">
+              {message}
+            </p>
 
             {/* Buttons */}
             <div className="flex justify-end gap-3">
+
               <button
                 onClick={onCancel}
                 disabled={loading}
-                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition disabled:opacity-50"
+                className="lwd-btn-secondary disabled:opacity-50"
               >
                 {cancelText}
               </button>
@@ -66,12 +70,15 @@ export default function ConfirmModal({
               <button
                 onClick={onConfirm}
                 disabled={loading}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+                className="lwd-btn-primary disabled:opacity-50"
               >
                 {loading ? "Please wait..." : confirmText}
               </button>
+
             </div>
+
           </motion.div>
+
         </motion.div>
       )}
     </AnimatePresence>

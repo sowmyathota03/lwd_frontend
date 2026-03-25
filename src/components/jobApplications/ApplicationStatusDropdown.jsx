@@ -27,7 +27,6 @@ export default function ApplicationStatusDropdown({
 
       setStatus(newStatus);
 
-      // notify parent component
       if (onStatusUpdated) {
         onStatusUpdated(applicationId, newStatus);
       }
@@ -41,11 +40,13 @@ export default function ApplicationStatusDropdown({
 
   return (
     <div className="flex items-center gap-2">
+
+      {/* Dropdown */}
       <select
         value={status}
         onChange={handleChange}
         disabled={loading}
-        className="border rounded-md px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        className="lwd-input-sm"
       >
         {statusOptions.map((option) => (
           <option key={option} value={option}>
@@ -54,8 +55,9 @@ export default function ApplicationStatusDropdown({
         ))}
       </select>
 
+      {/* Loader */}
       {loading && (
-        <span className="text-xs text-blue-500 animate-pulse">
+        <span className="text-xs lwd-loader animate-pulse">
           Updating...
         </span>
       )}

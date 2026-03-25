@@ -34,12 +34,11 @@ function BasicInfoForm({ profile, setProfile, onClose }) {
         name: formData.name,
         phone: formData.phone,
       });
-      // Update parent state with response
       setProfile(res.data);
       onClose();
     } catch (error) {
       console.error("Update failed:", error);
-      // Optionally show error message to user
+      alert("Failed to update profile. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -51,20 +50,27 @@ function BasicInfoForm({ profile, setProfile, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-auto overflow-hidden"
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Edit Basic Information</h2>
-          <p className="text-sm text-gray-500 mt-1">Update your name and phone number.</p>
+        <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+            Edit Basic Information
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Update your name and phone number.
+          </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Name field */}
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Name */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="name"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Name
             </label>
             <input
@@ -74,14 +80,17 @@ function BasicInfoForm({ profile, setProfile, onClose }) {
               value={formData.name}
               onChange={handleChange}
               placeholder="Your full name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow dark:bg-gray-700 dark:text-gray-100"
               disabled={loading}
             />
           </div>
 
-          {/* Email field (read-only) */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Email (read-only) */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Email
             </label>
             <input
@@ -89,14 +98,19 @@ function BasicInfoForm({ profile, setProfile, onClose }) {
               id="email"
               value={profile.email}
               disabled
-              className="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-500 cursor-not-allowed"
+              className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
             />
-            <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+            <p className="text-xs text-gray-400 dark:text-gray-400 mt-1">
+              Email cannot be changed
+            </p>
           </div>
 
-          {/* Phone field */}
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Phone */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="phone"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Phone
             </label>
             <input
@@ -106,31 +120,47 @@ function BasicInfoForm({ profile, setProfile, onClose }) {
               value={formData.phone}
               onChange={handleChange}
               placeholder="Your phone number"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow dark:bg-gray-700 dark:text-gray-100"
               disabled={loading}
             />
           </div>
 
-          {/* Action buttons */}
-          <div className="flex justify-end gap-3 pt-2">
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4 pt-2">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-20 justify-center"
+              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-xl hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[100px]"
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Saving...
                 </>

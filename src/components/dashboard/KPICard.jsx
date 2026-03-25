@@ -6,11 +6,10 @@ const KPICard = ({
   value = 0,
   icon: Icon,
   color,
-  bgColor,
   borderColor,
   prefix = "",
   suffix = "",
-  navigateTo, // 🔥 pass route here
+  navigateTo,
 }) => {
   const navigate = useNavigate();
 
@@ -24,15 +23,17 @@ const KPICard = ({
     <div
       onClick={handleClick}
       className={`
-        ${bgColor}
+        lwd-card
         border-2 ${borderColor}
-        rounded-xl shadow-md p-5
+        rounded-xl p-5
         hover:shadow-xl hover:-translate-y-1
         transition-all duration-300
         ${navigateTo ? "cursor-pointer" : ""}
       `}
     >
       <div className="flex items-center justify-between">
+
+        {/* Left Content */}
         <div>
           <p className={`text-sm font-medium ${color} opacity-80`}>
             {title}
@@ -45,9 +46,13 @@ const KPICard = ({
           </p>
         </div>
 
+        {/* Icon */}
         {Icon && (
           <div
-            className={`p-3 rounded-lg bg-white border ${borderColor} shadow-sm`}
+            className={`
+              p-3 rounded-lg border ${borderColor} shadow-sm
+              bg-white dark:bg-slate-700
+            `}
           >
             <Icon className={`w-6 h-6 ${color}`} />
           </div>

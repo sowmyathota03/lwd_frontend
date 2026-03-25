@@ -31,16 +31,16 @@ function AboutInfoForm({ profile, setProfile, onClose }) {
     try {
       setLoading(true);
       const updated = await updateAboutInfo(formData);
-      // Update parent state with the response
+
       setProfile((prev) => ({
         ...prev,
         headline: updated.headline,
         about: updated.about
       }));
+
       onClose();
     } catch (error) {
       console.error("Update failed", error);
-      // Optionally show a user-friendly error message
     } finally {
       setLoading(false);
     }
@@ -49,74 +49,87 @@ function AboutInfoForm({ profile, setProfile, onClose }) {
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose} // Click outside to close
+      onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-auto overflow-hidden"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+        className="lwd-card w-full max-w-lg mx-auto"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Edit About Information</h2>
-          <p className="text-sm text-gray-500 mt-1">Update your headline and professional summary.</p>
+        <div className="border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+          <h2 className="lwd-title">Edit About Information</h2>
+          <p className="lwd-text mt-1">
+            Update your headline and professional summary.
+          </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Headline field */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Headline */}
           <div>
-            <label htmlFor="headline" className="block text-sm font-medium text-gray-700 mb-1">
-              Headline
-            </label>
+            <label className="lwd-label mb-1 block">Headline</label>
             <input
               type="text"
-              id="headline"
               name="headline"
               value={formData.headline}
               onChange={handleChange}
-              placeholder="e.g. Senior Software Engineer at XYZ"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+              placeholder="e.g. Software Engineer"
+              className="lwd-input"
               disabled={loading}
             />
           </div>
 
-          {/* About textarea */}
+          {/* About */}
           <div>
-            <label htmlFor="about" className="block text-sm font-medium text-gray-700 mb-1">
-              About
-            </label>
+            <label className="lwd-label mb-1 block">About</label>
             <textarea
-              id="about"
               name="about"
               rows={5}
               value={formData.about}
               onChange={handleChange}
-              placeholder="Write a brief description about yourself, your skills, and experience..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow resize-y"
+              placeholder="Write about yourself..."
+              className="lwd-input resize-y"
               disabled={loading}
             />
           </div>
 
-          {/* Action buttons */}
+          {/* Buttons */}
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="lwd-btn-secondary"
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-20 justify-center"
+              className="lwd-btn-primary flex items-center gap-2"
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin h-4 w-4"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                      className="opacity-25"
+                    />
+                    <path
+                      d="M4 12a8 8 0 018-8"
+                      fill="currentColor"
+                      className="opacity-75"
+                    />
                   </svg>
                   Saving...
                 </>

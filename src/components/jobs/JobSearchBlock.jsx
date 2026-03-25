@@ -17,7 +17,6 @@ function JobSearchBlock() {
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-
     if (keyword.trim()) params.append("keyword", keyword.trim());
     if (location.trim()) params.append("location", location.trim());
     if (companyName.trim()) params.append("companyName", companyName.trim());
@@ -42,9 +41,7 @@ function JobSearchBlock() {
         } catch (err) {
           console.error("Suggestion error", err);
         }
-      } else {
-        setSuggestions([]);
-      }
+      } else setSuggestions([]);
     }, 400);
 
     return () => clearTimeout(delayDebounce);
@@ -57,40 +54,36 @@ function JobSearchBlock() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
         setSuggestions([]);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <section className="py-16 px-5 bg-linear-to-r from-[#f595da] to-[#8eb5fa]">
+    <section className="py-16 px-5 bg-gradient-to-r from-[#f595da] to-[#8eb5fa]">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
-        
+
         {/* LEFT CONTENT */}
         <div className="flex-1 text-center lg:text-left">
-          <h1 className="text-4xl lg:text-5xl font-bold mb-4">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
             Find Your Dream Job
           </h1>
 
-          <p className="text-lg mb-8 text-gray-700">
+          <p className="text-lg mb-8 text-gray-700 dark:text-gray-300">
             Explore thousands of verified jobs from top companies and grow your
             career with LWD.
           </p>
 
           <div
             ref={containerRef}
-            className="bg-white p-6 rounded-xl shadow-lg flex flex-col gap-4 mx-auto lg:mx-0"
+            className="lwd-card flex flex-col gap-4 p-6 rounded-xl shadow-lg"
           >
             {/* MAIN SEARCH ROW */}
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
-              <div className="relative flex-1 min-w-62.5">
+              <div className="relative flex-1 min-w-[250px]">
                 <input
                   type="text"
                   placeholder={
@@ -101,16 +94,16 @@ function JobSearchBlock() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full p-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="lwd-input w-full rounded-full pr-3"
                 />
 
                 {suggestions.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                  <div className="absolute top-full mt-2 w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                     {suggestions.map((s, index) => (
                       <div
                         key={index}
                         onClick={() => handleSuggestionClick(s)}
-                        className="px-4 py-2 text-sm cursor-pointer border-b last:border-none hover:bg-gray-100"
+                        className="px-4 py-2 text-sm cursor-pointer border-b last:border-none hover:bg-gray-100 dark:hover:bg-slate-700"
                       >
                         {s}
                       </div>
@@ -121,15 +114,14 @@ function JobSearchBlock() {
 
               <button
                 onClick={handleSearch}
-                className="p-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                className="lwd-btn-primary rounded-full"
               >
                 🔍 Search
               </button>
 
-              {/* Smaller Advanced Button */}
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="p-2 text-sm rounded border border-blue-600 bg-white text-blue-600 font-medium hover:bg-blue-50 transition"
+                className="lwd-btn-outline rounded-full"
               >
                 {showAdvanced ? "Close" : "Advanced"}
               </button>
@@ -138,13 +130,12 @@ function JobSearchBlock() {
             {/* ADVANCED SEARCH */}
             {showAdvanced && (
               <div className="flex flex-wrap gap-3 mt-2 justify-center lg:justify-start items-center">
-                
                 <input
                   type="text"
                   placeholder="Location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-40"
+                  className="lwd-input w-40 rounded-lg"
                 />
 
                 <input
@@ -152,7 +143,7 @@ function JobSearchBlock() {
                   placeholder="Company"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-40"
+                  className="lwd-input w-40 rounded-lg"
                 />
 
                 <input
@@ -160,7 +151,7 @@ function JobSearchBlock() {
                   placeholder="Min Exp"
                   value={minExp}
                   onChange={(e) => setMinExp(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-24"
+                  className="lwd-input w-24 rounded-lg"
                 />
 
                 <input
@@ -168,13 +159,13 @@ function JobSearchBlock() {
                   placeholder="Max Exp"
                   value={maxExp}
                   onChange={(e) => setMaxExp(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-24"
+                  className="lwd-input w-24 rounded-lg"
                 />
 
                 <select
                   value={jobType}
                   onChange={(e) => setJobType(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-gray-300 text-sm w-36"
+                  className="lwd-input w-36 rounded-lg"
                 >
                   <option value="">Job Type</option>
                   <option value="FULL_TIME">Full Time</option>

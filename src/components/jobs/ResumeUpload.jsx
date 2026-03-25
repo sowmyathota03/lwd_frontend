@@ -1,5 +1,3 @@
-// ResumeUpload.jsx 
-// not implimented
 import React, { useState } from "react";
 
 function ResumeUpload() {
@@ -9,7 +7,11 @@ function ResumeUpload() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",];
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
 
     if (!allowedTypes.includes(file.type)) {
       alert("Only PDF or DOC/DOCX files allowed.");
@@ -30,28 +32,38 @@ function ResumeUpload() {
       alert("Please upload your resume.");
       return;
     }
- 
-   
-    localStorage.setItem("resumeFileName", resumeFile.name);
 
+    localStorage.setItem("resumeFileName", resumeFile.name);
     alert(`Resume uploaded successfully: ${resumeFile.name}`);
   };
 
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Upload Your Resume</h1>
-      <p>Upload your resume to apply for jobs in real-time.</p>
+    <div className="lwd-page flex flex-col items-center justify-center py-10 px-5">
+      <div className="lwd-card p-8 max-w-md w-full text-center">
+        <h1 className="lwd-title text-2xl mb-2">Upload Your Resume</h1>
+        <p className="lwd-text mb-6">
+          Upload your resume to apply for jobs in real-time.
+        </p>
 
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} style={{ marginBottom: "20px" }}/>
-        {resumeFile && (
-          <p style={{ color: "green" }}>Uploaded: {resumeFile.name}</p>
+        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={handleFileChange}
+            className="lwd-input"
+          />
+
+          {resumeFile && (
+            <p className="lwd-text text-green-500">
+              Uploaded: {resumeFile.name}
+            </p>
           )}
 
-        <button type="submit"
-          style={{ padding: "10px 10px",backgroundColor: "#2563eb",color: "white",border: "none",borderRadius: "6px",cursor: "pointer",
-          }}>Upload Resume</button>
-      </form>
+          <button type="submit" className="lwd-btn-primary mt-2">
+            Upload Resume
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -17,6 +17,7 @@ function Experience({ userId, editable }) {
   const fetchExperiences = async () => {
     try {
       setLoading(true);
+      setError(null);
 
       const response = userId
         ? await getExperienceByUserId(userId)
@@ -24,7 +25,8 @@ function Experience({ userId, editable }) {
 
       setExperiences(response || []);
     } catch (err) {
-      setError(err);
+      console.error(err);
+      setError("Failed to load experiences.");
     } finally {
       setLoading(false);
     }
@@ -39,20 +41,35 @@ function Experience({ userId, editable }) {
       ? null
       : experiences.find((exp) => exp.id === editingId);
 
+  const handleSave = (savedExp) => {
+    if (editingId === "new") {
+      setExperiences([savedExp, ...experiences]);
+    } else {
+      setExperiences(
+        experiences.map((exp) =>
+          exp.id === savedExp.id ? savedExp : exp
+        )
+      );
+    }
+    setEditingId(null);
+  };
+
+  // ======================
   // Loading
+  // ======================
   if (loading) {
     return (
-      <div className="lwd-card p-6 space-y-4">
-        <h2 className="text-lg font-semibold">Experience</h2>
+      <div className="lwd-card space-y-4">
+        <div className="flex justify-between items-center">
+          <h2 className="lwd-title">Experience</h2>
+          {canEdit && <div className="lwd-skeleton h-9 w-20" />}
+        </div>
 
         <div className="space-y-3">
           {[1, 2].map((i) => (
-            <div
-              key={i}
-              className="bg-gray-100 rounded-lg p-4 space-y-2 animate-pulse"
-            >
-              <div className="h-4 bg-gray-300 rounded w-1/3"></div>
-              <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+            <div key={i} className="lwd-skeleton p-4 space-y-2">
+              <div className="h-4 w-1/3 bg-gray-300 dark:bg-slate-600 rounded"></div>
+              <div className="h-4 w-1/2 bg-gray-300 dark:bg-slate-600 rounded"></div>
             </div>
           ))}
         </div>
@@ -60,37 +77,39 @@ function Experience({ userId, editable }) {
     );
   }
 
+  // ======================
   // Error
+  // ======================
   if (error) {
     return (
-      <div className="lwd-card p-6">
-        <h2 className="text-lg font-semibold mb-2">Experience</h2>
-        <p className="text-red-500 text-sm">Failed to load experiences.</p>
+      <div className="lwd-card">
+        <h2 className="lwd-title mb-2">Experience</h2>
+        <p className="text-red-500 text-sm">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="lwd-card p-6 space-y-5">
+    <div className="lwd-card space-y-5">
 
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Experience</h2>
+        <h2 className="lwd-title">Experience</h2>
 
         {canEdit && (
           <button
             onClick={() => setEditingId("new")}
-            className="lwd-btn-primary flex items-center gap-1"
+            className="lwd-btn-primary"
           >
             Add
           </button>
         )}
       </div>
 
-      {/* Empty state */}
+      {/* Empty */}
       {experiences.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-gray-500 text-sm">
+          <p className="lwd-text">
             {canEdit
               ? "No experience added yet. Click 'Add' to get started."
               : "No experience listed."}
@@ -98,13 +117,14 @@ function Experience({ userId, editable }) {
         </div>
       )}
 
-      {/* Experience list */}
+      {/* List */}
       <div className="space-y-4">
         {experiences.map((exp) => (
           <div
             key={exp.id}
-            className="group relative bg-gray-50 dark:bg-slate-800 rounded-lg p-5 hover:shadow-md transition-shadow"
+            className="lwd-card lwd-card-hover group relative"
           >
+            {/* Edit button */}
             {canEdit && (
               <button
                 onClick={() => setEditingId(exp.id)}
@@ -115,11 +135,11 @@ function Experience({ userId, editable }) {
             )}
 
             <div className="space-y-2">
-              <h3 className="font-semibold text-base pr-8">
+              <h3 className="lwd-title pr-8 text-base">
                 {exp.jobTitle}
               </h3>
 
-              <div className="text-sm flex flex-wrap items-center gap-x-2">
+              <div className="lwd-text flex flex-wrap items-center gap-x-2">
                 <span className="font-medium">{exp.companyName}</span>
 
                 {exp.location && (
@@ -138,14 +158,14 @@ function Experience({ userId, editable }) {
               </div>
 
               {(exp.startDate || exp.endDate || exp.currentlyWorking) && (
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="lwd-text">
                   {exp.startDate} —{" "}
                   {exp.currentlyWorking ? "Present" : exp.endDate}
                 </p>
               )}
 
               {exp.jobDescription && (
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="lwd-text">
                   {exp.jobDescription}
                 </p>
               )}
@@ -159,7 +179,7 @@ function Experience({ userId, editable }) {
         <ExperienceForm
           experience={experienceToEdit}
           onClose={() => setEditingId(null)}
-          refetch={fetchExperiences}
+          onSave={handleSave}
         />
       )}
     </div>

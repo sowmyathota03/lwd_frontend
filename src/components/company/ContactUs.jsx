@@ -25,7 +25,6 @@ function ContactUs() {
     console.log(form);
     alert("Message sent successfully!");
 
-    
     setForm({
       name: "",
       email: "",
@@ -34,73 +33,62 @@ function ContactUs() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "40px auto",
-        padding: "30px",
-        backgroundColor: "#ffe4ec",
-        borderRadius: "12px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
-      }}
-    >
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
-        Contact LWD Team
-      </h2>
+    <div className="lwd-page flex justify-center items-center py-10 px-4">
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={form.name}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+      <div className="lwd-card w-full max-w-xl p-8">
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          value={form.email}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+        {/* Title */}
+        <h2 className="lwd-title text-center text-2xl mb-6">
+          Contact LWD Team
+        </h2>
 
-        <textarea
-          name="message"
-          placeholder="Your Message"
-          value={form.message}
-          onChange={handleChange}
-          rows="5"
-          style={{ ...inputStyle, resize: "none" }}
-        />
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        <button type="submit" style={buttonStyle}>
-          Send Message
-        </button>
-      </form>
+          <div>
+            <label className="lwd-label">Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              value={form.name}
+              onChange={handleChange}
+              className="lwd-input"
+            />
+          </div>
+
+          <div>
+            <label className="lwd-label">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              value={form.email}
+              onChange={handleChange}
+              className="lwd-input"
+            />
+          </div>
+
+          <div>
+            <label className="lwd-label">Message</label>
+            <textarea
+              name="message"
+              rows="5"
+              placeholder="Your Message"
+              value={form.message}
+              onChange={handleChange}
+              className="lwd-input resize-none"
+            />
+          </div>
+
+          <button type="submit" className="lwd-btn-primary w-full">
+            Send Message
+          </button>
+
+        </form>
+      </div>
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "12px",
-  marginBottom: "15px",
-  borderRadius: "6px",
-  border: "1px solid #ccc"
-};
-
-const buttonStyle = {
-  width: "100%",
-  padding: "12px",
-  backgroundColor: "#2563eb",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "16px"
-};
 
 export default ContactUs;

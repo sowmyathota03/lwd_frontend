@@ -8,45 +8,39 @@ function CareerAdvice() {
     "Create LinkedIn and GitHub profiles.",
     "Apply for internships to gain real-time experience.",
     "Learn trending technologies like React, Java, Python.",
-    "Attend webinars and tech workshops."
+    "Attend webinars and tech workshops.",
   ];
 
   return (
-    <div
-      style={{
-        background: "linear-gradient(to right, #667eea, #764ba2)",
-        minHeight: "100vh",
-        padding: "40px",
-        color: "white"
-      }}
-    >
-      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>
-        Career Advice
-      </h1>
+    <div className="lwd-page flex items-center justify-center px-4 py-12">
 
-      <div
-        style={{
-          maxWidth: "700px",
-          margin: "auto",
-          backgroundColor: "white",
-          color: "#333",
-          borderRadius: "12px",
-          padding: "25px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
-        }}
-      >
-        <h3 style={{ textAlign: "center", marginBottom: "20px" }}>
+      <div className="w-full max-w-2xl lwd-card p-8 rounded-2xl">
+
+        {/* Title */}
+        <h1 className="text-2xl md:text-3xl font-bold text-center lwd-title mb-6">
+          Career Advice
+        </h1>
+
+        {/* Subtitle */}
+        <h3 className="text-center lwd-text mb-6">
           Tips for Job Seekers
         </h3>
 
-        <ul style={{ lineHeight: "1.8" }}>
+        {/* Tips List */}
+        <ul className="space-y-3">
           {tips.map((tip, index) => (
-            <li key={index}>{tip}</li>
+            <li
+              key={index}
+              className="lwd-text bg-gray-50 dark:bg-slate-700/40 px-4 py-2 rounded-md"
+            >
+              • {tip}
+            </li>
           ))}
         </ul>
+
       </div>
     </div>
   );
 }
 
-export default CareerAdvice;
+export default CareerAdvice;  

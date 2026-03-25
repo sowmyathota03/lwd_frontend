@@ -42,7 +42,6 @@ export default function JobActions({ job, onDelete, onStatusChange }) {
   // ================= DELETE =================
   const handleDeleteConfirm = async () => {
     setDeleting(true);
-
     try {
       await deleteJob(job.id);
       onDelete(job.id, true);
@@ -73,45 +72,46 @@ export default function JobActions({ job, onDelete, onStatusChange }) {
     }
   };
 
-  // ================= MENU TOGGLE (SMART DIRECTION) =================
+  // ================= MENU POSITION =================
   const handleMenuToggle = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
-
-    // If not enough space below → open upward
     setOpenUpward(spaceBelow < 170);
-
     setShowMenu((prev) => !prev);
   };
 
   return (
     <>
       <div className="relative" ref={menuRef}>
+        {/* MENU BUTTON */}
         <button
           onClick={handleMenuToggle}
-          className="p-1 hover:bg-gray-100 rounded transition"
+          className="p-1 rounded transition hover:bg-gray-100 dark:hover:bg-slate-700"
           disabled={deleting || statusLoading}
         >
           {deleting || statusLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin lwd-loader" />
           ) : (
-            <MoreVertical className="w-4 h-4" />
+            <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-300" />
           )}
         </button>
 
+        {/* DROPDOWN */}
         {showMenu && !job.deleted && (
           <div
-            className={`absolute right-0 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50 transition-all duration-150
+            className={`absolute right-0 w-36 lwd-card z-50 transition-all duration-150
               ${openUpward ? "bottom-full mb-1" : "top-full mt-1"}
             `}
           >
-            {/* EDIT - Only when OPEN */}
+            {/* EDIT */}
             {job.status === "OPEN" && (
               <button
                 onClick={() =>
                   navigate(`/managejob/updatejob/${job.id}`, { state: job })
                 }
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 
+                text-gray-700 dark:text-gray-200 
+                hover:bg-gray-100 dark:hover:bg-slate-700 transition"
               >
                 <Pencil className="w-3 h-3" /> Edit
               </button>
@@ -121,10 +121,12 @@ export default function JobActions({ job, onDelete, onStatusChange }) {
             <button
               onClick={handleStatusToggle}
               disabled={statusLoading}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+              className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 
+              text-gray-700 dark:text-gray-200 
+              hover:bg-gray-100 dark:hover:bg-slate-700 transition"
             >
               {statusLoading ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
+                <Loader2 className="w-3 h-3 animate-spin lwd-loader" />
               ) : job.status === "OPEN" ? (
                 "Close"
               ) : (
@@ -135,7 +137,9 @@ export default function JobActions({ job, onDelete, onStatusChange }) {
             {/* DELETE */}
             <button
               onClick={() => setShowConfirm(true)}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+              className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 
+              text-red-600 dark:text-red-400 
+              hover:bg-red-50 dark:hover:bg-red-900/20 transition"
             >
               <Trash2 className="w-3 h-3" /> Delete
             </button>
@@ -143,7 +147,7 @@ export default function JobActions({ job, onDelete, onStatusChange }) {
         )}
       </div>
 
-      {/* 🔥 Confirmation Modal */}
+      {/* CONFIRM MODAL */}
       <ConfirmModal
         isOpen={showConfirm}
         title="Delete Job?"

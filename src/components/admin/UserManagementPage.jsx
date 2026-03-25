@@ -41,7 +41,6 @@ export default function UserManagementPage() {
     const timer = setTimeout(() => {
       setDebouncedKeyword(keyword.trim());
     }, 400);
-
     return () => clearTimeout(timer);
   }, [keyword]);
 
@@ -73,7 +72,6 @@ export default function UserManagementPage() {
   const loadUsers = async (pageNumber = page) => {
     try {
       setLoading(true);
-
       const data = await searchUsers(filters, pageNumber, size);
 
       setUsers(data.content || []);
@@ -91,15 +89,11 @@ export default function UserManagementPage() {
   }, [page, filters]);
 
   const handleNext = () => {
-    if (page < totalPages - 1) {
-      setPage((prev) => prev + 1);
-    }
+    if (page < totalPages - 1) setPage((prev) => prev + 1);
   };
 
   const handlePrev = () => {
-    if (page > 0) {
-      setPage((prev) => prev - 1);
-    }
+    if (page > 0) setPage((prev) => prev - 1);
   };
 
   const openConfirm = (user, type) => {
@@ -176,24 +170,26 @@ export default function UserManagementPage() {
 
   return (
     <div className="min-h-screen bg-blue-50 font-sans p-4 md:p-6">
+
       <h1 className="text-2xl font-semibold text-blue-900 text-center mb-6">
         User Management
       </h1>
 
+      {/* Filters */}
       <div className="bg-white rounded-xl shadow-lg p-4 mb-6 space-y-4">
         <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
           <input
             type="text"
-            placeholder="Search by name, email, phone..."
+            placeholder="Search by name, email..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            className="w-full lg:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full lg:w-80 px-4 py-2 border border-gray-300 rounded-lg"
           />
 
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="px-4 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+              className="px-4 py-2 rounded-lg bg-red-50 text-red-600"
             >
               Clear Filters
             </button>
@@ -201,57 +197,33 @@ export default function UserManagementPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
-          >
+          <select value={role} onChange={(e) => setRole(e.target.value)} className="px-3 py-2 border rounded-lg">
             <option value="">All Roles</option>
             {roleOptions.map((item) => (
-              <option key={item} value={item}>
-                {formatLabel(item)}
-              </option>
+              <option key={item} value={item}>{formatLabel(item)}</option>
             ))}
           </select>
 
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
-          >
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="px-3 py-2 border rounded-lg">
             <option value="">All Status</option>
             {statusOptions.map((item) => (
-              <option key={item} value={item}>
-                {formatLabel(item)}
-              </option>
+              <option key={item} value={item}>{formatLabel(item)}</option>
             ))}
           </select>
 
-          <select
-            value={isActive}
-            onChange={(e) => setIsActive(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
-          >
+          <select value={isActive} onChange={(e) => setIsActive(e.target.value)} className="px-3 py-2 border rounded-lg">
             <option value="">All Activity</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
 
-          <select
-            value={emailVerified}
-            onChange={(e) => setEmailVerified(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
-          >
+          <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="px-3 py-2 border rounded-lg">
             <option value="">Email Verification</option>
             <option value="true">Verified</option>
             <option value="false">Not Verified</option>
           </select>
 
-          <select
-            value={locked}
-            onChange={(e) => setLocked(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
-          >
+          <select value={locked} onChange={(e) => setLocked(e.target.value)} className="px-3 py-2 border rounded-lg">
             <option value="">Lock Status</option>
             <option value="true">Locked</option>
             <option value="false">Unlocked</option>
@@ -259,6 +231,7 @@ export default function UserManagementPage() {
         </div>
       </div>
 
+      {/* Table */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
         <UserTable
           users={users}
@@ -268,28 +241,22 @@ export default function UserManagementPage() {
         />
       </div>
 
+      {/* Pagination */}
       <div className="flex items-center justify-center gap-6 mt-6">
-        <button
-          onClick={handlePrev}
-          disabled={page === 0}
-          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-        >
+        <button onClick={handlePrev} disabled={page === 0} className="px-4 py-2 bg-gray-200 rounded">
           Previous
         </button>
 
-        <span className="text-sm text-gray-700">
+        <span className="font-semibold">
           Page {page + 1} of {totalPages}
         </span>
 
-        <button
-          onClick={handleNext}
-          disabled={page >= totalPages - 1}
-          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-        >
+        <button onClick={handleNext} disabled={page >= totalPages - 1} className="px-4 py-2 bg-blue-500 text-white rounded">
           Next
         </button>
       </div>
 
+      {/* Modal */}
       <ConfirmModal
         isOpen={!!confirmConfig}
         title={
@@ -301,22 +268,15 @@ export default function UserManagementPage() {
         }
         message={
           confirmConfig
-            ? `Are you sure you want to ${
-                confirmConfig.type === "block"
-                  ? confirmConfig.user.status === "SUSPENDED"
-                    ? "unblock"
-                    : "block"
-                  : "approve"
-              } ${confirmConfig.user.name}?`
+            ? `Are you sure you want to ${confirmConfig.type === "block"
+              ? confirmConfig.user.status === "SUSPENDED"
+                ? "unblock"
+                : "block"
+              : "approve"
+            } ${confirmConfig.user.name}?`
             : ""
         }
-        confirmText={
-          confirmConfig?.type === "block"
-            ? confirmConfig.user.status === "SUSPENDED"
-              ? "Yes, Unblock"
-              : "Yes, Block"
-            : "Yes, Approve"
-        }
+        confirmText="Confirm"
         onConfirm={confirmAction}
         onCancel={closeConfirm}
         loading={!!actionLoadingId}

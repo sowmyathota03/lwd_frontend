@@ -38,12 +38,18 @@ function JobList() {
     if (currentPage > 0) setCurrentPage(currentPage - 1);
   };
 
-  if (loading) return <p className="text-center mt-10">Loading jobs...</p>;
+  if (loading)
+    return (
+      <p className="text-center mt-10 lwd-text">
+        Loading jobs...
+      </p>
+    );
 
   return (
-    <div className="max-w-4xl mx-auto px-5 py-6 flex flex-col gap-4">
+    <div className="max-w-4xl mx-auto px-5 py-6 flex flex-col gap-4 lwd-page">
+
       {jobs.length === 0 ? (
-        <p className="text-center text-gray-500">No jobs found</p>
+        <p className="text-center lwd-text">No jobs found</p>
       ) : (
         jobs.map((job) => <JobCards key={job.id} job={job} />)
       )}
@@ -54,19 +60,19 @@ function JobList() {
           <button
             onClick={handlePrev}
             disabled={currentPage === 0}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+            className="lwd-btn-secondary disabled:opacity-50"
           >
             Prev
           </button>
 
-          <span className="text-sm text-gray-600">
+          <span className="text-sm lwd-text">
             Page {currentPage + 1} of {totalPages}
           </span>
 
           <button
             onClick={handleNext}
             disabled={currentPage + 1 >= totalPages}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+            className="lwd-btn-secondary disabled:opacity-50"
           >
             Next
           </button>

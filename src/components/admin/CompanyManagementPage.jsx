@@ -20,14 +20,12 @@ export default function CompanyManagementPage() {
 
   const navigate = useNavigate();
 
-  // ================= FETCH COMPANIES =================
   const loadCompanies = async (pageNumber = page) => {
     try {
       setLoading(true);
       const data = await getAllCompanies(pageNumber, size);
-
-      setCompanies(data.content);        // ✅ FIX
-      setTotalPages(data.totalPages);    // ✅ store total pages
+      setCompanies(data.content);
+      setTotalPages(data.totalPages);
       setPage(data.pageNumber);
     } catch (err) {
       console.error("Failed to load companies", err);
@@ -40,7 +38,6 @@ export default function CompanyManagementPage() {
     loadCompanies();
   }, []);
 
-  // ================= PAGINATION =================
   const handleNext = () => {
     if (page < totalPages - 1) {
       loadCompanies(page + 1);
@@ -53,17 +50,13 @@ export default function CompanyManagementPage() {
     }
   };
 
-  // ================= CONFIRM MODAL =================
-  const openConfirm = (company) => {
-    setConfirmCompany(company);
-  };
+  const openConfirm = (company) => setConfirmCompany(company);
 
   const closeConfirm = () => {
     if (actionLoadingId) return;
     setConfirmCompany(null);
   };
 
-  // ================= BLOCK / UNBLOCK =================
   const confirmAction = async () => {
     if (!confirmCompany) return;
 
@@ -76,7 +69,6 @@ export default function CompanyManagementPage() {
         await unblockCompany(confirmCompany.id);
       }
 
-      // Update only that company
       setCompanies((prev) =>
         prev.map((c) =>
           c.id === confirmCompany.id
@@ -93,17 +85,22 @@ export default function CompanyManagementPage() {
   };
 
   return (
-    <div className=" bg-slate-50 min-h-screen">
-      <h1 className="text-2xl font-semibold text-blue-900 mb-6">
+    <div className="lwd-page min-h-screen p-6">
+
+      {/* Heading */}
+      <h1 className="lwd-title text-2xl mb-6">
         Company Management
       </h1>
 
-      <div className="bg-white shadow-md overflow-hidden overflow-x-auto rounded-lg border border-gray-200">
+      {/* Table */}
+      <div className="lwd-card overflow-hidden overflow-x-auto">
+
         {loading ? (
           <Loader fullScreen={false} />
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-blue-50">
+          <table className="lwd-table text-sm">
+
+            <thead className="lwd-table-header">
               <tr>
                 <th className="px-6 py-3 text-left">Company</th>
                 <th className="px-6 py-3 text-left">Created By</th>
@@ -117,18 +114,16 @@ export default function CompanyManagementPage() {
             <tbody>
               {companies.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center py-6 text-gray-500">
+                  <td colSpan="6" className="text-center py-6 lwd-text">
                     No companies found
                   </td>
                 </tr>
               ) : (
                 companies.map((company) => (
-                  <tr
-                    key={company.id}
-                    className="border-b hover:bg-blue-50 transition"
-                  >
+                  <tr key={company.id} className="lwd-table-row hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+
                     <td
-                      className="px-4 py-2 font-medium text-gray-800 cursor-pointer hover:underline"
+                      className="px-4 py-2 font-medium cursor-pointer lwd-link"
                       onClick={() =>
                         navigate(`/admin/${company.id}/companyprofile`)
                       }
@@ -136,52 +131,50 @@ export default function CompanyManagementPage() {
                       {company.companyName}
                     </td>
 
-                    <td className="px-4 py-2 text-gray-600">
+                    <td className="px-4 py-2 lwd-text">
                       {company.createdByName || "N/A"}
                     </td>
 
                     <td className="px-4 py-2">
-                      <span className="px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded-full">
+                      <span className="lwd-badge">
                         {company.totalRecruiters ?? 0}
                       </span>
                     </td>
 
                     <td className="px-4 py-2">
-                      <span className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">
+                      <span className="lwd-badge">
                         {company.totalJobs ?? 0}
                       </span>
                     </td>
 
                     <td className="px-4 py-2">
                       <span
-                        className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                          company.isActive
+                        className={`px-3 py-1 text-xs font-semibold rounded-full ${company.isActive
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
-                        }`}
+                          }`}
                       >
                         {company.isActive ? "ACTIVE" : "BLOCKED"}
                       </span>
                     </td>
 
                     <td className="px-4 py-2">
-
                       <button
                         disabled={actionLoadingId === company.id}
                         onClick={() => openConfirm(company)}
-                        className={`px-3 py-1.5 rounded text-sm font-medium text-white transition disabled:opacity-50 ${
-                          company.isActive
-                            ? "bg-red-500 hover:bg-red-600"
-                            : "bg-green-600 hover:bg-green-700"
-                        }`}
+                        className={`text-sm font-medium disabled:opacity-50 ${company.isActive
+                            ? "lwd-btn-secondary"
+                            : "lwd-btn-primary"
+                          }`}
                       >
                         {actionLoadingId === company.id
                           ? "Processing..."
                           : company.isActive
-                          ? "Block"
-                          : "Unblock"}
+                            ? "Block"
+                            : "Unblock"}
                       </button>
                     </td>
+
                   </tr>
                 ))
               )}
@@ -190,27 +183,29 @@ export default function CompanyManagementPage() {
         )}
       </div>
 
-      {/* ================= PAGINATION ================= */}
+      {/* Pagination */}
       <div className="flex justify-center items-center gap-4 mt-6">
+
         <button
           onClick={handlePrev}
           disabled={page === 0}
-          className="px-4 py-2 bg-gray-200 rounded-md disabled:opacity-50"
+          className="lwd-btn-secondary disabled:opacity-50"
         >
           Previous
         </button>
 
-        <span className="text-gray-700">
+        <span className="lwd-text font-semibold">
           Page {page + 1} of {totalPages}
         </span>
 
         <button
           onClick={handleNext}
           disabled={page >= totalPages - 1}
-          className="px-4 py-2 bg-gray-200 rounded-md disabled:opacity-50"
+          className="lwd-btn-primary disabled:opacity-50"
         >
           Next
         </button>
+
       </div>
     </div>
   );

@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react";
 
-/**
- * AchievementForm component - Modal for adding/editing an achievement
- *
- * @param {Object} props
- * @param {string} props.achievement - Current achievement text (empty for new)
- * @param {Function} props.onClose - Function to close the modal
- * @param {Function} props.onSave - Callback with new text
- * @param {boolean} props.loading - External loading state
- */
-function AchievementForm({ achievement = "", onClose, onSave, loading: externalLoading }) {
+function AchievementForm({
+  achievement = "",
+  onClose,
+  onSave,
+  loading: externalLoading,
+}) {
   const [text, setText] = useState(achievement);
   const [internalLoading, setInternalLoading] = useState(false);
 
-  const loading = externalLoading !== undefined ? externalLoading : internalLoading;
+  const loading =
+    externalLoading !== undefined ? externalLoading : internalLoading;
 
   useEffect(() => {
     setText(achievement);
@@ -43,15 +40,15 @@ function AchievementForm({ achievement = "", onClose, onSave, loading: externalL
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-auto overflow-hidden"
+        className="lwd-card w-full max-w-lg mx-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">
+        <div className="border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+          <h2 className="lwd-title">
             {achievement ? "Edit Achievement" : "Add Achievement"}
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="lwd-text mt-1">
             {achievement
               ? "Update your achievement."
               : "Add a new achievement to your profile."}
@@ -59,47 +56,62 @@ function AchievementForm({ achievement = "", onClose, onSave, loading: externalL
         </div>
 
         {/* Form */}
-        <div className="p-6 space-y-5">
+        <div className="space-y-4">
           <div>
-            <label htmlFor="achievement" className="block text-sm font-medium text-gray-700 mb-1">
-              Achievement
-            </label>
+            <label className="lwd-label mb-1 block">Achievement</label>
+
             <textarea
-              id="achievement"
               rows={4}
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="e.g. Won first prize in Hackathon 2023"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow resize-y disabled:bg-gray-50 disabled:text-gray-500"
+              className="lwd-input resize-y disabled:opacity-60"
               disabled={loading}
               autoFocus
             />
-            <p className="text-xs text-gray-400 mt-1">
+
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
               {text.length} characters
             </p>
           </div>
 
-          {/* Action buttons */}
+          {/* Buttons */}
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="lwd-btn-secondary disabled:opacity-50"
             >
               Cancel
             </button>
+
             <button
               type="button"
               onClick={handleSave}
               disabled={loading || !text.trim()}
-              className="px-5 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-20 justify-center"
+              className="lwd-btn-primary flex items-center gap-2 disabled:opacity-50"
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin h-4 w-4"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                      className="opacity-25"
+                    />
+                    <path
+                      d="M4 12a8 8 0 018-8"
+                      fill="currentColor"
+                      className="opacity-75"
+                    />
                   </svg>
                   Saving...
                 </>

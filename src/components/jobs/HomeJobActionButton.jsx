@@ -8,17 +8,17 @@ function JobActionButton() {
 
   const handleClick = () => {
     if (user) {
-       navigate("/jobs");
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-        }, 0);
+      navigate("/jobs");
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 0);
     } else {
       navigate("/register");
     }
   };
 
   return (
-    <button onClick={handleClick} className="btn btn-primary">
+    <button onClick={handleClick} className="lwd-btn-primary">
       {user ? "Apply for Job" : "Create Profile"}
     </button>
   );

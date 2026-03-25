@@ -46,12 +46,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-linear-to-br from-sky-100 to-blue-50 flex justify-center items-center font-sans">
+    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center font-sans">
       <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
+
+        {/* Title */}
         <h3 className="text-center text-2xl font-semibold text-slate-900 mb-6">
           Login
         </h3>
 
+        {/* Error */}
         {error && (
           <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
             {error}
@@ -59,6 +62,8 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit}>
+
+          {/* Email */}
           <div className="mb-4">
             <label className="block mb-2 text-sm font-medium text-slate-700">
               Email
@@ -73,7 +78,8 @@ export default function Login() {
             />
           </div>
 
-          <div className="mb-2">
+          {/* Password */}
+          <div className="mb-4">
             <label className="block mb-2 text-sm font-medium text-slate-700">
               Password
             </label>
@@ -87,6 +93,7 @@ export default function Login() {
             />
           </div>
 
+          {/* Forgot Password */}
           <div className="mb-4 text-right">
             <button
               type="button"
@@ -97,14 +104,16 @@ export default function Login() {
             </button>
           </div>
 
+          {/* Login Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg font-semibold text-white bg-linear-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
+            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
 
+          {/* Register */}
           <div className="mt-4 text-center text-sm">
             <p>
               Don't have an account?{" "}
@@ -116,6 +125,7 @@ export default function Login() {
               </span>
             </p>
           </div>
+
         </form>
       </div>
     </div>
