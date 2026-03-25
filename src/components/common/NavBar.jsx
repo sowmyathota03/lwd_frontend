@@ -124,6 +124,9 @@ function NavBar() {
               <NavLink to="/jobs" className={navItemClass}>
                 Jobs
               </NavLink>
+              <NavLink to="/recommended" className={navItemClass}>
+                Recommended
+              </NavLink>
               <NavLink to="/companies" className={navItemClass}>
                 Companies
               </NavLink>
