@@ -11,6 +11,7 @@ import ResetPassword from "./auth/ResetPassword";
 import AuthSelection from "./auth/AuthSelection";
 import RegisterJobSeeker from "./auth/RegisterJobSeeker";
 import RegisterRecruiter from "./auth/RegisterRecruiter";
+import ChangePassword from "./auth/ChangePassword";
 
 import Home from "./pages/public/Home";
 import Jobs from "./pages/public/Jobs";
@@ -100,6 +101,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/change-password" element={<ChangePassword />} />
 
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/jobs/:type" element={<Jobs />} />
