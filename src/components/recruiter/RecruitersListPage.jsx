@@ -34,14 +34,14 @@ export default function RecruitersListPage() {
     action: null,
   });
 
-  // Fetch recruiters
+  /* ================= FETCH ================= */
   const fetchRecruiters = async () => {
     setLoading(true);
     try {
       const data = await getRecruitersByCompanyId(companyId);
       setRecruiters(data || []);
       setFilteredRecruiters(data || []);
-    } catch (err) {
+    } catch {
       toast.error("Could not load recruiters.");
     } finally {
       setLoading(false);
@@ -52,7 +52,7 @@ export default function RecruitersListPage() {
     fetchRecruiters();
   }, [companyId]);
 
-  // Search
+  /* ================= SEARCH ================= */
   useEffect(() => {
     const filtered = recruiters.filter(
       (r) =>
@@ -63,7 +63,7 @@ export default function RecruitersListPage() {
     setCurrentPage(1);
   }, [searchTerm, recruiters]);
 
-  // Pagination
+  /* ================= PAGINATION ================= */
   const totalPages = Math.ceil(filteredRecruiters.length / itemsPerPage);
 
   const paginatedRecruiters = useMemo(() => {
@@ -71,7 +71,7 @@ export default function RecruitersListPage() {
     return filteredRecruiters.slice(start, start + itemsPerPage);
   }, [filteredRecruiters, currentPage]);
 
-  // Actions
+  /* ================= ACTIONS ================= */
   const openConfirm = (recruiter, action) =>
     setConfirm({ open: true, recruiter, action });
 
@@ -109,30 +109,25 @@ export default function RecruitersListPage() {
     }
   };
 
-  // Status Badge
+  /* ================= STATUS BADGE ================= */
   const getStatusBadge = (status) => {
-    const base = "inline-flex items-center px-2 py-1 text-xs rounded-md";
-
     switch (status) {
       case "PENDING":
         return (
-          <span className={`${base} bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300`}>
-            <AlertCircle className="w-3 h-3 mr-1" />
-            Pending
+          <span className="lwd-badge bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 flex items-center gap-1">
+            <AlertCircle size={12} /> Pending
           </span>
         );
       case "ACTIVE":
         return (
-          <span className={`${base} bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300`}>
-            <CheckCircle className="w-3 h-3 mr-1" />
-            Active
+          <span className="lwd-badge bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 flex items-center gap-1">
+            <CheckCircle size={12} /> Active
           </span>
         );
       case "SUSPENDED":
         return (
-          <span className={`${base} bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300`}>
-            <XCircle className="w-3 h-3 mr-1" />
-            Suspended
+          <span className="lwd-badge bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 flex items-center gap-1">
+            <XCircle size={12} /> Suspended
           </span>
         );
       default:
@@ -141,23 +136,27 @@ export default function RecruitersListPage() {
   };
 
   return (
-    <div className="lwd-page px-4 py-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="lwd-page p-6">
 
-        {/* Header */}
+      <div className="lwd-container space-y-6">
+
+        {/* HEADER */}
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
-            <h1 className="lwd-title text-2xl">Company Recruiters</h1>
+            <h1 className="lwd-page-title">Company Recruiters</h1>
             <p className="lwd-text">Manage recruiters in your organization</p>
           </div>
 
-          <button onClick={fetchRecruiters} className="lwd-btn-secondary flex items-center gap-2">
-            <RefreshCw className="w-4 h-4" />
+          <button
+            onClick={fetchRecruiters}
+            className="lwd-btn-secondary flex items-center gap-2"
+          >
+            <RefreshCw size={16} />
             Refresh
           </button>
         </div>
 
-        {/* Search */}
+        {/* SEARCH */}
         <div className="relative">
           <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
           <input
@@ -169,10 +168,13 @@ export default function RecruitersListPage() {
           />
         </div>
 
-        {/* Table */}
+        {/* TABLE */}
         <div className="lwd-card overflow-hidden">
+
           {loading ? (
-            <div className="text-center py-10 lwd-loader">Loading recruiters...</div>
+            <div className="flex justify-center py-10">
+              <div className="lwd-loader"></div>
+            </div>
           ) : paginatedRecruiters.length === 0 ? (
             <div className="text-center py-10">
               <Users className="mx-auto w-10 h-10 text-gray-400" />
@@ -183,25 +185,25 @@ export default function RecruitersListPage() {
               <table className="lwd-table">
                 <thead className="lwd-table-header">
                   <tr>
-                    <th className="px-4 py-2">Name</th>
-                    <th className="px-4 py-2">Email</th>
-                    <th className="px-4 py-2">Status</th>
-                    <th className="px-4 py-2">Actions</th>
+                    <th className="lwd-th">Name</th>
+                    <th className="lwd-th">Email</th>
+                    <th className="lwd-th">Status</th>
+                    <th className="lwd-th">Actions</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {paginatedRecruiters.map((r) => (
-                    <tr key={r.id} className="lwd-table-row hover:bg-gray-50 dark:hover:bg-slate-800">
-                      <td className="px-4 py-2">{r.name}</td>
-                      <td className="px-4 py-2">{r.email}</td>
-                      <td className="px-4 py-2">{getStatusBadge(r.status)}</td>
+                    <tr key={r.id} className="lwd-table-row">
+                      <td className="lwd-td">{r.name}</td>
+                      <td className="lwd-td">{r.email}</td>
+                      <td className="lwd-td">{getStatusBadge(r.status)}</td>
 
-                      <td className="px-4 py-2 flex gap-2">
+                      <td className="lwd-td flex gap-2 flex-wrap">
                         {r.status === "PENDING" && (
                           <button
                             onClick={() => openConfirm(r, "APPROVE")}
-                            className="lwd-btn-primary text-xs"
+                            className="lwd-btn-primary-sm"
                           >
                             Approve
                           </button>
@@ -210,7 +212,7 @@ export default function RecruitersListPage() {
                         {r.status === "ACTIVE" && (
                           <button
                             onClick={() => openConfirm(r, "BLOCK")}
-                            className="lwd-btn-secondary text-xs"
+                            className="lwd-btn-secondary"
                           >
                             Block
                           </button>
@@ -219,15 +221,14 @@ export default function RecruitersListPage() {
                         {r.status === "SUSPENDED" && (
                           <button
                             onClick={() => openConfirm(r, "UNBLOCK")}
-                            className="lwd-btn-secondary text-xs"
+                            className="lwd-btn-secondary"
                           >
                             Unblock
                           </button>
                         )}
 
-                        <button className="lwd-btn-primary text-xs flex items-center gap-1">
-                          <Eye className="w-3 h-3" />
-                          View
+                        <button className="lwd-btn-primary-sm flex items-center gap-1">
+                          <Eye size={12} /> View
                         </button>
                       </td>
                     </tr>
@@ -235,7 +236,7 @@ export default function RecruitersListPage() {
                 </tbody>
               </table>
 
-              {/* Pagination */}
+              {/* PAGINATION */}
               {totalPages > 1 && (
                 <div className="flex justify-between mt-4">
                   <button
@@ -260,33 +261,37 @@ export default function RecruitersListPage() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* MODAL */}
       {confirm.open && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <div className="modal-header">
-              <h3 className="modal-title">
-                Confirm {confirm.action?.toLowerCase()}
-              </h3>
-            </div>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="lwd-card w-full max-w-md">
 
-            <div className="modal-body">
-              <p>
-                Are you sure you want to{" "}
-                <strong>{confirm.action?.toLowerCase()}</strong>{" "}
-                {confirm.recruiter?.name}?
-              </p>
-            </div>
+            <h3 className="lwd-title mb-4">
+              Confirm {confirm.action?.toLowerCase()}
+            </h3>
 
-            <div className="modal-footer">
-              <button onClick={closeConfirm} className="btn-secondary">
+            <p className="lwd-text mb-6">
+              Are you sure you want to{" "}
+              <strong>{confirm.action?.toLowerCase()}</strong>{" "}
+              {confirm.recruiter?.name}?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={closeConfirm}
+                className="lwd-btn-outline"
+              >
                 Cancel
               </button>
 
-              <button onClick={handleAction} className="btn-primary">
+              <button
+                onClick={handleAction}
+                className="lwd-btn-primary"
+              >
                 Confirm
               </button>
             </div>
+
           </div>
         </div>
       )}

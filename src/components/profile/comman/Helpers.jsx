@@ -127,3 +127,18 @@ export const formatSkill = (skill) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
+
+
+// ================= TEXTAREA =================
+export const Textarea = ({ label, ...props }) => (
+  <div>
+    {label && (
+      <label className="lwd-label mb-1 block">{label}</label>
+    )}
+    <textarea
+      {...props}
+      rows={4}
+      className="lwd-input min-h-27.5 resize-none"
+    />
+  </div>
+);
