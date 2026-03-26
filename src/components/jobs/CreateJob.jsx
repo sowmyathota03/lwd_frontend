@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BriefcaseIcon } from "lucide-react";
+
 export default function CreateJob() {
   const navigate = useNavigate();
 

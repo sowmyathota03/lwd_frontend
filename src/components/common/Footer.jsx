@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-100 px-4 sm:px-6 py-10 sm:py-12">
+    <footer className="lwd-footer px-4 sm:px-6 py-10 sm:py-12">
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 text-center sm:text-left">
+      <div className="lwd-container lwd-footer-grid text-center sm:text-left">
 
         {/* Brand */}
         <div>
@@ -27,22 +27,22 @@ function Footer() {
 
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/JobSearchBlock" className="lwd-link">
+              <Link to="/JobSearchBlock" className="lwd-footer-link">
                 Search Jobs
               </Link>
             </li>
             <li>
-              <Link to="/ResumeUpload" className="lwd-link">
+              <Link to="/ResumeUpload" className="lwd-footer-link">
                 Upload Resume
               </Link>
             </li>
             <li>
-              <Link to="/JobAlert" className="lwd-link">
+              <Link to="/JobAlert" className="lwd-footer-link">
                 Job Alerts
               </Link>
             </li>
             <li>
-              <Link to="/CareerAdvice" className="lwd-link">
+              <Link to="/CareerAdvice" className="lwd-footer-link">
                 Career Advice
               </Link>
             </li>
@@ -57,22 +57,22 @@ function Footer() {
 
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/PostJob" className="lwd-link">
+              <Link to="/PostJob" className="lwd-footer-link">
                 Post a Job
               </Link>
             </li>
             <li>
-              <Link to="/SearchResumes" className="lwd-link">
+              <Link to="/SearchResumes" className="lwd-footer-link">
                 Search Resumes
               </Link>
             </li>
             <li>
-              <Link to="/login" className="lwd-link">
+              <Link to="/login" className="lwd-footer-link">
                 Recruiter Login
               </Link>
             </li>
             <li>
-              <Link to="/Pricing" className="lwd-link">
+              <Link to="/Pricing" className="lwd-footer-link">
                 Pricing
               </Link>
             </li>
@@ -87,22 +87,22 @@ function Footer() {
 
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/AboutUs" className="lwd-link">
+              <Link to="/AboutUs" className="lwd-footer-link">
                 About Us
               </Link>
             </li>
             <li>
-              <Link to="/ContactUs" className="lwd-link">
+              <Link to="/ContactUs" className="lwd-footer-link">
                 Contact Us
               </Link>
             </li>
             <li>
-              <Link to="/PrivacyPolicy" className="lwd-link">
+              <Link to="/PrivacyPolicy" className="lwd-footer-link">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link to="/TermsAndConditions" className="lwd-link">
+              <Link to="/TermsAndConditions" className="lwd-footer-link">
                 Terms & Conditions
               </Link>
             </li>
@@ -112,7 +112,7 @@ function Footer() {
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-gray-700 mt-10 pt-5 text-center text-xs sm:text-sm lwd-text">
+      <div className="lwd-footer-bottom mt-10 pt-5 text-center text-xs sm:text-sm">
         © {new Date().getFullYear()} LWD. All Rights Reserved.
       </div>
 

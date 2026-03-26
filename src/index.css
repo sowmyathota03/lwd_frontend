@@ -4,8 +4,10 @@
 /* ===== GLOBAL STYLES ===== */
 /* ========================== */
 
+/* REQUIRED for dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Smooth transitions */
 * {
   transition-property: background-color, color, border-color, fill, stroke;
   transition-duration: 300ms;
@@ -15,16 +17,17 @@
 /* ========================== */
 /* ===== LWD COMPONENTS ===== */
 /* ========================== */
+
 @layer components {
 
   /* ===== Page ===== */
   .lwd-page {
-    @apply min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100;
+    @apply min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
   }
 
   /* ===== Card ===== */
   .lwd-card {
-    @apply bg-white rounded-lg shadow-md border border-gray-200 p-4 dark:bg-slate-800 dark:border-gray-700;
+    @apply bg-white rounded-lg shadow-md border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700;
   }
 
   .lwd-card-hover {
@@ -33,14 +36,14 @@
 
   /* ===== Titles ===== */
   .lwd-title {
-    @apply text-slate-800 font-semibold text-lg dark:text-slate-100;
+    @apply text-gray-800 font-semibold text-lg dark:text-gray-100;
   }
 
   .lwd-subtitle {
     @apply text-sm font-medium text-gray-700 dark:text-gray-300;
   }
 
-  /* ===== Text */
+  /* ===== Text ===== */
   .lwd-text {
     @apply text-gray-600 text-sm dark:text-gray-300;
   }
@@ -77,7 +80,7 @@
 
   /* ===== Inputs ===== */
   .lwd-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-800 text-sm dark:bg-slate-800 dark:border-gray-600 dark:text-white;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-800 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white;
   }
 
   .lwd-input:focus {
@@ -90,15 +93,15 @@
   }
 
   .lwd-grid {
-    @apply grid grid-cols-1 lg:grid-cols-12 gap-6;
+    @apply grid grid-cols-1 md:grid-cols-4 gap-6;
   }
 
   .lwd-sidebar-layout {
-    @apply lg:col-span-4 xl:col-span-3;
+    @apply md:col-span-1;
   }
 
   .lwd-content-layout {
-    @apply lg:col-span-8 xl:col-span-9;
+    @apply md:col-span-3;
   }
 
   /* ===== Header ===== */
@@ -106,141 +109,21 @@
     @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2;
   }
 
-  /* ===== Filter (FIXED HERE) ===== */
-  .lwd-filter-card {
-    @apply bg-white rounded-lg shadow-md border border-gray-200 dark:bg-slate-800 dark:border-gray-700 sticky top-24 p-0 overflow-hidden;
+  /* ===== Footer ===== */
+  .lwd-footer {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100;
   }
 
-  .lwd-filter-body {
-    @apply p-5 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto;
+  .lwd-footer-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10;
   }
 
-  /* ===== Toggle ===== */
-  .lwd-toggle {
-    @apply relative inline-flex h-7 w-14 items-center rounded-full transition-colors;
+  .lwd-footer-link {
+    @apply text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition duration-300;
   }
 
-  .lwd-toggle-light {
-    @apply bg-gray-400;
+  .lwd-footer-bottom {
+    @apply border-t border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400;
   }
-
-  .lwd-toggle-dark {
-    @apply bg-green-500;
-  }
-
-  .lwd-toggle-thumb {
-    @apply inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform;
-  }
-
-  .lwd-toggle-thumb-light {
-    @apply translate-x-1;
-  }
-
-  .lwd-toggle-thumb-dark {
-    @apply translate-x-7;
-  }
-
-  /* ===== Settings ===== */
-  .lwd-section {
-    @apply border-b border-gray-200 dark:border-gray-700 pb-6 mb-6;
-  }
-
-  .lwd-section-title {
-    @apply text-lg font-semibold text-gray-800 dark:text-white mb-3;
-  }
-
-  .lwd-btn-outline {
-    @apply px-5 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-slate-700;
-  }
-
-    /* Page Background */
-    .lwd-page-bg {
-      @apply min-h-screen bg-gradient-to-br from-slate-100 via-blue-100 to-indigo-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6;
-    }
-  
-    /* Container */
-    .lwd-container {
-      @apply max-w-7xl mx-auto;
-    }
-  
-    /* Header */
-    .lwd-page-header {
-      @apply mb-6;
-    }
-  
-    .lwd-page-title {
-      @apply flex items-center gap-3 text-2xl font-bold text-gray-800 dark:text-white;
-    }
-  
-    .lwd-page-subtitle {
-      @apply text-gray-500 dark:text-gray-400;
-    }
-  
-    /* Grid Layout */
-    .lwd-grid {
-      @apply grid grid-cols-1 md:grid-cols-4 gap-6;
-    }
-  
-    .lwd-sidebar-layout {
-      @apply md:col-span-1;
-    }
-  
-    .lwd-content-layout {
-      @apply md:col-span-3;
-    }
-  
-    /* Card */
-    .lwd-card {
-      @apply bg-white/90 dark:bg-slate-800 rounded-2xl shadow-lg p-4;
-    }
-  
-    /* Filter */
-    .lwd-filter-header {
-      @apply flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-200 mb-4;
-    }
-  
-    .lwd-filter-body {
-      @apply space-y-4 max-h-[60vh] overflow-y-auto;
-    }
-  
-    .lwd-filter-footer {
-      @apply mt-4;
-    }
-  
-    /* Inputs */
-    .lwd-label {
-      @apply text-sm font-medium text-gray-600 dark:text-gray-300 mb-1 block;
-    }
-  
-    .lwd-input {
-      @apply w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-white outline-none;
-    }
-  
-    .lwd-input-group {
-      @apply relative;
-    }
-  
-    .lwd-input-icon {
-      @apply absolute left-3 top-2.5 text-gray-400;
-    }
-  
-    .lwd-input-with-icon {
-      @apply w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-white outline-none;
-    }
-  
-    /* Button */
-    .lwd-btn-primary {
-      @apply bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow;
-    }
-  
-    /* Scrollbar */
-    .lwd-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-  
-    .lwd-scrollbar::-webkit-scrollbar-thumb {
-      background: #94a3b8;
-      border-radius: 10px;
-    }
 
 }
