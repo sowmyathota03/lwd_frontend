@@ -58,12 +58,12 @@ function RecommendedJobs() {
 
   return (
     
-    <div className="lwd-page">
+    <div className="lwd-page p-6">
     
-    <div className="lwd-page min-h-screen max-w-6xl mx-auto">
+    <div className="min-h-screen max-w-6xl mx-auto">
 
 
-      <div className="lwd-card p-8 m-6">
+      <div className="lwd-card p-8 ">
 
         <h2 className="lwd-title mb-6">
           Recommended Jobs ({totalCount})

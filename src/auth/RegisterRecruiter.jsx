@@ -9,7 +9,7 @@ function RegisterRecruiter() {
     name: "",
     email: "",
     password: "",
-    contactNumber: "",
+    contactNumber: "",  
   });
 
   const [loading, setLoading] = useState(false);
@@ -46,20 +46,20 @@ function RegisterRecruiter() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-linear-to-br from-sky-100 to-blue-50 flex justify-center items-center px-4">
-      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
-        <h2 className="text-2xl font-semibold text-center text-slate-900 mb-6">
+    <div className="min-h-[80vh] bg-linear-to-br lwd-page flex justify-center items-center px-4">
+      <div className="w-full max-w-md p-10 rounded-2xl lwd-card backdrop-blur-xl shadow-2xl">
+        <h2 className="text-2xl font-semibold text-center lwd-title lwd-text mb-6">
           Register as Recruiter
         </h2>
 
         {error && (
-          <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
+          <div className="bg-red-100 text-red-600 text-sm text-center p-2 rounded-lg mb-4">
             {error}
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-green-100 text-green-600 text-sm text-center p-3 rounded-lg mb-4">
+          <div className="bg-green-100 text-green-600 text-sm text-center p-2 rounded-lg mb-4">
             {successMessage}
           </div>
         )}
@@ -72,7 +72,7 @@ function RegisterRecruiter() {
               placeholder="Full Name"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="w-full px-2 py-2 rounded-lg text-sm border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
@@ -83,7 +83,7 @@ function RegisterRecruiter() {
               placeholder="Email"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="w-full px-2 py-2 rounded-lg text-sm border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
@@ -94,7 +94,7 @@ function RegisterRecruiter() {
               placeholder="Password"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="w-full px-2 py-2 rounded-lg text-sm border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
@@ -105,14 +105,14 @@ function RegisterRecruiter() {
               placeholder="Contact Number"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="w-full px-2 py-2 rounded-lg text-sm border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading || successMessage}
-            className="w-full py-3 rounded-lg font-semibold text-white bg-linear-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
+            className="w-full py-2 rounded-lg text-sm text-white bg-linear-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
           >
             {loading ? "Registering..." : "Register"}
           </button>

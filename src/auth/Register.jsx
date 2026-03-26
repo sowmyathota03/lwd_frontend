@@ -47,24 +47,25 @@ function RegisterJobSeeker() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-gradient-to-br from-sky-100 to-blue-50 flex justify-center items-center px-4">
-      <div className="w-full max-w-md p-10 rounded-2xl bg-white/75 backdrop-blur-xl shadow-2xl">
+    <div className="lwd-page flex justify-center items-center px-4">
+
+      <div className="lwd-card w-full max-w-md p-8 backdrop-blur-xl">
 
         {/* Title */}
-        <h2 className="text-2xl font-semibold text-center text-slate-900 mb-6">
+        <h2 className="lwd-title text-2xl text-center mb-6">
           Register as Job Seeker
         </h2>
 
         {/* Error */}
         {error && (
-          <div className="bg-red-100 text-red-600 text-sm text-center p-3 rounded-lg mb-4">
+          <div className="mb-4 text-sm text-center p-3 rounded-lg bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300">
             {error}
           </div>
         )}
 
         {/* Success */}
         {successMessage && (
-          <div className="bg-green-100 text-green-600 text-sm text-center p-3 rounded-lg mb-4">
+          <div className="mb-4 text-sm text-center p-3 rounded-lg bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300">
             {successMessage}
           </div>
         )}
@@ -79,7 +80,7 @@ function RegisterJobSeeker() {
               placeholder="Full Name"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="lwd-input"
             />
           </div>
 
@@ -91,7 +92,7 @@ function RegisterJobSeeker() {
               placeholder="Email"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="lwd-input"
             />
           </div>
 
@@ -103,7 +104,7 @@ function RegisterJobSeeker() {
               placeholder="Password"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="lwd-input"
             />
           </div>
 
@@ -115,7 +116,7 @@ function RegisterJobSeeker() {
               placeholder="Contact Number"
               required
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-200 transition"
+              className="lwd-input"
             />
           </div>
 
@@ -123,17 +124,17 @@ function RegisterJobSeeker() {
           <button
             type="submit"
             disabled={loading || successMessage}
-            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-sky-400 to-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 disabled:opacity-70"
+            className="w-full lwd-btn-primary disabled:opacity-70"
           >
             {loading ? "Registering..." : "Register"}
           </button>
 
           {/* Login Link */}
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-4 text-center text-sm lwd-text">
             <p>
               Already have an account?{" "}
               <span
-                className="text-sky-500 cursor-pointer hover:underline"
+                className="text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
                 onClick={() => navigate("/login")}
               >
                 Login here

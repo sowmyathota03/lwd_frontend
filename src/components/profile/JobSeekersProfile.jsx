@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -16,7 +16,6 @@ import ProfileCompletion from "./jobseekersProfile/ProfileCompletion";
 import ResumeUpload from "./jobseekersProfile/ResumeUpload";
 import LinkedInUrl from "./jobseekersProfile/LinkedInUrl";
 import GitHubUrl from "./jobseekersProfile/GitHubUrl";
-import CareerObjective from "./jobseekersProfile/CareerObjective";
 
 import AddStatus from "../../pages/profile/components/AddStatus";
 
@@ -51,7 +50,6 @@ const MISSING_ITEM_MAP = {
 const JobSeekerProfile = () => {
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
-  const scrollContainerRef = useRef(null);
 
   const isOwnProfile = !userId || user?.userId === Number(userId);
 
@@ -61,6 +59,9 @@ const JobSeekerProfile = () => {
 
   const [basicLoading, setBasicLoading] = useState(true);
   const [extendedLoading, setExtendedLoading] = useState(true);
+
+  // ✅ NEW: sidebar state
+  const [showSidebar, setShowSidebar] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -172,7 +173,13 @@ const JobSeekerProfile = () => {
     {
       id: "skills",
       title: "Skills",
-      component: <JobSeekerSkills editable={isOwnProfile} />,
+      component: (
+        <JobSeekerSkills
+          editable={isOwnProfile}
+          isOwnProfile={isOwnProfile}
+          userId={userId}
+        />
+      ),
     },
     {
       id: "experience",
@@ -218,20 +225,45 @@ const JobSeekerProfile = () => {
 
   return (
     <div className="lwd-page py-6 px-4">
-      <div className="max-w-7xl mx-auto lwd-card flex flex-col lg:flex-row overflow-hidden">
+      {/* ✅ Mobile Toggle Button */}
+      <div className="lg:hidden mb-4">
+        <button
+          onClick={() => setShowSidebar(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md"
+        >
+          ☰ Sections
+        </button>
+      </div>
 
-        {/* Sidebar */}
-        <aside className="w-full lg:w-1/4 lwd-sidebar">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row relative">
+        {/* ✅ Overlay */}
+        {showSidebar && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-40 z-40 lg:hidden"
+            onClick={() => setShowSidebar(false)}
+          />
+        )}
+
+        {/* ✅ Sidebar */}
+        <aside
+          className={`
+            fixed lg:static top-0 left-0 h-full z-50 bg-white dark:bg-slate-900
+            w-64 p-4 transform transition-transform duration-300
+            ${showSidebar ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0 lg:w-1/4
+          `}
+        >
           <h3 className="lwd-label mb-4 uppercase">Profile Sections</h3>
 
           {sections.map((section) => (
             <button
               key={section.id}
-              onClick={() =>
+              onClick={() => {
                 document
                   .getElementById(section.id)
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+                  ?.scrollIntoView({ behavior: "smooth" });
+                setShowSidebar(false); // auto close
+              }}
               className="block w-full text-left px-3 py-2 rounded-md text-sm hover:bg-blue-50 dark:hover:bg-slate-800"
             >
               {section.title}
@@ -239,29 +271,33 @@ const JobSeekerProfile = () => {
           ))}
         </aside>
 
-        {/* Content */}
+        {/* ✅ Content */}
         <main className="w-full lg:w-3/4 p-6">
-
-          {/* Header */}
-          <div className="mb-6 lwd-card bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+          <div className="mb-6 lwd-card bg-linear-to-r from-blue-600 to-indigo-700 text-white flex justify-between items-center">
             <h1 className="text-2xl font-bold">
               {isOwnProfile ? "My Profile" : basicProfile?.name}
             </h1>
+            <div>
+              <AddStatus
+                isActive={basicProfile?.isActive}
+                lastActiveAt={basicProfile?.lastActiveAt}
+              />
+            </div>
           </div>
 
-          {/* Profile Completion */}
           <div className="mb-6 lwd-card">
-            <ProfileCompletion onMissingClick={handleMissingClick} />
+            <ProfileCompletion
+              userId={userId}
+              isOwnProfile={isOwnProfile}
+              onMissingClick={handleMissingClick}
+            />
           </div>
 
-          {/* Sections */}
           <div className="space-y-6">
             {sections.map((section) => (
               <section key={section.id} id={section.id}>
                 <div className="lwd-card lwd-card-hover">
-                  <div className="lwd-section-header">
-                    {section.title}
-                  </div>
+                  <div className="lwd-section-header">{section.title}</div>
                   <div className="p-4">{section.component}</div>
                 </div>
               </section>
