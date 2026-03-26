@@ -94,11 +94,11 @@ export default function RecruiterList() {
   }
 
   return (
-    <div className="lwd-page space-y-6">
+    <div className="lwd-page p-4 md:p-6 space-y-6">
 
       {/* Header */}
       <div className="lwd-card">
-        <h2 className="lwd-title">Recruiters</h2>
+        <h2 className="lwd-title text-xl">Recruiters</h2>
       </div>
 
       {/* Tabs */}
@@ -110,7 +110,10 @@ export default function RecruiterList() {
               setActiveTab(tab);
               setPage(0);
             }}
-            className={`lwd-tab ${activeTab === tab ? "lwd-tab-active" : ""
+            className={`px-4 py-2 rounded-md text-sm font-medium transition
+              ${activeTab === tab
+                ? "bg-blue-600 text-white dark:bg-blue-500"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-slate-700 dark:text-gray-300"
               }`}
           >
             {tab === "ALL" ? "All Recruiters" : "Pending Approval"}
@@ -119,14 +122,18 @@ export default function RecruiterList() {
       </div>
 
       {/* Error */}
-      {error && <div className="lwd-card text-red-600">{error}</div>}
+      {error && (
+        <div className="lwd-card text-red-500 dark:text-red-400">
+          {error}
+        </div>
+      )}
 
       {/* Table */}
       <div className="lwd-card overflow-x-auto">
-        <table className="lwd-table">
-          <thead>
+        <table className="w-full text-sm">
+          <thead className="border-b border-gray-200 dark:border-gray-700 text-left">
             <tr>
-              <th>Name</th>
+              <th className="py-2">Name</th>
               <th>Email</th>
               <th>Role</th>
               <th>Status</th>
@@ -144,11 +151,14 @@ export default function RecruiterList() {
               </tr>
             ) : (
               recruiters.map((rec) => (
-                <tr key={rec.id}>
+                <tr
+                  key={rec.id}
+                  className="border-b border-gray-100 dark:border-gray-700"
+                >
                   <td>
                     <NavLink
                       to={`/recruiters-admin/recruiter/${rec.id}/jobs`}
-                      className="lwd-link"
+                      className="text-blue-600 hover:underline dark:text-blue-400"
                     >
                       {rec.name}
                     </NavLink>
@@ -157,28 +167,29 @@ export default function RecruiterList() {
                   <td>
                     <NavLink
                       to={`/recruiters-admin/recruiter/${rec.id}/jobs`}
-                      className="lwd-link"
+                      className="text-blue-600 hover:underline dark:text-blue-400"
                     >
                       {rec.email}
                     </NavLink>
                   </td>
 
-                  <td>{rec.role}</td>
+                  <td className="lwd-text">{rec.role}</td>
 
                   <td>
                     <span
-                      className={`lwd-badge ${rec.status === "ACTIVE"
-                          ? "lwd-badge-success"
+                      className={`px-2 py-1 text-xs rounded-full font-medium
+                        ${rec.status === "ACTIVE"
+                          ? "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400"
                           : rec.status === "PENDING_APPROVAL"
-                            ? "lwd-badge-warning"
-                            : "lwd-badge-danger"
+                            ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-400"
+                            : "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400"
                         }`}
                     >
                       {rec.status}
                     </span>
                   </td>
 
-                  <td>
+                  <td className="lwd-text">
                     {rec.createdAt
                       ? new Date(rec.createdAt).toLocaleDateString()
                       : "-"}

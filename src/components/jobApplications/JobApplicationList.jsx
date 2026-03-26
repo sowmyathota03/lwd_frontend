@@ -8,16 +8,8 @@ import ApplicationStatusDropdown from "./ApplicationStatusDropdown";
 import {
   MagnifyingGlassIcon,
   UserCircleIcon,
-  BriefcaseIcon,
-  BuildingOfficeIcon,
-  CurrencyRupeeIcon,
-  ClockIcon,
-  CalendarIcon,
-  GlobeAltIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  FunnelIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 
 const STORAGE_KEY = "job-applications-state";
@@ -31,37 +23,11 @@ const getSavedState = () => {
       : {
         page: 0,
         search: "",
-        status: "",
-        applicationSource: "",
-        skills: "",
-        dateFilter: "",
-        specificDate: "",
-        startDate: "",
-        endDate: "",
       };
   } catch {
-    return {
-      page: 0,
-      search: "",
-      status: "",
-      applicationSource: "",
-      skills: "",
-      dateFilter: "",
-      specificDate: "",
-      startDate: "",
-      endDate: "",
-    };
+    return { page: 0, search: "" };
   }
 };
-
-const statusOptions = [
-  "APPLIED",
-  "SHORTLISTED",
-  "INTERVIEW_SCHEDULED",
-  "SELECTED",
-  "REJECTED",
-  "HIRED",
-];
 
 const formatStatusLabel = (status) =>
   status
@@ -79,38 +45,20 @@ export default function JobApplicationList() {
 
   const [page, setPage] = useState(savedState.page || 0);
   const [search, setSearch] = useState(savedState.search || "");
-  const [status, setStatus] = useState(savedState.status || "");
-  const [applicationSource, setApplicationSource] = useState(
-    savedState.applicationSource || ""
-  );
-  const [skills, setSkills] = useState(savedState.skills || "");
-  const [dateFilter, setDateFilter] = useState(savedState.dateFilter || "");
-  const [specificDate, setSpecificDate] = useState(savedState.specificDate || "");
-  const [startDate, setStartDate] = useState(savedState.startDate || "");
-  const [endDate, setEndDate] = useState(savedState.endDate || "");
 
   const size = 10;
 
   const filters = useMemo(
     () => ({
       keyword: search.trim() || null,
-      status: status || null,
-      applicationSource: applicationSource || null,
-      skills: skills.trim() || null,
-      dateFilter: dateFilter || null,
-      specificDate: dateFilter === "SPECIFIC_DATE" ? specificDate || null : null,
-      startDate: dateFilter === "CUSTOM_RANGE" ? startDate || null : null,
-      endDate: dateFilter === "CUSTOM_RANGE" ? endDate || null : null,
     }),
-    [search, status, applicationSource, skills, dateFilter, specificDate, startDate, endDate]
+    [search]
   );
 
-  const { data, isLoading, isError, isFetching } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["applications", page, filters],
     queryFn: () => searchApplications(filters, page, size),
     placeholderData: (prev) => prev,
-    staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 30,
   });
 
   const applications = data?.applications || [];
@@ -119,19 +67,9 @@ export default function JobApplicationList() {
   useEffect(() => {
     sessionStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({
-        page,
-        search,
-        status,
-        applicationSource,
-        skills,
-        dateFilter,
-        specificDate,
-        startDate,
-        endDate,
-      })
+      JSON.stringify({ page, search })
     );
-  }, [page, search, status, applicationSource, skills, dateFilter, specificDate, startDate, endDate]);
+  }, [page, search]);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -139,7 +77,7 @@ export default function JobApplicationList() {
       return;
     }
     setPage(0);
-  }, [search, status, applicationSource, skills, dateFilter, specificDate, startDate, endDate]);
+  }, [search]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -157,99 +95,132 @@ export default function JobApplicationList() {
     }
   }, [isLoading]);
 
-  const clearFilters = () => {
-    setSearch("");
-    setStatus("");
-    setApplicationSource("");
-    setSkills("");
-    setDateFilter("");
-    setSpecificDate("");
-    setStartDate("");
-    setEndDate("");
-    setPage(0);
-  };
-
   const handleNext = () => page < totalPages - 1 && setPage((p) => p + 1);
   const handlePrevious = () => page > 0 && setPage((p) => p - 1);
 
   if (isLoading) return <Loader />;
-
-  if (isError) return <div className="text-red-500 text-center">Failed to load</div>;
+  if (isError)
+    return (
+      <div className="text-center text-red-500 dark:text-red-400">
+        Failed to load
+      </div>
+    );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="lwd-page space-y-6">
 
-      <h1 className="text-2xl font-bold">Job Applications</h1>
+      {/* HEADER */}
+      <div className="lwd-card flex flex-col md:flex-row justify-between gap-4 items-center">
 
-      {/* Search */}
-      <div className="relative w-full md:w-96">
-        <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-10 pr-4 py-2 border rounded w-full"
-          placeholder="Search..."
-        />
+        <h1 className="lwd-title">Job Applications</h1>
+
+        {/* Search */}
+        <div className="relative w-full md:w-80">
+          <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="lwd-input pl-10"
+            placeholder="Search applications..."
+          />
+        </div>
       </div>
 
-      {/* Cards */}
-      {applications.map((app) => (
-        <div key={app.applicationId} className="border p-4 rounded-lg shadow">
+      {/* CARDS */}
+      <div className="space-y-4">
+        {applications.length === 0 ? (
+          <div className="lwd-card text-center text-gray-500 dark:text-gray-400 py-10">
+            No applications found
+          </div>
+        ) : (
+          applications.map((app) => (
+            <div
+              key={app.applicationId}
+              className="lwd-card hover:shadow-lg transition-all"
+            >
+              {/* TOP */}
+              <div className="flex justify-between items-start">
 
-          <div className="flex justify-between">
-            <div className="flex gap-3">
-              <UserCircleIcon className="w-10 h-10 text-gray-400" />
-              <div>
-                <h3
-                  onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-                  className="font-semibold cursor-pointer text-blue-600"
+                <div className="flex gap-3">
+                  <UserCircleIcon className="w-10 h-10 text-gray-400 dark:text-gray-500" />
+
+                  <div>
+                    <h3
+                      onClick={() =>
+                        navigate(`/profile/${app.jobSeekerId}`)
+                      }
+                      className="font-semibold text-blue-600 dark:text-blue-400 cursor-pointer"
+                    >
+                      {app.applicantName}
+                    </h3>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {app.job?.title}
+                    </p>
+                  </div>
+                </div>
+
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {formatStatusLabel(app.status)}
+                </span>
+              </div>
+
+              {/* DETAILS */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm text-gray-600 dark:text-gray-400">
+
+                <p>Exp: {app.jobSeeker?.totalExperience} yrs</p>
+                <p>CTC: ₹{app.jobSeeker?.expectedCTC}</p>
+                <p>Company: {app.company?.companyName}</p>
+                <p>Date: {app.appliedAt?.slice(0, 10)}</p>
+              </div>
+
+              {/* ACTIONS */}
+              <div className="flex justify-between items-center mt-4">
+
+                <button
+                  onClick={() =>
+                    navigate(`/profile/${app.jobSeekerId}`)
+                  }
+                  className="lwd-btn-outline text-sm"
                 >
-                  {app.applicantName}
-                </h3>
-                <p className="text-sm">{app.job?.title}</p>
+                  View Profile
+                </button>
+
+                <ApplicationStatusDropdown
+                  applicationId={app.applicationId}
+                  currentStatus={app.status}
+                />
               </div>
             </div>
-
-            <span className="text-sm">{formatStatusLabel(app.status)}</span>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 mt-4 text-sm gap-4">
-            <p>Exp: {app.jobSeeker?.totalExperience} yrs</p>
-            <p>CTC: ₹{app.jobSeeker?.expectedCTC}</p>
-            <p>Company: {app.company?.companyName}</p>
-            <p>Date: {app.appliedAt?.slice(0, 10)}</p>
-          </div>
-
-          <div className="flex justify-between mt-4">
-            <button
-              onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-              className="text-blue-500"
-            >
-              View Profile
-            </button>
-
-            <ApplicationStatusDropdown
-              applicationId={app.applicationId}
-              currentStatus={app.status}
-            />
-          </div>
-        </div>
-      ))}
-
-      {/* Pagination */}
-      <div className="flex justify-center gap-4">
-        <button onClick={handlePrevious} disabled={page === 0}>
-          <ChevronLeftIcon className="w-5" />
-        </button>
-
-        <span>
-          {page + 1} / {totalPages}
-        </span>
-
-        <button onClick={handleNext} disabled={page === totalPages - 1}>
-          <ChevronRightIcon className="w-5" />
-        </button>
+          ))
+        )}
       </div>
+
+      {/* PAGINATION */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4">
+
+          <button
+            onClick={handlePrevious}
+            disabled={page === 0}
+            className="lwd-btn-outline"
+          >
+            <ChevronLeftIcon className="w-4 h-4" />
+          </button>
+
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {page + 1} / {totalPages}
+          </span>
+
+          <button
+            onClick={handleNext}
+            disabled={page === totalPages - 1}
+            className="lwd-btn-outline"
+          >
+            <ChevronRightIcon className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

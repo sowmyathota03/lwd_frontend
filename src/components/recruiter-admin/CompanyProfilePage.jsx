@@ -15,11 +15,8 @@ import {
   GlobeAltIcon,
   MapPinIcon,
   PencilSquareIcon,
-  CheckCircleIcon,
-  XCircleIcon,
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
-import { CheckCircleIcon as CheckCircleSolid } from "@heroicons/react/24/solid";
 
 export default function CompanyProfile() {
   const [company, setCompany] = useState(null);
@@ -125,18 +122,18 @@ export default function CompanyProfile() {
 
   return (
     <div className="lwd-page py-6">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <div className="lwd-container max-w-5xl space-y-6">
 
         {/* Alerts */}
         {error && (
-          <div className="lwd-card border-red-300">
-            <p className="text-red-600">{error}</p>
+          <div className="lwd-card border border-red-300 dark:border-red-700">
+            <p className="text-red-600 dark:text-red-400">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="lwd-card border-green-300">
-            <p className="text-green-600">{success}</p>
+          <div className="lwd-card border border-green-300 dark:border-green-700">
+            <p className="text-green-600 dark:text-green-400">{success}</p>
           </div>
         )}
 
@@ -148,21 +145,30 @@ export default function CompanyProfile() {
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-4">
 
-                <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-slate-700 flex items-center justify-center overflow-hidden">
                   {company.logoUrl ? (
-                    <img src={company.logoUrl} className="w-full h-full object-cover rounded-lg" />
+                    <img
+                      src={company.logoUrl}
+                      alt="logo"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <BuildingOfficeIcon className="w-8 h-8 text-blue-500" />
                   )}
                 </div>
 
                 <div>
-                  <h1 className="lwd-title text-xl">{company.companyName}</h1>
+                  <h1 className="lwd-title text-xl">
+                    {company.companyName}
+                  </h1>
 
-                  <span className={`lwd-badge ${company.isActive
-                      ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                      : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
-                    }`}>
+                  <span
+                    className={`inline-block mt-1 px-2 py-1 text-xs rounded-md font-semibold
+                    ${company.isActive
+                        ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                        : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                      }`}
+                  >
                     {company.isActive ? "Active" : "Inactive"}
                   </span>
                 </div>
@@ -182,16 +188,16 @@ export default function CompanyProfile() {
             {/* Details */}
             <div className="grid md:grid-cols-2 gap-6">
 
-              <div className="flex gap-2">
-                <GlobeAltIcon className="lwd-icon" />
+              <div className="flex gap-3">
+                <GlobeAltIcon className="w-5 h-5 text-gray-500 dark:text-gray-300" />
                 <div>
                   <p className="lwd-label">Website</p>
                   <p className="lwd-text">{company.website || "-"}</p>
                 </div>
               </div>
 
-              <div className="flex gap-2">
-                <MapPinIcon className="lwd-icon" />
+              <div className="flex gap-3">
+                <MapPinIcon className="w-5 h-5 text-gray-500 dark:text-gray-300" />
                 <div>
                   <p className="lwd-label">Location</p>
                   <p className="lwd-text">{company.location || "-"}</p>
@@ -274,7 +280,6 @@ export default function CompanyProfile() {
                 className="lwd-input"
               />
 
-              {/* Checkbox */}
               {canEdit && (
                 <div className="flex items-center gap-2">
                   <input
@@ -282,7 +287,7 @@ export default function CompanyProfile() {
                     name="isActive"
                     checked={formData.isActive}
                     onChange={handleChange}
-                    className="lwd-checkbox"
+                    className="accent-blue-600"
                   />
                   <label className="lwd-text">Company Active</label>
                 </div>

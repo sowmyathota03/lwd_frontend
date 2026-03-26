@@ -3,9 +3,17 @@ import { useState, useEffect } from "react";
 
 export default function RecruiterDashboard() {
   const [darkMode, setDarkMode] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Dark mode logic (same as Admin)
+  // Load saved theme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      setDarkMode(true);
+    }
+  }, []);
+
+  // Apply theme
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -22,11 +30,11 @@ export default function RecruiterDashboard() {
     { to: "/recruiter/managejob", label: "Jobs", icon: "📄" },
     { to: "/recruiter/createjob", label: "Create Job", icon: "➕" },
     { to: "/recruiter/applications", label: "Applications", icon: "📑" },
-    { to: "/recruiter/job-seekers", label: "Job Seekers", icon: "📑" },
+    { to: "/recruiter/job-seekers", label: "Job Seekers", icon: "👤" },
   ];
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-linear-to-br from-slate-300 via-blue-400 to-indigo-600">
+    <div className="lwd-page flex h-screen w-screen overflow-hidden">
 
       {/* Sidebar */}
       <aside
@@ -34,15 +42,17 @@ export default function RecruiterDashboard() {
           ${sidebarOpen ? "w-64" : "w-16"}
           md:w-64
           transition-all duration-300
-          bg-white/80 backdrop-blur-xl shadow-xl flex flex-col
+          bg-white border-r border-gray-200
+          dark:bg-slate-800 dark:border-gray-700
+          flex flex-col shadow-lg
         `}
       >
 
         {/* Logo + Toggle */}
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
           <h2
             className={`
-              font-bold text-gray-800 tracking-wide
+              font-bold tracking-wide lwd-title
               ${sidebarOpen ? "block" : "hidden"}
               md:block
             `}
@@ -50,10 +60,9 @@ export default function RecruiterDashboard() {
             Recruiter Panel
           </h2>
 
-          {/* Mobile Toggle */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden text-xl"
+            className="md:hidden text-xl text-gray-700 dark:text-gray-300"
           >
             ☰
           </button>
@@ -71,10 +80,9 @@ export default function RecruiterDashboard() {
                 `
                 flex items-center gap-3 px-3 py-2 rounded-xl font-medium
                 transition-all duration-300
-                ${
-                  isActive
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-700 hover:bg-blue-100"
+                ${isActive
+                  ? "bg-blue-600 text-white shadow-md dark:bg-blue-500"
+                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-700"
                 }
                 `
               }
@@ -93,34 +101,41 @@ export default function RecruiterDashboard() {
           ))}
         </nav>
 
-        {/* Theme Toggle
-        <div className="p-3 border-t border-gray-200">
+        {/* Theme Toggle */}
+        <div className="p-3 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="w-full py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 shadow-md text-sm"
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all
+              bg-blue-600 text-white hover:bg-blue-700
+              dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            {darkMode ? "☀" : "🌙"}
-            <span
-              className={`
-                ml-2
-                ${sidebarOpen ? "inline" : "hidden"}
-                md:inline
-              `}
-            >
-              {darkMode ? "Light Mode" : "Dark Mode"}
-            </span>
+            {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
           </button>
-        </div> */}
-
+        </div>
       </aside>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 overflow-y-auto bg-white/90 backdrop-blur-lg shadow-inner p-4">
+
+        {/* Top Header */}
+        <header className="lwd-card flex items-center justify-between px-4 py-3 shadow-sm">
+          <h1 className="lwd-title text-lg">
+            Welcome Recruiter 👋
+          </h1>
+
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="lwd-btn-outline text-sm"
+          >
+            {darkMode ? "☀" : "🌙"}
+          </button>
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <Outlet />
         </main>
       </div>
-
     </div>
   );
 }

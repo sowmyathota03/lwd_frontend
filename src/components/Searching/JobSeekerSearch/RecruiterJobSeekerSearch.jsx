@@ -6,12 +6,7 @@ import JobSeekerResults from "./JobSeekerResults";
 import {
   Search,
   Filter,
-  Briefcase,
   MapPin,
-  Globe,
-  DollarSign,
-  Clock,
-  Calendar,
   Tag,
 } from "lucide-react";
 
@@ -25,11 +20,6 @@ function RecruiterJobSeekerSearch() {
     preferredLocation: searchParams.get("preferredLocation") || "",
     minExperience: searchParams.get("minExperience") || "",
     maxExperience: searchParams.get("maxExperience") || "",
-    minExpectedCTC: searchParams.get("minExpectedCTC") || "",
-    maxExpectedCTC: searchParams.get("maxExpectedCTC") || "",
-    noticeStatus: searchParams.get("noticeStatus") || "",
-    maxNoticePeriod: searchParams.get("maxNoticePeriod") || "",
-    immediateJoiner: searchParams.get("immediateJoiner") || "",
     page: Number(searchParams.get("page")) || 0,
     size: 10,
   });
@@ -53,14 +43,8 @@ function RecruiterJobSeekerSearch() {
         keyword: updatedFilters.keyword || "",
         skills: updatedFilters.skills || "",
         currentLocation: updatedFilters.currentLocation || "",
-        preferredLocation: updatedFilters.preferredLocation || "",
         minExperience: updatedFilters.minExperience || "",
         maxExperience: updatedFilters.maxExperience || "",
-        minExpectedCTC: updatedFilters.minExpectedCTC || "",
-        maxExpectedCTC: updatedFilters.maxExpectedCTC || "",
-        noticeStatus: updatedFilters.noticeStatus || "",
-        maxNoticePeriod: updatedFilters.maxNoticePeriod || "",
-        immediateJoiner: updatedFilters.immediateJoiner || "",
         page: updatedFilters.page || 0,
       });
 
@@ -70,30 +54,12 @@ function RecruiterJobSeekerSearch() {
           ? updatedFilters.skills.split(",").map((s) => s.trim())
           : [],
         currentLocation: updatedFilters.currentLocation || null,
-        preferredLocation: updatedFilters.preferredLocation || null,
         minExperience: updatedFilters.minExperience
           ? Number(updatedFilters.minExperience)
           : null,
         maxExperience: updatedFilters.maxExperience
           ? Number(updatedFilters.maxExperience)
           : null,
-        minExpectedCTC: updatedFilters.minExpectedCTC
-          ? Number(updatedFilters.minExpectedCTC)
-          : null,
-        maxExpectedCTC: updatedFilters.maxExpectedCTC
-          ? Number(updatedFilters.maxExpectedCTC)
-          : null,
-        noticeStatus:
-          updatedFilters.noticeStatus === ""
-            ? null
-            : updatedFilters.noticeStatus,
-        maxNoticePeriod: updatedFilters.maxNoticePeriod
-          ? Number(updatedFilters.maxNoticePeriod)
-          : null,
-        immediateJoiner:
-          updatedFilters.immediateJoiner === ""
-            ? null
-            : updatedFilters.immediateJoiner === "true",
         page: updatedFilters.page,
         size: updatedFilters.size,
       };
@@ -113,14 +79,8 @@ function RecruiterJobSeekerSearch() {
       keyword: searchParams.get("keyword") || "",
       skills: searchParams.get("skills") || "",
       currentLocation: searchParams.get("currentLocation") || "",
-      preferredLocation: searchParams.get("preferredLocation") || "",
       minExperience: searchParams.get("minExperience") || "",
       maxExperience: searchParams.get("maxExperience") || "",
-      minExpectedCTC: searchParams.get("minExpectedCTC") || "",
-      maxExpectedCTC: searchParams.get("maxExpectedCTC") || "",
-      noticeStatus: searchParams.get("noticeStatus") || "",
-      maxNoticePeriod: searchParams.get("maxNoticePeriod") || "",
-      immediateJoiner: searchParams.get("immediateJoiner") || "",
       page: Number(searchParams.get("page")) || 0,
       size: 10,
     };
@@ -131,7 +91,6 @@ function RecruiterJobSeekerSearch() {
       urlFilters.keyword ||
       urlFilters.skills ||
       urlFilters.currentLocation ||
-      urlFilters.preferredLocation ||
       urlFilters.minExperience ||
       urlFilters.maxExperience ||
       urlFilters.page !== 0
@@ -146,31 +105,33 @@ function RecruiterJobSeekerSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <div className="lwd-container py-8">
+    <div className="lwd-page-bg">
+      <div className="lwd-container">
 
         {/* Header */}
         <div className="lwd-page-header">
           <h1 className="lwd-page-title">
-            <Search className="h-8 w-8 text-blue-600" />
+            <Search className="w-7 h-7 text-blue-600 dark:text-blue-400" />
             Candidate Search
           </h1>
           <p className="lwd-page-subtitle">
-            Find the perfect candidates
+            Find the perfect candidates easily
           </p>
         </div>
 
         <div className="lwd-grid">
 
-          {/* Sidebar */}
+          {/* Sidebar Filters */}
           <div className="lwd-sidebar-layout">
-            <div className="lwd-filter-card">
+            <div className="lwd-card">
 
-              <div className="lwd-filter-header bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700">
-                <Filter className="h-5 w-5 text-blue-600" />
+              {/* Filter Header */}
+              <div className="lwd-filter-header">
+                <Filter className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 Filters
               </div>
 
+              {/* Filter Body */}
               <div className="lwd-filter-body lwd-scrollbar">
 
                 {/* Keyword */}
@@ -183,7 +144,7 @@ function RecruiterJobSeekerSearch() {
                       value={filters.keyword}
                       onChange={handleChange}
                       className="lwd-input-with-icon"
-                      placeholder="Java"
+                      placeholder="Java Developer"
                     />
                   </div>
                 </div>
@@ -205,7 +166,7 @@ function RecruiterJobSeekerSearch() {
 
                 {/* Location */}
                 <div>
-                  <label className="lwd-label">Current Location</label>
+                  <label className="lwd-label">Location</label>
                   <div className="lwd-input-group">
                     <MapPin className="lwd-input-icon" />
                     <input
@@ -213,13 +174,14 @@ function RecruiterJobSeekerSearch() {
                       value={filters.currentLocation}
                       onChange={handleChange}
                       className="lwd-input-with-icon"
+                      placeholder="Hyderabad"
                     />
                   </div>
                 </div>
 
                 {/* Experience */}
                 <div>
-                  <label className="lwd-label">Experience</label>
+                  <label className="lwd-label">Experience (Years)</label>
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       name="minExperience"
@@ -240,10 +202,11 @@ function RecruiterJobSeekerSearch() {
 
               </div>
 
+              {/* Footer */}
               <div className="lwd-filter-footer">
                 <button
                   onClick={() => handleSearch({ ...filters, page: 0 })}
-                  className="lwd-btn-primary lwd-btn-full"
+                  className="lwd-btn-primary w-full"
                 >
                   {loading ? "Searching..." : "Apply Filters"}
                 </button>
