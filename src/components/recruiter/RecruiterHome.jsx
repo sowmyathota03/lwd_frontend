@@ -33,7 +33,7 @@ const RecentApplications = ({ applications }) => {
           <p className="font-medium text-slate-800 dark:text-white">
             {app.candidateName}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="lwd-text">
             {app.jobTitle} • {app.appliedDate} •{" "}
             <span className="lwd-badge">{app.status}</span>
           </p>
@@ -75,34 +75,22 @@ const PerJobStatsTable = ({ stats }) => (
     <table className="lwd-table">
       <thead className="lwd-table-header">
         <tr>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
-            Job Title
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
-            Applications
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
-            Shortlisted
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
-            Rejected
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase">
-            Pending
-          </th>
+          <th className="lwd-th">Job Title</th>
+          <th className="lwd-th">Applications</th>
+          <th className="lwd-th">Shortlisted</th>
+          <th className="lwd-th">Rejected</th>
+          <th className="lwd-th">Pending</th>
         </tr>
       </thead>
 
       <tbody>
         {stats.map((job, idx) => (
           <tr key={idx} className="lwd-table-row">
-            <td className="px-6 py-4 text-sm font-medium">
-              {job.jobTitle}
-            </td>
-            <td className="px-6 py-4 text-sm">{job.applications}</td>
-            <td className="px-6 py-4 text-sm">{job.shortlisted}</td>
-            <td className="px-6 py-4 text-sm">{job.rejected}</td>
-            <td className="px-6 py-4 text-sm">{job.pending}</td>
+            <td className="lwd-td font-medium">{job.jobTitle}</td>
+            <td className="lwd-td">{job.applications}</td>
+            <td className="lwd-td">{job.shortlisted}</td>
+            <td className="lwd-td">{job.rejected}</td>
+            <td className="lwd-td">{job.pending}</td>
           </tr>
         ))}
       </tbody>
@@ -128,16 +116,18 @@ export default function RecruiterHome() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="lwd-loader animate-spin h-12 w-12 border-t-2 border-b-2 border-blue-500 rounded-full" />
+      <div className="lwd-page flex items-center justify-center h-64">
+        <div className="lwd-loader" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="lwd-card border-red-300 text-red-600">
-        {error}
+      <div className="lwd-page p-6">
+        <div className="lwd-card text-red-600 bg-red-100 dark:bg-red-900/40 dark:text-red-300 text-center">
+          {error}
+        </div>
       </div>
     );
   }
@@ -176,7 +166,7 @@ export default function RecruiterHome() {
   ];
 
   return (
-    <div className="lwd-page space-y-8 p-6">
+    <div className="lwd-page p-6 space-y-8">
 
       {/* HEADER */}
       <div className="lwd-card bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
@@ -215,6 +205,7 @@ export default function RecruiterHome() {
           <PerJobStatsTable stats={dashboardData.perJobStats} />
         </div>
       )}
+
     </div>
   );
 }
