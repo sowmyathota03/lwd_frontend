@@ -70,17 +70,19 @@ export const getApplicationsByRole = (page = 0, size = 10, search = "") => {
 };
 
 
-/* ==================================================
-   SEARCH / FILTER APPLICATIONS
-================================================== */
-
-// POST /api/job-applications/search?page=0&size=10
 export const searchApplications = (filters = {}, page = 0, size = 10) => {
   return axiosInstance
     .post("/job-applications/search", filters, {
       params: { page, size },
     })
-    .then((res) => res.data);
+    .then((res) => {
+      console.log("Search Applications Response 👉", res.data);
+      return res.data;
+    })
+    .catch((err) => {
+      console.error("Search Applications Error ❌", err);
+      throw err;
+    });
 };
 
 /* ==================================================

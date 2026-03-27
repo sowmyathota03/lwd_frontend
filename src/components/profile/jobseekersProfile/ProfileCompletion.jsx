@@ -18,7 +18,6 @@ function ProfileCompletion({ userId, isOwnProfile, onMissingClick }) {
         const response = isOwnProfile
           ? await getProfileCompletion()
           : await getProfileCompletionByUserId(userId);
-
         setData(response);
       } catch (error) {
         console.error("Failed to fetch profile completion", error);

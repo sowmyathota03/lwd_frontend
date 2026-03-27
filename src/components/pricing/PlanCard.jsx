@@ -83,7 +83,7 @@ export default function PlanCard({ plan, onSubscribe, currentPlan }) {
           })}
         </ul>
 
-        {/* If no features, show placeholder */}
+        {/* If no features, show placeholder */}  
         {(!plan.features || plan.features.length === 0) && (
           <p className="text-sm text-gray-400 italic">No features listed</p>
         )}

@@ -1,6 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BriefcaseIcon } from "lucide-react";
+import { createJobAsRecruiter } from "../../api/JobApi";
+import { Input, Checkbox, Textarea } from "../../components/profile/comman/Helpers";
+
+// ================= SELECT =================
+export const Select = ({ label, options = [], ...props }) => (
+  <div>
+    {label && (
+      <label className="lwd-label mb-1 block">{label}</label>
+    )}
+
+    <select {...props} className="lwd-input">
+      <option value="">Select {label}</option>
+
+      {options.map((opt, index) => {
+        const optionValue = typeof opt === "object" ? opt.value : opt;
+        const optionLabel = typeof opt === "object" ? opt.label : opt;
+
+        return (
+          <option key={optionValue || index} value={optionValue}>
+            {optionLabel}
+          </option>
+        );
+      })}
+    </select>
+  </div>
+);
 
 // Dummy function to simulate API call
 const createJobAsRecruiter = async (payload) => {

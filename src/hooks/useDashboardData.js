@@ -12,6 +12,7 @@ export const useDashboardData = (fetchFunction) => {
         setLoading(true);
         const response = await fetchFunction();
         setData(response.data);
+        console.log("Fetched dashboard data:", response.data);
       } catch (err) {
         setError(err);
       } finally {

@@ -59,48 +59,44 @@ export default function FeatureForm({ feature, planId, onSuccess, onCancel }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-auto">
-      <div className="p-6 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-800">
+    <div className="lwd-card w-full max-w-md mx-auto">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="lwd-title text-lg font-semibold">
           {feature ? "Update Feature" : "Create Feature"}
         </h3>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="lwd-text mt-1">
           {feature ? "Edit feature details" : "Add a new pricing feature"}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-4">
         {error && (
-          <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600">
+          <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400">
             {error}
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Feature Code *
-          </label>
+          <label className="lwd-label mb-1 block">Feature Code *</label>
           <input
             type="text"
             placeholder="e.g., APPLY_JOB"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className="lwd-input"
             disabled={loading}
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="lwd-text text-xs mt-1">
             Will be automatically formatted as UPPERCASE with underscores
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Plan Type *
-          </label>
+          <label className="lwd-label mb-1 block">Plan Type *</label>
           <select
             value={planType}
             onChange={(e) => setPlanType(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className="lwd-input"
             disabled={loading}
           >
             <option value="">Select Plan Type</option>
@@ -110,15 +106,13 @@ export default function FeatureForm({ feature, planId, onSuccess, onCancel }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description (optional)
-          </label>
+          <label className="lwd-label mb-1 block">Description (optional)</label>
           <input
             type="text"
             placeholder="What does this feature do?"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className="lwd-input"
             disabled={loading}
           />
         </div>
@@ -127,7 +121,7 @@ export default function FeatureForm({ feature, planId, onSuccess, onCancel }) {
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
             disabled={loading}
           >
             Cancel
@@ -135,17 +129,17 @@ export default function FeatureForm({ feature, planId, onSuccess, onCancel }) {
 
           <button
             type="submit"
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="lwd-btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? (
-              <span className="flex items-center gap-2">
+              <>
                 <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
                 Saving...
-              </span>
+              </>
             ) : feature ? (
               "Update Feature"
             ) : (

@@ -169,7 +169,7 @@ function Jobs() {
     <div className="lwd-page min-h-screen">
 
       {/* SEARCH */}
-      <div className="mt-8 px-5 max-w-6xl mx-auto">
+      <div className="p-5 max-w-6xl mx-auto">
         <div className="lwd-card p-4">
           <JobSearchBar />
         </div>
