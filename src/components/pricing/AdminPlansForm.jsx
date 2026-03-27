@@ -126,7 +126,7 @@ export default function AdminPlansForm({
                   }
                   className="lwd-input"
                 >
-                  <option value="CANDIDATE">Candidate</option>
+                  <option value="JOB_SEEKER">Job Seeker</option>
                   <option value="RECRUITER">Recruiter</option>
                 </select>
               </div>

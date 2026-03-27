@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const initialForm = {
   name: "",
-  type: "CANDIDATE",
+  type: "JOB_SEEKER",
   price: "",
   durationDays: "",
 };

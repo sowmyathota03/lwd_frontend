@@ -37,7 +37,7 @@ export default function CandidatePlans() {
 
   return (
     <div className="flex justify-center p-4">
-      <div className="p-6 gap-6 justify-items-center">
+      <div className="p-6 gap-6 justify-items-center flex flex-wrap">
         {plans.map((plan) => (
           <PlanCard
             key={plan.planId}

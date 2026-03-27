@@ -12,7 +12,7 @@ function PopularJobs({ title, categories }) {
           <div
             key={cat.slug}
             onClick={() => navigate(`/jobs/${cat.slug}`)}
-            className="lwd-badge cursor-pointer w-37.5 transition duration-200 shadow-sm hover:shadow-md"
+            className="lwd-subcard cursor-pointer w-37.5 transition duration-200 shadow-sm hover:shadow-md"
           >
             {cat.name}
           </div>
