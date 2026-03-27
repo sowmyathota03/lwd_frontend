@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BriefcaseIcon } from "@heroicons/react/24/outline";
+import { BriefcaseIcon } from "lucide-react";
 import { createJobAsRecruiter } from "../../api/JobApi";
 import { Input, Checkbox, Textarea } from "../../components/profile/comman/Helpers";
 
@@ -27,6 +27,7 @@ export const Select = ({ label, options = [], ...props }) => (
     </select>
   </div>
 );
+
 export default function CreateJob() {
   const navigate = useNavigate();
 

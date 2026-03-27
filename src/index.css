@@ -4,8 +4,10 @@
 /* ===== GLOBAL STYLES ===== */
 /* ========================== */
 
+/* REQUIRED for dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Smooth transitions */
 * {
   transition-property: background-color, color, border-color, fill, stroke;
   transition-duration: 300ms;
@@ -15,6 +17,7 @@
 /* ========================== */
 /* ===== LWD COMPONENTS ===== */
 /* ========================== */
+
 @layer components {
   .lwd-navbar {
     @apply bg-white shadow-md border border-gray-200 p-4 dark:bg-slate-800 dark:border-gray-700;
@@ -22,30 +25,26 @@
 
   /* ===== Page ===== */
   .lwd-page {
-    @apply min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100;
+    @apply min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
   }
 
   /* ===== Card ===== */
   .lwd-card {
-    @apply bg-white rounded-lg shadow-md border border-gray-200 p-4 dark:bg-slate-800 dark:border-gray-700;
+    @apply bg-white rounded-lg shadow-md border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700;
   }
 
   /* ===== Titles ===== */
   .lwd-title {
-    @apply text-slate-800 font-semibold text-lg dark:text-slate-100;
+    @apply text-gray-800 font-semibold text-lg dark:text-gray-100;
   }
 
   .lwd-subtitle {
     @apply text-sm font-medium text-gray-700 dark:text-gray-300;
   }
 
-  /* ===== Text */
+  /* ===== Text ===== */
   .lwd-text {
     @apply text-gray-600 text-sm dark:text-gray-300;
-  }
-
-  .lwd-label {
-    @apply text-sm font-medium text-gray-700 dark:text-gray-300;
   }
 
   /* ===== Avatar ===== */
@@ -74,14 +73,6 @@
     @apply px-3 py-1 text-xs rounded-md bg-green-600 text-white hover:bg-green-700 dark:bg-green-500;
   }
 
-  /* ===== Inputs ===== */
-  .lwd-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-800 text-sm dark:bg-slate-800 dark:border-gray-600 dark:text-white;
-  }
-
-  .lwd-input:focus {
-    @apply border-blue-500 ring-2 ring-blue-200 dark:ring-blue-900;
-  }
 
   /* ===== Layout ===== */
   .lwd-container {
@@ -89,38 +80,20 @@
   }
 
   .lwd-grid {
-    @apply grid grid-cols-1 lg:grid-cols-12 gap-6;
+    @apply grid grid-cols-1 md:grid-cols-4 gap-6;
   }
 
   .lwd-sidebar-layout {
-    @apply lg:col-span-4 xl:col-span-3;
+    @apply md:col-span-1;
   }
 
   .lwd-content-layout {
-    @apply lg:col-span-8 xl:col-span-9;
+    @apply md:col-span-3;
   }
 
   /* ===== Header ===== */
   .lwd-page-title {
     @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2;
-  }
-
-  /* ===== Filter (FIXED HERE) ===== */
-  .lwd-filter-card {
-    @apply bg-white rounded-lg shadow-md border border-gray-200 dark:bg-slate-800 dark:border-gray-700 sticky top-24 p-0 overflow-hidden;
-  }
-
-  .lwd-filter-body {
-    @apply p-5 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto;
-  }
-
-  /* ===== Toggle ===== */
-  .lwd-toggle {
-    @apply relative inline-flex h-7 w-14 items-center rounded-full transition-colors;
-  }
-
-  .lwd-toggle-light {
-    @apply bg-gray-400;
   }
 
   .lwd-toggle-dark {
@@ -157,35 +130,10 @@
     @apply min-h-screen bg-linear-to-br from-slate-100 via-blue-100 to-indigo-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6;
   }
 
-  /* Container */
-  .lwd-container {
-    @apply max-w-7xl mx-auto;
-  }
-
-  /* Header */
-  .lwd-page-header {
-    @apply mb-6;
-  }
-
-  .lwd-page-title {
-    @apply flex items-center gap-3 text-2xl font-bold text-gray-800 dark:text-white;
-  }
+  
 
   .lwd-page-subtitle {
     @apply text-gray-500 dark:text-gray-400;
-  }
-
-  /* Grid Layout */
-  .lwd-grid {
-    @apply grid grid-cols-1 md:grid-cols-4 gap-6;
-  }
-
-  .lwd-sidebar-layout {
-    @apply md:col-span-1;
-  }
-
-  .lwd-content-layout {
-    @apply md:col-span-3;
   }
 
   /* Filter */
@@ -246,5 +194,42 @@
   .lwd-status-loading {
     @apply text-xs text-blue-600 font-medium animate-pulse
          dark:text-blue-400;
+  }
+
+  /* ===== Professional Footer ===== */
+  .lwd-footer {
+    @apply bg-white border-t border-gray-200 dark:bg-slate-950 dark:border-slate-800;
+  }
+
+  .lwd-footer-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10;
+  }
+
+  .lwd-footer-brand {
+    @apply lg:pr-6;
+  }
+
+  .lwd-footer-logo {
+    @apply text-2xl sm:text-3xl font-extrabold tracking-wide text-red-500 mb-4;
+  }
+
+  .lwd-footer-description {
+    @apply text-sm leading-7 text-gray-600 dark:text-gray-400 max-w-sm;
+  }
+
+  .lwd-footer-heading {
+    @apply text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4;
+  }
+
+  .lwd-footer-list {
+    @apply space-y-3;
+  }
+
+  .lwd-footer-link {
+    @apply text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300;
+  }
+
+  .lwd-footer-bottom {
+    @apply mt-10 pt-6 border-t border-gray-200 dark:border-slate-800 text-center text-sm text-gray-500 dark:text-gray-400;
   }
 }
