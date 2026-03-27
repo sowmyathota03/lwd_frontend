@@ -10,7 +10,7 @@ function Footer() {
         {/* Brand */}
         <div>
           <h3 className="text-xl sm:text-2xl font-bold text-red-500 mb-3">
-            LWD
+            LWD 
           </h3>
 
           <p className="lwd-text max-w-xs mx-auto sm:mx-0">
@@ -27,22 +27,22 @@ function Footer() {
 
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/JobSearchBlock" className="lwd-footer-link">
+              <Link to="/Jobs" className="lwd-footer-link">
                 Search Jobs
               </Link>
             </li>
             <li>
-              <Link to="/ResumeUpload" className="lwd-footer-link">
+              <Link to="/resume-upload" className="lwd-footer-link">
                 Upload Resume
               </Link>
             </li>
             <li>
-              <Link to="/JobAlert" className="lwd-footer-link">
+              <Link to="/job-alert" className="lwd-footer-link">
                 Job Alerts
               </Link>
             </li>
             <li>
-              <Link to="/CareerAdvice" className="lwd-footer-link">
+              <Link to="/career" className="lwd-footer-link">
                 Career Advice
               </Link>
             </li>
@@ -57,19 +57,18 @@ function Footer() {
 
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/PostJob" className="lwd-footer-link">
+              <Link to="/recruiter-admin/createjob" className="lwd-footer-link">
                 Post a Job
               </Link>
             </li>
             <li>
               <Link to="/SearchResumes" className="lwd-footer-link">
-                Search Resumes
+                Search Resumes 
               </Link>
             </li>
             <li>
               <Link to="/login" className="lwd-footer-link">
-                Recruiter Login
-              </Link>
+                Recruiter Login             </Link>
             </li>
             <li>
               <Link to="/Pricing" className="lwd-footer-link">
@@ -82,27 +81,27 @@ function Footer() {
         {/* Company */}
         <div>
           <h4 className="lwd-title text-base sm:text-lg mb-4">
-            Company
+            Company String in jva ais used to represent 
           </h4>
 
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/AboutUs" className="lwd-footer-link">
+              <Link to="/about-us" className="lwd-footer-link">
                 About Us
               </Link>
             </li>
             <li>
-              <Link to="/ContactUs" className="lwd-footer-link">
+              <Link to="/contact-us" className="lwd-footer-link">
                 Contact Us
               </Link>
             </li>
             <li>
-              <Link to="/PrivacyPolicy" className="lwd-footer-link">
+              <Link to="/privacy-policy" className="lwd-footer-link">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link to="/TermsAndConditions" className="lwd-footer-link">
+              <Link to="/terms" className="lwd-footer-link">
                 Terms & Conditions
               </Link>
             </li>
