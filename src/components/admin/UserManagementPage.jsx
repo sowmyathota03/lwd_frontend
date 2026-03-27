@@ -169,27 +169,29 @@ export default function UserManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-blue-50 font-sans p-4 md:p-6">
+    <div className="lwd-page p-4 md:p-6 space-y-6">
 
-      <h1 className="text-2xl font-semibold text-blue-900 text-center mb-6">
+      {/* Title */}
+      <h1 className="lwd-page-title text-center">
         User Management
       </h1>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-lg p-4 mb-6 space-y-4">
+      <div className="lwd-card space-y-4">
+
         <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
           <input
             type="text"
             placeholder="Search by name, email..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            className="w-full lg:w-80 px-4 py-2 border border-gray-300 rounded-lg"
+            className="lwd-input lg:w-80"
           />
 
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="px-4 py-2 rounded-lg bg-red-50 text-red-600"
+              className="lwd-btn-danger-sm"
             >
               Clear Filters
             </button>
@@ -197,33 +199,33 @@ export default function UserManagementPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
-          <select value={role} onChange={(e) => setRole(e.target.value)} className="px-3 py-2 border rounded-lg">
+          <select value={role} onChange={(e) => setRole(e.target.value)} className="lwd-input">
             <option value="">All Roles</option>
             {roleOptions.map((item) => (
               <option key={item} value={item}>{formatLabel(item)}</option>
             ))}
           </select>
 
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="px-3 py-2 border rounded-lg">
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="lwd-input">
             <option value="">All Status</option>
             {statusOptions.map((item) => (
               <option key={item} value={item}>{formatLabel(item)}</option>
             ))}
           </select>
 
-          <select value={isActive} onChange={(e) => setIsActive(e.target.value)} className="px-3 py-2 border rounded-lg">
+          <select value={isActive} onChange={(e) => setIsActive(e.target.value)} className="lwd-input">
             <option value="">All Activity</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
 
-          <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="px-3 py-2 border rounded-lg">
+          <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="lwd-input">
             <option value="">Email Verification</option>
             <option value="true">Verified</option>
             <option value="false">Not Verified</option>
           </select>
 
-          <select value={locked} onChange={(e) => setLocked(e.target.value)} className="px-3 py-2 border rounded-lg">
+          <select value={locked} onChange={(e) => setLocked(e.target.value)} className="lwd-input">
             <option value="">Lock Status</option>
             <option value="true">Locked</option>
             <option value="false">Unlocked</option>
@@ -232,7 +234,7 @@ export default function UserManagementPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="lwd-card overflow-x-auto">
         <UserTable
           users={users}
           loading={loading}
@@ -242,21 +244,29 @@ export default function UserManagementPage() {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center gap-6 mt-6">
-        <button onClick={handlePrev} disabled={page === 0} className="px-4 py-2 bg-gray-200 rounded">
+      <div className="flex items-center justify-center gap-4">
+        <button
+          onClick={handlePrev}
+          disabled={page === 0}
+          className="lwd-btn-secondary-sm"
+        >
           Previous
         </button>
 
-        <span className="font-semibold">
+        <span className="lwd-text">
           Page {page + 1} of {totalPages}
         </span>
 
-        <button onClick={handleNext} disabled={page >= totalPages - 1} className="px-4 py-2 bg-blue-500 text-white rounded">
+        <button
+          onClick={handleNext}
+          disabled={page >= totalPages - 1}
+          className="lwd-btn-primary-sm"
+        >
           Next
         </button>
       </div>
 
-      {/* Modal */}
+      {/* Confirm Modal */}
       <ConfirmModal
         isOpen={!!confirmConfig}
         title={

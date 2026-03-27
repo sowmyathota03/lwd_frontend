@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Navigation items extracted as a constant – won't be recreated on every render
 const NAV_ITEMS = [
@@ -14,38 +14,36 @@ const NAV_ITEMS = [
 ];
 
 export default function AdminDashboard() {
-  const [darkMode, setDarkMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Theme management: apply dark class to <html> and persist preference
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
-
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-linear-to-br from-slate-300 via-blue-400 to-indigo-600">
+    <div className="lwd-admin-dashboard flex h-screen w-screen overflow-hidden bg-gray-100 dark:bg-gray-900">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black/50 transition-opacity duration-300 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         className={`
+          lwd-sidebar fixed left-0 top-0 z-30 h-full
           ${sidebarOpen ? "w-64" : "w-16"}
-          md:w-64
-          transition-all duration-300
-          bg-white/80 backdrop-blur-xl shadow-xl
+          md:relative md:w-64
+          transform transition-all duration-300 ease-in-out
+          bg-white dark:bg-gray-800 shadow-xl
           flex flex-col
         `}
         aria-label="Admin navigation sidebar"
       >
         {/* Logo & toggle */}
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="lwd-sidebar-header flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700">
           <h2
             className={`
-              font-bold text-gray-800 tracking-wide
+              lwd-sidebar-title font-bold tracking-wide text-gray-800 dark:text-white
               ${sidebarOpen ? "block" : "hidden"}
               md:block
             `}
@@ -56,37 +54,50 @@ export default function AdminDashboard() {
           {/* Mobile sidebar toggle */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden text-xl p-1 rounded-md hover:bg-gray-200 transition-colors"
+            className="lwd-sidebar-toggle rounded-md p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 md:hidden dark:hover:bg-gray-700"
             aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
           >
-            ☰
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </button>
         </div>
 
         {/* Navigation links */}
-        <nav className="flex-1 p-2 space-y-2 overflow-y-auto">
+        <nav className="lwd-sidebar-nav flex-1 space-y-2 overflow-y-auto p-2">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === "/admin"}
+              onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
-                `
-                flex items-center gap-3 px-3 py-2 rounded-xl font-medium
-                transition-all duration-300
-                ${
+                `lwd-nav-link flex items-center gap-3 rounded-xl px-3 py-2 font-medium transition-all duration-200 ${
                   isActive
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-700 hover:bg-blue-100"
-                }
-                `
+                    ? "bg-blue-600 text-white shadow-md lwd-nav-active"
+                    : "text-gray-700 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700 lwd-nav-inactive"
+                }`
               }
             >
-              <span className="text-lg" aria-hidden="true">{item.icon}</span>
+              <span className="text-lg" aria-hidden="true">
+                {item.icon}
+              </span>
 
               {/* Label – hidden on mobile when sidebar is collapsed */}
               <span
                 className={`
+                  lwd-nav-label
                   ${sidebarOpen ? "block" : "hidden"}
                   md:block
                 `}
@@ -96,32 +107,14 @@ export default function AdminDashboard() {
             </NavLink>
           ))}
         </nav>
-
-        {/* Dark mode toggle */}
-        <div className="p-3 border-t border-gray-200">
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="w-full py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 shadow-md text-sm flex items-center justify-center"
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            <span aria-hidden="true">{darkMode ? "☀" : "🌙"}</span>
-            <span
-              className={`
-                ml-2
-                ${sidebarOpen ? "inline" : "hidden"}
-                md:inline
-              `}
-            >
-              {darkMode ? "Light Mode" : "Dark Mode"}
-            </span>
-          </button>
-        </div>
       </aside>
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 overflow-y-auto bg-white/90 backdrop-blur-lg shadow-inner p-4">
-          <Outlet />
+      <div className="lwd-main-content flex flex-1 flex-col min-w-0">
+        <main className="lwd-main lwd-page flex-1 overflow-y-auto bg-gray-50 p-4 shadow-inner dark:bg-gray-900">
+          <div className="mx-auto max-w-7xl">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

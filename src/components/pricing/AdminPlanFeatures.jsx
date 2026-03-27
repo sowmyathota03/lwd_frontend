@@ -1,5 +1,3 @@
-// src/components/admin/AdminPlanFeatures.jsx
-
 import { useEffect, useState } from "react";
 import { getPlanFeatures, upsertFeaturesBulk } from "../../api/pricingApi";
 
@@ -88,23 +86,19 @@ export default function AdminPlanFeatures({ planId }) {
   // ===============================
   if (!planId) {
     return (
-      <div className="mt-6 p-6 text-center bg-white border border-gray-200 rounded-xl shadow-sm text-gray-500">
+      <div className="lwd-card mt-6 p-6 text-center text-gray-500">
         Select a plan to manage features
       </div>
     );
   }
 
   return (
-    <div className="mt-6 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="lwd-card mt-6 overflow-hidden">
       {/* HEADER */}
       <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">
-            Feature Management
-          </h2>
-          <p className="text-sm text-gray-500">
-            Enable features and configure limits
-          </p>
+          <h2 className="lwd-title">Feature Management</h2>
+          <p className="lwd-text">Enable features and configure limits</p>
         </div>
 
         {loading && (
@@ -175,12 +169,11 @@ export default function AdminPlanFeatures({ planId }) {
                             : null,
                         })
                       }
-                      className={`w-28 px-3 py-1.5 border rounded-md text-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                        ${
-                          disabled
-                            ? "bg-gray-50 text-gray-400 cursor-not-allowed border-gray-200"
-                            : "bg-white border-gray-300 hover:border-gray-400"
-                        }`}
+                      className={`lwd-input w-28 text-sm ${
+                        disabled
+                          ? "bg-gray-50 text-gray-400 cursor-not-allowed border-gray-200"
+                          : "hover:border-gray-400"
+                      }`}
                       placeholder="No limit"
                     />
                   </td>
@@ -227,12 +220,11 @@ export default function AdminPlanFeatures({ planId }) {
       {/* STATUS */}
       {status.message && (
         <div
-          className={`px-6 py-3 text-sm border-t transition-colors duration-150
-            ${
-              status.type === "error"
-                ? "bg-red-50 text-red-600 border-red-100"
-                : "bg-green-50 text-green-600 border-green-100"
-            }`}
+          className={`px-6 py-3 text-sm border-t transition-colors duration-150 ${
+            status.type === "error"
+              ? "bg-red-50 text-red-600 border-red-100"
+              : "bg-green-50 text-green-600 border-green-100"
+          }`}
         >
           {status.message}
         </div>
@@ -243,16 +235,16 @@ export default function AdminPlanFeatures({ planId }) {
         <button
           onClick={handleSave}
           disabled={saving || loading}
-          className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="lwd-btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {saving ? (
-            <div className="flex items-center gap-2">
+            <>
               <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
               <span>Saving...</span>
-            </div>
+            </>
           ) : (
             "Save Changes"
           )}

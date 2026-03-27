@@ -21,7 +21,7 @@ const StatCard = ({ title, value, icon, color }) => (
       </div>
     </div>
     {/* Decorative gradient line */}
-    <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-current to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+    <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-transparent via-current to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
   </div>
 );
 
@@ -205,7 +205,7 @@ export default function RecruiterHome() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Header */}
-        <div className="mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white shadow-lg">
+        <div className="mb-8 overflow-hidden rounded-2xl bg-linear-to-r from-blue-600 to-indigo-700 p-6 text-white shadow-lg">
           <h2 className="text-3xl font-bold">Welcome Back 👋</h2>
           <p className="mt-1 text-blue-100">
             Here's what's happening with your recruitment activity today.

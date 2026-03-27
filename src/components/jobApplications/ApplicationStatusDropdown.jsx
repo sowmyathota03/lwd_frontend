@@ -1,5 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { changeApplicationStatus } from "../../api/JobApplicationApi";
+
+const formatLabel = (status) =>
+  status
+    .toLowerCase()
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 
 export default function ApplicationStatusDropdown({
   applicationId,
@@ -8,6 +15,10 @@ export default function ApplicationStatusDropdown({
 }) {
   const [status, setStatus] = useState(currentStatus);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setStatus(currentStatus);
+  }, [currentStatus]);
 
   const statusOptions = [
     "APPLIED",
@@ -23,15 +34,18 @@ export default function ApplicationStatusDropdown({
 
     try {
       setLoading(true);
-      await changeApplicationStatus(applicationId, newStatus);
 
+      // instant UI update
       setStatus(newStatus);
+
+      await changeApplicationStatus(applicationId, newStatus);
 
       if (onStatusUpdated) {
         onStatusUpdated(applicationId, newStatus);
       }
     } catch (error) {
       console.error("Failed to update status", error);
+      setStatus(currentStatus);
       alert("Failed to update status");
     } finally {
       setLoading(false);
@@ -40,27 +54,20 @@ export default function ApplicationStatusDropdown({
 
   return (
     <div className="flex items-center gap-2">
-
-      {/* Dropdown */}
       <select
         value={status}
         onChange={handleChange}
         disabled={loading}
-        className="lwd-input-sm"
+        className="lwd-status-dropdown"
       >
         {statusOptions.map((option) => (
           <option key={option} value={option}>
-            {option}
+            {formatLabel(option)}
           </option>
         ))}
       </select>
 
-      {/* Loader */}
-      {loading && (
-        <span className="text-xs lwd-loader animate-pulse">
-          Updating...
-        </span>
-      )}
+      {loading && <span className="lwd-status-loading">Updating...</span>}
     </div>
   );
 }

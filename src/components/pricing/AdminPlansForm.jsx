@@ -9,7 +9,7 @@ export default function AdminPlansForm({
   onCancel,
   loading,
   editingId,
-  error = null, // optional error message
+  error = null,
 }) {
   // Handle ESC key to close modal
   useEffect(() => {
@@ -33,23 +33,23 @@ export default function AdminPlansForm({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity dark:bg-black/70"
         onClick={onCancel}
       ></div>
 
       {/* Modal panel */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className="relative w-full max-w-2xl bg-white rounded-xl shadow-xl transform transition-all"
+          className="lwd-card relative w-full max-w-2xl transform transition-all"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/80 rounded-t-xl">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 rounded-t-xl bg-gray-50/80 dark:bg-gray-800/80 dark:border-gray-700">
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="lwd-title text-lg font-semibold">
                 {editingId ? "Edit Plan" : "Create New Plan"}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="lwd-text text-sm">
                 {editingId
                   ? "Update plan details"
                   : "Add a new pricing plan"}
@@ -57,7 +57,7 @@ export default function AdminPlansForm({
             </div>
             <button
               onClick={onCancel}
-              className="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1 transition-colors"
+              className="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1 transition-colors dark:text-gray-500 dark:hover:text-gray-400"
               aria-label="Close"
             >
               <svg
@@ -79,7 +79,7 @@ export default function AdminPlansForm({
           {/* Form */}
           <form onSubmit={handleFormSubmit} className="px-6 py-5">
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600">
+              <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400">
                 {error}
               </div>
             )}
@@ -89,7 +89,7 @@ export default function AdminPlansForm({
               <div>
                 <label
                   htmlFor="modal-name"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="lwd-label mb-1 block"
                 >
                   Plan Name <span className="text-red-500">*</span>
                 </label>
@@ -99,7 +99,7 @@ export default function AdminPlansForm({
                   onChange={(e) =>
                     onChange({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  className="lwd-input"
                   required
                 >
                   <option value="">Select Plan</option>
@@ -114,7 +114,7 @@ export default function AdminPlansForm({
               <div>
                 <label
                   htmlFor="modal-type"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="lwd-label mb-1 block"
                 >
                   Type <span className="text-red-500">*</span>
                 </label>
@@ -124,7 +124,7 @@ export default function AdminPlansForm({
                   onChange={(e) =>
                     onChange({ ...formData, type: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  className="lwd-input"
                 >
                   <option value="CANDIDATE">Candidate</option>
                   <option value="RECRUITER">Recruiter</option>
@@ -135,7 +135,7 @@ export default function AdminPlansForm({
               <div>
                 <label
                   htmlFor="modal-price"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="lwd-label mb-1 block"
                 >
                   Price (₹) <span className="text-red-500">*</span>
                 </label>
@@ -149,7 +149,7 @@ export default function AdminPlansForm({
                   onChange={(e) =>
                     onChange({ ...formData, price: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  className="lwd-input"
                   required
                 />
               </div>
@@ -158,7 +158,7 @@ export default function AdminPlansForm({
               <div>
                 <label
                   htmlFor="modal-duration"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="lwd-label mb-1 block"
                 >
                   Duration (Days) <span className="text-red-500">*</span>
                 </label>
@@ -171,7 +171,7 @@ export default function AdminPlansForm({
                   onChange={(e) =>
                     onChange({ ...formData, durationDays: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  className="lwd-input"
                   required
                 />
               </div>
@@ -182,7 +182,7 @@ export default function AdminPlansForm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
+                className="lwd-btn-secondary px-4 py-2 text-sm font-medium"
                 disabled={loading}
               >
                 Cancel
@@ -190,7 +190,7 @@ export default function AdminPlansForm({
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="lwd-btn-primary px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">

@@ -37,9 +37,11 @@ const AdminDashboard = () => {
   if (error)
     return (
       <div className="lwd-page p-6">
-        <p className="text-red-500">
-          Error loading dashboard: {error.message}
-        </p>
+        <div className="lwd-card rounded-lg bg-red-50 p-6 text-center text-red-700 dark:bg-red-900/30 dark:text-red-300">
+          <p className="lwd-text font-medium">
+            Error loading dashboard: {error.message}
+          </p>
+        </div>
       </div>
     );
 
@@ -127,124 +129,185 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="lwd-page p-6 space-y-6">
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        {kpiCards.map((card, index) => (
-          <KPICard
-            key={index}
-            title={card.title}
-            value={card.value}
-            icon={card.icon}
-            color={card.color}
-            bgColor={card.bgColor}
-            borderColor={card.borderColor}
-            navigateTo={card.path}
-          />
-        ))}
-      </div>
-
-      {/* Growth Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {growthMetrics.map((metric, idx) => (
-          <div key={idx} className="lwd-card p-4 border-l-4 border-blue-500">
-            <p className="lwd-text text-sm">{metric.label}</p>
-            <p className="lwd-title text-xl">
-              {metric.value.toLocaleString()}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-        <div className="lwd-card p-4">
-          <h3 className="lwd-title mb-4">Jobs per Industry</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={industryData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#3b82f6" />
-            </BarChart>
-          </ResponsiveContainer>
+    <div className="lwd-page min-h-screen bg-gray-50 p-6 dark:bg-gray-900">
+      <div className="mx-auto max-w-7xl space-y-6">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {kpiCards.map((card, index) => (
+            <KPICard
+              key={index}
+              title={card.title}
+              value={card.value}
+              icon={card.icon}
+              color={card.color}
+              bgColor={card.bgColor}
+              borderColor={card.borderColor}
+              navigateTo={card.path}
+            />
+          ))}
         </div>
 
-        <div className="lwd-card p-4">
-          <h3 className="lwd-title mb-4">
-            Applications (Last 7 days)
+        {/* Growth Metrics */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {growthMetrics.map((metric, idx) => (
+            <div
+              key={idx}
+              className="lwd-growth-card lwd-card group relative overflow-hidden rounded-2xl border-l-4 border-blue-500 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-gray-800"
+            >
+              <p className="lwd-text text-sm text-gray-500 dark:text-gray-400">
+                {metric.label}
+              </p>
+              <p className="lwd-title text-2xl font-bold text-gray-800 dark:text-white">
+                {metric.value.toLocaleString()}
+              </p>
+              <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-blue-500 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            </div>
+          ))}
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="lwd-chart-card lwd-card rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800">
+            <h3 className="lwd-title mb-4 text-lg font-semibold text-gray-800 dark:text-white">
+              Jobs per Industry
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={industryData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="name" stroke="#6b7280" />
+                <YAxis stroke="#6b7280" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    borderRadius: "8px",
+                    border: "none",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="lwd-chart-card lwd-card rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800">
+            <h3 className="lwd-title mb-4 text-lg font-semibold text-gray-800 dark:text-white">
+              Applications (Last 7 days)
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={trendData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="day" stroke="#6b7280" />
+                <YAxis stroke="#6b7280" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    borderRadius: "8px",
+                    border: "none",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
+                />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="count"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Pie Chart */}
+        <div className="lwd-chart-card lwd-card rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800">
+          <h3 className="lwd-title mb-4 text-lg font-semibold text-gray-800 dark:text-white">
+            Users by Role
           </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="count"
-                stroke="#10b981"
-                strokeWidth={2}
+            <PieChart>
+              <Pie
+                data={roleData}
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                dataKey="value"
+                label={({ name, percent }) =>
+                  `${name} (${(percent * 100).toFixed(0)}%)`
+                }
+              >
+                {roleData.map((entry, index) => (
+                  <Cell
+                    key={index}
+                    fill={COLORS[index % COLORS.length]}
+                    stroke="white"
+                    strokeWidth={2}
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "rgba(255,255,255,0.9)",
+                  borderRadius: "8px",
+                  border: "none",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                }}
               />
-            </LineChart>
+            </PieChart>
           </ResponsiveContainer>
         </div>
-      </div>
 
-      {/* Pie */}
-      <div className="lwd-card p-4">
-        <h3 className="lwd-title mb-4">Users by Role</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={roleData}
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              dataKey="value"
-            >
-              {roleData.map((entry, index) => (
-                <Cell key={index} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Tables */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <RecentTable title="Recent Users" data={data.recentUsers || []} />
-        <RecentTable title="Recent Jobs" data={data.recentJobs || []} />
-        <RecentTable
-          title="Recent Applications"
-          data={data.recentApplications || []}
-        />
-      </div>
-
-      {/* System Health */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="lwd-card p-4 border border-yellow-200">
-          <p className="lwd-text">Jobs expiring soon</p>
-          <p className="lwd-title">{data.jobsExpiringSoon}</p>
+        {/* Recent Tables */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lwd-table-card lwd-card rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800">
+            <RecentTable title="Recent Users" data={data.recentUsers || []} />
+          </div>
+          <div className="lwd-table-card lwd-card rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800">
+            <RecentTable title="Recent Jobs" data={data.recentJobs || []} />
+          </div>
+          <div className="lwd-table-card lwd-card rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800">
+            <RecentTable
+              title="Recent Applications"
+              data={data.recentApplications || []}
+            />
+          </div>
         </div>
 
-        <div className="lwd-card p-4 border border-red-200">
-          <p className="lwd-text">Jobs without applications</p>
-          <p className="lwd-title">{data.jobsWithoutApplications}</p>
-        </div>
+        {/* System Health */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="lwd-health-card lwd-card group relative overflow-hidden rounded-2xl border border-yellow-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:border-yellow-800 dark:bg-gray-800">
+            <p className="lwd-text text-sm text-gray-500 dark:text-gray-400">
+              Jobs expiring soon
+            </p>
+            <p className="lwd-title text-2xl font-bold text-gray-800 dark:text-white">
+              {data.jobsExpiringSoon}
+            </p>
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-yellow-500 to-orange-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </div>
 
-        <div className="lwd-card p-4 border border-blue-200">
-          <p className="lwd-text">Active Recruiters</p>
-          <p className="lwd-title">{data.activeRecruiters}</p>
+          <div className="lwd-health-card lwd-card group relative overflow-hidden rounded-2xl border border-red-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:border-red-800 dark:bg-gray-800">
+            <p className="lwd-text text-sm text-gray-500 dark:text-gray-400">
+              Jobs without applications
+            </p>
+            <p className="lwd-title text-2xl font-bold text-gray-800 dark:text-white">
+              {data.jobsWithoutApplications}
+            </p>
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-red-500 to-pink-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </div>
+
+          <div className="lwd-health-card lwd-card group relative overflow-hidden rounded-2xl border border-blue-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:border-blue-800 dark:bg-gray-800">
+            <p className="lwd-text text-sm text-gray-500 dark:text-gray-400">
+              Active Recruiters
+            </p>
+            <p className="lwd-title text-2xl font-bold text-gray-800 dark:text-white">
+              {data.activeRecruiters}
+            </p>
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-blue-500 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </div>
         </div>
       </div>
-
     </div>
   );
 };

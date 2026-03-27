@@ -3,17 +3,7 @@ import { searchJobSeekers } from "../../../api/JobSeekerApi";
 import { useSearchParams } from "react-router-dom";
 import JobSeekerResults from "./JobSeekerResults";
 
-import {
-  Search,
-  Filter,
-  Briefcase,
-  MapPin,
-  Globe,
-  DollarSign,
-  Clock,
-  Calendar,
-  Tag,
-} from "lucide-react";
+import { Search, Filter, MapPin, Tag } from "lucide-react";
 
 function RecruiterJobSeekerSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,11 +15,6 @@ function RecruiterJobSeekerSearch() {
     preferredLocation: searchParams.get("preferredLocation") || "",
     minExperience: searchParams.get("minExperience") || "",
     maxExperience: searchParams.get("maxExperience") || "",
-    minExpectedCTC: searchParams.get("minExpectedCTC") || "",
-    maxExpectedCTC: searchParams.get("maxExpectedCTC") || "",
-    noticeStatus: searchParams.get("noticeStatus") || "",
-    maxNoticePeriod: searchParams.get("maxNoticePeriod") || "",
-    immediateJoiner: searchParams.get("immediateJoiner") || "",
     page: Number(searchParams.get("page")) || 0,
     size: 10,
   });
@@ -53,14 +38,8 @@ function RecruiterJobSeekerSearch() {
         keyword: updatedFilters.keyword || "",
         skills: updatedFilters.skills || "",
         currentLocation: updatedFilters.currentLocation || "",
-        preferredLocation: updatedFilters.preferredLocation || "",
         minExperience: updatedFilters.minExperience || "",
         maxExperience: updatedFilters.maxExperience || "",
-        minExpectedCTC: updatedFilters.minExpectedCTC || "",
-        maxExpectedCTC: updatedFilters.maxExpectedCTC || "",
-        noticeStatus: updatedFilters.noticeStatus || "",
-        maxNoticePeriod: updatedFilters.maxNoticePeriod || "",
-        immediateJoiner: updatedFilters.immediateJoiner || "",
         page: updatedFilters.page || 0,
       });
 
@@ -70,36 +49,19 @@ function RecruiterJobSeekerSearch() {
           ? updatedFilters.skills.split(",").map((s) => s.trim())
           : [],
         currentLocation: updatedFilters.currentLocation || null,
-        preferredLocation: updatedFilters.preferredLocation || null,
         minExperience: updatedFilters.minExperience
           ? Number(updatedFilters.minExperience)
           : null,
         maxExperience: updatedFilters.maxExperience
           ? Number(updatedFilters.maxExperience)
           : null,
-        minExpectedCTC: updatedFilters.minExpectedCTC
-          ? Number(updatedFilters.minExpectedCTC)
-          : null,
-        maxExpectedCTC: updatedFilters.maxExpectedCTC
-          ? Number(updatedFilters.maxExpectedCTC)
-          : null,
-        noticeStatus:
-          updatedFilters.noticeStatus === ""
-            ? null
-            : updatedFilters.noticeStatus,
-        maxNoticePeriod: updatedFilters.maxNoticePeriod
-          ? Number(updatedFilters.maxNoticePeriod)
-          : null,
-        immediateJoiner:
-          updatedFilters.immediateJoiner === ""
-            ? null
-            : updatedFilters.immediateJoiner === "true",
         page: updatedFilters.page,
         size: updatedFilters.size,
       };
 
       const response = await searchJobSeekers(requestBody);
       setResults(response.data.content);
+      console.log("Search results:", response.data);
       setPagination(response.data);
     } catch (error) {
       console.error("Search failed:", error);
@@ -113,14 +75,8 @@ function RecruiterJobSeekerSearch() {
       keyword: searchParams.get("keyword") || "",
       skills: searchParams.get("skills") || "",
       currentLocation: searchParams.get("currentLocation") || "",
-      preferredLocation: searchParams.get("preferredLocation") || "",
       minExperience: searchParams.get("minExperience") || "",
       maxExperience: searchParams.get("maxExperience") || "",
-      minExpectedCTC: searchParams.get("minExpectedCTC") || "",
-      maxExpectedCTC: searchParams.get("maxExpectedCTC") || "",
-      noticeStatus: searchParams.get("noticeStatus") || "",
-      maxNoticePeriod: searchParams.get("maxNoticePeriod") || "",
-      immediateJoiner: searchParams.get("immediateJoiner") || "",
       page: Number(searchParams.get("page")) || 0,
       size: 10,
     };
@@ -131,7 +87,6 @@ function RecruiterJobSeekerSearch() {
       urlFilters.keyword ||
       urlFilters.skills ||
       urlFilters.currentLocation ||
-      urlFilters.preferredLocation ||
       urlFilters.minExperience ||
       urlFilters.maxExperience ||
       urlFilters.page !== 0
@@ -146,58 +101,58 @@ function RecruiterJobSeekerSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      <div className="lwd-container py-8">
-
+    <div className="lwd-page-bg min-h-screen">
+      <div className="lwd-container py-6">
         {/* Header */}
-        <div className="lwd-page-header">
-          <h1 className="lwd-page-title">
-            <Search className="h-8 w-8 text-blue-600" />
+        <div className="lwd-page-header mb-8">
+          <h1 className="lwd-page-title flex items-center gap-2">
+            <Search className="h-7 w-7 text-blue-600 dark:text-blue-400" />
             Candidate Search
           </h1>
-          <p className="lwd-page-subtitle">
-            Find the perfect candidates
+          <p className="lwd-page-subtitle mt-1">
+            Find the perfect candidates easily
           </p>
         </div>
 
-        <div className="lwd-grid">
-
-          {/* Sidebar */}
+        <div className="lwd-grid gap-6">
+          {/* Sidebar Filters */}
           <div className="lwd-sidebar-layout">
-            <div className="lwd-filter-card">
-
-              <div className="lwd-filter-header bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700">
-                <Filter className="h-5 w-5 text-blue-600" />
-                Filters
+            <div className="lwd-card sticky top-6">
+              {/* Filter Header */}
+              <div className="lwd-filter-header flex items-center gap-2 border-b border-gray-200 pb-3 dark:border-gray-700">
+                <Filter className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <span className="font-semibold text-gray-800 dark:text-white">
+                  Filters
+                </span>
               </div>
 
-              <div className="lwd-filter-body lwd-scrollbar">
-
+              {/* Filter Body */}
+              <div className="lwd-filter-body space-y-4">
                 {/* Keyword */}
                 <div>
-                  <label className="lwd-label">Keyword</label>
-                  <div className="lwd-input-group">
-                    <Search className="lwd-input-icon" />
+                  <label className="lwd-label mb-1 block">Keyword</label>
+                  <div className="lwd-input-group relative">
+                    <Search className="lwd-input-icon absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     <input
                       name="keyword"
                       value={filters.keyword}
                       onChange={handleChange}
-                      className="lwd-input-with-icon"
-                      placeholder="Java"
+                      className="lwd-input-with-icon pl-10"
+                      placeholder="Java Developer"
                     />
                   </div>
                 </div>
 
                 {/* Skills */}
                 <div>
-                  <label className="lwd-label">Skills</label>
-                  <div className="lwd-input-group">
-                    <Tag className="lwd-input-icon" />
+                  <label className="lwd-label mb-1 block">Skills</label>
+                  <div className="lwd-input-group relative">
+                    <Tag className="lwd-input-icon absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     <input
                       name="skills"
                       value={filters.skills}
                       onChange={handleChange}
-                      className="lwd-input-with-icon"
+                      className="lwd-input-with-icon pl-10"
                       placeholder="React, Node"
                     />
                   </div>
@@ -205,21 +160,24 @@ function RecruiterJobSeekerSearch() {
 
                 {/* Location */}
                 <div>
-                  <label className="lwd-label">Current Location</label>
-                  <div className="lwd-input-group">
-                    <MapPin className="lwd-input-icon" />
+                  <label className="lwd-label mb-1 block">Location</label>
+                  <div className="lwd-input-group relative">
+                    <MapPin className="lwd-input-icon absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     <input
                       name="currentLocation"
                       value={filters.currentLocation}
                       onChange={handleChange}
-                      className="lwd-input-with-icon"
+                      className="lwd-input-with-icon pl-10"
+                      placeholder="Hyderabad"
                     />
                   </div>
                 </div>
 
                 {/* Experience */}
                 <div>
-                  <label className="lwd-label">Experience</label>
+                  <label className="lwd-label mb-1 block">
+                    Experience (Years)
+                  </label>
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       name="minExperience"
@@ -237,18 +195,43 @@ function RecruiterJobSeekerSearch() {
                     />
                   </div>
                 </div>
-
               </div>
 
-              <div className="lwd-filter-footer">
+              {/* Footer */}
+              <div className="lwd-filter-footer mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <button
                   onClick={() => handleSearch({ ...filters, page: 0 })}
-                  className="lwd-btn-primary lwd-btn-full"
+                  className="lwd-btn-primary w-full flex items-center justify-center gap-2"
+                  disabled={loading}
                 >
-                  {loading ? "Searching..." : "Apply Filters"}
+                  {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      Searching...
+                    </>
+                  ) : (
+                    "Apply Filters"
+                  )}
                 </button>
               </div>
-
             </div>
           </div>
 
@@ -261,7 +244,6 @@ function RecruiterJobSeekerSearch() {
               handlePageChange={handlePageChange}
             />
           </div>
-
         </div>
       </div>
     </div>

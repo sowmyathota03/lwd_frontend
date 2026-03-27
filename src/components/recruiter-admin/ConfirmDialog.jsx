@@ -14,7 +14,8 @@ export default function ConfirmDialog({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center 
+          bg-black/40 dark:bg-black/60 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -24,25 +25,25 @@ export default function ConfirmDialog({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.2 }}
-            className="lwd-card w-full max-w-md"
+            className="lwd-card w-full max-w-md shadow-xl"
           >
-            {/* Title */}
+            {/* ===== Title ===== */}
             <h3 className="lwd-title text-lg">
               {title}
             </h3>
 
-            {/* Message */}
+            {/* ===== Message ===== */}
             <p className="lwd-text mt-3">
               {message}
             </p>
 
-            {/* Actions */}
+            {/* ===== Actions ===== */}
             <div className="mt-6 flex justify-end gap-3">
 
               <button
                 onClick={onCancel}
                 disabled={loading}
-                className="lwd-btn-secondary"
+                className="lwd-btn-secondary disabled:opacity-50"
               >
                 {cancelText}
               </button>
@@ -50,7 +51,10 @@ export default function ConfirmDialog({
               <button
                 onClick={onConfirm}
                 disabled={loading}
-                className="lwd-btn-danger"
+                className="px-5 py-2 rounded-md text-white 
+                bg-red-600 hover:bg-red-700 
+                dark:bg-red-500 dark:hover:bg-red-600 
+                disabled:opacity-50 transition"
               >
                 {loading ? "Processing..." : confirmText}
               </button>
