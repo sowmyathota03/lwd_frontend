@@ -60,8 +60,8 @@ export default function CreateJob() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     let newValue = value;
+
     if (type === "checkbox") newValue = checked;
     else if (type === "number") newValue = value === "" ? "" : Number(value);
 
@@ -71,7 +71,10 @@ export default function CreateJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (job.applicationSource === "EXTERNAL" && !job.externalApplicationUrl.trim()) {
+    if (
+      job.applicationSource === "EXTERNAL" &&
+      !job.externalApplicationUrl.trim()
+    ) {
       alert("External URL is required");
       return;
     }
@@ -112,9 +115,9 @@ export default function CreateJob() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* CARD */}
+          {/* JOB DETAILS */}
           <div className="lwd-card overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="lwd-title flex items-center gap-2">
                 <BriefcaseIcon className="h-5 w-5 text-blue-600" />
                 Job Details
@@ -122,56 +125,54 @@ export default function CreateJob() {
             </div>
 
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              <Input label="Job Title" name="title" value={job.title} onChange={handleChange} required />
-              <Input label="Location" name="location" value={job.location} onChange={handleChange} required />
-              <Select label="Job Type" name="jobType" value={job.jobType} onChange={handleChange} options={["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"]} />
-              <Select label="Workplace Type" name="workplaceType" value={job.workplaceType} onChange={handleChange} options={["Work From Office", "Remote", "Hybrid"]} />
-              <Input label="Industry" name="industry" value={job.industry} onChange={handleChange} />
-              <Input label="Department" name="department" value={job.department} onChange={handleChange} />
+
+              <div>
+                <label className="block font-medium">Job Title</label>
+                <input type="text" name="title" value={job.title} onChange={handleChange} required className="border p-2 rounded w-full" />
+              </div>
+
+              <div>
+                <label className="block font-medium">Location</label>
+                <input type="text" name="location" value={job.location} onChange={handleChange} required className="border p-2 rounded w-full" />
+              </div>
+
+              <div>
+                <label className="block font-medium">Job Type</label>
+                <select name="jobType" value={job.jobType} onChange={handleChange} className="border p-2 rounded w-full">
+                  <option value="">Select Job Type</option>
+                  <option value="FULL_TIME">Full Time</option>
+                  <option value="PART_TIME">Part Time</option>
+                  <option value="INTERNSHIP">Internship</option>
+                  <option value="CONTRACT">Contract</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-medium">Workplace Type</label>
+                <select name="workplaceType" value={job.workplaceType} onChange={handleChange} className="border p-2 rounded w-full">
+                  <option value="">Select Workplace Type</option>
+                  <option value="Work From Office">Work From Office</option>
+                  <option value="Remote">Remote</option>
+                  <option value="Hybrid">Hybrid</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-medium">Industry</label>
+                <input type="text" name="industry" value={job.industry} onChange={handleChange} className="border p-2 rounded w-full" />
+              </div>
+
+              <div>
+                <label className="block font-medium">Department</label>
+                <input type="text" name="department" value={job.department} onChange={handleChange} className="border p-2 rounded w-full" />
+              </div>
+
             </div>
           </div>
 
-          {/* COMPENSATION */}
-          <div className="lwd-card p-6">
-            <h2 className="lwd-title mb-4">Compensation & Experience</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-              <Input label="Min Salary" name="minSalary" type="number" value={job.minSalary} onChange={handleChange} />
-              <Input label="Max Salary" name="maxSalary" type="number" value={job.maxSalary} onChange={handleChange} />
-              <Input label="Min Exp" name="minExperience" type="number" value={job.minExperience} onChange={handleChange} />
-              <Input label="Max Exp" name="maxExperience" type="number" value={job.maxExperience} onChange={handleChange} />
-            </div>
-          </div>
-
-          {/* PREFERENCES */}
-          <div className="lwd-card p-6">
-            <h2 className="lwd-title mb-4">Candidate Preferences</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              <Input label="Education" name="education" value={job.education} onChange={handleChange} />
-              <Input label="Skills" name="skills" value={job.skills} onChange={handleChange} />
-              <Select label="Gender" name="genderPreference" value={job.genderPreference} onChange={handleChange} options={["Any", "Male", "Female"]} />
-              <Input label="Age Limit" name="ageLimit" type="number" value={job.ageLimit} onChange={handleChange} />
-              <Select label="Notice" name="noticePreference" value={job.noticePreference} onChange={handleChange} options={["ANY", "IMMEDIATE_JOINER"]} />
-              <Checkbox label="LWD Preferred" name="lwdPreferred" checked={job.lwdPreferred} onChange={handleChange} />
-            </div>
-          </div>
-
-          {/* DESCRIPTION */}
-          <div className="lwd-card p-6">
-            <h2 className="lwd-title mb-4">Job Description</h2>
-
-            <div className="space-y-4">
-              <Textarea label="Description" name="description" value={job.description} onChange={handleChange} />
-              <Textarea label="Responsibilities" name="responsibilities" value={job.responsibilities} onChange={handleChange} />
-              <Textarea label="Requirements" name="requirements" value={job.requirements} onChange={handleChange} />
-              <Textarea label="Benefits" name="benefits" value={job.benefits} onChange={handleChange} />
-            </div>
-          </div>
-
-          {/* BUTTON */}
+          {/* SUBMIT */}
           <div className="flex justify-end">
-            <button type="submit" className="lwd-btn-primary flex items-center gap-2">
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded flex gap-2">
               <BriefcaseIcon className="h-5 w-5" />
               Publish Job
             </button>

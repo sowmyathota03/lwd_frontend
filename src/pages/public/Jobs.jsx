@@ -166,19 +166,19 @@ function Jobs() {
   };
 
   return (
-    <div className="lwd-page min-h-screen">
+    <div className="bg-slate-50 dark:bg-slate-900 min-h-screen pt-12 pb-24 font-sans transition-colors duration-300">
 
       {/* SEARCH */}
-      <div className="p-5 max-w-6xl mx-auto">
-        <div className="lwd-card p-4">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-4 md:p-6 transition-all duration-300 hover:shadow-md">
           <JobSearchBar />
         </div>
       </div>
 
       {/* POPULAR */}
       {!isSearchMode && !type && categoriesData && (
-        <div className="mt-6 px-5 max-w-7xl mx-auto">
-          <div className="lwd-card p-4">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-10">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-6 md:p-8">
             <PopularJobs
               title="Popular Job Categories"
               categories={categoriesData}
@@ -188,106 +188,129 @@ function Jobs() {
       )}
 
       {/* MAIN */}
-      <div
-        className={`mt-4 px-5 max-w-6xl mx-auto grid ${showFilters ? "md:grid-cols-4" : "md:grid-cols-1"
-          } gap-6`}
-      >
+      <div className={`px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid ${showFilters ? "md:grid-cols-4 lg:grid-cols-12" : "grid-cols-1"} gap-8 items-start`}>
+        
+        {/* FILTERS SIDEBAR */}
         {showFilters && (
-          <div className="lwd-card p-4">
-            <JobFilters onFilterChange={handleFilterChange} />
+          <div className="md:col-span-1 lg:col-span-3 lg:sticky lg:top-28">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-5 md:p-6 transition-all duration-300 hover:shadow-md">
+              <JobFilters onFilterChange={handleFilterChange} />
+            </div>
           </div>
         )}
 
-        <div className={showFilters ? "md:col-span-3" : ""}>
-          <div className="lwd-card p-6">
-
-            <h2 className="lwd-title mb-6">
-              {titleText} ({totalCount})
-            </h2>
-
-            {isError && (
-              <p className="text-red-500 text-center">
-                Failed to load jobs
+        {/* JOBS LIST */}
+        <div className={showFilters ? "md:col-span-3 lg:col-span-9" : "w-full"}>
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4 px-2">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                {titleText}
+              </h2>
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider">
+                {totalCount} {totalCount === 1 ? 'Opportunity' : 'Opportunities'} Found
               </p>
-            )}
+            </div>
+          </div>
 
-            <div className="space-y-6">
-              {jobs.map((job, index) => {
-                if (index === jobs.length - 1) {
-                  return (
-                    <motion.div
-                      ref={lastJobRef}
-                      key={job.id}
-                      variants={cardVariants}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      <JobCard job={job} />
-                    </motion.div>
-                  );
-                }
+          {isError && (
+            <div className="bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 p-6 rounded-2xl text-center border border-red-100 dark:border-red-800/50 mb-8 font-medium">
+              Failed to load jobs. Please try checking your connection and refreshing.
+            </div>
+          )}
 
+          <div className="space-y-5">
+            {jobs.map((job, index) => {
+              if (index === jobs.length - 1) {
                 return (
                   <motion.div
+                    ref={lastJobRef}
                     key={job.id}
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
+                    className="group"
                   >
-                    <JobCard job={job} />
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-600/50 transition-all duration-300 overflow-hidden">
+                      <JobCard job={job} />
+                    </div>
                   </motion.div>
                 );
-              })}
+              }
 
-              {isLoading &&
-                Array.from({ length: 6 }).map((_, i) => (
-                  <JobSkeleton key={i} />
-                ))}
-            </div>
-
-            {isFetchingNextPage && <Loader />}
-
-            {!hasNextPage && !isLoading && (
-              <p className="lwd-text text-center mt-6">
-                No more jobs
-              </p>
-            )}
-
-            {/* PAGINATION */}
-            {infiniteEndReached && (
-              <div className="flex justify-center gap-3 mt-8">
-
-                <button
-                  onClick={goToPrevGroup}
-                  disabled={pageGroup === 0}
-                  className="lwd-btn-secondary disabled:opacity-50"
+              return (
+                <motion.div
+                  key={job.id}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="group"
                 >
-                  Previous
-                </button>
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-600/50 transition-all duration-300 overflow-hidden">
+                    <JobCard job={job} />
+                  </div>
+                </motion.div>
+              );
+            })}
 
+            {isLoading &&
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 overflow-hidden">
+                  <JobSkeleton />
+                </div>
+              ))}
+          </div>
+
+          {isFetchingNextPage && (
+            <div className="flex justify-center my-10">
+              <Loader />
+            </div>
+          )}
+
+          {!hasNextPage && !isLoading && jobs.length > 0 && (
+            <div className="text-center mt-12 mb-8">
+              <div className="inline-flex items-center justify-center space-x-2 text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-6 py-2.5 rounded-full text-sm font-semibold border border-slate-200 dark:border-slate-700">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                <span>You've seen all available jobs</span>
+              </div>
+            </div>
+          )}
+
+          {/* PAGINATION */}
+          {infiniteEndReached && (
+            <div className="flex justify-center flex-wrap items-center gap-2 mt-12 bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 w-fit mx-auto">
+              <button
+                onClick={goToPrevGroup}
+                disabled={pageGroup === 0}
+                className="px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+              >
+                Prev
+              </button>
+
+              <div className="flex gap-1">
                 {[...Array(MAX_PAGES)].map((_, i) => {
                   const pageNumber = pageGroup * MAX_PAGES + i + 1;
                   return (
                     <button
                       key={i}
                       onClick={() => goToPage(pageGroup + i)}
-                      className="lwd-btn-secondary px-3"
+                      className="min-w-[40px] h-10 px-2 rounded-xl text-center font-bold text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-700 dark:hover:text-white transition-all duration-200"
                     >
                       {pageNumber}
                     </button>
                   );
                 })}
-
-                <button
-                  onClick={goToNextGroup}
-                  className="lwd-btn-primary"
-                >
-                  Next
-                </button>
-
               </div>
-            )}
-          </div>
+
+              <button
+                onClick={goToNextGroup}
+                className="px-5 py-2.5 rounded-xl font-bold bg-blue-50 text-blue-700 border border-blue-200/50 hover:bg-blue-600 hover:text-white hover:border-blue-600 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-800/50 dark:hover:bg-blue-600 dark:hover:border-blue-600 dark:hover:text-white transition-all duration-300 shadow-sm"
+              >
+                Next
+              </button>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
