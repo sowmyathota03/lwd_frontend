@@ -157,7 +157,7 @@ function NavBar() {
             </Link>
 
             {/* Desktop Menu */}
-            <nav className="hidden md:flex items-center space-x-2 lg:space-x-8">
+            <nav className="hidden md:flex items-center space-x-2 lg:space-x-1">
               <NavLink to="/" end className={navItemClass}>Home</NavLink>
               <NavLink to="/jobs" className={navItemClass}>Jobs</NavLink>
               {user?.role === "JOB_SEEKER" && (
@@ -165,6 +165,7 @@ function NavBar() {
               )}
               <NavLink to="/companies" className={navItemClass}>Companies</NavLink>
               <NavLink to="/career" className={navItemClass}>Careers</NavLink>
+              <NavLink to="/messaging" className={navItemClass}>Messaging</NavLink>
             </nav>
 
             {/* Right Section */}
@@ -208,7 +209,7 @@ function NavBar() {
                     <div className="flex items-center gap-3 p-1.5 pr-3 rounded-full border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200">
                       
                       {/* Avatar */}
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-white dark:ring-slate-800">
+                      <div className="w-8 h-8 rounded-full bg-linear-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-white dark:ring-slate-800">
                         {displayName?.charAt(0)?.toUpperCase()}
                       </div>
 
@@ -319,7 +320,7 @@ function NavBar() {
         </div>
 
         {/* Mobile Menu Panel */}
-        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"}`}>
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-200 opacity-100" : "max-h-0 opacity-0"}`}>
           <div className="px-4 pt-2 pb-6 space-y-1 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shadow-inner">
             <NavLink to="/" end className={mobileNavItemClass} onClick={closeMenus}>Home</NavLink>
             <NavLink to="/jobs" className={mobileNavItemClass} onClick={closeMenus}>Jobs</NavLink>
@@ -342,8 +343,8 @@ function NavBar() {
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center px-2">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-bold text-base shadow-sm ring-2 ring-white dark:ring-slate-800">
+                    <div className="shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-linear-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-bold text-base shadow-sm ring-2 ring-white dark:ring-slate-800">
                         {displayName?.charAt(0)?.toUpperCase()}
                       </div>
                     </div>
