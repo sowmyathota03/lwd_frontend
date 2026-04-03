@@ -29,9 +29,19 @@ const MessagingPage = () => {
   const { username } = useParams();
   const [searchParams] = useSearchParams();
 
-  const routeBase = location.pathname.startsWith("/admin-recruiter/messaging")
-    ? "/admin-recruiter/messaging"
-    : "/recruiter/messaging";
+ const getMessagingBaseRoute = (pathname) => {
+  if (pathname.startsWith("/admin-recruiter/messaging")) {
+    return "/admin-recruiter/messaging";
+  }
+
+  if (pathname.startsWith("/recruiter/messaging")) {
+    return "/recruiter/messaging";
+  }
+
+  return "/messaging"; // ✅ job seeker
+};
+
+const routeBase = getMessagingBaseRoute(location.pathname);
 
   const initialTargetUserId = searchParams.get("userId");
 

@@ -315,7 +315,7 @@ function JobDetails() {
                   <button
                     onClick={() =>
                       navigate(
-                        `/recruiter/messaging/${String(
+                        `/messaging/${String(
                           job?.recruiterName || "user",
                         )
                           .toLowerCase()

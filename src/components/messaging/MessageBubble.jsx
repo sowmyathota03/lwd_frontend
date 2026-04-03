@@ -27,12 +27,12 @@ const MessageBubble = ({
   const isDeleted = message?.softDeleted === true;
 
   const handleToggleSelect = () => {
-    if (!message?.id || typeof onToggleSelect !== "function") return;
+    if (!message?.id || !onToggleSelect) return;
     onToggleSelect(message.id);
   };
 
   const handleDelete = () => {
-    if (!message?.id || typeof onDeleteMessage !== "function") return;
+    if (!message?.id || !onDeleteMessage) return;
     onDeleteMessage(message.id);
   };
 
@@ -41,7 +41,7 @@ const MessageBubble = ({
 
     switch (message?.status) {
       case "PENDING":
-        return <Clock3 size={13} className="text-amber-300 shrink-0" />;
+        return <Clock3 size={13} className="text-amber-400 shrink-0" />;
       case "SENT":
         return <Check size={13} className="text-white/70 shrink-0" />;
       case "DELIVERED":
@@ -49,15 +49,18 @@ const MessageBubble = ({
       case "READ":
         return <CheckCheck size={13} className="text-sky-300 shrink-0" />;
       case "FAILED":
-        return <AlertCircle size={13} className="text-red-300 shrink-0" />;
+        return <AlertCircle size={13} className="text-red-400 shrink-0" />;
       default:
         return null;
     }
   };
 
   return (
-    <div className={`flex ${isMe ? "justify-end" : "justify-start"} px-3 py-1.5`}>
+    <div
+      className={`flex ${isMe ? "justify-end" : "justify-start"} px-3 py-1.5`}
+    >
       <div className="flex items-end gap-2 max-w-[78%] sm:max-w-[72%]">
+        
         {selectionMode && (
           <label className="flex items-center pb-2 cursor-pointer shrink-0">
             <input
@@ -73,9 +76,13 @@ const MessageBubble = ({
           className={`
             group relative min-w-24 max-w-full rounded-2xl px-4 py-3 shadow-sm
             transition-all duration-200
-            ${isMe
-              ? "bg-linear-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
-              : "bg-slate-800/95 text-slate-100 border border-slate-700 rounded-bl-md"}
+
+            ${
+              isMe
+                ? "bg-linear-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
+                : "bg-slate-100 text-slate-800 border border-slate-200 rounded-bl-md dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700"
+            }
+
             ${isSelected ? "ring-2 ring-blue-400" : ""}
             ${isDeleted ? "opacity-80" : ""}
           `}
@@ -93,16 +100,24 @@ const MessageBubble = ({
           )}
 
           <p
-            className={`text-[15px] leading-6 whitespace-pre-wrap wrap-anywhere ${
-              !selectionMode && isMe && !isDeleted ? "pr-7" : ""
-            } ${isDeleted ? "italic text-white/75 dark:text-slate-400" : ""}`}
+            className={`
+              text-[15px] leading-6 whitespace-pre-wrap wrap-break-word
+              ${!selectionMode && isMe && !isDeleted ? "pr-7" : ""}
+              ${
+                isDeleted
+                  ? "italic text-slate-400 dark:text-slate-500"
+                  : ""
+              }
+            `}
           >
             {isDeleted ? "This message was deleted" : message?.text || ""}
           </p>
 
           <div
             className={`mt-2 flex items-center gap-1 text-[11px] ${
-              isMe ? "justify-end text-white/80" : "justify-end text-slate-400"
+              isMe
+                ? "justify-end text-white/80"
+                : "justify-end text-slate-500 dark:text-slate-400"
             }`}
           >
             <span>{formattedTime}</span>
