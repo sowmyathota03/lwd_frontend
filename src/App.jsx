@@ -75,6 +75,7 @@ import AdminPlanFeaturesPage from "./pages/admin/AdminPlanFeaturesPage";
 import RecruiterPlans from "./pages/pricing/RecruiterPlans";
 import CandidatePlans from "./pages/pricing/CandidatePlans";
 import AdminManageFeatures from "./pages/admin/ManagePricingFeaturesPage";
+import MessagingPage from "./pages/messaging/MessagingPage";
 
 function App() {
   function ScrollToTop() {
@@ -127,6 +128,7 @@ function App() {
         <Route path="/my/applications" element={<MyApplications />} />
         <Route path="/saved-jobs" element={<SavedJobs />} />
         <Route path="/jobs-list" element={<JobList />} />
+        <Route path="/massages" element={<MessagingPage />} />
 
         <Route path="/education" element={<Education />} />
         <Route path="/internship" element={<Internship />} />
