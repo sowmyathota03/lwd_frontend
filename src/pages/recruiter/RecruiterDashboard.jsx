@@ -12,6 +12,7 @@ export default function RecruiterDashboard() {
     { to: "/recruiter/createjob", label: "Create Job", icon: "➕" },
     { to: "/recruiter/applications", label: "Applications", icon: "📑" },
     { to: "/recruiter/job-seekers", label: "Job Seekers", icon: "👤" },
+    { to: "/recruiter/messaging", label: "Messaging", icon: "💬" },
   ];
 
   return (

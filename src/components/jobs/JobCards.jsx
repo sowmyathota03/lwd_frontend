@@ -50,7 +50,7 @@ function JobCards({ job, recentlyOpened = false }) {
               {job.title || "Untitled Job"}
             </h3>
             {recentlyOpened && (
-              <span className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300 rounded-full border border-orange-200 dark:border-orange-800/50 flex-shrink-0 mt-0.5 sm:mt-0">
+              <span className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300 rounded-full border border-orange-200 dark:border-orange-800/50 shrink-0 mt-0.5 sm:mt-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 animate-pulse"></span>
                 Hot Role
               </span>
@@ -60,7 +60,7 @@ function JobCards({ job, recentlyOpened = false }) {
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm md:text-base font-semibold text-slate-600 dark:text-slate-300 mt-1.5">
             {job.company?.companyName && (
               <span className="flex items-center gap-1.5 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors max-w-full truncate">
-                <svg className="w-4 h-4 flex-shrink-0 text-slate-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
                 {job.company.companyName}
@@ -73,7 +73,7 @@ function JobCards({ job, recentlyOpened = false }) {
 
             {job.location && (
               <span className="flex items-center gap-1.5 truncate max-w-full">
-                <svg className="w-4 h-4 flex-shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -154,7 +154,7 @@ function JobCards({ job, recentlyOpened = false }) {
         <div className="flex flex-row-reverse sm:flex-col items-center sm:items-end gap-3 w-full">
           <button
             onClick={handleSaveJob}
-            className="flex items-center justify-center gap-1.5 w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 text-sm font-semibold rounded-xl bg-slate-50 text-slate-600 hover:text-blue-600 hover:bg-blue-50 dark:bg-slate-700/50 dark:text-slate-300 dark:hover:text-blue-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 transition-all flex-shrink-0 group/btn"
+            className="flex items-center justify-center gap-1.5 w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 text-sm font-semibold rounded-xl bg-slate-50 text-slate-600 hover:text-blue-600 hover:bg-blue-50 dark:bg-slate-700/50 dark:text-slate-300 dark:hover:text-blue-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 transition-all shrink-0 group/btn"
             title="Save Job"
           >
             <Bookmark className="w-5 h-5 sm:w-4 sm:h-4 group-hover/btn:fill-blue-100 dark:group-hover/btn:fill-slate-600 transition-colors" />

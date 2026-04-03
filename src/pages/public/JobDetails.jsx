@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { getJobById, getSimilarJobs } from "../../api/JobApi";
 import Loader from "../../components/common/Loader";
 import JobCards from "../../components/jobs/JobCards";
@@ -8,32 +8,87 @@ function JobDetails() {
   const { jobId } = useParams();
   const navigate = useNavigate();
 
-  // Fetch main job details
-  const {
-    data: job,
-    isLoading: jobLoading,
-    isError: jobError,
-  } = useQuery({
-    queryKey: ["jobDetails", jobId],
-    queryFn: () => getJobById(jobId).then((res) => res.data),
-    enabled: !!jobId,
-  });
+  const [job, setJob] = useState(null);
+  const [similarJobs, setSimilarJobs] = useState([]);
 
-  // Fetch similar jobs
-  const { data: similarJobs = [], isLoading: similarLoading } = useQuery({
-    queryKey: ["similarJobs", jobId],
-    queryFn: () => getSimilarJobs(jobId).then((res) => res.data),
-    enabled: !!jobId,
-  });
+  const [jobLoading, setJobLoading] = useState(true);
+  const [similarLoading, setSimilarLoading] = useState(false);
 
-  // Navigate to application form
+  const [jobError, setJobError] = useState(false);
+
+  useEffect(() => {
+    if (!jobId) return;
+
+    let isMounted = true;
+
+    const fetchJobDetails = async () => {
+      try {
+        setJobLoading(true);
+        setJobError(false);
+
+        const res = await getJobById(jobId);
+        if (isMounted) {
+          setJob(res.data);
+          console.log("Fetched job details:", res.data);
+        }
+      } catch (error) {
+        console.error("Failed to load job details:", error);
+        if (isMounted) {
+          setJobError(true);
+          setJob(null);
+        }
+      } finally {
+        if (isMounted) {
+          setJobLoading(false);
+        }
+      }
+    };
+
+    fetchJobDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [jobId]);
+
+  useEffect(() => {
+    if (!jobId) return;
+
+    let isMounted = true;
+
+    const fetchSimilarJobs = async () => {
+      try {
+        setSimilarLoading(true);
+        const res = await getSimilarJobs(jobId);
+
+        if (isMounted) {
+          setSimilarJobs(res.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to load similar jobs:", error);
+        if (isMounted) {
+          setSimilarJobs([]);
+        }
+      } finally {
+        if (isMounted) {
+          setSimilarLoading(false);
+        }
+      }
+    };
+
+    fetchSimilarJobs();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [jobId]);
+
   const handleApplyClick = () => {
     if (job?.id) {
       navigate(`/apply/${job.id}`);
     }
   };
 
-  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return "";
     try {
@@ -59,7 +114,7 @@ function JobDetails() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4 flex justify-center items-start">
         <div className="bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 p-6 rounded-2xl text-center border border-red-100 dark:border-red-800/50 max-w-lg w-full font-medium shadow-sm">
-           Failed to load job details. Please try again later.
+          Failed to load job details. Please try again later.
         </div>
       </div>
     );
@@ -69,7 +124,7 @@ function JobDetails() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4 flex justify-center items-start border-none">
         <div className="text-center mt-10 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 p-10 rounded-3xl max-w-lg w-full shadow-sm border border-slate-100 dark:border-slate-700/60">
-           The requested job could not be found.
+          The requested job could not be found.
         </div>
       </div>
     );
@@ -78,12 +133,8 @@ function JobDetails() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
       <div className="max-w-5xl mx-auto space-y-8">
-        
-        {/* ===== JOB HEADER CARD ===== */}
         <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-6 md:p-10 transition-all duration-300">
           <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
-            
-            {/* LEFT SIDE */}
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">
                 {job.title}
@@ -92,25 +143,56 @@ function JobDetails() {
               <div className="flex flex-wrap items-center gap-2 mt-2 text-slate-600 dark:text-slate-400 font-medium">
                 {job.company?.companyName && (
                   <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
                     {job.company.companyName}
                   </span>
                 )}
 
                 {job.company?.companyName && job.location && (
-                  <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+                  <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">
+                    •
+                  </span>
                 )}
 
                 {job.location && (
                   <span className="flex items-center gap-1.5">
-                    <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    <svg
+                      className="w-5 h-5 text-slate-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
                     {job.location}
                   </span>
                 )}
               </div>
             </div>
 
-            {/* RIGHT SIDE */}
             <div className="flex flex-col items-start md:items-end gap-3 min-w-max">
               <button
                 onClick={handleApplyClick}
@@ -121,8 +203,21 @@ function JobDetails() {
 
               {job.totalApplications != null && (
                 <span className="inline-flex items-center justify-center w-full md:w-auto px-4 py-2 text-sm font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 rounded-lg border border-emerald-100 dark:border-emerald-800/50">
-                  <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                  {job.totalApplications} application{job.totalApplications !== 1 ? "s" : ""}
+                  <svg
+                    className="w-4 h-4 mr-1.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                  {job.totalApplications} application
+                  {job.totalApplications !== 1 ? "s" : ""}
                 </span>
               )}
             </div>
@@ -130,7 +225,6 @@ function JobDetails() {
 
           <hr className="my-8 border-slate-100 dark:border-slate-700/60" />
 
-          {/* ===== JOB META TAGS ===== */}
           <div className="flex flex-wrap gap-3">
             {job.minExperience != null && job.maxExperience != null && (
               <span className="inline-flex items-center px-4 py-2 text-sm font-medium bg-slate-100 text-slate-700 dark:bg-slate-700/50 dark:text-slate-300 rounded-xl">
@@ -189,9 +283,68 @@ function JobDetails() {
 
           <div className="flex justify-between items-center mt-8 pt-6 border-t border-slate-100 dark:border-slate-700/60 flex-wrap gap-4">
             {job.matchScore && (
-              <span className="inline-flex items-center px-4 py-2 text-sm font-bold bg-gradient-to-r from-emerald-400 to-teal-500 text-white rounded-xl shadow-sm">
+              <span className="inline-flex items-center px-4 py-2 text-sm font-bold bg-linear-to-r from-emerald-400 to-teal-500 text-white rounded-xl shadow-sm">
                 🔥 Match Score: {job.matchScore}%
               </span>
+            )}
+
+            {job?.canViewRecruiterDetails ? (
+              <div className="space-x-1">
+                <p className="font-medium text-gray-700 dark:text-gray-50">
+                  Recruiter Details:
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <span className="font-medium">Name:</span> {job.recruiterName}
+                </p>
+
+                {job.recruiterEmail && (
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <span className="font-medium">Email:</span>{" "}
+                    {job.recruiterEmail}
+                  </p>
+                )}
+
+                {job.recruiterPhone && (
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <span className="font-medium">Phone:</span>{" "}
+                    {job.recruiterPhone}
+                  </p>
+                )}
+
+                {job?.canMessageRecruiter && job?.recruiterId && (
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/recruiter/messaging/${String(
+                          job?.recruiterName || "user",
+                        )
+                          .toLowerCase()
+                          .trim()
+                          .replace(/[^a-z0-9\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-")}?userId=${job?.recruiterId}`,
+                      )
+                    }
+                    className="text-xs text-blue-500 underline font-medium"
+                  >
+                    Message Recruiter
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-yellow-200 bg-yellow-50 dark:bg-yellow-900/10 dark:border-yellow-700 p-4">
+                <p className="text-sm text-yellow-800 dark:text-yellow-300 font-medium">
+                  {job?.upgradeMessage ||
+                    "Upgrade to Premium to unlock recruiter details."}
+                </p>
+
+                <button
+                  onClick={() => navigate("/plans/candidate")}
+                  className="mt-2 px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                >
+                  Upgrade Now
+                </button>
+              </div>
             )}
 
             {job.createdAt && (
@@ -202,7 +355,6 @@ function JobDetails() {
           </div>
         </section>
 
-        {/* ===== JOB DESCRIPTION ===== */}
         <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-6 md:p-10">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
             Job Description
@@ -214,7 +366,6 @@ function JobDetails() {
           </div>
         </section>
 
-        {/* ===== RESPONSIBILITIES ===== */}
         {job.responsibilities && (
           <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-6 md:p-10">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
@@ -228,7 +379,6 @@ function JobDetails() {
           </section>
         )}
 
-        {/* ===== REQUIREMENTS ===== */}
         {job.requirements && (
           <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-6 md:p-10">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
@@ -242,7 +392,6 @@ function JobDetails() {
           </section>
         )}
 
-        {/* ===== BENEFITS ===== */}
         {job.benefits && (
           <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 p-6 md:p-10">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
@@ -256,7 +405,6 @@ function JobDetails() {
           </section>
         )}
 
-        {/* ===== CANDIDATE PREFERENCES ===== */}
         {(job.education ||
           job.skills ||
           job.genderPreference ||
@@ -268,33 +416,51 @@ function JobDetails() {
             <div className="grid sm:grid-cols-2 gap-4">
               {job.education && (
                 <div className="p-4 rounded-xl border border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-900/50">
-                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">Education</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-medium">{job.education}</span>
+                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                    Education
+                  </span>
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                    {job.education}
+                  </span>
                 </div>
               )}
+
               {job.skills && (
                 <div className="p-4 rounded-xl border border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-900/50">
-                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">Skills</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-medium">{job.skills}</span>
+                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                    Skills
+                  </span>
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                    {job.skills}
+                  </span>
                 </div>
               )}
+
               {job.genderPreference && (
                 <div className="p-4 rounded-xl border border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-900/50">
-                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">Gender Preference</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-medium">{job.genderPreference}</span>
+                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                    Gender Preference
+                  </span>
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                    {job.genderPreference}
+                  </span>
                 </div>
               )}
+
               {job.ageLimit && (
                 <div className="p-4 rounded-xl border border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-900/50">
-                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">Age Limit</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-medium">{job.ageLimit}</span>
+                  <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                    Age Limit
+                  </span>
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                    {job.ageLimit}
+                  </span>
                 </div>
               )}
             </div>
           </section>
         )}
 
-        {/* ===== SIMILAR JOBS ===== */}
         {similarJobs.length > 0 && (
           <section className="pt-8 pb-4">
             <div className="flex items-center gap-4 mb-8">
@@ -303,6 +469,7 @@ function JobDetails() {
               </h2>
               <div className="h-px bg-slate-200 dark:bg-slate-700 flex-1"></div>
             </div>
+
             {similarLoading ? (
               <div className="flex justify-center py-10">
                 <Loader />
@@ -310,7 +477,10 @@ function JobDetails() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {similarJobs.map((item) => (
-                  <div key={item.id} className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-600/50 transition-all duration-300 overflow-hidden">
+                  <div
+                    key={item.id}
+                    className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-600/50 transition-all duration-300 overflow-hidden"
+                  >
                     <JobCards job={item} />
                   </div>
                 ))}

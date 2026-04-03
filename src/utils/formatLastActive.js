@@ -1,3 +1,4 @@
+//./src/utils/formatLastActive.js
 export const formatLastActive = (lastActiveAt) => {
   if (!lastActiveAt) return "Offline";
 
