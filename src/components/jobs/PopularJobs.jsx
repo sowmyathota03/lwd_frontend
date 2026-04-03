@@ -1,35 +1,127 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  Zap,
+  Code,
+  Database,
+  Layout,
+  Terminal,
+  Cpu,
+  Globe,
+  Smartphone,
+  Cloud,
+  ChevronRight,
+  Sparkles
+} from "lucide-react";
+
+const categoryIcons = {
+  "software": <Code size={20} />,
+  "java": <Terminal size={20} />,
+  "react": <Layout size={20} />,
+  "data": <Database size={20} />,
+  "cloud": <Cloud size={20} />,
+  "mobile": <Smartphone size={20} />,
+  "web": <Globe size={20} />,
+  "python": <Terminal size={20} />,
+  "fullstack": <Cpu size={20} />,
+};
 
 function PopularJobs({ title, categories }) {
   const navigate = useNavigate();
 
-  return (
-    <section className="py-2 md:py-6 text-center w-full">
-      {title && (
-        <h2 className="text-2xl md:text-3xl font-bold mb-8 text-slate-800 dark:text-slate-100 tracking-tight">
-          {title}
-        </h2>
-      )}
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08 }
+    }
+  };
 
-      <div className="flex justify-center gap-4 md:gap-6 flex-wrap pb-4">
-        {categories.map((cat) => (
-          <button
-            key={cat.slug}
-            onClick={() => navigate(`/jobs/${cat.slug}`)}
-            className="group relative px-6 md:px-8 py-3.5 md:py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4 }
+    }
+  };
+
+  return (
+    <section className="py-10 w-full bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950">
+      <div className="lwd-container">
+
+        {/* HEADER */}
+        {title && (
+          <motion.div
+            initial={{ opacity: 0, y: -15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
           >
-            {/* Hover gradient background effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-            
-            {/* Content */}
-            <span className="relative z-10 flex items-center justify-center gap-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              {cat.name}
-              <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </span>
-          </button>
-        ))}
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
+              {title}
+            </h2>
+            <p className="mt-3 text-slate-500 max-w-xl mx-auto text-sm md:text-base">
+              Discover trending job categories and explore opportunities tailored to your skills.
+            </p>
+          </motion.div>
+        )}
+
+        {/* GRID */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"
+        >
+          {categories?.map((cat) => (
+            <motion.button
+              key={cat.slug}
+              variants={itemVariants}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate(`/jobs/${cat.slug}`)}
+              className="group relative bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex items-center justify-between shadow-sm hover:shadow-xl transition-all duration-300"
+            >
+              {/* LEFT */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-500 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition">
+                  {categoryIcons[cat.slug] || <Sparkles size={20} />}
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-white">
+                    {cat.name}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1 tracking-wide uppercase">
+                    Explore Roles
+                  </p>
+                </div>
+              </div>
+
+              {/* RIGHT ICON */}
+              <ChevronRight
+                size={18}
+                className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300"
+              />
+            </motion.button>
+          ))}
+        </motion.div>
+
+        {/* FOOTER */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="pt-10 text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 text-xs font-medium">
+            <Zap size={14} />
+            Updated daily with latest hiring trends
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );

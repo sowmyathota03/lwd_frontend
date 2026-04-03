@@ -1,30 +1,41 @@
 import { useState, useContext } from "react";
 import { loginUser } from "../api/AuthApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import jwtDecode from "jwt-decode";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  ChevronRight,
+  ArrowRight,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // ✅ Clean input handler
+  const handleChange = ({ target: { name, value } }) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Role-based navigation
   const redirectBasedOnRole = (role) => {
-    if (role === "ADMIN") navigate("/admin");
-    else if (role === "RECRUITER_ADMIN") navigate("/recruiter-admin");
-    else if (role === "RECRUITER") navigate("/recruiter");
-    else navigate("/");
+    const routes = {
+      ADMIN: "/admin",
+      RECRUITER_ADMIN: "/recruiter-admin",
+      RECRUITER: "/recruiter",
+    };
+    navigate(routes[role] || "/");
   };
 
   const handleSubmit = async (e) => {
@@ -36,9 +47,9 @@ export default function Login() {
       const res = await loginUser(formData);
       login(res.token);
 
-      const decoded = jwtDecode(res.token);
-      redirectBasedOnRole(decoded.role);
-    } catch (err) {
+      const { role } = jwtDecode(res.token);
+      redirectBasedOnRole(role);
+    } catch {
       setError("Invalid email or password");
     } finally {
       setLoading(false);
@@ -46,89 +57,131 @@ export default function Login() {
   };
 
   return (
-    <div className="lwd-page flex justify-center items-center font-sans px-4">
+    <div className="lwd-page flex flex-col justify-center items-center py-12 px-4 relative overflow-hidden">
 
-      <div className="lwd-card w-full max-w-md p-8 backdrop-blur-xl">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        <div className="lwd-card p-8 md:p-10">
 
-        {/* Title */}
-        <h3 className="lwd-title text-center text-2xl mb-6">
-          Login
-        </h3>
-
-        {/* Error */}
-        {error && (
-          <div className="mb-4 text-sm text-center p-3 rounded-lg bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-
-          {/* Email */}
-          <div className="mb-4">
-            <label className="lwd-label block mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              required
-              onChange={handleChange}
-              className="lwd-input"
-            />
-          </div>
-
-          {/* Password */}
-          <div className="mb-4">
-            <label className="lwd-label block mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              required
-              onChange={handleChange}
-              className="lwd-input"
-            />
-          </div>
-
-          {/* Forgot Password */}
-          <div className="mb-4 text-right">
-            <button
-              type="button"
-              onClick={() => navigate("/forgot-password")}
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-            >
-              Forgot Password?
-            </button>
-          </div>
-
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full lwd-btn-primary disabled:opacity-70"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-
-          {/* Register */}
-          <div className="mt-4 text-center text-sm lwd-text">
-            <p>
-              Don't have an account?{" "}
-              <span
-                className="text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
-                onClick={() => navigate("/register")}
-              >
-                Register here
-              </span>
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-600 mb-6">
+              <ShieldCheck size={32} />
+            </div>
+            <h1 className="text-3xl font-bold mb-3">Welcome back</h1>
+            <p className="lwd-text-muted">
+              Securely access your LWD dashboard.
             </p>
           </div>
 
-        </form>
-      </div>
+          {/* Error */}
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="mb-6 p-3 rounded bg-red-100 text-red-600 text-sm"
+              >
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* Email */}
+            <div>
+              <label className="lwd-label">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="name@company.com"
+                  required
+                  autoFocus
+                  onChange={handleChange}
+                  className="lwd-input pl-12 h-14"
+                />
+              </div>
+            </div>
+
+            {/* Password (FIXED 👇) */}
+            <div>
+              <div className="flex justify-between">
+                <label className="lwd-label">Password</label>
+                <Link to="/forgot-password" className="text-sm text-blue-600">
+                  Forgot password?
+                </Link>
+              </div>
+
+              <div className="relative">
+                {/* Lock Icon */}
+                <Lock
+                  size={20}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
+
+                {/* Input */}
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                  onChange={handleChange}
+                  className="lwd-input pl-12 pr-12 h-14"
+                />
+
+                {/* Eye Icon FIX */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600"
+                >
+                  {showPassword ? (
+                    <Eye key="show" size={20} />
+                  ) : (
+                  <EyeOff key="hide" size={20} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 lwd-btn-primary flex items-center justify-center gap-2"
+            >
+              {loading ? "Signing in..." : "Sign In"}
+              {!loading && <ArrowRight size={20} />}
+            </button>
+
+            {/* Footer */}
+            <div className="text-center">
+              <p className="text-slate-500">
+                New to the platform?{" "}
+                <Link to="/register" className="text-blue-600 font-bold inline-flex items-center gap-1">
+                  Create an account <ChevronRight size={16} />
+                </Link>
+              </p>
+            </div>
+
+          </form>
+        </div>
+
+        {/* Bottom Links */}
+        <div className="mt-6 flex justify-center gap-6 text-xs text-slate-400">
+          <Link to="/privacy-policy">Privacy Policy</Link>
+          <Link to="/terms">Terms of Service</Link>
+        </div>
+
+      </motion.div>
     </div>
   );
 }

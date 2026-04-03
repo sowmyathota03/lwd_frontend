@@ -1,32 +1,27 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSearchSuggestions } from "../../api/JobApi";
-import { Search, MapPin, Building, ChevronDown, ChevronUp, Briefcase } from "lucide-react";
+import { Search, MapPin, Building } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function JobSearchBlock() {
+  const navigate = useNavigate();
+
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [minExp, setMinExp] = useState("");
-  const [maxExp, setMaxExp] = useState("");
-  const [jobType, setJobType] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-
-  const navigate = useNavigate();
-  const containerRef = useRef(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
+
     if (keyword.trim()) params.append("keyword", keyword.trim());
     if (location.trim()) params.append("location", location.trim());
     if (companyName.trim()) params.append("companyName", companyName.trim());
-    if (minExp) params.append("minExp", minExp);
-    if (maxExp) params.append("maxExp", maxExp);
-    if (jobType) params.append("jobType", jobType);
 
+    navigate(`/jobs?${params.toString()}`);
     setSuggestions([]);
-    navigate(`/Jobs?${params.toString()}`);
   };
 
   const handleKeyDown = (e) => {
@@ -34,143 +29,137 @@ function JobSearchBlock() {
   };
 
   useEffect(() => {
-    const delayDebounce = setTimeout(async () => {
+    const debounce = setTimeout(async () => {
       if (keyword.length > 1) {
         try {
-          const response = await getSearchSuggestions(keyword);
-          setSuggestions(response.data);
+          const res = await getSearchSuggestions(keyword);
+          setSuggestions(res.data || []);
         } catch (err) {
-          console.error("Suggestion error", err);
+          console.error(err);
         }
-      } else setSuggestions([]);
+      } else {
+        setSuggestions([]);
+      }
     }, 400);
 
-    return () => clearTimeout(delayDebounce);
+    return () => clearTimeout(debounce);
   }, [keyword]);
 
-  const handleSuggestionClick = (value) => {
+  const selectSuggestion = (value) => {
     setKeyword(value);
     setSuggestions([]);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setSuggestions([]);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <div className="w-full" ref={containerRef}>
-      {/* MAIN SEARCH ROW */}
-      <div className="flex flex-col lg:flex-row gap-4 items-center">
-        <div className="relative flex-1 w-full group">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
-            <Search className="w-5 h-5" />
-          </div>
-          <input
-            type="text"
-            placeholder={showAdvanced ? "Job title or skills" : "Search jobs, skills, or companies..."}
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
-          />
-
-          {suggestions.length > 0 && (
-            <div className="absolute top-full mt-2 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-md">
-              {suggestions.map((s, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleSuggestionClick(s)}
-                  className="px-5 py-3 text-sm cursor-pointer border-b border-slate-50 dark:border-slate-700/50 last:border-none hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-700 dark:text-slate-200 transition-colors"
-                >
-                  {s}
-                </div>
-              ))}
+    <div className="relative w-full max-w-6xl mx-auto z-50">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`
+          flex flex-col md:flex-row items-center gap-2 p-2 
+          bg-white dark:bg-slate-900 rounded-2xl md:rounded-full border transition-all duration-300
+          ${isFocused 
+            ? "border-blue-500 shadow-lg" 
+            : "border-slate-200 dark:border-slate-700"}
+        `}
+      >
+        {/* KEYWORD */}
+        <div className="relative flex-1 w-full text-left">
+          <div className="flex items-center px-5 h-16">
+            <Search className="w-5 h-5 mr-3 text-slate-400" />
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-slate-500 mb-0.5">
+                Job Title / Skills
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Java Developer"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                className="w-full bg-transparent outline-none text-base font-medium text-slate-800 dark:text-white placeholder-slate-400"
+              />
             </div>
-          )}
+          </div>
+
+          {/* Suggestions */}
+          <AnimatePresence>
+            {suggestions.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                className="absolute top-[calc(100%+8px)] left-0 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-50 overflow-hidden"
+              >
+                {suggestions.map((s, i) => (
+                  <button
+                    key={i}
+                    onClick={() => selectSuggestion(s)}
+                    className="w-full px-5 py-2 text-sm text-left text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="flex gap-3 w-full lg:w-auto">
-          <button
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-          >
-            {showAdvanced ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-            Advanced
-          </button>
-          
-          <button
-            onClick={handleSearch}
-            className="flex-[2] lg:flex-none bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-black text-lg shadow-lg shadow-blue-600/20 transition-all active:scale-95"
-          >
-            Find Jobs
-          </button>
-        </div>
-      </div>
+        <div className="hidden md:block w-px h-10 bg-slate-200 dark:bg-slate-700" />
 
-      {/* ADVANCED SEARCH GRID */}
-      {showAdvanced && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100 dark:border-slate-700/50">
-          <div className="relative group">
-            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500" />
-            <input
-              type="text"
-              placeholder="Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            />
-          </div>
-
-          <div className="relative group">
-            <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500" />
-            <input
-              type="text"
-              placeholder="Company"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <input
-              type="number"
-              placeholder="Min Exp"
-              value={minExp}
-              onChange={(e) => setMinExp(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            />
-            <input
-              type="number"
-              placeholder="Max Exp"
-              value={maxExp}
-              onChange={(e) => setMaxExp(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            />
-          </div>
-
-          <div className="relative group">
-            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500" />
-            <select
-              value={jobType}
-              onChange={(e) => setJobType(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none"
-            >
-              <option value="">Any Job Type</option>
-              <option value="FULL_TIME">Full Time</option>
-              <option value="PART_TIME">Part Time</option>
-              <option value="INTERNSHIP">Internship</option>
-              <option value="CONTRACT">Contract</option>
-            </select>
+        {/* LOCATION */}
+        <div className="flex-1 w-full md:w-48 text-left">
+          <div className="flex items-center px-5 h-16">
+            <MapPin className="w-5 h-5 mr-3 text-slate-400" />
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-slate-500 mb-0.5">
+                Location
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Hyderabad"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="w-full bg-transparent outline-none text-base font-medium text-slate-800 dark:text-white placeholder-slate-400"
+              />
+            </div>
           </div>
         </div>
-      )}
+
+        <div className="hidden md:block w-px h-10 bg-slate-200 dark:bg-slate-700" />
+
+        {/* COMPANY */}
+        <div className="flex-1 w-full md:w-48 text-left">
+          <div className="flex items-center px-5 h-16">
+            <Building className="w-5 h-5 mr-3 text-slate-400" />
+            <div className="flex-1">
+              <label className="block text-xs font-bold text-slate-500 mb-0.5">
+                Company
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. TCS, Infosys"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="w-full bg-transparent outline-none text-base font-medium text-slate-800 dark:text-white placeholder-slate-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* SEARCH BUTTON */}
+        <button
+          onClick={handleSearch}
+          className="lwd-btn-primary w-full md:w-auto h-14 px-10 rounded-full flex items-center justify-center gap-2"
+        >
+          <Search size={18} />
+          <span>Search</span>
+        </button>
+      </motion.div>
     </div>
   );
 }

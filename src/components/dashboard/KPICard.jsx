@@ -1,12 +1,13 @@
 // ./src/components/dashboard/common/KPICard.jsx
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const KPICard = ({
   title,
   value = 0,
   icon: Icon,
-  color,
-  borderColor,
+  color = "text-blue-600",
+  borderColor = "border-blue-500",
   prefix = "",
   suffix = "",
   navigateTo,
@@ -20,45 +21,41 @@ const KPICard = ({
   };
 
   return (
-    <div
+    <motion.div
+      whileHover={{ y: -3 }}
       onClick={handleClick}
       className={`
         lwd-card
-        border-2 ${borderColor}
-        rounded-xl p-5
-        hover:shadow-xl hover:-translate-y-1
-        transition-all duration-300
+        relative group
         ${navigateTo ? "cursor-pointer" : ""}
       `}
     >
-      <div className="flex items-center justify-between">
 
-        {/* Left Content */}
+
+      <div className="flex items-center justify-between">
         <div>
-          <p className={`text-sm font-medium ${color} opacity-80`}>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1.5">
             {title}
           </p>
-
-          <p className={`text-2xl font-bold mt-1 ${color}`}>
-            {prefix}
-            {value?.toLocaleString?.() ?? 0}
-            {suffix}
-          </p>
+          <h3 className={`text-3xl font-bold tracking-tight ${color}`}>
+            {prefix}{value?.toLocaleString?.() ?? 0}{suffix}
+          </h3>
         </div>
 
-        {/* Icon */}
         {Icon && (
-          <div
-            className={`
-              p-3 rounded-lg border ${borderColor} shadow-sm
-              bg-white dark:bg-slate-700
-            `}
-          >
-            <Icon className={`w-6 h-6 ${color}`} />
+          <div className={`p-4 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50 group-hover:shadow-md transition-all`}>
+            <Icon size={28} className={color} strokeWidth={2.5} />
           </div>
         )}
       </div>
-    </div>
+
+      {navigateTo && (
+        <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          View Details
+          <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+        </div>
+      )}
+    </motion.div>
   );
 };
 
