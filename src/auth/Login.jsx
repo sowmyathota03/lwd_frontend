@@ -146,7 +146,7 @@ export default function Login() {
                   {showPassword ? (
                     <Eye key="show" size={20} />
                   ) : (
-                  <EyeOff key="hide" size={20} />
+                    <EyeOff key="hide" size={20} />
                   )}
                 </button>
               </div>
