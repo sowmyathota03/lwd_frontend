@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import JobActions from "./JobActions";
 import { searchMyJobsByRole } from "../../api/JobApi";
@@ -74,7 +78,6 @@ export default function ManageJobs() {
   const [skills, setSkills] = useState("");
   const [jobType, setJobType] = useState("");
 
-  // Debounce keyword search
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedKeyword(keyword.trim());
@@ -83,7 +86,6 @@ export default function ManageJobs() {
     return () => clearTimeout(handler);
   }, [keyword]);
 
-  // Reset page when any filter changes
   useEffect(() => {
     setPage(0);
   }, [debouncedKeyword, location, industry, skills, jobType]);
@@ -107,6 +109,16 @@ export default function ManageJobs() {
     jobType
   );
 
+  const clearFilters = () => {
+    setKeyword("");
+    setDebouncedKeyword("");
+    setLocation("");
+    setIndustry("");
+    setSkills("");
+    setJobType("");
+    setPage(0);
+  };
+
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["myJobs", page, filters],
     queryFn: () => searchMyJobsByRole(filters, page),
@@ -119,7 +131,6 @@ export default function ManageJobs() {
   const totalElements = data?.totalElements || 0;
   const currentPage = data?.number ?? page;
 
-  // If current page becomes invalid after delete/filter/update, move back safely
   useEffect(() => {
     if (totalPages > 0 && page > totalPages - 1) {
       setPage(totalPages - 1);
@@ -132,16 +143,6 @@ export default function ManageJobs() {
 
   const handleStatusChange = async () => {
     await queryClient.invalidateQueries({ queryKey: ["myJobs"] });
-  };
-
-  const clearFilters = () => {
-    setKeyword("");
-    setDebouncedKeyword("");
-    setLocation("");
-    setIndustry("");
-    setSkills("");
-    setJobType("");
-    setPage(0);
   };
 
   const goToPreviousPage = () => {
@@ -159,9 +160,8 @@ export default function ManageJobs() {
 
   return (
     <div className="lwd-page">
-      {/* HEADER */}
       <div className="lwd-card space-y-4">
-        <div className="flex flex-col lg:flex-row justify-between gap-4">
+        <div className="flex flex-col justify-between gap-4 lg:flex-row">
           <div>
             <h2 className="lwd-title flex items-center gap-2">
               <BriefcaseIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -172,9 +172,8 @@ export default function ManageJobs() {
             </p>
           </div>
 
-          {/* Search */}
           <div className="relative w-full lg:w-80">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               value={keyword}
@@ -185,9 +184,8 @@ export default function ManageJobs() {
           </div>
         </div>
 
-        {/* FILTERS */}
-        <div className="lwd-card bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
-          <div className="flex justify-between items-center mb-4">
+        <div className="lwd-card border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+          <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <FunnelIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               <h3 className="font-semibold text-gray-700 dark:text-gray-300">
@@ -196,13 +194,16 @@ export default function ManageJobs() {
             </div>
 
             {hasActiveFilters && (
-              <button onClick={clearFilters} className="lwd-btn-danger text-sm">
+              <button
+                onClick={clearFilters}
+                className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
+              >
                 Clear Filters
               </button>
             )}
           </div>
 
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <input
               placeholder="Location"
               value={location}
@@ -240,10 +241,9 @@ export default function ManageJobs() {
         </div>
       </div>
 
-      {/* TABLE */}
       <div className="lwd-card mt-4 overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200">
+          <thead className="bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-200">
             <tr>
               <th className="px-4 py-3 text-left">Title</th>
               <th className="px-4 py-3 text-left">Location</th>
@@ -252,9 +252,15 @@ export default function ManageJobs() {
               <th className="px-4 py-3 text-left">Experience</th>
               <th className="px-4 py-3 text-left">Status</th>
               <th className="px-4 py-3 text-left">Source</th>
-              <th className="px-4 py-3 text-left hidden lg:table-cell">External URL</th>
-              <th className="px-4 py-3 text-left hidden md:table-cell">Created</th>
-              <th className="px-4 py-3 text-center hidden md:table-cell">Applications</th>
+              <th className="hidden px-4 py-3 text-left lg:table-cell">
+                External URL
+              </th>
+              <th className="hidden px-4 py-3 text-left md:table-cell">
+                Created
+              </th>
+              <th className="hidden px-4 py-3 text-center md:table-cell">
+                Applications
+              </th>
               <th className="px-4 py-3 text-left">Actions</th>
             </tr>
           </thead>
@@ -262,7 +268,7 @@ export default function ManageJobs() {
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={TABLE_COLUMNS} className="text-center py-10">
+                <td colSpan={TABLE_COLUMNS} className="py-10 text-center">
                   <Loader />
                 </td>
               </tr>
@@ -270,9 +276,9 @@ export default function ManageJobs() {
               <tr>
                 <td
                   colSpan={TABLE_COLUMNS}
-                  className="text-center py-10 text-gray-500 dark:text-gray-400"
+                  className="py-10 text-center text-gray-500 dark:text-gray-400"
                 >
-                  <DocumentTextIcon className="h-10 w-10 mx-auto mb-2 opacity-40" />
+                  <DocumentTextIcon className="mx-auto mb-2 h-10 w-10 opacity-40" />
                   No jobs found
                 </td>
               </tr>
@@ -282,53 +288,55 @@ export default function ManageJobs() {
                   key={job.id}
                   className={`transition ${
                     job.deleted
-                      ? "bg-red-100 dark:bg-red-900/30 opacity-80"
+                      ? "bg-red-100 opacity-80 dark:bg-red-900/30"
                       : job.status === "CLOSED"
                       ? "bg-red-50 dark:bg-red-900/20"
                       : "hover:bg-gray-50 dark:hover:bg-slate-800"
                   }`}
                 >
                   <td
-                    className="px-4 py-3 font-medium cursor-pointer truncate max-w-xs lwd-text hover:underline"
+                    className="lwd-text max-w-xs cursor-pointer truncate px-4 py-3 font-medium hover:underline"
                     onClick={() => navigate(`/admin/managejob/${job.id}/analytics`)}
                   >
-                    {job.title}
+                    {job.title || "-"}
                   </td>
 
-                  <td className="px-4 py-3 whitespace-nowrap lwd-text">
+                  <td className="lwd-text whitespace-nowrap px-4 py-3">
                     {job.location || "-"}
                   </td>
 
                   <td
-                    className="px-4 py-3 truncate max-w-xs cursor-pointer lwd-text hover:underline"
-                    onClick={() => navigate(`/admin/${job.company?.id}/companyprofile`)}
+                    className="lwd-text max-w-xs cursor-pointer truncate px-4 py-3 hover:underline"
+                    onClick={() =>
+                      navigate(`/admin/${job.company?.id}/companyprofile`)
+                    }
                   >
                     {job.company?.companyName || "-"}
                   </td>
 
-                  <td className="px-4 py-3 whitespace-nowrap lwd-text">
+                  <td className="lwd-text whitespace-nowrap px-4 py-3">
                     {job.jobType ? formatLabel(job.jobType) : "-"}
                   </td>
 
-                  <td className="px-4 py-3 whitespace-nowrap lwd-text">
+                  <td className="lwd-text whitespace-nowrap px-4 py-3">
                     {job.minExperience ?? 0} - {job.maxExperience ?? 0} yrs
                   </td>
 
                   <td className="px-4 py-3">
                     <span
-                      className={`px-2 py-1 text-xs rounded-md font-semibold ${
+                      className={`rounded-md px-2 py-1 text-xs font-semibold ${
                         job.status === "OPEN"
                           ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
                           : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
                       }`}
                     >
-                      {job.status}
+                      {job.status || "-"}
                     </span>
                   </td>
 
                   <td className="px-4 py-3">
                     <span
-                      className={`px-2 py-1 text-xs rounded-md font-semibold ${
+                      className={`rounded-md px-2 py-1 text-xs font-semibold ${
                         job.applicationSource === "EXTERNAL"
                           ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
                           : "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
@@ -338,14 +346,14 @@ export default function ManageJobs() {
                     </span>
                   </td>
 
-                  <td className="px-4 py-3 hidden lg:table-cell truncate max-w-xs">
+                  <td className="hidden max-w-xs truncate px-4 py-3 lg:table-cell">
                     {job.applicationSource === "EXTERNAL" &&
                     job.externalApplicationUrl ? (
                       <a
                         href={job.externalApplicationUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                        className="text-blue-600 hover:underline dark:text-blue-400"
                       >
                         View
                       </a>
@@ -354,13 +362,13 @@ export default function ManageJobs() {
                     )}
                   </td>
 
-                  <td className="px-4 py-3 hidden md:table-cell lwd-text whitespace-nowrap">
+                  <td className="lwd-text hidden whitespace-nowrap px-4 py-3 md:table-cell">
                     {job.createdAt
                       ? new Date(job.createdAt).toLocaleDateString("en-IN")
                       : "-"}
                   </td>
 
-                  <td className="px-4 py-3 text-center hidden md:table-cell lwd-text">
+                  <td className="lwd-text hidden px-4 py-3 text-center md:table-cell">
                     {job.totalApplications ?? 0}
                   </td>
 
@@ -379,11 +387,11 @@ export default function ManageJobs() {
         </table>
       </div>
 
-      {/* FOOTER INFO */}
       {!isLoading && totalElements > 0 && (
-        <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Showing page <span className="font-semibold">{currentPage + 1}</span> of{" "}
+            Showing page{" "}
+            <span className="font-semibold">{currentPage + 1}</span> of{" "}
             <span className="font-semibold">{totalPages}</span>
             {" • "}
             Total jobs: <span className="font-semibold">{totalElements}</span>
@@ -396,13 +404,12 @@ export default function ManageJobs() {
         </div>
       )}
 
-      {/* PAGINATION */}
       {totalPages > 1 && (
-        <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
           <button
             onClick={() => setPage(0)}
             disabled={currentPage === 0}
-            className="lwd-btn-outline disabled:opacity-50 disabled:cursor-not-allowed"
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
           >
             First
           </button>
@@ -410,7 +417,7 @@ export default function ManageJobs() {
           <button
             onClick={goToPreviousPage}
             disabled={currentPage === 0}
-            className="lwd-btn-outline disabled:opacity-50 disabled:cursor-not-allowed"
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
           >
             <ChevronLeftIcon className="h-4 w-4" />
           </button>
@@ -419,10 +426,10 @@ export default function ManageJobs() {
             <button
               key={pageNumber}
               onClick={() => setPage(pageNumber)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium border transition ${
+              className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
                 currentPage === pageNumber
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-slate-800 dark:text-gray-200 dark:border-slate-600 dark:hover:bg-slate-700"
+                  ? "border-blue-600 bg-blue-600 text-white"
+                  : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
               }`}
             >
               {pageNumber + 1}
@@ -432,7 +439,7 @@ export default function ManageJobs() {
           <button
             onClick={goToNextPage}
             disabled={currentPage >= totalPages - 1}
-            className="lwd-btn-outline disabled:opacity-50 disabled:cursor-not-allowed"
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
           >
             <ChevronRightIcon className="h-4 w-4" />
           </button>
@@ -440,7 +447,7 @@ export default function ManageJobs() {
           <button
             onClick={() => setPage(totalPages - 1)}
             disabled={currentPage >= totalPages - 1}
-            className="lwd-btn-outline disabled:opacity-50 disabled:cursor-not-allowed"
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
           >
             Last
           </button>

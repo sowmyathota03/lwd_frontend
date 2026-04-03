@@ -1,94 +1,116 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useState } from "react";
+import {
+  LayoutDashboard,
+  Building2,
+  Briefcase,
+  PlusCircle,
+  FileText,
+  Users,
+  Menu,
+  X
+} from "lucide-react";
 
 export default function RecruiterDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
-    { to: "/recruiter", label: "Dashboard", icon: "📊" },
-    { to: "/recruiter/company-profile", label: "Company Profile", icon: "🏢" },
-    { to: "/recruiter/managejob", label: "Jobs", icon: "📄" },
-    { to: "/recruiter/createjob", label: "Create Job", icon: "➕" },
-    { to: "/recruiter/applications", label: "Applications", icon: "📑" },
-    { to: "/recruiter/job-seekers", label: "Job Seekers", icon: "👤" },
+
+    { to: "/recruiter", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
+    { to: "/recruiter/company-profile", label: "Company Profile", icon: <Building2 size={18} /> },
+    { to: "/recruiter/managejob", label: "Jobs", icon: <Briefcase size={18} /> },
+    { to: "/recruiter/createjob", label: "Post a Job", icon: <PlusCircle size={18} /> },
+    { to: "/recruiter/applications", label: "Applications", icon: <FileText size={18} /> },
+    { to: "/recruiter/job-seekers", label: "Job Seekers", icon: <Users size={18} /> },
     { to: "/recruiter/messaging", label: "Messaging", icon: "💬" },
   ];
+
+  const navItemClass = ({ isActive }) =>
+    `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+      isActive
+        ? "bg-blue-600 text-white shadow-sm"
+        : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+    }`;
 
   return (
     <div className="lwd-page flex h-screen w-screen overflow-hidden">
 
-      {/* Sidebar */}
+      {/* ── Mobile Overlay ── */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-slate-900/50 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* ── Sidebar ── */}
       <aside
         className={`
-          ${sidebarOpen ? "w-64" : "w-16"}
-          md:w-64
-          transition-all duration-300
-          bg-white border-r border-gray-200
-          dark:bg-slate-800 dark:border-gray-700
-          flex flex-col shadow-lg
+          fixed md:static inset-y-0 left-0 z-30
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          w-64 transition-transform duration-300
+          bg-white dark:bg-slate-900
+          border-r border-slate-200 dark:border-slate-800
+          flex flex-col shadow-sm
         `}
       >
-
-        {/* Logo + Toggle */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <h2
-            className={`
-              font-bold tracking-wide lwd-title
-              ${sidebarOpen ? "block" : "hidden"}
-              md:block
-            `}
-          >
-            Recruiter Panel
-          </h2>
-
+        {/* Sidebar Header */}
+        <div className="h-16 px-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+              LWD
+            </div>
+            <span className="text-base font-bold text-slate-800 dark:text-white">Recruiter</span>
+          </div>
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden text-xl text-gray-700 dark:text-gray-300"
+            onClick={() => setSidebarOpen(false)}
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            ☰
+            <X size={18} />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-2 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === "/recruiter"}
               onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) =>
-                `
-                flex items-center gap-3 px-3 py-2 rounded-xl font-medium
-                transition-all duration-300
-                ${isActive
-                  ? "bg-blue-600 text-white shadow-md dark:bg-blue-500"
-                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-700"
-                }
-                `
-              }
+              className={navItemClass}
             >
-              <span className="text-lg">{item.icon}</span>
-
-              <span
-                className={`
-                  ${sidebarOpen ? "block" : "hidden"}
-                  md:block
-                `}
-              >
-                {item.label}
-              </span>
+              <span className="shrink-0">{item.icon}</span>
+              <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
+
+        {/* Sidebar Footer */}
+        <div className="p-3 border-t border-slate-100 dark:border-slate-800">
+          <div className="px-3 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30">
+            <p className="text-xs font-bold text-blue-700 dark:text-blue-400 mb-0.5">LWD Recruiter</p>
+            <p className="text-xs font-medium text-blue-600/70 dark:text-blue-400/70">Recruiter Portal</p>
+          </div>
+        </div>
       </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* ── Main Content ── */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+
+        {/* Mobile Top Bar */}
+        <div className="md:hidden h-14 px-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-white dark:bg-slate-900 shrink-0">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <Menu size={20} />
+          </button>
+          <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Recruiter Portal</span>
+        </div>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950">
           <Outlet />
         </main>
       </div>

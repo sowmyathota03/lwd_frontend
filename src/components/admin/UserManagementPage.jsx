@@ -7,6 +7,21 @@ import {
 } from "../../api/AdminApi";
 import UserTable from "./UserTable";
 import ConfirmModal from "../common/ConfirmModal";
+import { 
+  Users, 
+  Search, 
+  Filter, 
+  X, 
+  ChevronLeft, 
+  ChevronRight, 
+  Activity,
+  ShieldCheck,
+  UserCheck,
+  Lock,
+  Mail,
+  UserPlus
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const roleOptions = ["ADMIN", "RECRUITER_ADMIN", "RECRUITER", "JOB_SEEKER"];
 const statusOptions = ["PENDING", "ACTIVE", "SUSPENDED", "BLOCKED"];
@@ -115,7 +130,7 @@ export default function UserManagementPage() {
     try {
       setActionLoadingId(user.id);
 
-      if (user.status === "SUSPENDED") {
+      if (user.status === "SUSPENDED" || user.status === "BLOCKED") {
         await unblockUser(user.id);
         updateUserStatus(user.id, "ACTIVE");
       } else {
@@ -124,7 +139,6 @@ export default function UserManagementPage() {
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to update user status");
     } finally {
       setActionLoadingId(null);
       closeConfirm();
@@ -138,7 +152,6 @@ export default function UserManagementPage() {
       updateUserStatus(user.id, "ACTIVE");
     } catch (err) {
       console.error(err);
-      alert("Failed to approve user");
     } finally {
       setActionLoadingId(null);
       closeConfirm();
@@ -168,129 +181,208 @@ export default function UserManagementPage() {
     setPage(0);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
   return (
-    <div className="lwd-page p-4 md:p-6 space-y-6">
+    <div className="lwd-page min-h-screen py-12 px-6 relative overflow-hidden">
+      
+      {/* Decorative Background Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none"></div>
 
-      {/* Title */}
-      <h1 className="lwd-page-title text-center">
-        User Management
-      </h1>
-
-      {/* Filters */}
-      <div className="lwd-card space-y-4">
-
-        <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
-          <input
-            type="text"
-            placeholder="Search by name, email..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            className="lwd-input lg:w-80"
-          />
-
-          {hasActiveFilters && (
-            <button
-              onClick={clearFilters}
-              className="lwd-btn-danger-sm"
-            >
-              Clear Filters
-            </button>
-          )}
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="mx-auto max-w-7xl space-y-10 relative z-10"
+      >
+        
+        {/* Heading Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <div className="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
+              <Users size={12} />
+              Admin Control
+            </div>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              User <span className="text-blue-600 italic underline decoration-blue-500/20 underline-offset-8">Intelligence</span>
+            </h1>
+          </div>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest italic flex items-center gap-2 tabular-nums">
+            <Activity size={14} className="text-blue-500" />
+            Active Records: {users.length * totalPages || 0}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
-          <select value={role} onChange={(e) => setRole(e.target.value)} className="lwd-input">
-            <option value="">All Roles</option>
-            {roleOptions.map((item) => (
-              <option key={item} value={item}>{formatLabel(item)}</option>
-            ))}
-          </select>
+        {/* Global Filter Suite */}
+        <div className="lwd-card-glass p-8 space-y-6">
+          <div className="flex flex-col lg:flex-row gap-6 lg:items-center">
+            
+            <div className="relative flex-1 group">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                <Search size={18} />
+              </div>
+              <input
+                type="text"
+                placeholder="Search user profiles, identities, or encrypted emails..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className="lwd-input pl-12 py-3.5 bg-white/50 border-slate-200/50 focus:border-blue-500 focus:bg-white transition-all shadow-xs"
+              />
+            </div>
 
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="lwd-input">
-            <option value="">All Status</option>
-            {statusOptions.map((item) => (
-              <option key={item} value={item}>{formatLabel(item)}</option>
-            ))}
-          </select>
+            <AnimatePresence>
+              {hasActiveFilters && (
+                <motion.button
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  onClick={clearFilters}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 border border-rose-100 dark:border-rose-800/20 transition-all shrink-0"
+                >
+                  <X size={14} />
+                  Reset Filters
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
 
-          <select value={isActive} onChange={(e) => setIsActive(e.target.value)} className="lwd-input">
-            <option value="">All Activity</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
+                <ShieldCheck size={10} /> Role Access
+              </label>
+              <select value={role} onChange={(e) => setRole(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+                <option value="">All Tiers</option>
+                {roleOptions.map((item) => (
+                  <option key={item} value={item}>{formatLabel(item)}</option>
+                ))}
+              </select>
+            </div>
 
-          <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="lwd-input">
-            <option value="">Email Verification</option>
-            <option value="true">Verified</option>
-            <option value="false">Not Verified</option>
-          </select>
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
+                <Activity size={10} /> Current Status
+              </label>
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+                <option value="">Full Spectrum</option>
+                {statusOptions.map((item) => (
+                  <option key={item} value={item}>{formatLabel(item)}</option>
+                ))}
+              </select>
+            </div>
 
-          <select value={locked} onChange={(e) => setLocked(e.target.value)} className="lwd-input">
-            <option value="">Lock Status</option>
-            <option value="true">Locked</option>
-            <option value="false">Unlocked</option>
-          </select>
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
+                <UserCheck size={10} /> Activity Flow
+              </label>
+              <select value={isActive} onChange={(e) => setIsActive(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+                <option value="">All Activity</option>
+                <option value="true">Live Sessions</option>
+                <option value="false">Dormant Account</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
+                <Mail size={10} /> Authentication
+              </label>
+              <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+                <option value="">Trust Level</option>
+                <option value="true">Identity Verified</option>
+                <option value="false">Pending Validation</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
+                <Lock size={10} /> Security Lock
+              </label>
+              <select value={locked} onChange={(e) => setLocked(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+                <option value="">System Lock</option>
+                <option value="true">Restricted</option>
+                <option value="false">Standard Access</option>
+              </select>
+            </div>
+
+          </div>
         </div>
-      </div>
 
-      {/* Table */}
-      <div className="lwd-card overflow-x-auto">
+        {/* Dynamic User Table */}
         <UserTable
           users={users}
           loading={loading}
           actionLoadingId={actionLoadingId}
           openConfirm={openConfirm}
         />
-      </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-center gap-4">
-        <button
-          onClick={handlePrev}
-          disabled={page === 0}
-          className="lwd-btn-secondary-sm"
-        >
-          Previous
-        </button>
+        {/* Global Pagination Console */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-50/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/50 shadow-sm transition-all hover:shadow-md">
+          
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Navigating View</span>
+            <div className="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg shadow-xs border border-slate-100 dark:border-slate-700/50 text-xs font-black text-blue-600 dark:text-blue-400">
+              Page {page + 1}
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">of</span>
+            <div className="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg shadow-xs border border-slate-100 dark:border-slate-700/50 text-xs font-black text-slate-800 dark:text-white">
+              {totalPages}
+            </div>
+          </div>
 
-        <span className="lwd-text">
-          Page {page + 1} of {totalPages}
-        </span>
+          <div className="flex items-center gap-3">
+             <button
+               onClick={handlePrev}
+               disabled={page === 0}
+               className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 transition-all disabled:opacity-30 disabled:pointer-events-none group"
+             >
+               <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
+             </button>
 
-        <button
-          onClick={handleNext}
-          disabled={page >= totalPages - 1}
-          className="lwd-btn-primary-sm"
-        >
-          Next
-        </button>
-      </div>
+             <div className="h-4 w-px bg-slate-200/50 dark:bg-slate-800"></div>
 
-      {/* Confirm Modal */}
+             <button
+               onClick={handleNext}
+               disabled={page >= totalPages - 1}
+               className="lwd-btn-primary px-6 h-10 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest group"
+             >
+               Next Page
+               <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+             </button>
+          </div>
+        </div>
+
+      </motion.div>
+
+      {/* Common Confirm Modal */}
       <ConfirmModal
         isOpen={!!confirmConfig}
         title={
           confirmConfig?.type === "block"
-            ? confirmConfig.user.status === "SUSPENDED"
-              ? "Unblock User?"
-              : "Block User?"
-            : "Approve User?"
+            ? confirmConfig.user.status === "SUSPENDED" || confirmConfig.user.status === "BLOCKED"
+              ? "Normalize Access?"
+              : "Restrict Access?"
+            : "Authorize User?"
         }
         message={
           confirmConfig
-            ? `Are you sure you want to ${confirmConfig.type === "block"
-              ? confirmConfig.user.status === "SUSPENDED"
-                ? "unblock"
-                : "block"
-              : "approve"
-            } ${confirmConfig.user.name}?`
+            ? `You are about to initiate ${confirmConfig.type === "block"
+              ? confirmConfig.user.status === "SUSPENDED" || confirmConfig.user.status === "BLOCKED"
+                ? "restoration"
+                : "restriction"
+              : "authorization"
+            } protocols for user: "${confirmConfig.user.name}". Please confirm management clearance.`
             : ""
         }
-        confirmText="Confirm"
+        confirmText={confirmConfig?.type === "block" ? (confirmConfig.user.status === "SUSPENDED" || confirmConfig.user.status === "BLOCKED" ? "Unblock User" : "Block User") : "Approve User"}
         onConfirm={confirmAction}
         onCancel={closeConfirm}
         loading={!!actionLoadingId}
       />
     </div>
   );
-}
+}
