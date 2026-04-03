@@ -294,7 +294,7 @@ function Jobs() {
                     <button
                       key={i}
                       onClick={() => goToPage(pageGroup + i)}
-                      className="min-w-[40px] h-10 px-2 rounded-xl text-center font-bold text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-700 dark:hover:text-white transition-all duration-200"
+                      className="min-w-10 h-10 px-2 rounded-xl text-center font-bold text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-700 dark:hover:text-white transition-all duration-200"
                     >
                       {pageNumber}
                     </button>

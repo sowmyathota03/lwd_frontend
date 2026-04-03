@@ -15,12 +15,14 @@ export default function RecruiterDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
+
     { to: "/recruiter", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { to: "/recruiter/company-profile", label: "Company Profile", icon: <Building2 size={18} /> },
     { to: "/recruiter/managejob", label: "Jobs", icon: <Briefcase size={18} /> },
     { to: "/recruiter/createjob", label: "Post a Job", icon: <PlusCircle size={18} /> },
     { to: "/recruiter/applications", label: "Applications", icon: <FileText size={18} /> },
     { to: "/recruiter/job-seekers", label: "Job Seekers", icon: <Users size={18} /> },
+    { to: "/recruiter/messaging", label: "Messaging", icon: "💬" },
   ];
 
   const navItemClass = ({ isActive }) =>
@@ -78,7 +80,7 @@ export default function RecruiterDashboard() {
               onClick={() => setSidebarOpen(false)}
               className={navItemClass}
             >
-              <span className="flex-shrink-0">{item.icon}</span>
+              <span className="shrink-0">{item.icon}</span>
               <span>{item.label}</span>
             </NavLink>
           ))}
@@ -97,7 +99,7 @@ export default function RecruiterDashboard() {
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
 
         {/* Mobile Top Bar */}
-        <div className="md:hidden h-14 px-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-white dark:bg-slate-900 flex-shrink-0">
+        <div className="md:hidden h-14 px-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-white dark:bg-slate-900 shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"

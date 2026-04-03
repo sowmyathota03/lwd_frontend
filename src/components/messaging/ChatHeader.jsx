@@ -1,44 +1,112 @@
-import React from 'react';
+import React from "react";
+import { formatLastActive } from "../../utils/formatLastActive";
 
-const ChatHeader = ({ conversation }) => {
-    if (!conversation) return null;
+const ChatHeader = ({ conversation, onMenuClick }) => {
+  if (!conversation) return null;
 
-    return (
-        <div className="p-4 border-b border-gray-100 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md sticky top-0 z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold overflow-hidden shadow-sm">
-                    {conversation.avatar ? (
-                        <img src={conversation.avatar} alt={conversation.name} className="w-full h-full object-cover" />
-                    ) : (
-                        <span>{conversation.name.charAt(0).toUpperCase()}</span>
-                    )}
-                </div>
-                
-                <div>
-                    <h4 className="font-bold text-gray-900 dark:text-white leading-none mb-1 text-base">
-                        {conversation.name}
-                    </h4>
-                    <p className="text-xs text-green-500 font-medium flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                        Online
-                    </p>
-                </div>
+  const {
+    name,
+    avatar,
+    isActive = false,
+    lastActiveAt = null,
+  } = conversation;
+
+  // Handle avatar loading errors gracefully
+  const handleAvatarError = (e) => {
+    e.target.style.display = "none";
+    e.target.parentElement.classList.add("fallback-mode");
+  };
+
+  // Get status display text and styling
+  const getStatusConfig = () => {
+    if (isActive) {
+      return {
+        text: "Active now",
+        dotClass: "bg-emerald-500",
+        pulseClass: "ring-emerald-400/50",
+        textClass: "text-emerald-600 dark:text-emerald-400",
+      };
+    }
+    return {
+      text: typeof lastActiveAt === "string" ? lastActiveAt : `Last seen ${lastActiveAt}`,
+      dotClass: "bg-gray-400 dark:bg-gray-500",
+      pulseClass: "",
+      textClass: "text-gray-500 dark:text-gray-400",
+    };
+  };
+
+  const statusConfig = getStatusConfig();
+
+  return (
+    <header className="sticky top-0 z-20 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-gray-200/70 dark:border-slate-700/70 shadow-sm">
+      <div className="flex items-center justify-between px-4 py-3 md:px-6">
+        {/* User Info Section */}
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Avatar with status indicator */}
+          <div className="relative shrink-0">
+            <div className="w-11 h-11 rounded-full bg-linear-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 flex items-center justify-center text-blue-700 dark:text-blue-300 font-semibold text-lg overflow-hidden shadow-sm ring-2 ring-white dark:ring-slate-800">
+              {avatar ? (
+                <img
+                  src={avatar}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                  onError={handleAvatarError}
+                />
+              ) : (
+                <span className="select-none">
+                  {name?.charAt(0)?.toUpperCase() || "U"}
+                </span>
+              )}
             </div>
             
-            <div className="flex items-center gap-2">
-                <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full text-gray-500 transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                </button>
-                <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full text-gray-500 transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-                </button>
-            </div>
+          </div>
+
+          {/* User Details */}
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-base md:text-lg leading-tight truncate">
+              {name}
+            </h3>
+          <div className="flex items-center gap-1.5 mt-0.5">
+  <span
+    className={`inline-block w-1.5 h-1.5 rounded-full ${
+      isActive ? statusConfig.dotClass : "bg-gray-400 dark:bg-gray-500"
+    }`}
+  />
+  <p className={`text-xs font-medium ${statusConfig.textClass} truncate`}>
+    {isActive ? "Active now" : formatLastActive(lastActiveAt)}
+  </p>
+</div>
+           
+          </div>
         </div>
-    );
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-1 md:gap-2">
+          {/* More Options Menu Button */}
+          <button
+            onClick={onMenuClick}
+            className="p-2.5 rounded-full text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400/50 active:scale-95"
+            aria-label="More options"
+            title="More options"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
 };
 
-export default ChatHeader;
+export default React.memo(ChatHeader);

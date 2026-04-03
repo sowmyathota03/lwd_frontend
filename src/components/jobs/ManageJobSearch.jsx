@@ -1,282 +1,458 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import JobActions from "./JobActions";
 import { searchMyJobsByRole } from "../../api/JobApi";
 import Loader from "../common/Loader";
 
 import {
-   MagnifyingGlassIcon,
-   BriefcaseIcon,
-   DocumentTextIcon,
-   ChevronLeftIcon,
-   ChevronRightIcon,
-   FunnelIcon,
+  MagnifyingGlassIcon,
+  BriefcaseIcon,
+  DocumentTextIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  FunnelIcon,
 } from "@heroicons/react/24/outline";
 
 const jobTypeOptions = [
-   "FULL_TIME",
-   "PART_TIME",
-   "INTERNSHIP",
-   "CONTRACT",
-   "REMOTE",
+  "FULL_TIME",
+  "PART_TIME",
+  "INTERNSHIP",
+  "CONTRACT",
+  "REMOTE",
 ];
 
+const TABLE_COLUMNS = 11;
+
 const formatLabel = (value) =>
-   value
-      ?.toLowerCase()
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+  value
+    ?.toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const getVisiblePages = (currentPage, totalPages) => {
+  if (totalPages <= 5) {
+    return Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  if (currentPage <= 1) {
+    return [0, 1, 2, 3, 4];
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [
+      totalPages - 5,
+      totalPages - 4,
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+    ];
+  }
+
+  return [
+    currentPage - 2,
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    currentPage + 2,
+  ];
+};
 
 export default function ManageJobs() {
-   const navigate = useNavigate();
-   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-   const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0);
 
-   const [keyword, setKeyword] = useState("");
-   const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
 
-   const [location, setLocation] = useState("");
-   const [industry, setIndustry] = useState("");
-   const [skills, setSkills] = useState("");
-   const [jobType, setJobType] = useState("");
+  const [location, setLocation] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [skills, setSkills] = useState("");
+  const [jobType, setJobType] = useState("");
 
-   // Debounce
-   useEffect(() => {
-      const handler = setTimeout(() => {
-         setDebouncedKeyword(keyword.trim());
-         setPage(0);
-      }, 500);
-      return () => clearTimeout(handler);
-   }, [keyword]);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 500);
 
-   useEffect(() => {
-      setPage(0);
-   }, [location, industry, skills, jobType]);
+    return () => clearTimeout(handler);
+  }, [keyword]);
 
-   const filters = useMemo(
-      () => ({
-         keyword: debouncedKeyword || null,
-         location: location || null,
-         industry: industry || null,
-         skills: skills || null,
-         jobType: jobType || null,
-      }),
-      [debouncedKeyword, location, industry, skills, jobType]
-   );
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedKeyword, location, industry, skills, jobType]);
 
-   const hasActiveFilters = !!(
-      keyword || location || industry || skills || jobType
-   );
+  const filters = useMemo(
+    () => ({
+      keyword: debouncedKeyword || null,
+      location: location.trim() || null,
+      industry: industry.trim() || null,
+      skills: skills.trim() || null,
+      jobType: jobType || null,
+    }),
+    [debouncedKeyword, location, industry, skills, jobType]
+  );
 
-   const { data, isLoading } = useQuery({
-      queryKey: ["myJobs", page, filters],
-      queryFn: () => searchMyJobsByRole(filters, page),
-      placeholderData: (prev) => prev,
-   });
+  const hasActiveFilters = !!(
+    keyword.trim() ||
+    location.trim() ||
+    industry.trim() ||
+    skills.trim() ||
+    jobType
+  );
 
-   const jobs = data?.content || [];
-   const totalPages = data?.totalPages || 0;
+  const clearFilters = () => {
+    setKeyword("");
+    setDebouncedKeyword("");
+    setLocation("");
+    setIndustry("");
+    setSkills("");
+    setJobType("");
+    setPage(0);
+  };
 
-   const handleDelete = () => {
-      queryClient.invalidateQueries({ queryKey: ["myJobs"] });
-   };
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["myJobs", page, filters],
+    queryFn: () => searchMyJobsByRole(filters, page),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000,
+  });
 
-   const handleStatusChange = () => {
-      queryClient.invalidateQueries({ queryKey: ["myJobs"] });
-   };
+  const jobs = data?.content || [];
+  const totalPages = data?.totalPages || 0;
+  const totalElements = data?.totalElements || 0;
+  const currentPage = data?.number ?? page;
 
-   const clearFilters = () => {
-      setKeyword("");
-      setDebouncedKeyword("");
-      setLocation("");
-      setIndustry("");
-      setSkills("");
-      setJobType("");
-      setPage(0);
-   };
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages - 1) {
+      setPage(totalPages - 1);
+    }
+  }, [page, totalPages]);
 
-   return (
-      <div className="lwd-page">
+  const handleDelete = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["myJobs"] });
+  };
 
-         {/* HEADER */}
-         <div className="lwd-card space-y-4">
+  const handleStatusChange = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["myJobs"] });
+  };
 
-            <div className="flex flex-col lg:flex-row justify-between gap-4">
-               <div>
-                  <h2 className="lwd-title flex items-center gap-2">
-                     <BriefcaseIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                     Manage Jobs
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                     View, edit, and manage your job postings
-                  </p>
-               </div>
+  const goToPreviousPage = () => {
+    setPage((prev) => Math.max(prev - 1, 0));
+  };
 
-               {/* Search */}
-               <div className="relative w-full lg:w-80">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                     type="text"
-                     value={keyword}
-                     onChange={(e) => setKeyword(e.target.value)}
-                     placeholder="Search jobs..."
-                     className="lwd-input pl-10"
-                  />
-               </div>
+  const goToNextPage = () => {
+    setPage((prev) => {
+      if (totalPages === 0) return 0;
+      return Math.min(prev + 1, totalPages - 1);
+    });
+  };
+
+  const visiblePages = getVisiblePages(currentPage, totalPages);
+
+  return (
+    <div className="lwd-page">
+      <div className="lwd-card space-y-4">
+        <div className="flex flex-col justify-between gap-4 lg:flex-row">
+          <div>
+            <h2 className="lwd-title flex items-center gap-2">
+              <BriefcaseIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              Manage Jobs
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              View, edit, and manage your job postings
+            </p>
+          </div>
+
+          <div className="relative w-full lg:w-80">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="Search jobs..."
+              className="lwd-input pl-10"
+            />
+          </div>
+        </div>
+
+        <div className="lwd-card border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FunnelIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">
+                Filters
+              </h3>
             </div>
 
-            {/* FILTERS */}
-            <div className="lwd-card bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
 
-               <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-2">
-                     <FunnelIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                     <h3 className="font-semibold text-gray-700 dark:text-gray-300">
-                        Filters
-                     </h3>
-                  </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <input
+              placeholder="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="lwd-input"
+            />
 
-                  {hasActiveFilters && (
-                     <button onClick={clearFilters} className="lwd-btn-danger text-sm">
-                        Clear Filters
-                     </button>
-                  )}
-               </div>
+            <input
+              placeholder="Industry"
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+              className="lwd-input"
+            />
 
-               <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-                  <input
-                     placeholder="Location"
-                     value={location}
-                     onChange={(e) => setLocation(e.target.value)}
-                     className="lwd-input"
-                  />
+            <input
+              placeholder="Skills"
+              value={skills}
+              onChange={(e) => setSkills(e.target.value)}
+              className="lwd-input"
+            />
 
-                  <input
-                     placeholder="Industry"
-                     value={industry}
-                     onChange={(e) => setIndustry(e.target.value)}
-                     className="lwd-input"
-                  />
-
-                  <input
-                     placeholder="Skills"
-                     value={skills}
-                     onChange={(e) => setSkills(e.target.value)}
-                     className="lwd-input"
-                  />
-
-                  <select
-                     value={jobType}
-                     onChange={(e) => setJobType(e.target.value)}
-                     className="lwd-input"
-                  >
-                     <option value="">All Job Types</option>
-                     {jobTypeOptions.map((item) => (
-                        <option key={item} value={item}>
-                           {formatLabel(item)}
-                        </option>
-                     ))}
-                  </select>
-               </div>
-            </div>
-         </div>
-
-         {/* TABLE */}
-         <div className="lwd-card mt-4 overflow-x-auto">
-            <table className="w-full text-sm">
-
-               <thead className="bg-gray-50 dark:bg-slate-700 text-xs uppercase text-gray-600 dark:text-gray-300">
-                  <tr>
-                     <th className="px-4 py-3">Title</th>
-                     <th className="px-4 py-3">Location</th>
-                     <th className="px-4 py-3">Company</th>
-                     <th className="px-4 py-3">Status</th>
-                     <th className="px-4 py-3 text-center">Actions</th>
-                  </tr>
-               </thead>
-
-               <tbody>
-                  {isLoading ? (
-                     <tr>
-                        <td colSpan="5" className="text-center py-10">
-                           <Loader />
-                        </td>
-                     </tr>
-                  ) : jobs.length === 0 ? (
-                     <tr>
-                        <td colSpan="5" className="text-center py-10 text-gray-500 dark:text-gray-400">
-                           <DocumentTextIcon className="h-10 w-10 mx-auto mb-2 opacity-40" />
-                           No jobs found
-                        </td>
-                     </tr>
-                  ) : (
-                     jobs.map((job) => (
-                        <tr key={job.id} className="border-t dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
-
-                           <td
-                              className="px-4 py-3 text-blue-600 dark:text-blue-400 cursor-pointer"
-                              onClick={() =>
-                                 navigate(`/admin/managejob/${job.id}/analytics`)
-                              }
-                           >
-                              {job.title}
-                           </td>
-
-                           <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                              {job.location}
-                           </td>
-
-                           <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                              {job.company?.companyName}
-                           </td>
-
-                           <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                              {formatLabel(job.status)}
-                           </td>
-
-                           <td className="px-4 py-3 text-center">
-                              <JobActions
-                                 job={job}
-                                 onDelete={handleDelete}
-                                 onStatusChange={handleStatusChange}
-                              />
-                           </td>
-                        </tr>
-                     ))
-                  )}
-               </tbody>
-            </table>
-         </div>
-
-         {/* PAGINATION */}
-         {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 mt-4">
-
-               <button
-                  onClick={() => setPage((p) => p - 1)}
-                  disabled={page === 0}
-                  className="lwd-btn-outline"
-               >
-                  <ChevronLeftIcon className="h-4 w-4" />
-               </button>
-
-               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Page {page + 1} of {totalPages}
-               </span>
-
-               <button
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={page + 1 >= totalPages}
-                  className="lwd-btn-outline"
-               >
-                  <ChevronRightIcon className="h-4 w-4" />
-               </button>
-            </div>
-         )}
+            <select
+              value={jobType}
+              onChange={(e) => setJobType(e.target.value)}
+              className="lwd-input"
+            >
+              <option value="">All Job Types</option>
+              {jobTypeOptions.map((item) => (
+                <option key={item} value={item}>
+                  {formatLabel(item)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
-   );
+
+      <div className="lwd-card mt-4 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-200">
+            <tr>
+              <th className="px-4 py-3 text-left">Title</th>
+              <th className="px-4 py-3 text-left">Location</th>
+              <th className="px-4 py-3 text-left">Company</th>
+              <th className="px-4 py-3 text-left">Type</th>
+              <th className="px-4 py-3 text-left">Experience</th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="px-4 py-3 text-left">Source</th>
+              <th className="hidden px-4 py-3 text-left lg:table-cell">
+                External URL
+              </th>
+              <th className="hidden px-4 py-3 text-left md:table-cell">
+                Created
+              </th>
+              <th className="hidden px-4 py-3 text-center md:table-cell">
+                Applications
+              </th>
+              <th className="px-4 py-3 text-left">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={TABLE_COLUMNS} className="py-10 text-center">
+                  <Loader />
+                </td>
+              </tr>
+            ) : jobs.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={TABLE_COLUMNS}
+                  className="py-10 text-center text-gray-500 dark:text-gray-400"
+                >
+                  <DocumentTextIcon className="mx-auto mb-2 h-10 w-10 opacity-40" />
+                  No jobs found
+                </td>
+              </tr>
+            ) : (
+              jobs.map((job) => (
+                <tr
+                  key={job.id}
+                  className={`transition ${
+                    job.deleted
+                      ? "bg-red-100 opacity-80 dark:bg-red-900/30"
+                      : job.status === "CLOSED"
+                      ? "bg-red-50 dark:bg-red-900/20"
+                      : "hover:bg-gray-50 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  <td
+                    className="lwd-text max-w-xs cursor-pointer truncate px-4 py-3 font-medium hover:underline"
+                    onClick={() => navigate(`/admin/managejob/${job.id}/analytics`)}
+                  >
+                    {job.title || "-"}
+                  </td>
+
+                  <td className="lwd-text whitespace-nowrap px-4 py-3">
+                    {job.location || "-"}
+                  </td>
+
+                  <td
+                    className="lwd-text max-w-xs cursor-pointer truncate px-4 py-3 hover:underline"
+                    onClick={() =>
+                      navigate(`/admin/${job.company?.id}/companyprofile`)
+                    }
+                  >
+                    {job.company?.companyName || "-"}
+                  </td>
+
+                  <td className="lwd-text whitespace-nowrap px-4 py-3">
+                    {job.jobType ? formatLabel(job.jobType) : "-"}
+                  </td>
+
+                  <td className="lwd-text whitespace-nowrap px-4 py-3">
+                    {job.minExperience ?? 0} - {job.maxExperience ?? 0} yrs
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <span
+                      className={`rounded-md px-2 py-1 text-xs font-semibold ${
+                        job.status === "OPEN"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                          : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                      }`}
+                    >
+                      {job.status || "-"}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <span
+                      className={`rounded-md px-2 py-1 text-xs font-semibold ${
+                        job.applicationSource === "EXTERNAL"
+                          ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+                          : "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                      }`}
+                    >
+                      {job.applicationSource || "PORTAL"}
+                    </span>
+                  </td>
+
+                  <td className="hidden max-w-xs truncate px-4 py-3 lg:table-cell">
+                    {job.applicationSource === "EXTERNAL" &&
+                    job.externalApplicationUrl ? (
+                      <a
+                        href={job.externalApplicationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline dark:text-blue-400"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td className="lwd-text hidden whitespace-nowrap px-4 py-3 md:table-cell">
+                    {job.createdAt
+                      ? new Date(job.createdAt).toLocaleDateString("en-IN")
+                      : "-"}
+                  </td>
+
+                  <td className="lwd-text hidden px-4 py-3 text-center md:table-cell">
+                    {job.totalApplications ?? 0}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <JobActions
+                      job={job}
+                      onDelete={handleDelete}
+                      onStatusChange={handleStatusChange}
+                      page={page}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {!isLoading && totalElements > 0 && (
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Showing page{" "}
+            <span className="font-semibold">{currentPage + 1}</span> of{" "}
+            <span className="font-semibold">{totalPages}</span>
+            {" • "}
+            Total jobs: <span className="font-semibold">{totalElements}</span>
+            {isFetching && (
+              <span className="ml-2 text-blue-600 dark:text-blue-400">
+                Updating...
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <button
+            onClick={() => setPage(0)}
+            disabled={currentPage === 0}
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            First
+          </button>
+
+          <button
+            onClick={goToPreviousPage}
+            disabled={currentPage === 0}
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </button>
+
+          {visiblePages.map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => setPage(pageNumber)}
+              className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
+                currentPage === pageNumber
+                  ? "border-blue-600 bg-blue-600 text-white"
+                  : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
+              }`}
+            >
+              {pageNumber + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage >= totalPages - 1}
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+          </button>
+
+          <button
+            onClick={() => setPage(totalPages - 1)}
+            disabled={currentPage >= totalPages - 1}
+            className="lwd-btn-outline disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Last
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }

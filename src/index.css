@@ -1,20 +1,18 @@
 @import "tailwindcss";
-@import url('https://fonts.cdnfonts.com/css/product-sans');
+@import url("https://fonts.cdnfonts.com/css/product-sans");
 
 
 /* ===== GLOBAL STYLES ===== */
 
 
-/* REQUIRED for dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Global Identity Reset */
 * {
   transition-property: background-color, color, border-color, fill, stroke;
   transition-duration: 300ms;
   transition-timing-function: ease;
-  font-family: 'Product Sans', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
-  font-style: normal !important; /* ENFORCE NO ITALICS GLOBALLY */
+  font-family: "Product Sans", ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+  font-style: normal !important;
 }
 
 
@@ -31,12 +29,12 @@ input::-webkit-credentials-auto-fill-button {
 
 /* ========================== */
 /* ===== LWD COMPONENTS ===== */
-/* ========================== */ 
+/* ========================== */
 
 @layer components {
   /* ===== Container ===== */
   .lwd-container {
-    @apply max-w-7xl mx-auto px-4  py-10 sm:px-6 lg:px-8;
+    @apply max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8;
   }
 
   /* ===== Page Layout ===== */
@@ -44,18 +42,24 @@ input::-webkit-credentials-auto-fill-button {
     @apply min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 selection:bg-blue-600/20;
   }
 
-  /* ===== Card System (Professional) ===== */
-  
+  .lwd-page-bg {
+    @apply min-h-screen bg-linear-to-br from-slate-100 via-blue-100 to-indigo-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6;
+  }
 
-    .lwd-card {
-      @apply bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 transition-all duration-300 hover:shadow-md hover:border-blue-500/30;
-    }
+  /* ===== Card System ===== */
+  .lwd-card {
+    @apply bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 transition-all duration-300 hover:shadow-md hover:border-blue-500/30;
+  }
 
   .lwd-card-glass {
     @apply bg-white dark:bg-slate-900/50 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-8;
   }
 
-  /* ===== Typography (Standardized) ===== */
+  .lwd-subcard {
+    @apply bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-4;
+  }
+
+  /* ===== Typography ===== */
   .lwd-h1 {
     @apply text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight;
   }
@@ -68,6 +72,14 @@ input::-webkit-credentials-auto-fill-button {
     @apply text-lg sm:text-xl font-semibold text-slate-800 dark:text-white;
   }
 
+  .lwd-page-title {
+    @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2;
+  }
+
+  .lwd-page-subtitle {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
   .lwd-label {
     @apply block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5;
   }
@@ -76,7 +88,7 @@ input::-webkit-credentials-auto-fill-button {
     @apply text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium;
   }
 
-  /* ===== Buttons (Clean) ===== */
+  /* ===== Buttons ===== */
   .lwd-btn-primary {
     @apply px-6 py-2.5 bg-blue-600 text-white rounded-lg font-semibold shadow-sm hover:bg-blue-700 active:scale-95 transition-all duration-200 dark:bg-blue-600 dark:hover:bg-blue-700;
   }
@@ -89,7 +101,83 @@ input::-webkit-credentials-auto-fill-button {
     @apply px-6 py-2.5 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 transition-all duration-200;
   }
 
-  /* ===== Inputs (Naukri style clean) ===== */
+  .lwd-btn-primary-sm {
+    @apply px-3 py-1 text-xs rounded-md bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500;
+  }
+
+  .lwd-btn-danger-sm {
+    @apply px-3 py-1 text-xs rounded-md bg-red-600 text-white hover:bg-red-700 dark:bg-red-500;
+  }
+
+  .lwd-btn-success-sm {
+    @apply px-3 py-1 text-xs rounded-md bg-green-600 text-white hover:bg-green-700 dark:bg-green-500;
+  }
+
+  /* ===== Layout ===== */
+  .lwd-grid {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-6;
+  }
+
+  .lwd-sidebar-layout {
+    @apply md:col-span-1;
+  }
+
+  .lwd-content-layout {
+    @apply md:col-span-3;
+  }
+
+  /* ===== Toggle ===== */
+  .lwd-toggle-dark {
+    @apply bg-green-500;
+  }
+
+  .lwd-toggle-thumb {
+    @apply inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform;
+  }
+
+  .lwd-toggle-thumb-light {
+    @apply translate-x-1;
+  }
+
+  .lwd-toggle-thumb-dark {
+    @apply translate-x-7;
+  }
+
+  /* ===== Sections ===== */
+  .lwd-section {
+    @apply border-b border-gray-200 dark:border-gray-700 pb-6 mb-6;
+  }
+
+  .lwd-section-title {
+    @apply text-lg font-semibold text-gray-800 dark:text-white mb-3;
+  }
+
+  .lwd-section-header {
+    @apply text-center space-y-3;
+  }
+
+  .lwd-section-tag {
+    @apply inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-100 dark:border-blue-800/50 mb-2;
+  }
+
+  .lwd-divider {
+    @apply w-12 h-1 bg-blue-600 rounded-full mx-auto;
+  }
+
+  /* ===== Filters ===== */
+  .lwd-filter-header {
+    @apply flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-200 mb-4;
+  }
+
+  .lwd-filter-body {
+    @apply space-y-4 max-h-[60vh] overflow-y-auto;
+  }
+
+  .lwd-filter-footer {
+    @apply mt-4;
+  }
+
+  /* ===== Inputs ===== */
   .lwd-input {
     @apply w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium placeholder-slate-400;
   }
@@ -103,22 +191,14 @@ input::-webkit-credentials-auto-fill-button {
     @apply bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800;
   }
 
-  /* ===== Section Divider ===== */
-  .lwd-section-header {
-    @apply text-center space-y-3;
-  }
-
-  .lwd-section-tag {
-    @apply inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-100 dark:border-blue-800/50 mb-2;
-  }
-
-  .lwd-divider {
-    @apply w-12 h-1 bg-blue-600 rounded-full mx-auto;
-  }
-
   /* ===== Scrollbar ===== */
+  .lwd-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.65) transparent;
+  }
+
   .lwd-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
 
   .lwd-scrollbar::-webkit-scrollbar-track {
@@ -127,6 +207,10 @@ input::-webkit-credentials-auto-fill-button {
 
   .lwd-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-slate-200 dark:bg-slate-800 rounded-full hover:bg-slate-300;
+  }
+
+  .dark .lwd-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.95);
   }
 
   /* ===== Footer ===== */

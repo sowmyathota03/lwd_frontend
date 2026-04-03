@@ -9,4 +9,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+   define: {
+    global: "window", // 🔥 important fix
+  },
 })
