@@ -101,3 +101,21 @@ export const deleteJob = async (jobId) => {
   const res = await axiosInstance.delete(`${BASE_URL}/jobs/${jobId}`);
   return res.data;
 };
+
+
+
+// SUMMARY
+export const fetchRecruiterAdminSummary = () =>
+  axiosInstance.get("/recruiter-admin/dashboard/summary");
+
+// RECRUITER PERFORMANCE
+export const fetchRecruiterPerformance = () =>
+  axiosInstance.get("/recruiter-admin/dashboard/recruiter-performance");
+
+// RECENT JOBS
+export const fetchRecruiterAdminRecentJobs = (size = 5) =>
+  axiosInstance.get(`/recruiter-admin/dashboard/recent-jobs?size=${size}`);
+
+// HIRING FUNNEL
+export const fetchHiringFunnel = () =>
+  axiosInstance.get("/recruiter-admin/dashboard/hiring-funnel");

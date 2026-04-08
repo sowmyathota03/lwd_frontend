@@ -66,7 +66,7 @@ export default function PlanCard({
         </div>
       )}
 
-      <div className="border-b border-slate-100 bg-gradient-to-br from-blue-50 to-indigo-50 px-6 py-5 dark:border-slate-800 dark:from-slate-800 dark:to-slate-900">
+      <div className="border-b border-slate-100 bg-linear-to-br from-blue-50 to-indigo-50 px-6 py-5 dark:border-slate-800 dark:from-slate-800 dark:to-slate-900">
         <h3 className="mb-1 text-2xl font-bold text-slate-800 dark:text-slate-100">
           {plan.planName}
         </h3>

@@ -1,9 +1,8 @@
-import { useDashboardData } from "../../hooks/useDashboardData";
-import { fetchAdminDashboard } from "../../api/DashboardApi";
+import { useEffect, useState } from "react";
 import KPICard from "../dashboard/KPICard";
 import RecentTable from "../dashboard/RecentTable";
 import SkeletonLoader from "../dashboard/SkeletonLoader";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 import {
   Users,
@@ -15,7 +14,7 @@ import {
   TrendingUp,
   Activity,
   Zap,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 
 import {
@@ -27,24 +26,109 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
   AreaChart,
-  Area
+  Area,
 } from "recharts";
 
+import {
+  fetchAdminSummary,
+  fetchAdminGrowth,
+  fetchRecentUsers,
+  fetchRecentJobs,
+  fetchRecentApplications,
+  fetchJobsPerIndustry,
+  fetchApplicationsTrend,
+  fetchUsersByRole,
+  fetchSystemHealth,
+} from "../../api/adminDashboardApi";
+
 const AdminDashboard = () => {
-  const { data, loading, error } = useDashboardData(fetchAdminDashboard);
+  const [summary, setSummary] = useState({});
+  const [growth, setGrowth] = useState({});
+  const [recentUsers, setRecentUsers] = useState([]);
+  const [recentJobs, setRecentJobs] = useState([]);
+  const [recentApplications, setRecentApplications] = useState([]);
+
+  const [industryData, setIndustryData] = useState([]);
+  const [trendData, setTrendData] = useState([]);
+  const [roleData, setRoleData] = useState([]);
+
+  const [systemHealth, setSystemHealth] = useState({});
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const summaryRes = await fetchAdminSummary();
+        setSummary(summaryRes.data || {});
+
+        const [
+          growthRes,
+          usersRes,
+          jobsRes,
+          appsRes,
+          industryRes,
+          trendRes,
+          roleRes,
+          healthRes,
+        ] = await Promise.all([
+          fetchAdminGrowth(),
+          fetchRecentUsers(5),
+          fetchRecentJobs(5),
+          fetchRecentApplications(5),
+          fetchJobsPerIndustry(),
+          fetchApplicationsTrend(),
+          fetchUsersByRole(),
+          fetchSystemHealth(),
+        ]);
+
+        setGrowth(growthRes.data || {});
+        setRecentUsers(usersRes.data || []);
+        setRecentJobs(jobsRes.data || []);
+        setRecentApplications(appsRes.data || []);
+
+        setIndustryData(
+          Object.entries(industryRes.data || {}).map(([name, value]) => ({
+            name,
+            value,
+          }))
+        );
+
+        setTrendData(trendRes.data || []);
+
+        setRoleData(
+          Object.entries(roleRes.data || {}).map(([name, value]) => ({
+            name: name.toUpperCase(),
+            value,
+          }))
+        );
+
+        setSystemHealth(healthRes.data || {});
+      } catch (err) {
+        console.error("Error loading admin dashboard:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
+  }, []);
 
   if (loading) return <SkeletonLoader />;
 
-  if (error)
+  if (error) {
     return (
       <div className="lwd-page p-6 flex items-center justify-center min-h-[60vh]">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="lwd-card-glass p-12 text-center max-w-md border-red-500/20"
@@ -52,13 +136,16 @@ const AdminDashboard = () => {
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
             <Activity size={32} />
           </div>
+
           <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tight">
             Dashboard Offline
           </h2>
+
           <p className="text-slate-500 dark:text-slate-400 font-medium mb-6">
             Error loading dashboard: {error.message}
           </p>
-          <button 
+
+          <button
             onClick={() => window.location.reload()}
             className="lwd-btn-primary px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest"
           >
@@ -67,46 +154,47 @@ const AdminDashboard = () => {
         </motion.div>
       </div>
     );
+  }
 
   const kpiCards = [
     {
       title: "Total Talent",
-      value: data.totalUsers,
+      value: summary.totalUsers ?? 0,
       icon: Users,
       color: "text-blue-600",
       path: "/admin/users",
     },
     {
       title: "Companies",
-      value: data.totalCompanies,
+      value: summary.totalCompanies ?? 0,
       icon: Building2,
       color: "text-emerald-600",
       path: "/admin/companies",
     },
     {
       title: "Total Jobs",
-      value: data.totalJobs,
+      value: summary.totalJobs ?? 0,
       icon: Briefcase,
       color: "text-indigo-600",
       path: "/admin/managejob",
     },
     {
       title: "Applications",
-      value: data.totalApplications,
+      value: summary.totalApplications ?? 0,
       icon: FileText,
       color: "text-amber-600",
       path: "/admin/applications",
     },
     {
       title: "Recruiters",
-      value: data.totalRecruiters,
+      value: summary.totalRecruiters ?? 0,
       icon: UserCog,
       color: "text-rose-600",
       path: "/admin/recruiters",
     },
     {
       title: "Active Roles",
-      value: data.activeJobs,
+      value: summary.activeJobs ?? 0,
       icon: CheckCircle,
       color: "text-sky-600",
       path: "/admin/managejob",
@@ -117,47 +205,57 @@ const AdminDashboard = () => {
     { key: "name", label: "Talent" },
     { key: "email", label: "Email" },
     { key: "role", label: "Role" },
-    { key: "createdAt", label: "Joined" },
+    { key: "joined", label: "Joined" },
   ];
 
   const jobColumns = [
     { key: "title", label: "Job Title" },
     { key: "companyName", label: "Company" },
     { key: "location", label: "Location" },
-    { key: "postedAt", label: "Posted" },
+    { key: "posted", label: "Posted" },
   ];
 
   const appColumns = [
     { key: "jobTitle", label: "Position" },
     { key: "candidateName", label: "Applicant" },
     { key: "status", label: "Status" },
-    { key: "appliedAt", label: "Applied" },
+    { key: "appliedDate", label: "Applied" },
   ];
 
   const growthMetrics = [
-    { label: "Talent Growth", value: data.usersThisMonth, icon: TrendingUp, color: "border-blue-500" },
-    { label: "Job Flow", value: data.jobsThisMonth, icon: Activity, color: "border-indigo-500" },
-    { label: "Weekly Apps", value: data.applicationsThisWeek, icon: Zap, color: "border-emerald-500" },
-    { label: "Market Expand", value: data.newCompaniesThisMonth, icon: TrendingUp, color: "border-rose-500" },
+    {
+      label: "Talent Growth",
+      value: growth.usersThisMonth ?? 0,
+      icon: TrendingUp,
+      color: "border-blue-500",
+    },
+    {
+      label: "Job Flow",
+      value: growth.jobsThisMonth ?? 0,
+      icon: Activity,
+      color: "border-indigo-500",
+    },
+    {
+      label: "Weekly Apps",
+      value: growth.applicationsThisWeek ?? 0,
+      icon: Zap,
+      color: "border-emerald-500",
+    },
+    {
+      label: "Market Expand",
+      value: growth.newCompaniesThisMonth ?? 0,
+      icon: TrendingUp,
+      color: "border-rose-500",
+    },
   ];
 
-  const industryData = Object.entries(data.jobsPerIndustry || {}).map(
-    ([name, value]) => ({ name, value })
-  );
-
-  const trendData = data.applicationsTrend || [];
-
-  const roleData = Object.entries(data.usersByRole || {}).map(
-    ([name, value]) => ({ name: name.toUpperCase(), value })
-  );
-
   const COLORS = [
-    "#2563eb", // blue-600
-    "#059669", // emerald-600
-    "#d97706", // amber-600
-    "#e11d48", // rose-600
-    "#4f46e5", // indigo-600
-    "#0284c7", // sky-600
+    "#2563eb",
+    "#059669",
+    "#d97706",
+    "#e11d48",
+    "#4f46e5",
+    "#0284c7",
   ];
 
   const containerVariants = {
@@ -165,49 +263,54 @@ const AdminDashboard = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
     <div className="lwd-page min-h-screen py-12 px-6 relative overflow-hidden">
-      
-      {/* Decorative Background Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none"></div>
-      <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <motion.div 
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="mx-auto max-w-7xl space-y-12 relative z-10"
       >
-        
-        {/* Dashboard Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div className="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
               <Activity size={12} />
               System Live
             </div>
+
             <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-              Control <span className="text-blue-600 italic underline decoration-blue-500/20 underline-offset-8">Center</span>
+              Control{" "}
+              <span className="text-blue-600 italic underline decoration-blue-500/20 underline-offset-8">
+                Center
+              </span>
             </h1>
           </div>
+
           <div className="flex items-center gap-3">
-             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest tabular-nums">
-               {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-             </span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest tabular-nums">
+              {new Date().toLocaleDateString(undefined, {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
           </div>
         </div>
 
-        {/* Global Stats Grid */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {kpiCards.map((card, index) => (
             <motion.div key={index} variants={itemVariants}>
@@ -222,14 +325,12 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        {/* Growth & System Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Growth Cards */}
           <div className="lg:col-span-4 space-y-6">
             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
               <TrendingUp size={14} /> Growth Metrics
             </h3>
+
             <div className="grid grid-cols-1 gap-4">
               {growthMetrics.map((metric, idx) => (
                 <motion.div
@@ -239,24 +340,36 @@ const AdminDashboard = () => {
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50">
-                      <metric.icon size={20} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                      <metric.icon
+                        size={20}
+                        className="text-slate-400 group-hover:text-blue-500 transition-colors"
+                      />
                     </div>
+
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{metric.label}</p>
-                      <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">+{metric.value.toLocaleString()}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
+                        {metric.label}
+                      </p>
+                      <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
+                        +{Number(metric.value || 0).toLocaleString()}
+                      </p>
                     </div>
                   </div>
-                  <ArrowRight size={16} className="text-slate-200 dark:text-slate-700 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+
+                  <ArrowRight
+                    size={16}
+                    className="text-slate-200 dark:text-slate-700 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
+                  />
                 </motion.div>
               ))}
             </div>
           </div>
 
-          {/* User Distribution Chart */}
           <div className="lg:col-span-8 flex flex-col gap-6">
             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
               <Users size={14} /> Ecosystem Balance
             </h3>
+
             <div className="lwd-card-glass p-8 flex-1 flex flex-col justify-center">
               <ResponsiveContainer width="100%" height={320}>
                 <PieChart>
@@ -277,6 +390,7 @@ const AdminDashboard = () => {
                       />
                     ))}
                   </Pie>
+
                   <Tooltip
                     contentStyle={{
                       backgroundColor: "rgba(255,255,255,0.9)",
@@ -284,21 +398,31 @@ const AdminDashboard = () => {
                       border: "none",
                       boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                       backdropFilter: "blur(8px)",
-                      padding: "16px"
+                      padding: "16px",
                     }}
-                    itemStyle={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase' }}
+                    itemStyle={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      textTransform: "uppercase",
+                    }}
                   />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    height={36} 
+
+                  <Legend
+                    verticalAlign="bottom"
+                    height={36}
                     content={(props) => {
-                      const { payload } = props;
+                      const { payload = [] } = props;
                       return (
                         <div className="flex justify-center flex-wrap gap-x-8 gap-y-2 mt-8">
                           {payload.map((entry, index) => (
                             <div key={`item-${index}`} className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></div>
-                              <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">{entry.value}</span>
+                              <div
+                                className="w-3 h-3 rounded-full"
+                                style={{ backgroundColor: entry.color }}
+                              />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">
+                                {entry.value}
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -311,78 +435,101 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Actionable Data Flow */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-           
-           {/* Detailed Industry Analysis */}
-           <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-6">
             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
               <Briefcase size={14} /> Market Demand
             </h3>
+
             <div className="lwd-card-glass p-8">
               <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={industryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <BarChart
+                  data={industryData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
                   <defs>
                     <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#3b82f6" stopOpacity={1}/>
-                      <stop offset="100%" stopColor="#2563eb" stopOpacity={0.8}/>
+                      <stop offset="0%" stopColor="#3b82f6" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#2563eb" stopOpacity={0.8} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
+
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="rgba(0,0,0,0.05)"
                   />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
+
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }}
                   />
+
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }}
+                  />
+
                   <Tooltip
-                    cursor={{ fill: 'rgba(0,0,0,0.02)' }}
+                    cursor={{ fill: "rgba(0,0,0,0.02)" }}
                     contentStyle={{
                       backgroundColor: "rgba(255,255,255,0.9)",
                       borderRadius: "16px",
                       border: "none",
                       boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                       backdropFilter: "blur(8px)",
-                      padding: "16px"
+                      padding: "16px",
                     }}
                   />
-                  <Bar dataKey="value" fill="url(#barGradient)" radius={[6, 6, 0, 0]} barSize={40} />
+
+                  <Bar
+                    dataKey="value"
+                    fill="url(#barGradient)"
+                    radius={[6, 6, 0, 0]}
+                    barSize={40}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-           </div>
+          </div>
 
-           {/* Trend analysis */}
-           <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-6">
             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
               <TrendingUp size={14} /> Engagement Pulse
             </h3>
+
             <div className="lwd-card-glass p-8">
               <ResponsiveContainer width="100%" height={320}>
                 <AreaChart data={trendData}>
                   <defs>
                     <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.2}/>
-                      <stop offset="100%" stopColor="#10b981" stopOpacity={0}/>
+                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
-                  <XAxis 
-                    dataKey="day" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
+
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="rgba(0,0,0,0.05)"
                   />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
+
+                  <XAxis
+                    dataKey="day"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }}
                   />
+
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }}
+                  />
+
                   <Tooltip
                     contentStyle={{
                       backgroundColor: "rgba(255,255,255,0.9)",
@@ -390,114 +537,158 @@ const AdminDashboard = () => {
                       border: "none",
                       boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                       backdropFilter: "blur(8px)",
-                      padding: "16px"
+                      padding: "16px",
                     }}
                   />
-                  <Area 
-                    type="monotone" 
-                    dataKey="count" 
-                    stroke="#10b981" 
-                    strokeWidth={3} 
-                    fillOpacity={1} 
-                    fill="url(#areaGradient)" 
-                    dot={{ fill: '#10b981', r: 4, strokeWidth: 2, stroke: '#fff' }}
+
+                  <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#10b981"
+                    strokeWidth={3}
+                    fillOpacity={1}
+                    fill="url(#areaGradient)"
+                    dot={{ fill: "#10b981", r: 4, strokeWidth: 2, stroke: "#fff" }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-           </div>
-
+          </div>
         </div>
 
-        {/* Real-time Activity Logs */}
         <div className="space-y-6">
-           <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-             <Activity size={14} /> Real-time Activity
-           </h3>
-           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+            <Activity size={14} /> Real-time Activity
+          </h3>
+
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <motion.div variants={itemVariants}>
-              <RecentTable title="Latest Talent" data={data.recentUsers || []} columns={userColumns} />
+              <RecentTable title="Latest Talent" data={recentUsers} columns={userColumns} />
             </motion.div>
+
             <motion.div variants={itemVariants}>
-              <RecentTable title="Latest Roles" data={data.recentJobs || []} columns={jobColumns} />
+              <RecentTable title="Latest Roles" data={recentJobs} columns={jobColumns} />
             </motion.div>
+
             <motion.div variants={itemVariants}>
-              <RecentTable title="Latest Applications" data={data.recentApplications || []} columns={appColumns} />
+              <RecentTable
+                title="Latest Applications"
+                data={recentApplications}
+                columns={appColumns}
+              />
             </motion.div>
-           </div>
+          </div>
         </div>
 
-        {/* System Vitals */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 pt-6 border-t border-slate-200/50 dark:border-slate-800/50">
-          
-          <motion.div variants={itemVariants} className="lwd-card-glass p-6 group hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-all border-amber-500/10">
+          <motion.div
+            variants={itemVariants}
+            className="lwd-card-glass p-6 group hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-all border-amber-500/10"
+          >
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-500">Expiring Slots</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-500">
+                Expiring Slots
+              </p>
               <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-600">
                 <Activity size={14} />
               </div>
             </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white tabular-nums">{data.jobsExpiringSoon}</p>
+
+            <p className="text-3xl font-black text-slate-900 dark:text-white tabular-nums">
+              {systemHealth.jobsExpiringSoon ?? 0}
+            </p>
+
             <div className="mt-4 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <motion.div 
+              <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: `${Math.min(100, (data.jobsExpiringSoon / 50) * 100)}%` }}
+                animate={{
+                  width: `${Math.min(
+                    100,
+                    ((systemHealth.jobsExpiringSoon ?? 0) / 50) * 100
+                  )}%`,
+                }}
                 className="h-full bg-amber-500"
               />
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="lwd-card-glass p-6 group hover:bg-rose-50/50 dark:hover:bg-rose-900/10 transition-all border-rose-500/10">
+          <motion.div
+            variants={itemVariants}
+            className="lwd-card-glass p-6 group hover:bg-rose-50/50 dark:hover:bg-rose-900/10 transition-all border-rose-500/10"
+          >
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-500">Zero Engagement</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-500">
+                Zero Engagement
+              </p>
               <div className="p-2 rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600">
                 <AlertCircle size={14} />
               </div>
             </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white tabular-nums">{data.jobsWithoutApplications}</p>
+
+            <p className="text-3xl font-black text-slate-900 dark:text-white tabular-nums">
+              {systemHealth.jobsWithoutApplications ?? 0}
+            </p>
+
             <div className="mt-4 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-               <motion.div 
+              <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: `${Math.min(100, (data.jobsWithoutApplications / 20) * 100)}%` }}
+                animate={{
+                  width: `${Math.min(
+                    100,
+                    ((systemHealth.jobsWithoutApplications ?? 0) / 20) * 100
+                  )}%`,
+                }}
                 className="h-full bg-rose-500"
               />
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="lwd-card-glass p-6 group hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all border-blue-500/10">
+          <motion.div
+            variants={itemVariants}
+            className="lwd-card-glass p-6 group hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all border-blue-500/10"
+          >
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">Active Partners</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">
+                Active Partners
+              </p>
               <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600">
                 <Building2 size={14} />
               </div>
             </div>
-            <p className="text-3xl font-black text-slate-900 dark:text-white tabular-nums">{data.activeRecruiters}</p>
-             <div className="mt-4 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-               <motion.div 
+
+            <p className="text-3xl font-black text-slate-900 dark:text-white tabular-nums">
+              {systemHealth.activeRecruiters ?? 0}
+            </p>
+
+            <div className="mt-4 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+              <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: `${Math.min(100, (data.activeRecruiters / 100) * 100)}%` }}
+                animate={{
+                  width: `${Math.min(
+                    100,
+                    ((systemHealth.activeRecruiters ?? 0) / 100) * 100
+                  )}%`,
+                }}
                 className="h-full bg-blue-500"
               />
             </div>
           </motion.div>
-
         </div>
-
       </motion.div>
     </div>
   );
 };
 
 const AlertCircle = ({ size, className }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     className={className}
   >
     <circle cx="12" cy="12" r="10" />
@@ -506,4 +697,4 @@ const AlertCircle = ({ size, className }) => (
   </svg>
 );
 
-export default AdminDashboard;
+export default AdminDashboard;

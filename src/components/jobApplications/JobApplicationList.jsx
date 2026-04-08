@@ -54,7 +54,6 @@ const formatStatusLabel = (status) =>
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 
-// Helper to get status badge color class
 const getStatusBadgeClass = (status) => {
   switch (status) {
     case "APPLIED":
@@ -85,13 +84,13 @@ export default function JobApplicationList() {
   const [page, setPage] = useState(savedState.page || 0);
   const [search, setSearch] = useState(savedState.search || "");
   const [applicationSource, setApplicationSource] = useState(
-    savedState.applicationSource || "",
+    savedState.applicationSource || ""
   );
   const [status, setStatus] = useState(savedState.status || "");
   const [skills, setSkills] = useState(savedState.skills || "");
   const [dateFilter, setDateFilter] = useState(savedState.dateFilter || "");
   const [specificDate, setSpecificDate] = useState(
-    savedState.specificDate || "",
+    savedState.specificDate || ""
   );
   const [startDate, setStartDate] = useState(savedState.startDate || "");
   const [endDate, setEndDate] = useState(savedState.endDate || "");
@@ -119,7 +118,7 @@ export default function JobApplicationList() {
       specificDate,
       startDate,
       endDate,
-    ],
+    ]
   );
 
   const { data, isLoading, isError } = useQuery({
@@ -144,7 +143,7 @@ export default function JobApplicationList() {
         specificDate,
         startDate,
         endDate,
-      }),
+      })
     );
   }, [
     page,
@@ -186,7 +185,7 @@ export default function JobApplicationList() {
   useEffect(() => {
     if (!hasRestoredScroll.current && !isLoading) {
       const saved = sessionStorage.getItem(SCROLL_KEY);
-      if (saved) window.scrollTo(0, parseInt(saved));
+      if (saved) window.scrollTo(0, parseInt(saved, 10));
       hasRestoredScroll.current = true;
     }
   }, [isLoading]);
@@ -215,7 +214,7 @@ export default function JobApplicationList() {
         applications: oldData.applications.map((app) =>
           app.applicationId === applicationId
             ? { ...app, status: newStatus }
-            : app,
+            : app
         ),
       };
     });
@@ -235,7 +234,6 @@ export default function JobApplicationList() {
 
   return (
     <div className="lwd-page p-6 space-y-6">
-      {/* FILTERS CARD */}
       <div className="lwd-card space-y-4">
         <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
           <div className="flex items-center gap-2">
@@ -254,7 +252,6 @@ export default function JobApplicationList() {
           </div>
         </div>
 
-        {/* FILTER CONTROLS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <select
             value={applicationSource}
@@ -340,73 +337,113 @@ export default function JobApplicationList() {
         </div>
       </div>
 
-      {/* APPLICATIONS LIST */}
-      <div className="space-y-4">
+      <div className="lwd-card">
         {applications.length === 0 ? (
-          <div className="lwd-card text-center py-12">
+          <div className="text-center py-12">
             <UserCircleIcon className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600" />
             <p className="lwd-text mt-3">No applications found</p>
           </div>
         ) : (
-          applications.map((app) => (
-            <div
-              key={app.applicationId}
-              className="lwd-card lwd-card-hover group"
-            >
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex gap-3 flex-1 min-w-0">
-                  <UserCircleIcon className="w-10 h-10 text-gray-400 dark:text-gray-500 shrink-0" />
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Candidate
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Job
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Experience
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Expected CTC
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Company
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Applied Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
 
-                  <div className="min-w-0 flex-1">
-                    <h3
-                      onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-                      className="font-semibold text-blue-600 dark:text-blue-400 cursor-pointer hover:underline truncate"
-                    >
-                      {app.applicantName}
-                    </h3>
+              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                {applications.map((app) => (
+                  <tr
+                    key={app.applicationId}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap max-w-xs ">
+                      <button
+                        onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
+                        className="text-blue-600 dark:text-blue-400 hover:underline font-medium text-left"
+                      >
+                        {app.applicantName}
+                      </button>
+                    </td>
 
-                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                      {app.job?.title}
-                    </p>
-                  </div>
-                </div>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap max-w-xs">
+                      {app.job?.title || "—"}
+                    </td>
 
-                <span
-                  className={`${getStatusBadgeClass(
-                    app.status,
-                  )} inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium`}
-                >
-                  {formatStatusLabel(app.status)}
-                </span>
-              </div>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                      {app.jobSeeker?.totalExperience ?? 0} yrs
+                    </td>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm text-gray-600 dark:text-gray-400">
-                <p>Exp: {app.jobSeeker?.totalExperience ?? 0} yrs</p>
-                <p>CTC: ₹{app.jobSeeker?.expectedCTC ?? 0}</p>
-                <p>Company: {app.company?.companyName || "—"}</p>
-                <p>Date: {app.appliedAt?.slice(0, 10)}</p>
-              </div>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                      ₹{app.jobSeeker?.expectedCTC ?? 0}
+                    </td>
 
-              <div className="flex justify-between items-center mt-4 pt-2">
-                <button
-                  onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
-                  className="lwd-btn-outline text-sm"
-                >
-                  View Profile
-                </button>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
+                      {app.company?.companyName || "—"}
+                    </td>
 
-                <ApplicationStatusDropdown
-                  applicationId={app.applicationId}
-                  currentStatus={app.status}
-                  onStatusUpdated={handleStatusUpdated}
-                />
-              </div>
-            </div>
-          ))
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                      {app.appliedAt?.slice(0, 10) || "—"}
+                    </td>
+
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                      <span
+                        className={`${getStatusBadgeClass(
+                          app.status
+                        )} inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium`}
+                      >
+                        {formatStatusLabel(app.status)}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-sm text-right">
+                      <div className="flex justify-end items-center gap-2">
+                        <button
+                          onClick={() => navigate(`/profile/${app.jobSeekerId}`)}
+                          className="lwd-btn-outline text-xs"
+                        >
+                          View Profile
+                        </button>
+
+                        <ApplicationStatusDropdown
+                          applicationId={app.applicationId}
+                          currentStatus={app.status}
+                          onStatusUpdated={handleStatusUpdated}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
-      {/* PAGINATION */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-4 py-4">
           <button

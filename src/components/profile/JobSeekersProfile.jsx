@@ -138,13 +138,15 @@ const JobSeekerProfile = () => {
 
   const sections = [
     {
-      id: "basic-info",
-      title: "Basic Info",
+      id: "about",
+      title: "About",
       component: (
-        <BasicInfo
-          profile={basicProfile}
+        <AboutInfo
+          profile={jobSeekerProfile}
           setProfile={setJobSeekerProfile}
           editable={isOwnProfile}
+          userId={userId}
+          isOwnProfile={isOwnProfile}
         />
       ),
     },
@@ -153,17 +155,6 @@ const JobSeekerProfile = () => {
       title: "Job Seeker Details",
       component: (
         <JobSeekerDetails
-          profile={jobSeekerProfile}
-          setProfile={setJobSeekerProfile}
-          editable={isOwnProfile}
-        />
-      ),
-    },
-    {
-      id: "about",
-      title: "About",
-      component: (
-        <AboutInfo
           profile={jobSeekerProfile}
           setProfile={setJobSeekerProfile}
           editable={isOwnProfile}
@@ -184,42 +175,42 @@ const JobSeekerProfile = () => {
     {
       id: "experience",
       title: "Experience",
-      component: <Experience editable={isOwnProfile} />,
+      component: <Experience editable={isOwnProfile} userId={userId} />,
     },
     {
       id: "education",
       title: "Education",
-      component: <Education editable={isOwnProfile} />,
+      component: <Education editable={isOwnProfile} userId={userId} />,
     },
     {
       id: "internship",
       title: "Internship",
-      component: <Internship editable={isOwnProfile} />,
+      component: <Internship editable={isOwnProfile} userId={userId} />,
     },
     {
       id: "project",
       title: "Projects",
-      component: <Project editable={isOwnProfile} />,
+      component: <Project editable={isOwnProfile} userId={userId} />,
     },
     {
       id: "certification",
       title: "Certifications",
-      component: <Certification editable={isOwnProfile} />,
+      component: <Certification editable={isOwnProfile} userId={userId} />,
     },
     {
       id: "resume",
       title: "Resume",
-      component: <ResumeUpload editable={isOwnProfile} />,
+      component: <ResumeUpload editable={isOwnProfile} userId={userId} />,
     },
     {
       id: "linkedin",
       title: "LinkedIn",
-      component: <LinkedInUrl editable={isOwnProfile} />,
+      component: <LinkedInUrl editable={isOwnProfile} userId={userId} />,
     },
     {
       id: "github",
       title: "GitHub",
-      component: <GitHubUrl editable={isOwnProfile} />,
+      component: <GitHubUrl editable={isOwnProfile} userId={userId} />,
     },
   ];
 

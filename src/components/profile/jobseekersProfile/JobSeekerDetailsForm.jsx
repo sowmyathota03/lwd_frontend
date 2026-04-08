@@ -36,7 +36,7 @@ function JobSeekerDetailsForm({ profile, setProfile, onClose, noticeOptions }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-container lwd-scrollbar" onClick={(e) => e.stopPropagation()}>
 
         {/* Header */}
         <div className="modal-header">

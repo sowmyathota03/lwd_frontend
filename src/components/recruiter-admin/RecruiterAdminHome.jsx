@@ -9,22 +9,52 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchRecruiterAdminDashboard } from "../../api/DashboardApi";
+import {
+  fetchRecruiterAdminSummary,
+  fetchRecruiterPerformance,
+  fetchRecruiterAdminRecentJobs,
+  fetchHiringFunnel,
+} from "../../api/RecruiterAdminApi";
 import Loader from "../common/Loader";
 
 export default function RecruiterAdminHome() {
-  const [dashboardData, setDashboardData] = useState(null);
+  const [summary, setSummary] = useState({});
+  const [recruiterPerformance, setRecruiterPerformance] = useState([]);
+  const [recentJobs, setRecentJobs] = useState([]);
+  const [funnel, setFunnel] = useState({});
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchRecruiterAdminDashboard()
-      .then((res) => setDashboardData(res.data))
-      .catch(() =>
-        setError("Unable to load dashboard data. Please try again later.")
-      )
-      .finally(() => setLoading(false));
+    const loadDashboard = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const summaryRes = await fetchRecruiterAdminSummary();
+        setSummary(summaryRes.data || {});
+
+        const [perfRes, jobsRes, funnelRes] = await Promise.all([
+          fetchRecruiterPerformance(),
+          fetchRecruiterAdminRecentJobs(5),
+          fetchHiringFunnel(),
+        ]);
+
+        setRecruiterPerformance(perfRes.data || []);
+        setRecentJobs(jobsRes.data || []);
+        setFunnel(funnelRes.data || {});
+      } catch (err) {
+        console.error("Failed to load recruiter admin dashboard:", err);
+        setError("Unable to load dashboard data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
   }, []);
 
   if (loading) {
@@ -48,37 +78,35 @@ export default function RecruiterAdminHome() {
   const kpis = [
     {
       title: "Total Recruiters",
-      value: dashboardData.totalRecruitersInCompany,
+      value: summary.totalRecruitersInCompany ?? 0,
       icon: <Users size={24} />,
       path: "/recruiter-admin/manage-recruiter",
     },
     {
       title: "Total Jobs",
-      value: dashboardData.totalJobsPosted,
+      value: summary.totalJobsPosted ?? 0,
       icon: <Briefcase size={24} />,
       path: "/recruiter-admin/managejob",
     },
     {
       title: "Active Jobs",
-      value: dashboardData.activeJobs,
+      value: summary.activeJobs ?? 0,
       icon: <CheckCircle size={24} />,
       path: "/recruiter-admin/managejob",
     },
     {
       title: "Closed Jobs",
-      value: dashboardData.closedJobs,
+      value: summary.closedJobs ?? 0,
       icon: <XCircle size={24} />,
       path: "/recruiter-admin/managejob",
     },
     {
       title: "Applications",
-      value: dashboardData.totalApplications,
+      value: summary.totalApplications ?? 0,
       icon: <FileText size={24} />,
       path: "/recruiter-admin/applications",
     },
   ];
-
-  const funnel = dashboardData.hiringFunnel || {};
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -97,7 +125,7 @@ export default function RecruiterAdminHome() {
             <div
               key={i}
               onClick={() => navigate(item.path)}
-              className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 dark:bg-gray-800"
+              className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-gray-800"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -105,25 +133,26 @@ export default function RecruiterAdminHome() {
                     {item.title}
                   </p>
                   <h3 className="mt-2 text-3xl font-bold text-gray-800 dark:text-white">
-                    {item.value ?? 0}
+                    {item.value}
                   </h3>
                 </div>
                 <div className="rounded-full bg-blue-100 p-3 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
                   {item.icon}
                 </div>
               </div>
-              {/* Decorative hover line */}
+
               <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-blue-500 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
           ))}
         </div>
 
         {/* Recruiter Performance Table */}
-        {dashboardData.recruiterPerformance?.length > 0 && (
+        {recruiterPerformance?.length > 0 && (
           <div className="mb-8 rounded-2xl bg-white p-6 shadow-md dark:bg-gray-800">
             <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-white">
               <UserCog className="h-5 w-5" /> Recruiter Performance
             </h4>
+
             <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-800">
@@ -142,8 +171,9 @@ export default function RecruiterAdminHome() {
                     </th>
                   </tr>
                 </thead>
+
                 <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-                  {dashboardData.recruiterPerformance.map((rec, i) => (
+                  {recruiterPerformance.map((rec, i) => (
                     <tr
                       key={i}
                       className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -175,9 +205,10 @@ export default function RecruiterAdminHome() {
             <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-white">
               <Briefcase className="h-5 w-5" /> Recent Jobs
             </h4>
-            {dashboardData.recentJobs?.length ? (
+
+            {recentJobs?.length ? (
               <ul className="space-y-3">
-                {dashboardData.recentJobs.map((job, i) => (
+                {recentJobs.map((job, i) => (
                   <li
                     key={i}
                     className="border-b border-gray-200 pb-2 last:border-0 dark:border-gray-700"
@@ -206,14 +237,16 @@ export default function RecruiterAdminHome() {
             <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-white">
               <TrendingUp className="h-5 w-5" /> Hiring Funnel
             </h4>
+
             <div className="mt-4 space-y-4">
               {["applied", "shortlisted", "interview", "selected", "rejected"].map(
                 (key) => {
                   const value = funnel[key] || 0;
                   const percentage =
-                    funnel.applied > 0
+                    (funnel.applied || 0) > 0
                       ? Math.min((value / funnel.applied) * 100, 100)
                       : 0;
+
                   return (
                     <div key={key}>
                       <div className="flex justify-between text-sm">
@@ -224,6 +257,7 @@ export default function RecruiterAdminHome() {
                           {value}
                         </span>
                       </div>
+
                       <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                         <div
                           className="h-full rounded-full bg-blue-500 transition-all duration-300"
@@ -243,6 +277,7 @@ export default function RecruiterAdminHome() {
           <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
             Quick Actions
           </h4>
+
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => navigate("/recruiter-admin/createjob")}

@@ -1,55 +1,66 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   getMyAboutInfo,
   getAboutInfoByUserId,
 } from "../../../api/JobSeekerApi";
-import { Section, Field } from "../comman/Helpers";
+import { Section } from "../comman/Helpers";
 import AboutInfoForm from "./AboutInfoForm";
 
-const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
+const AboutInfo = ({
+  profile,
+  setProfile,
+  editable,
+  userId,
+  isOwnProfile,
+}) => {
   const [openForm, setOpenForm] = useState(false);
   const [aboutData, setAboutData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ================= FETCH ABOUT INFO =================
-  const loadAboutInfo = async () => {
-    if (!isOwnProfile && !userId) return;
-
-    setLoading(true);
-    setError(null);
+  const loadAboutInfo = useCallback(async () => {
     try {
-      let res;
+      setLoading(true);
+      setError(null);
+
+      let data;
+
       if (isOwnProfile) {
-        res = await getMyAboutInfo();
+        data = await getMyAboutInfo();
       } else {
-        res = await getAboutInfoByUserId(userId);
+        if (!userId) {
+          setError("User ID is missing.");
+          return;
+        }
+        data = await getAboutInfoByUserId(userId);
       }
-      setAboutData(res);
-    } catch (error) {
-      console.error("Error loading about info", error);
-      setError("Failed to load about information.");
+
+      const safeData = {
+        headline: data?.headline || "",
+        about: data?.about || "",
+      };
+
+      setAboutData(safeData);
+
+      setProfile((prev) => ({
+        ...prev,
+        headline: safeData.headline,
+        about: safeData.about,
+      }));
+    } catch (err) {
+      console.error("Error loading about info:", err);
+      setError(
+        err?.response?.data?.message || "Failed to load about information."
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }, [isOwnProfile, userId, setProfile]);
 
   useEffect(() => {
     loadAboutInfo();
-  }, [userId, isOwnProfile]);
+  }, [loadAboutInfo]);
 
-  // ================= SYNC PROFILE =================
-  useEffect(() => {
-    if (aboutData) {
-      setProfile((prev) => ({
-        ...prev,
-        headline: aboutData.headline,
-        about: aboutData.about,
-      }));
-    }
-  }, [aboutData, setProfile]);
-
-  // ================= LOADING =================
   if (loading) {
     return (
       <Section title="About" editable={false} className="lwd-card">
@@ -61,18 +72,17 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
     );
   }
 
-  // ================= ERROR =================
   if (error) {
     return (
       <Section title="About" editable={false} className="lwd-card">
-        <p className="text-sm text-red-600 dark:text-red-400 p-3">
-          {error}
-        </p>
+        <p className="text-sm text-red-600 dark:text-red-400 p-3">{error}</p>
       </Section>
     );
   }
 
-  // ================= UI =================
+  const displayHeadline = aboutData?.headline ?? profile?.headline ?? "";
+  const displayAbout = aboutData?.about ?? profile?.about ?? "";
+
   return (
     <>
       <Section
@@ -82,38 +92,32 @@ const AboutInfo = ({ profile, setProfile, editable, userId, isOwnProfile }) => {
         className="lwd-card lwd-card-hover"
       >
         <div className="space-y-4">
-
-          {/* Headline */}
           <div>
             <p className="lwd-label mb-1">Headline</p>
             <p className="lwd-text text-sm md:text-base">
-              {profile?.headline || "—"}
+              {displayHeadline || "—"}
             </p>
           </div>
 
-          {/* About */}
           <div>
             <p className="lwd-label mb-1">About</p>
-            {profile?.about ? (
-              <p className="lwd-text leading-relaxed">
-                {profile.about}
-              </p>
+            {displayAbout ? (
+              <p className="lwd-text leading-relaxed">{displayAbout}</p>
             ) : (
               <p className="text-gray-400 italic text-sm dark:text-gray-500">
                 Not provided
               </p>
             )}
           </div>
-
         </div>
       </Section>
 
-      {/* ===== MODAL ===== */}
       {openForm && (
         <AboutInfoForm
           profile={profile}
           setProfile={setProfile}
           onClose={() => setOpenForm(false)}
+          onUpdated={loadAboutInfo}
         />
       )}
     </>

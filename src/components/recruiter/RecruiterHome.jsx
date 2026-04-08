@@ -1,6 +1,10 @@
 import { Briefcase, FileText, Calendar, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
-import { fetchRecruiterDashboard } from "../../api/DashboardApi";
+import {
+  fetchRecruiterSummary,
+  fetchRecruiterPerJobStats,
+  fetchRecruiterRecentApplications,
+} from "../../api/RecruiterApi";
 
 /* ================= STAT CARD ================= */
 const StatCard = ({ title, value, icon, color }) => (
@@ -20,7 +24,7 @@ const StatCard = ({ title, value, icon, color }) => (
         {icon}
       </div>
     </div>
-    {/* Decorative gradient line */}
+
     <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-transparent via-current to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
   </div>
 );
@@ -40,7 +44,7 @@ const RecentApplications = ({ applications }) => {
     <div className="space-y-3">
       {applications.map((app, idx) => (
         <div
-          key={idx}
+          key={app.applicationId ?? idx}
           className="flex items-center justify-between border-b border-gray-200 pb-3 last:border-0 dark:border-gray-700"
         >
           <div>
@@ -51,6 +55,7 @@ const RecentApplications = ({ applications }) => {
               {app.jobTitle} • {app.appliedDate}
             </p>
           </div>
+
           <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300">
             {app.status}
           </span>
@@ -87,67 +92,108 @@ const QuickActions = () => (
 );
 
 /* ================= TABLE ================= */
-const PerJobStatsTable = ({ stats }) => (
-  <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-      <thead className="bg-gray-50 dark:bg-gray-800">
-        <tr>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            Job Title
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            Applications
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            Shortlisted
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            Rejected
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            Pending
-          </th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-        {stats.map((job, idx) => (
-          <tr key={idx} className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
-            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-              {job.jobTitle}
-            </td>
-            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-              {job.applications}
-            </td>
-            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-              {job.shortlisted}
-            </td>
-            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-              {job.rejected}
-            </td>
-            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-              {job.pending}
-            </td>
+const PerJobStatsTable = ({ stats }) => {
+  if (!stats?.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+        <Briefcase size={40} className="mb-2 opacity-50" />
+        <p className="text-sm">No job statistics available</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-50 dark:bg-gray-800">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Job Title
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Applications
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Shortlisted
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Rejected
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Pending
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Interview
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </thead>
+
+        <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+          {stats.map((job, idx) => (
+            <tr
+              key={job.jobId ?? idx}
+              className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                {job.jobTitle}
+              </td>
+              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                {job.applications}
+              </td>
+              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                {job.shortlisted}
+              </td>
+              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                {job.rejected}
+              </td>
+              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                {job.pending}
+              </td>
+              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                {job.interview}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 /* ================= MAIN ================= */
 export default function RecruiterHome() {
-  const [dashboardData, setDashboardData] = useState(null);
+  const [summary, setSummary] = useState({});
+  const [perJobStats, setPerJobStats] = useState([]);
+  const [recentApplications, setRecentApplications] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchRecruiterDashboard()
-      .then((res) => setDashboardData(res.data))
-      .catch((err) => {
-        console.error(err);
+    const loadRecruiterDashboard = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const summaryRes = await fetchRecruiterSummary();
+        setSummary(summaryRes.data || {});
+
+        const [statsRes, recentAppsRes] = await Promise.all([
+          fetchRecruiterPerJobStats(),
+          fetchRecruiterRecentApplications(5),
+        ]);
+
+        setPerJobStats(statsRes.data || []);
+        setRecentApplications(recentAppsRes.data || []);
+      } catch (err) {
+        console.error("Failed to load recruiter dashboard:", err);
         setError("Unable to load dashboard data.");
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRecruiterDashboard();
   }, []);
 
   if (loading) {
@@ -171,31 +217,31 @@ export default function RecruiterHome() {
   const stats = [
     {
       title: "Total Jobs",
-      value: dashboardData.myPostedJobs,
+      value: summary.myPostedJobs ?? 0,
       icon: <Briefcase size={24} />,
       color: "bg-blue-500",
     },
     {
       title: "Active Jobs",
-      value: dashboardData.myActiveJobs,
+      value: summary.myActiveJobs ?? 0,
       icon: <Briefcase size={24} />,
       color: "bg-green-500",
     },
     {
       title: "Total Applications",
-      value: dashboardData.totalApplications,
+      value: summary.totalApplications ?? 0,
       icon: <FileText size={24} />,
       color: "bg-purple-500",
     },
     {
       title: "Interviews Scheduled",
-      value: dashboardData.interviewsScheduled,
+      value: summary.interviewsScheduled ?? 0,
       icon: <Calendar size={24} />,
       color: "bg-yellow-500",
     },
     {
       title: "Shortlisted",
-      value: dashboardData.shortlistedCandidates,
+      value: summary.shortlistedCandidates ?? 0,
       icon: <UserCheck size={24} />,
       color: "bg-indigo-500",
     },
@@ -204,7 +250,6 @@ export default function RecruiterHome() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Welcome Header */}
         <div className="mb-8 overflow-hidden rounded-2xl bg-linear-to-r from-blue-600 to-indigo-700 p-6 text-white shadow-lg">
           <h2 className="text-3xl font-bold">Welcome Back 👋</h2>
           <p className="mt-1 text-blue-100">
@@ -212,24 +257,20 @@ export default function RecruiterHome() {
           </p>
         </div>
 
-        {/* Stats Grid */}
         <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {stats.map((item, index) => (
             <StatCard key={index} {...item} />
           ))}
         </div>
 
-        {/* Recent Applications & Quick Actions */}
         <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Recent Applications */}
           <div className="rounded-2xl bg-white p-6 shadow-md dark:bg-gray-800">
             <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
               Recent Applications
             </h4>
-            <RecentApplications applications={dashboardData.recentApplications} />
+            <RecentApplications applications={recentApplications} />
           </div>
 
-          {/* Quick Actions */}
           <div className="rounded-2xl bg-white p-6 shadow-md dark:bg-gray-800">
             <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
               Quick Actions
@@ -238,15 +279,12 @@ export default function RecruiterHome() {
           </div>
         </div>
 
-        {/* Job-wise Statistics */}
-        {dashboardData.perJobStats?.length > 0 && (
-          <div className="rounded-2xl bg-white p-6 shadow-md dark:bg-gray-800">
-            <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
-              Job-wise Statistics
-            </h4>
-            <PerJobStatsTable stats={dashboardData.perJobStats} />
-          </div>
-        )}
+        <div className="rounded-2xl bg-white p-6 shadow-md dark:bg-gray-800">
+          <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
+            Job-wise Statistics
+          </h4>
+          <PerJobStatsTable stats={perJobStats} />
+        </div>
       </div>
     </div>
   );

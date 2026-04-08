@@ -60,3 +60,17 @@ export const getApplicationsForJob = (
   axiosInstance
     .get(`/recruiter/jobs/${jobId}/applications?page=${page}&size=${size}`)
     .then((res) => res.data);
+
+
+
+// SUMMARY
+export const fetchRecruiterSummary = () =>
+  axiosInstance.get("/recruiter/dashboard/summary");
+
+// PER JOB STATS
+export const fetchRecruiterPerJobStats = () =>
+  axiosInstance.get("/recruiter/dashboard/per-job-stats");
+
+// RECENT APPLICATIONS
+export const fetchRecruiterRecentApplications = (size = 5) =>
+  axiosInstance.get(`/recruiter/dashboard/recent-applications?size=${size}`);

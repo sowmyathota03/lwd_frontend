@@ -74,7 +74,7 @@ function JobSeekerSkillsForm({ skills, setSkills, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
-        className="modal-container"
+        className="modal-container lwd-scrollbar"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -186,7 +186,7 @@ function JobSeekerSkillsForm({ skills, setSkills, onClose }) {
           <button
             onClick={onClose}
             disabled={loading}
-            className="btn-secondary"
+            className="lwd-btn-secondary"
           >
             Cancel
           </button>
@@ -194,7 +194,7 @@ function JobSeekerSkillsForm({ skills, setSkills, onClose }) {
           <button
             onClick={handleSave}
             disabled={loading}
-            className="btn-primary flex items-center gap-2"
+            className="lwd-btn-primary flex items-center gap-2"
           >
             {loading ? (
               <>

@@ -92,7 +92,7 @@ export default function RecruiterPlans() {
           ) : (
             <div className="flex flex-wrap justify-center gap-6">
               {plans.map((plan) => (
-                <div key={plan.planId} className="w-full sm:w-[340px]">
+                <div key={plan.planId} className="w-full sm:w-85">
                   <PlanCard
                     plan={plan}
                     currentPlan={currentPlan}
