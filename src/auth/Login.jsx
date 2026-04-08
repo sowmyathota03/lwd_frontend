@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { loginUser } from "../api/AuthApi";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import jwtDecode from "jwt-decode";
 import {
@@ -16,7 +16,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { login } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -24,27 +23,19 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const from = location.state?.from?.pathname || "/";
-
+  // ✅ Clean input handler
   const handleChange = ({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Role-based navigation
   const redirectBasedOnRole = (role) => {
-    const roleRoutes = {
+    const routes = {
       ADMIN: "/admin",
       RECRUITER_ADMIN: "/recruiter-admin",
       RECRUITER: "/recruiter",
     };
-
-    // Job seeker should go back to previous route if available
-    if (role === "JOB_SEEKER") {
-      navigate(from, { replace: true });
-      return;
-    }
-
-    // Other roles go to their dashboard
-    navigate(roleRoutes[role] || "/", { replace: true });
+    navigate(routes[role] || "/");
   };
 
   const handleSubmit = async (e) => {
@@ -67,6 +58,7 @@ export default function Login() {
 
   return (
     <div className="lwd-page flex flex-col justify-center items-center py-12 px-4 relative overflow-hidden">
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -74,6 +66,8 @@ export default function Login() {
         className="w-full max-w-md"
       >
         <div className="lwd-card p-8 md:p-10">
+
+          {/* Header */}
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-600 mb-6">
               <ShieldCheck size={32} />
@@ -84,6 +78,7 @@ export default function Login() {
             </p>
           </div>
 
+          {/* Error */}
           <AnimatePresence>
             {error && (
               <motion.div
@@ -98,13 +93,12 @@ export default function Login() {
           </AnimatePresence>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* Email */}
             <div>
               <label className="lwd-label">Email Address</label>
               <div className="relative">
-                <Mail
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                  size={20}
-                />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                 <input
                   type="email"
                   name="email"
@@ -117,6 +111,7 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Password (FIXED 👇) */}
             <div>
               <div className="flex justify-between">
                 <label className="lwd-label">Password</label>
@@ -126,11 +121,13 @@ export default function Login() {
               </div>
 
               <div className="relative">
+                {/* Lock Icon */}
                 <Lock
                   size={20}
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                 />
 
+                {/* Input */}
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -140,16 +137,22 @@ export default function Login() {
                   className="lwd-input pl-12 pr-12 h-14"
                 />
 
+                {/* Eye Icon FIX */}
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600"
                 >
-                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  {showPassword ? (
+                    <Eye key="show" size={20} />
+                  ) : (
+                    <EyeOff key="hide" size={20} />
+                  )}
                 </button>
               </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
@@ -159,24 +162,25 @@ export default function Login() {
               {!loading && <ArrowRight size={20} />}
             </button>
 
+            {/* Footer */}
             <div className="text-center">
               <p className="text-slate-500">
                 New to the platform?{" "}
-                <Link
-                  to="/register"
-                  className="text-blue-600 font-bold inline-flex items-center gap-1"
-                >
+                <Link to="/register" className="text-blue-600 font-bold inline-flex items-center gap-1">
                   Create an account <ChevronRight size={16} />
                 </Link>
               </p>
             </div>
+
           </form>
         </div>
 
+        {/* Bottom Links */}
         <div className="mt-6 flex justify-center gap-6 text-xs text-slate-400">
           <Link to="/privacy-policy">Privacy Policy</Link>
           <Link to="/terms">Terms of Service</Link>
         </div>
+
       </motion.div>
     </div>
   );
