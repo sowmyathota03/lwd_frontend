@@ -35,6 +35,7 @@ export default function RecruiterList() {
   const fetchAllRecruiters = async () => {
     try {
       setLoading(true);
+      setError("");
       const data = await getAllRecruiters(page, size);
       setAllRecruiters(data.content);
       setTotalPages(data.totalPages);
@@ -48,6 +49,7 @@ export default function RecruiterList() {
   const fetchPendingRecruiters = async () => {
     try {
       setLoading(true);
+      setError("");
       const data = await getPendingRecruiters(page, size);
       setPendingRecruiters(data.content);
       setTotalPages(data.totalPages);
@@ -95,7 +97,6 @@ export default function RecruiterList() {
 
   return (
     <div className="lwd-page p-4 md:p-6 space-y-6">
-
       {/* Header */}
       <div className="lwd-card">
         <h2 className="lwd-title text-xl">Recruiters</h2>
@@ -133,12 +134,12 @@ export default function RecruiterList() {
         <table className="w-full text-sm">
           <thead className="border-b border-gray-200 dark:border-gray-700 text-left">
             <tr>
-              <th className="py-2">Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th>Actions</th>
+              <th className="py-3 px-4">Name</th>
+              <th className="py-3 px-4">Email</th>
+              <th className="py-3 px-4">Role</th>
+              <th className="py-3 px-4">Status</th>
+              <th className="py-3 px-4">Created</th>
+              <th className="py-3 px-4">Actions</th>
             </tr>
           </thead>
 
@@ -153,9 +154,9 @@ export default function RecruiterList() {
               recruiters.map((rec) => (
                 <tr
                   key={rec.id}
-                  className="border-b border-gray-100 dark:border-gray-700"
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800 transition"
                 >
-                  <td>
+                  <td className="py-3 px-4">
                     <NavLink
                       to={`/recruiters-admin/recruiter/${rec.id}/jobs`}
                       className="text-blue-600 hover:underline dark:text-blue-400"
@@ -164,7 +165,7 @@ export default function RecruiterList() {
                     </NavLink>
                   </td>
 
-                  <td>
+                  <td className="py-3 px-4">
                     <NavLink
                       to={`/recruiters-admin/recruiter/${rec.id}/jobs`}
                       className="text-blue-600 hover:underline dark:text-blue-400"
@@ -173,9 +174,9 @@ export default function RecruiterList() {
                     </NavLink>
                   </td>
 
-                  <td className="lwd-text">{rec.role}</td>
+                  <td className="py-3 px-4 lwd-text">{rec.role}</td>
 
-                  <td>
+                  <td className="py-3 px-4">
                     <span
                       className={`px-2 py-1 text-xs rounded-full font-medium
                         ${rec.status === "ACTIVE"
@@ -189,13 +190,13 @@ export default function RecruiterList() {
                     </span>
                   </td>
 
-                  <td className="lwd-text">
+                  <td className="py-3 px-4 lwd-text">
                     {rec.createdAt
                       ? new Date(rec.createdAt).toLocaleDateString()
                       : "-"}
                   </td>
 
-                  <td className="flex gap-2 flex-wrap">
+                  <td className="py-3 px-4 flex gap-2 flex-wrap">
                     {rec.status === "PENDING_APPROVAL" && (
                       <button
                         onClick={() => openConfirm("approve", rec)}
