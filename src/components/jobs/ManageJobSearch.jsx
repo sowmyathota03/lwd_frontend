@@ -248,6 +248,7 @@ export default function ManageJobs() {
               <th className="px-4 py-3 text-left">Title</th>
               <th className="px-4 py-3 text-left">Location</th>
               <th className="px-4 py-3 text-left">Company</th>
+              <th className="px-4 py-3 text-left">Industry</th>
               <th className="px-4 py-3 text-left">Type</th>
               <th className="px-4 py-3 text-left">Experience</th>
               <th className="px-4 py-3 text-left">Status</th>
@@ -312,6 +313,10 @@ export default function ManageJobs() {
                     }
                   >
                     {job.company?.companyName || "-"}
+                  </td>
+
+                  <td className="lwd-text whitespace-nowrap px-4 py-3 text-center">
+                    {job.industry ? formatLabel(job.industry) : "-"}
                   </td>
 
                   <td className="lwd-text whitespace-nowrap px-4 py-3">
