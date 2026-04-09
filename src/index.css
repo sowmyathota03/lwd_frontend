@@ -267,4 +267,29 @@ input::-webkit-credentials-auto-fill-button {
   .modal-btn {
     @apply px-4 py-2 rounded-lg font-semibold transition-all duration-200;
   }
+
+  /* ===== SPACING UTILITIES ===== */
+  .p-sm { @apply p-2; }
+  .p-md { @apply p-4; }
+  .p-lg { @apply p-6; }
+  .py-sm { @apply py-2; }
+  .py-md { @apply py-4; }
+  .py-lg { @apply py-6; }
+  .px-sm { @apply px-2; }
+  .px-md { @apply px-4; }
+  .px-lg { @apply px-6; }
+  
+  .m-sm { @apply m-2; }
+  .m-md { @apply m-4; }
+  .m-lg { @apply m-6; }
+  .my-sm { @apply my-2; }
+  .my-md { @apply my-4; }
+  .my-lg { @apply my-6; }
+  .mx-sm { @apply mx-2; }
+  .mx-md { @apply mx-4; }
+  .mx-lg { @apply mx-6; }
+
+  .gap-sm { @apply gap-2; }
+  .gap-md { @apply gap-4; }
+  .gap-lg { @apply gap-6; }
 }

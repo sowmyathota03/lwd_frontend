@@ -128,6 +128,7 @@ const AdminDashboard = () => {
   if (error) {
     return (
       <div className="lwd-page p-6 flex items-center justify-center min-h-[60vh]">
+       
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -393,7 +394,7 @@ const AdminDashboard = () => {
 
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "rgba(255,255,255,0.9)",
+                      backgroundColor: "rgba(247, 243, 243, 0.9)",
                       borderRadius: "16px",
                       border: "none",
                       boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
@@ -477,7 +478,7 @@ const AdminDashboard = () => {
                     dataKey="name"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }}
+                    tick={{ fontSize: 10, fontWeight: 700, fill: "#7e8083" }}
                   />
 
                   <YAxis
@@ -491,7 +492,7 @@ const AdminDashboard = () => {
                       fill: "rgba(0,0,0,0.03)",
                     }}
                     contentStyle={{
-                      backgroundColor: "rgba(59,130,246,0.5)", // universal blue
+                      backgroundColor: "rgba(59,130,246,0.5)", 
                       borderRadius: "16px",
                       border: "none",
                       color: "#ffffff",
@@ -554,7 +555,7 @@ const AdminDashboard = () => {
 
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "rgba(255,255,255,0.9)",
+                      backgroundColor: "rgba(247, 243, 243, 0.9)",
                       borderRadius: "16px",
                       color: "#111827",
                       border: "black",

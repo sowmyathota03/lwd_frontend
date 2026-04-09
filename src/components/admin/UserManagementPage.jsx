@@ -250,13 +250,17 @@ export default function UserManagementPage() {
             </AnimatePresence>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="flex justify-between gap-4">
             
             <div className="space-y-1.5">
               <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
                 <ShieldCheck size={10} /> Role Access
               </label>
-              <select value={role} onChange={(e) => setRole(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="font-bold text-xs bg-white text-slate-900 border border-slate-300 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 focus:ring-1 focus:ring-blue-500"
+              >
                 <option value="">All Tiers</option>
                 {roleOptions.map((item) => (
                   <option key={item} value={item}>{formatLabel(item)}</option>
@@ -268,7 +272,8 @@ export default function UserManagementPage() {
               <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
                 <Activity size={10} /> Current Status
               </label>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className="font-bold text-xs bg-white text-slate-900 border border-slate-300 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 focus:ring-1 focus:ring-blue-500"
+              >
                 <option value="">Full Spectrum</option>
                 {statusOptions.map((item) => (
                   <option key={item} value={item}>{formatLabel(item)}</option>
@@ -278,21 +283,10 @@ export default function UserManagementPage() {
 
             <div className="space-y-1.5">
               <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
-                <UserCheck size={10} /> Activity Flow
-              </label>
-              <select value={isActive} onChange={(e) => setIsActive(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
-                <option value="">All Activity</option>
-                <option value="true">Live Sessions</option>
-                <option value="false">Dormant Account</option>
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
                 <Mail size={10} /> Authentication
               </label>
-              <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
-                <option value="">Trust Level</option>
+              <select value={emailVerified} onChange={(e) => setEmailVerified(e.target.value)} className="font-bold text-xs bg-white text-slate-900 border border-slate-300 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 focus:ring-1 focus:ring-blue-500"
+              >
                 <option value="true">Identity Verified</option>
                 <option value="false">Pending Validation</option>
               </select>
@@ -302,7 +296,8 @@ export default function UserManagementPage() {
               <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5 px-1">
                 <Lock size={10} /> Security Lock
               </label>
-              <select value={locked} onChange={(e) => setLocked(e.target.value)} className="lwd-input font-bold text-xs bg-white/50 border-slate-200/50">
+              <select value={locked} onChange={(e) => setLocked(e.target.value)} className="font-bold text-xs bg-white text-slate-900 border border-slate-300 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 focus:ring-1 focus:ring-blue-500"
+              >
                 <option value="">System Lock</option>
                 <option value="true">Restricted</option>
                 <option value="false">Standard Access</option>
@@ -385,4 +380,4 @@ export default function UserManagementPage() {
       />
     </div>
   );
-}
+}
