@@ -6,7 +6,6 @@ import Loader from "../common/Loader";
 import JobSeekerDetails from "./jobseekersProfile/JobSeekerDetails";
 import JobSeekerSkills from "./jobseekersProfile/JobSeekerSkills";
 import Experience from "./jobseekersProfile/Experience";
-import BasicInfo from "../profile/comman/BasicInfo";
 import Education from "./jobseekersProfile/Education";
 import Internship from "./jobseekersProfile/Internship";
 import Project from "./jobseekersProfile/Project";
