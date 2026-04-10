@@ -28,3 +28,10 @@ export const deleteResume = async (resumeId) => {
   const response = await axiosInstance.delete(`/resumes/${resumeId}`);
   return response.data;
 };
+
+
+
+export const viewResume = async (resumeId) => {
+  const response = await axiosInstance.get(`/resumes/${resumeId}/view`,);
+  return response.data;
+};
