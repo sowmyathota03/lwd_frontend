@@ -99,7 +99,7 @@ const AdminDashboard = () => {
           Object.entries(industryRes.data || {}).map(([name, value]) => ({
             name,
             value,
-          }))
+          })),
         );
 
         setTrendData(trendRes.data || []);
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
           Object.entries(roleRes.data || {}).map(([name, value]) => ({
             name: name.toUpperCase(),
             value,
-          }))
+          })),
         );
 
         setSystemHealth(healthRes.data || {});
@@ -416,7 +416,10 @@ const AdminDashboard = () => {
                       return (
                         <div className="flex justify-center flex-wrap gap-x-8 gap-y-2 mt-8">
                           {payload.map((entry, index) => (
-                            <div key={`item-${index}`} className="flex items-center gap-2">
+                            <div
+                              key={`item-${index}`}
+                              className="flex items-center gap-2"
+                            >
                               <div
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: entry.color }}
@@ -449,9 +452,19 @@ const AdminDashboard = () => {
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
                   <defs>
-                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="barGradient"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="0%" stopColor="#3b82f6" stopOpacity={1} />
-                      <stop offset="100%" stopColor="#2563eb" stopOpacity={0.8} />
+                      <stop
+                        offset="100%"
+                        stopColor="#2563eb"
+                        stopOpacity={0.8}
+                      />
                     </linearGradient>
                   </defs>
 
@@ -475,14 +488,17 @@ const AdminDashboard = () => {
                   />
 
                   <Tooltip
-                    cursor={{ fill: "rgba(0,0,0,0.02)" }}
+                    cursor={{
+                      fill: "rgba(0,0,0,0.03)",
+                    }}
                     contentStyle={{
-                      backgroundColor: "rgba(11, 11, 11, 0.9)",
+                      backgroundColor: "rgba(59,130,246,0.5)", 
                       borderRadius: "16px",
                       border: "none",
-                      boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                      backdropFilter: "blur(8px)",
-                      padding: "16px",
+                      color: "#ffffff",
+                      boxShadow: "0 10px 25px rgba(59,130,246,0.4)",
+                      backdropFilter: "blur(6px)",
+                      padding: "12px 14px",
                     }}
                   />
 
@@ -506,7 +522,13 @@ const AdminDashboard = () => {
               <ResponsiveContainer width="100%" height={320}>
                 <AreaChart data={trendData}>
                   <defs>
-                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="areaGradient"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="0%" stopColor="#10b981" stopOpacity={0.2} />
                       <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
@@ -535,7 +557,8 @@ const AdminDashboard = () => {
                     contentStyle={{
                       backgroundColor: "rgba(247, 243, 243, 0.9)",
                       borderRadius: "16px",
-                      border: "none",
+                      color: "#111827",
+                      border: "black",
                       boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                       backdropFilter: "blur(8px)",
                       padding: "16px",
@@ -549,7 +572,12 @@ const AdminDashboard = () => {
                     strokeWidth={3}
                     fillOpacity={1}
                     fill="url(#areaGradient)"
-                    dot={{ fill: "#10b981", r: 4, strokeWidth: 2, stroke: "#fff" }}
+                    dot={{
+                      fill: "#10b981",
+                      r: 4,
+                      strokeWidth: 2,
+                      stroke: "#fff",
+                    }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -564,11 +592,19 @@ const AdminDashboard = () => {
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <motion.div variants={itemVariants}>
-              <RecentTable title="Latest Talent" data={recentUsers} columns={userColumns} />
+              <RecentTable
+                title="Latest Talent"
+                data={recentUsers}
+                columns={userColumns}
+              />
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <RecentTable title="Latest Roles" data={recentJobs} columns={jobColumns} />
+              <RecentTable
+                title="Latest Roles"
+                data={recentJobs}
+                columns={jobColumns}
+              />
             </motion.div>
 
             <motion.div variants={itemVariants}>
@@ -605,7 +641,7 @@ const AdminDashboard = () => {
                 animate={{
                   width: `${Math.min(
                     100,
-                    ((systemHealth.jobsExpiringSoon ?? 0) / 50) * 100
+                    ((systemHealth.jobsExpiringSoon ?? 0) / 50) * 100,
                   )}%`,
                 }}
                 className="h-full bg-amber-500"
@@ -636,7 +672,7 @@ const AdminDashboard = () => {
                 animate={{
                   width: `${Math.min(
                     100,
-                    ((systemHealth.jobsWithoutApplications ?? 0) / 20) * 100
+                    ((systemHealth.jobsWithoutApplications ?? 0) / 20) * 100,
                   )}%`,
                 }}
                 className="h-full bg-rose-500"
@@ -667,7 +703,7 @@ const AdminDashboard = () => {
                 animate={{
                   width: `${Math.min(
                     100,
-                    ((systemHealth.activeRecruiters ?? 0) / 100) * 100
+                    ((systemHealth.activeRecruiters ?? 0) / 100) * 100,
                   )}%`,
                 }}
                 className="h-full bg-blue-500"
