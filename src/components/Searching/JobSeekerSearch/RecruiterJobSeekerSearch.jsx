@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { searchJobSeekers } from "../../../api/JobSeekerApi";
 import { useSearchParams } from "react-router-dom";
 import JobSeekerResults from "./JobSeekerResults";
+import JobSeekerSearch from "./JobSeekerSearch";
 
 import { Search, Filter, MapPin, Tag } from "lucide-react";
 
