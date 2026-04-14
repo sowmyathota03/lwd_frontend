@@ -12,6 +12,12 @@ export const getRecentSearches = async (limit = 3) => {
   return response.data;
 };
 
+
+export const getRecentCandidateSearches = async (limit = 3) => {
+  const response = await axiosInstance.get(`/search-history/candidates/recent?limit=${limit}`);
+  return response.data;
+};
+
 // =====================================
 // DELETE SINGLE SEARCH HISTORY
 // =====================================

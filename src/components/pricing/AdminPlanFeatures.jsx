@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPlanFeatures, upsertFeaturesBulk } from "../../api/pricingApi";
+import { getPlanFeatures, upsertFeaturesBulk } from "../../api/PricingApi";
 
 const LIMIT_TYPES = ["TOTAL", "DAILY", "MONTHLY"];
 

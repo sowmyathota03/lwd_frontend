@@ -2,6 +2,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
+
   // baseURL: "https://lwd-backend-production-85cd.up.railway.app/api",
 
 
@@ -12,6 +13,10 @@ const axiosInstance = axios.create({
   // baseURL: "http://192.168.1.8:8080/api",
 
   baseURL: "https://lwd-backend.onrender.com/api",
+
+
+  // baseURL: import.meta.env.VITE_API_BASE_URL,
+  // baseURL: "http://192.168.1.8:8080/api",
 
 
   headers: {

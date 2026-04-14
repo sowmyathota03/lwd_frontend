@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
+<<<<<<< HEAD:src/components/Searching/JobSeekerSearch/RecentJobSeekerSearch.jsx
+
+export default function RecentJobSeekerSearch() {
+=======
 export default function JobSeekerSearch() {
+>>>>>>> 9306d8d7ac12977915f88d5af839a2cc1eccde31:src/components/Searching/JobSeekerSearch/JobSeekerSearch.jsx
     const [query, setQuery] = useState("");
     const [role, setRole] = useState("all");
     const [results, setResults] = useState([]);
