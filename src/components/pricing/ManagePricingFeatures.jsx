@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { deleteFeature, getAllFeatures } from "../../api/PricingFeatureApi"; // API calls
+import { deleteFeature, getAllFeatures } from "../../api/pricingFeatureApi"; // API calls
 import FeatureForm from "./FeatureForm"; // The create/update form we built earlier
 
 const formatFeatureName = (code) =>
