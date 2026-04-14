@@ -139,7 +139,7 @@ function RecruiterJobSeekerSearch() {
                       value={filters.keyword}
                       onChange={handleChange}
                       className="lwd-input-with-icon pl-10"
-                      placeholder="Java Developer"
+                      placeholder="Name"
                     />
                   </div>
                 </div>

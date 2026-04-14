@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 export default function JobSeekerSearch() {
     const [query, setQuery] = useState("");
     const [role, setRole] = useState("all");
