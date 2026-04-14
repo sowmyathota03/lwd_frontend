@@ -9,7 +9,9 @@ const axiosInstance = axios.create({
   // baseURL: "http://localhost:8080/api",
 
   // 👉 If using mobile / same network, use this instead:
-  baseURL: "http://192.168.1.8:8080/api",
+  // baseURL: "http://192.168.1.8:8080/api",
+
+  baseURL: "https://lwd-backend.onrender.com/api",
 
 
   headers: {
@@ -17,7 +19,6 @@ const axiosInstance = axios.create({
   },
   timeout: 10000,
 });
-
 
 // Attach JWT Token Automatically
 
@@ -59,5 +60,4 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 export default axiosInstance;
