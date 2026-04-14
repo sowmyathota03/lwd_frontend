@@ -5,7 +5,7 @@ import {
   updatePlan,
   getAllPlans,
   togglePlan,
-} from "../../api/pricingApi";
+} from "../../api/PricingApi";
 import AdminPlansForm from "./AdminPlansForm";
 import { useNavigate } from "react-router-dom";
 
