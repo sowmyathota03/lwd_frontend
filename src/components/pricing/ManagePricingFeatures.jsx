@@ -1,4 +1,3 @@
-// ./src/components/admin/ManagePricingFeatures.jsx
 import { useEffect, useState } from "react";
 import {
   getAllFeatures,
