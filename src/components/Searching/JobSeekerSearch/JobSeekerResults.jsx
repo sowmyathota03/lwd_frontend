@@ -10,6 +10,7 @@ import {
   Eye,
 } from "lucide-react";
 import { viewResume } from "../../../api/resumeApi";
+import { formatLastActive } from "../../../utils/formatLastActive";
 
 function JobSeekerResults({ results, loading, pagination, handlePageChange }) {
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -82,10 +83,7 @@ function JobSeekerResults({ results, loading, pagination, handlePageChange }) {
                         {js.fullName}
                       </h3>
                       <span className="lwd-text text-xs my-auto text-gray-500">
-                        Last Updated:{" "}
-                        {js?.updatedAt
-                          ? new Date(js.updatedAt).toLocaleDateString()
-                          : new Date(js?.createdAt).toLocaleDateString()}
+                        {formatLastActive(js.lastActiveAt)}
                       </span>
                     </div>
                     <p className="lwd-text flex items-center gap-1 flex-wrap">

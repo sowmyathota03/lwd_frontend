@@ -1,6 +1,6 @@
 //./src/utils/formatLastActive.js
 export const formatLastActive = (lastActiveAt) => {
-  if (!lastActiveAt) return "Offline";
+  if (!lastActiveAt) return "";
 
   const last = new Date(lastActiveAt);
   const now = new Date();
