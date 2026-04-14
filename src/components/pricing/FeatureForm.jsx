@@ -1,6 +1,6 @@
 // ./src/components/admin/FeatureForm.jsx
 import { useState, useEffect } from "react";
-import { createFeature, updateFeature } from "../../api/pricingFeatureApi";
+import { createFeature, updateFeature } from "../../api/PricingFeatureApi";
 
 export default function FeatureForm({ feature, planId, onSuccess, onCancel }) {
   /**
