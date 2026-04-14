@@ -35,7 +35,7 @@ function JobSeekerResults({ results, loading, pagination, handlePageChange }) {
   };
 
   const handleViewResume = async (resumeId) => {
-    const data = await viewResume(resumeId);
+    const data = await viewResume(resumeId, "SEARCH");
     setPreviewUrl(data.fileUrl);
   };
 
@@ -134,12 +134,12 @@ function JobSeekerResults({ results, loading, pagination, handlePageChange }) {
                     onClick={() => handleViewResume(js.resumeId)}
                     disabled={!js?.resumeId}
                     className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition-all duration-200
-    ${
-      js?.resumeId
-        ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
-        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-    }
-  `}
+                      ${
+                        js?.resumeId
+                          ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }
+                    `}
                   >
                     <Eye size={16} />
                     View Resume
@@ -155,23 +155,30 @@ function JobSeekerResults({ results, loading, pagination, handlePageChange }) {
                   )}
 
                   {/* Right: Last Updated */}
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {js?.resumeUpdatedAt ? (
-                      <>
-                        Resume Last updated At:{" "}
-                        {new Date(js.resumeUpdatedAt).toLocaleDateString(
-                          "en-IN",
-                          {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          },
-                        )}
-                      </>
-                    ) : (
-                      "Resume not uploaded yet"
+                  <div className="flex flex-col items-start gap-1">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {js?.resumeUpdatedAt ? (
+                        <>
+                          Resume Last updated At:{" "}
+                          {new Date(js.resumeUpdatedAt).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          )}
+                        </>
+                      ) : (
+                        "Resume not uploaded yet"
+                      )}
+                    </span>
+                    {js?.resumeViewCount !== 0 && (
+                      <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                        Resume Total Views: {js.resumeViewCount}
+                      </span>
                     )}
-                  </span>
+                  </div>
                 </div>
 
                 {previewUrl && (
@@ -207,7 +214,7 @@ function JobSeekerResults({ results, loading, pagination, handlePageChange }) {
               {/* Action Button */}
               <Link
                 to={`/profile/${js.userId}`}
-                className="lwd-btn-primary-sm self-start sm:self-center whitespace-nowrap flex items-center gap-1"
+                className="lwd-btn-primary self-start sm:self-center whitespace-nowrap flex items-center gap-1"
               >
                 View Profile
               </Link>

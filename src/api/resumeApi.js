@@ -29,9 +29,23 @@ export const deleteResume = async (resumeId) => {
   return response.data;
 };
 
+export const viewResume = async (
+  resumeId,
+  viewSource = "SEARCH",
+  jobId = null,
+  applicationId = null,
+) => {
+  const response = await axiosInstance.post(
+    `/resumes/${resumeId}/view`,
+    null, // no body
+    {
+      params: {
+        viewSource,
+        jobId,
+        applicationId,
+      },
+    },
+  );
 
-
-export const viewResume = async (resumeId) => {
-  const response = await axiosInstance.get(`/resumes/${resumeId}/view`,);
   return response.data;
 };
