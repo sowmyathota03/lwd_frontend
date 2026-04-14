@@ -4,7 +4,7 @@ import {
   subscribePlan,
   getCurrentSubscription,
   cancelSubscription,
-} from "../../api/pricingApi";
+} from "../../api/PricingApi";
 import PlanCard from "../../components/pricing/PlanCard";
 
 export default function CandidatePlans() {

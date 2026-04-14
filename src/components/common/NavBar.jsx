@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useRef, useMemo } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { getCurrentSubscription } from "../../api/pricingApi";
+import { getCurrentSubscription } from "../../api/PricingApi";
 
 function NavBar() {
   const { user, logout } = useContext(AuthContext);
