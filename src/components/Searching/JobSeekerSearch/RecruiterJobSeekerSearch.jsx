@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { searchJobSeekers } from "../../../api/JobSeekerApi";
+import { getRecentCandidateSearches, deleteSearchHistory } from "../../../api/searchHistoryApi";
 import { useSearchParams } from "react-router-dom";
 import JobSeekerResults from "./JobSeekerResults";
-import { Search, Filter, MapPin, Tag } from "lucide-react";
+import { Search, History } from "lucide-react";
 
 function RecruiterJobSeekerSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,6 +22,9 @@ function RecruiterJobSeekerSearch() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(null);
+
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [recentLoading, setRecentLoading] = useState(false);
 
   const lastRequestKeyRef = useRef("");
 
@@ -56,29 +60,57 @@ function RecruiterJobSeekerSearch() {
     };
   }, []);
 
-  const fetchResults = useCallback(async (activeFilters) => {
-    const requestBody = buildRequestBody(activeFilters);
-    const requestKey = JSON.stringify(requestBody);
+  const fetchResults = useCallback(
+    async (activeFilters) => {
+      const requestBody = buildRequestBody(activeFilters);
+      const requestKey = JSON.stringify(requestBody);
 
-    if (lastRequestKeyRef.current === requestKey) {
-      return;
-    }
+      if (lastRequestKeyRef.current === requestKey) {
+        return;
+      }
 
-    lastRequestKeyRef.current = requestKey;
+      lastRequestKeyRef.current = requestKey;
 
+      try {
+        setLoading(true);
+        const response = await searchJobSeekers(requestBody);
+        setResults(response?.data?.content || []);
+        setPagination(response?.data || null);
+      } catch (error) {
+        console.error("Search failed:", error);
+        setResults([]);
+        setPagination(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [buildRequestBody],
+  );
+
+  const fetchRecentSearches = useCallback(async () => {
     try {
-      setLoading(true);
-      const response = await searchJobSeekers(requestBody);
-      setResults(response?.data?.content || []);
-      setPagination(response?.data || null);
+      setRecentLoading(true);
+
+      const response = await getRecentCandidateSearches(5);
+
+      const recentData = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : [];
+
+      setRecentSearches(recentData);
     } catch (error) {
-      console.error("Search failed:", error);
-      setResults([]);
-      setPagination(null);
+      console.error("Failed to fetch recent candidate searches:", error);
+      setRecentSearches([]);
     } finally {
-      setLoading(false);
+      setRecentLoading(false);
     }
-  }, [buildRequestBody]);
+  }, []);
+
+  useEffect(() => {
+    fetchRecentSearches();
+  }, [fetchRecentSearches]);
 
   useEffect(() => {
     const urlFilters = {
@@ -112,16 +144,15 @@ function RecruiterJobSeekerSearch() {
     }
   }, [searchParams, fetchResults]);
 
-  const handleSearch = () => {
-    const updatedFilters = {
-      ...filters,
-      page: 0,
-    };
-
+  const updateSearchParams = (updatedFilters) => {
     const params = {};
 
-    if (updatedFilters.keyword?.trim()) params.keyword = updatedFilters.keyword.trim();
-    if (updatedFilters.skills?.trim()) params.skills = updatedFilters.skills.trim();
+    if (updatedFilters.keyword?.trim()) {
+      params.keyword = updatedFilters.keyword.trim();
+    }
+    if (updatedFilters.skills?.trim()) {
+      params.skills = updatedFilters.skills.trim();
+    }
     if (updatedFilters.currentLocation?.trim()) {
       params.currentLocation = updatedFilters.currentLocation.trim();
     }
@@ -134,29 +165,27 @@ function RecruiterJobSeekerSearch() {
     if (updatedFilters.maxExperience !== "") {
       params.maxExperience = updatedFilters.maxExperience;
     }
-    if (updatedFilters.page > 0) {
+    if ((updatedFilters.page ?? 0) > 0) {
       params.page = String(updatedFilters.page);
     }
 
     setSearchParams(params);
   };
 
+  const handleSearch = () => {
+    const updatedFilters = {
+      ...filters,
+      page: 0,
+    };
+
+    updateSearchParams(updatedFilters);
+  };
+
   const handlePageChange = (newPage) => {
-    const params = {};
-
-    if (filters.keyword?.trim()) params.keyword = filters.keyword.trim();
-    if (filters.skills?.trim()) params.skills = filters.skills.trim();
-    if (filters.currentLocation?.trim()) {
-      params.currentLocation = filters.currentLocation.trim();
-    }
-    if (filters.preferredLocation?.trim()) {
-      params.preferredLocation = filters.preferredLocation.trim();
-    }
-    if (filters.minExperience !== "") params.minExperience = filters.minExperience;
-    if (filters.maxExperience !== "") params.maxExperience = filters.maxExperience;
-    if (newPage > 0) params.page = String(newPage);
-
-    setSearchParams(params);
+    updateSearchParams({
+      ...filters,
+      page: newPage,
+    });
   };
 
   const handleClearFilters = () => {
@@ -176,6 +205,65 @@ function RecruiterJobSeekerSearch() {
     setPagination(null);
   };
 
+  const parseFiltersJson = (filtersJson) => {
+    if (!filtersJson) return {};
+
+    try {
+      return typeof filtersJson === "string"
+        ? JSON.parse(filtersJson)
+        : filtersJson;
+    } catch (error) {
+      console.error("Invalid filtersJson:", error);
+      return {};
+    }
+  };
+
+  const handleRecentSearchClick = (item) => {
+    const parsedFilters = parseFiltersJson(item.filtersJson);
+
+    const updatedFilters = {
+      keyword: item.keyword || "",
+      skills: Array.isArray(parsedFilters.skills)
+        ? parsedFilters.skills.join(", ")
+        : parsedFilters.skills || "",
+      currentLocation: parsedFilters.currentLocation || "",
+      preferredLocation: parsedFilters.preferredLocation || "",
+      minExperience:
+        parsedFilters.minExperience !== null &&
+        parsedFilters.minExperience !== undefined
+          ? String(parsedFilters.minExperience)
+          : "",
+      maxExperience:
+        parsedFilters.maxExperience !== null &&
+        parsedFilters.maxExperience !== undefined
+          ? String(parsedFilters.maxExperience)
+          : "",
+      page: 0,
+      size: 10,
+    };
+
+    setFilters(updatedFilters);
+    lastRequestKeyRef.current = "";
+    updateSearchParams(updatedFilters);
+  };
+
+  const renderRecentSearchLabel = (item) => {
+    const parsedFilters = parseFiltersJson(item.filtersJson);
+    const parts = [];
+
+    if (item.keyword) parts.push(item.keyword);
+
+    if (Array.isArray(parsedFilters.skills) && parsedFilters.skills.length) {
+      parts.push(parsedFilters.skills.join(", "));
+    }
+
+    if (parsedFilters.currentLocation) {
+      parts.push(parsedFilters.currentLocation);
+    }
+
+    return parts.length ? parts.join(" • ") : "Recent search";
+  };
+
   return (
     <div className="lwd-page-bg min-h-screen">
       <div className="lwd-container py-6">
@@ -189,111 +277,185 @@ function RecruiterJobSeekerSearch() {
           </p>
         </div>
 
-        <div className="lwd-grid gap-6">
-          <div className="lwd-sidebar-layout">
-            <div className="lwd-card sticky top-6">
-              <div className="lwd-filter-header flex items-center gap-2 border-b border-gray-200 pb-3 dark:border-gray-700">
-                <Filter className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <span className="font-semibold text-gray-800 dark:text-white">
-                  Filters
-                </span>
-              </div>
+        <div className="space-y-6">
+          {/* 🔥 TOP FILTER BAR */}
+          <div className="lwd-card p-4">
+            {/* Row 1 */}
+            <div className="lwd-card p-4 space-y-4">
+              {/* 🔥 FLEX FILTER BAR */}
+              <div className="flex flex-wrap items-center gap-3">
+                {/* 🔍 Keyword (BIG) */}
+                <input
+                  name="keyword"
+                  value={filters.keyword}
+                  onChange={handleChange}
+                  className="lwd-input flex-2 min-w-55"
+                  placeholder="🔍 Keyword (Java Developer)"
+                />
 
-              <div className="lwd-filter-body space-y-4">
-                <div>
-                  <label className="lwd-label mb-1 block">Keyword</label>
-                  <div className="lwd-input-group relative">
-                    <Search className="lwd-input-icon absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                    <input
-                      name="keyword"
-                      value={filters.keyword}
-                      onChange={handleChange}
-                      className="lwd-input-with-icon pl-10"
-                      placeholder="Java Developer"
-                    />
-                  </div>
-                </div>
+                {/* 🛠 Skills */}
+                <input
+                  name="skills"
+                  value={filters.skills}
+                  onChange={handleChange}
+                  className="lwd-input flex-2 min-w-55"
+                  placeholder="Skills"
+                />
 
-                <div>
-                  <label className="lwd-label mb-1 block">Skills</label>
-                  <div className="lwd-input-group relative">
-                    <Tag className="lwd-input-icon absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                    <input
-                      name="skills"
-                      value={filters.skills}
-                      onChange={handleChange}
-                      className="lwd-input-with-icon pl-10"
-                      placeholder="React, Node"
-                    />
-                  </div>
-                </div>
+                {/* 📍 Location */}
+                <input
+                  name="preferredLocation"
+                  value={filters.preferredLocation}
+                  onChange={handleChange}
+                  className="lwd-input flex-1 min-w-55"
+                  placeholder="Preferred Location"
+                />
 
-                <div>
-                  <label className="lwd-label mb-1 block">Location</label>
-                  <div className="lwd-input-group relative">
-                    <MapPin className="lwd-input-icon absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                    <input
-                      name="currentLocation"
-                      value={filters.currentLocation}
-                      onChange={handleChange}
-                      className="lwd-input-with-icon pl-10"
-                      placeholder="Hyderabad"
-                    />
-                  </div>
-                </div>
+                {/* 💼 Experience */}
+                <input
+                  name="minExperience"
+                  value={filters.minExperience}
+                  onChange={handleChange}
+                  className="lwd-input w-22.5"
+                  placeholder="Min Exp"
+                />
 
-                <div>
-                  <label className="lwd-label mb-1 block">
-                    Experience (Years)
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      name="minExperience"
-                      value={filters.minExperience}
-                      onChange={handleChange}
-                      className="lwd-input"
-                      placeholder="Min"
-                    />
-                    <input
-                      name="maxExperience"
-                      value={filters.maxExperience}
-                      onChange={handleChange}
-                      className="lwd-input"
-                      placeholder="Max"
-                    />
-                  </div>
-                </div>
-              </div>
+                <input
+                  name="maxExperience"
+                  value={filters.maxExperience}
+                  onChange={handleChange}
+                  className="lwd-input w-22.5"
+                  placeholder="Max Exp"
+                />
 
-              <div className="lwd-filter-footer mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                {/* 💰 CTC */}
+                <input
+                  name="minExpectedCTC"
+                  value={filters.minExpectedCTC}
+                  onChange={handleChange}
+                  className="lwd-input w-27.5"
+                  placeholder="Min CTC"
+                />
+
+                <input
+                  name="maxExpectedCTC"
+                  value={filters.maxExpectedCTC}
+                  onChange={handleChange}
+                  className="lwd-input w-27.5"
+                  placeholder="Max CTC"
+                />
+
+                {/* 📄 Notice */}
+                <select
+                  name="noticeStatus"
+                  value={filters.noticeStatus || ""}
+                  onChange={handleChange}
+                  className="lwd-input w-40"
+                >
+                  <option value="">Notice</option>
+                  <option value="IMMEDIATE">Immediate</option>
+                  <option value="SERVING_NOTICE">Serving</option>
+                  <option value="NOT_SERVING">Not Serving</option>
+                </select>
+
+                {/* ⚡ Immediate */}
+                <select
+                  name="immediateJoiner"
+                  value={filters.immediateJoiner ?? ""}
+                  onChange={handleChange}
+                  className="lwd-input w-37.5"
+                >
+                  <option value="">Immediate</option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+
+                {/* 📅 Available */}
+                <input
+                  type="date"
+                  name="availableBefore"
+                  value={filters.availableBefore || ""}
+                  onChange={handleChange}
+                  className="lwd-input w-42.5"
+                />
+
+                {/* 🔽 Sort */}
+                <select
+                  name="sortBy"
+                  value={filters.sortBy || "totalExperience"}
+                  onChange={handleChange}
+                  className="lwd-input w-40"
+                >
+                  <option value="totalExperience">Experience</option>
+                  <option value="expectedCTC">CTC</option>
+                  <option value="createdAt">Newest</option>
+                </select>
+
+                {/* 🔽 Direction */}
+                <select
+                  name="sortDirection"
+                  value={filters.sortDirection || "DESC"}
+                  onChange={handleChange}
+                  className="lwd-input w-40"
+                >
+                  <option value="DESC">Desc</option>
+                  <option value="ASC">Asc</option>
+                </select>
+
+                {/* 🔥 Buttons */}
                 <button
                   onClick={handleSearch}
-                  className="lwd-btn-primary w-full flex items-center justify-center gap-2"
+                  className="lwd-btn-primary px-5"
                   disabled={loading}
                 >
-                  {loading ? "Searching..." : "Apply Filters"}
+                  {loading ? "..." : "Search"}
                 </button>
 
                 <button
                   onClick={handleClearFilters}
-                  type="button"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-sm font-medium hover:bg-gray-50 dark:hover:bg-slate-800 transition"
-                  disabled={loading}
+                  className="px-4 py-2 border rounded-xl text-sm hover:bg-gray-50 dark:hover:bg-slate-800"
                 >
-                  Clear Filters
+                  Clear
                 </button>
               </div>
             </div>
+
+            {/* 🔥 Recent Searches */}
+            <div className="flex mt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <History className="h-4 w-4 text-gray-500" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Recent Searches
+                </span>
+              </div>
+
+              {recentLoading ? (
+                <p className="text-sm text-gray-500">Loading...</p>
+              ) : recentSearches.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {recentSearches.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleRecentSearchClick(item)}
+                      className="px-3 py-1.5 rounded-full text-xs bg-gray-100 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:hover:bg-slate-700 transition"
+                    >
+                      {renderRecentSearchLabel(item)}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">No recent searches</p>
+              )}
+            </div>
           </div>
 
-          <div className="lwd-content-layout">
-            <JobSeekerResults
-              results={results}
-              loading={loading}
-              pagination={pagination}
-              handlePageChange={handlePageChange}
-            />
-          </div>
+          {/* 🔥 RESULTS */}
+          <JobSeekerResults
+            results={results}
+            loading={loading}
+            pagination={pagination}
+            handlePageChange={handlePageChange}
+          />
         </div>
       </div>
     </div>

@@ -23,7 +23,6 @@ import RecommendedJobs from "./pages/public/RecommendedJobs";
 
 import Profile from "./pages/profile/Profile";
 
-import ResumeUpload from "./components/jobs/ResumeUpload";
 import JobAlert from "./components/jobs/JobAlert";
 import CareerAdvice from "./components/jobs/CareerAdvice";
 import ApplyJob from "./components/jobs/ApplyJob";
@@ -80,6 +79,7 @@ import CandidatePlans from "./pages/pricing/CandidatePlans";
 
 import MessagingPage from "./pages/messaging/MessagingPage";
 import NotificationPage from "./pages/notifications/NotificationPage";
+import ResumeUploadPage from "./pages/public/UploadResumePage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -163,7 +163,7 @@ function App() {
         <Route element={<PrivateRoute allowedRoles={["JOB_SEEKER"]} />}>
           <Route path="/apply/:jobId" element={<ApplyJob />} />
           <Route path="/recommended" element={<RecommendedJobs />} />
-          <Route path="/resume-upload" element={<ResumeUpload />} />
+          <Route path="/resume-upload" element={<ResumeUploadPage />} />
           <Route path="/job-alert" element={<JobAlert />} />
           <Route path="/career-advice" element={<CareerAdvice />} />
           <Route path="/my/applications" element={<MyApplications />} />
