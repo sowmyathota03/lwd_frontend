@@ -107,3 +107,10 @@ export const getRecruiterPlans = async () => {
   console.log("Recruiter Plans:", res.data);
   return res.data;
 };
+
+
+export const getRecruiterAdminPlans = async () => {
+  const res = await axios.get("/plans/company-admin");
+  console.log("Company Admin Plans:", res.data);
+  return res.data;
+};

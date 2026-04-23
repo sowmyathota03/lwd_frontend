@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerRecruiter } from "../api/AuthApi";
-import { 
-  Building2, 
-  Mail, 
-  Lock, 
-  Phone, 
-  Eye, 
-  EyeOff, 
+import {
+  Building2,
+  Mail,
+  Lock,
+  Phone,
+  Eye,
+  EyeOff,
   CheckCircle,
   AlertCircle,
   ChevronRight,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getApiErrorMessage } from "../utils/errorUtils";
 
 function RegisterRecruiter() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function RegisterRecruiter() {
     name: "",
     email: "",
     password: "",
-    contactNumber: "",  
+    contactNumber: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -39,21 +40,31 @@ function RegisterRecruiter() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     setError("");
     setSuccessMessage("");
 
     try {
-      const response = await registerRecruiter(formData);
+      const response = await registerRecruiter({
+        ...formData,
+        email: formData.email.trim().toLowerCase(), // ✅ normalize
+      });
+
       console.log("Recruiter Registered:", response);
 
-      setSuccessMessage("Registration successful! Redirecting to login...");
+      setSuccessMessage(
+        response?.message ||
+          "Registration successful! Please verify your email before login.",
+      );
 
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-    } catch (error) {
-      setError(error.response?.data || "Registration Failed");
+    } catch (err) {
+      setError(
+        getApiErrorMessage(err, "Registration failed. Please try again."),
+      );
     } finally {
       setLoading(false);
     }
@@ -61,19 +72,17 @@ function RegisterRecruiter() {
 
   return (
     <div className="lwd-page flex flex-col justify-center items-center py-12 px-4 relative overflow-hidden">
-      
       {/* Decorative Background Glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full max-w-md relative z-10"
       >
         <div className="lwd-card-glass p-8 md:p-10">
-          
           {/* Header Section */}
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/10 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 mb-6 shadow-sm ring-1 ring-indigo-500/20">
@@ -98,7 +107,9 @@ function RegisterRecruiter() {
                 className="mb-8 p-4 rounded-xl bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border border-green-100 dark:border-green-800/50 flex items-center gap-3 overflow-hidden"
               >
                 <CheckCircle size={20} className="shrink-0" />
-                <span className="text-sm font-bold tracking-wide">{successMessage}</span>
+                <span className="text-sm font-bold tracking-wide">
+                  {successMessage}
+                </span>
               </motion.div>
             )}
 
@@ -117,7 +128,6 @@ function RegisterRecruiter() {
           </AnimatePresence>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
             {/* Name Field */}
             <div className="space-y-1">
               <label className="lwd-label">Full Name</label>
@@ -207,7 +217,12 @@ function RegisterRecruiter() {
                 <span className="font-black uppercase tracking-widest text-sm">
                   {loading ? "Registering..." : "Start Hiring"}
                 </span>
-                {!loading && <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />}
+                {!loading && (
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
+                )}
               </button>
             </div>
 
@@ -220,11 +235,13 @@ function RegisterRecruiter() {
                   className="inline-flex items-center gap-1 font-black text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors group"
                 >
                   Login here
-                  <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight
+                    size={14}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
                 </Link>
               </p>
             </div>
-
           </form>
         </div>
       </motion.div>
@@ -232,4 +249,4 @@ function RegisterRecruiter() {
   );
 }
 
-export default RegisterRecruiter;
+export default RegisterRecruiter;

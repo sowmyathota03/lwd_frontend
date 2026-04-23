@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { searchJobSeekers } from "../../../api/JobSeekerApi";
-import { getRecentCandidateSearches, deleteSearchHistory } from "../../../api/searchHistoryApi";
+import {
+  getRecentCandidateSearches,
+  deleteSearchHistory,
+} from "../../../api/searchHistoryApi";
 import { useSearchParams } from "react-router-dom";
 import JobSeekerResults from "./JobSeekerResults";
 import { Search, History } from "lucide-react";
@@ -264,6 +267,19 @@ function RecruiterJobSeekerSearch() {
     return parts.length ? parts.join(" • ") : "Recent search";
   };
 
+  const handleDeleteSearch = async (id, e) => {
+    e.stopPropagation(); // ❗ prevent click triggering search
+
+    try {
+      await deleteSearchHistory(id);
+
+      // remove from UI instantly
+      setRecentSearches((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Failed to delete search history:", error);
+    }
+  };
+
   return (
     <div className="lwd-page-bg min-h-screen">
       <div className="lwd-container py-6">
@@ -421,30 +437,57 @@ function RecruiterJobSeekerSearch() {
             </div>
 
             {/* 🔥 Recent Searches */}
-            <div className="flex mt-4">
+            <div className="mt-4 flex">
               <div className="flex items-center gap-2 mb-2">
-                <History className="h-4 w-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <History className="h-4 w-4 text-gray-500 dark:text-slate-400" />
+                <span className="text-sm font-medium text-gray-700 dark:text-slate-300">
                   Recent Searches
                 </span>
               </div>
 
               {recentLoading ? (
-                <p className="text-sm text-gray-500">Loading...</p>
+                <p className="text-sm text-gray-500 dark:text-slate-400">
+                  Loading...
+                </p>
               ) : recentSearches.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {recentSearches.map((item) => (
-                    <button
+                    <div
                       key={item.id}
-                      onClick={() => handleRecentSearchClick(item)}
-                      className="px-3 py-1.5 rounded-full text-xs bg-gray-100 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:hover:bg-slate-700 transition"
-                    >
-                      {renderRecentSearchLabel(item)}
-                    </button>
+                      className="
+                      flex items-center gap-1 px-3 py-1.5 rounded-full text-xs transition
+
+                      bg-gray-100 text-gray-700 
+                      hover:bg-blue-50 hover:text-blue-700
+
+                      dark:bg-slate-800 dark:text-slate-300
+                      dark:hover:bg-slate-700 dark:hover:text-blue-400
+                    "
+                      >
+                      {/* 🔍 Search */}
+                      <button onClick={() => handleRecentSearchClick(item)}>
+                        {renderRecentSearchLabel(item)}
+                      </button>
+
+                      {/* ❌ Delete */}
+                      <button
+                        onClick={(e) => handleDeleteSearch(item.id, e)}
+                        className="
+              text-red-500 hover:text-red-700 
+              dark:text-red-400 dark:hover:text-red-300
+              text-xs px-1
+            "
+                        title="Delete"
+                      >
+                        ✕
+                      </button>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-500">No recent searches</p>
+                <p className="text-sm text-gray-500 dark:text-slate-400">
+                  No recent searches
+                </p>
               )}
             </div>
           </div>

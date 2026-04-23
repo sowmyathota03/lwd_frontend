@@ -218,9 +218,9 @@ export default function AdminPlans() {
                         {plan.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                        {plan.type === "JOB_SEEKER"
-                          ? "Job Seeker"
-                          : "Recruiter"}
+                        {plan.type === "JOB_SEEKER" && "Job Seeker"}
+                        {plan.type === "RECRUITER" && "Recruiter"}
+                        {plan.type === "COMPANY_ADMIN" && "Company Admin"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                         ₹{Number(plan.price).toFixed(2)}

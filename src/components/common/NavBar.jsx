@@ -3,6 +3,9 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { getCurrentSubscription } from "../../api/PricingApi";
 
+import NotificationBell from "./NotificationBell";
+import MessageBadge from "./MessageBadge";
+
 function NavBar() {
   const { user, logout } = useContext(AuthContext);
 
@@ -68,7 +71,7 @@ function NavBar() {
         return;
       }
 
-      if (user.role === "ADMIN" || user.role === "RECRUITER_ADMIN") {
+      if (user.role === "ADMIN") {
         setCurrentPlan(null);
         return;
       }
@@ -89,13 +92,14 @@ function NavBar() {
     if (!user) return "/login";
     if (user.role === "JOB_SEEKER") return "/plans/candidate";
     if (user.role === "RECRUITER") return "/plans/recruiter";
+    if (user.role === "COMPANY_ADMIN") return "/plans/company-admin";
     return null;
   };
 
   const getPlanLabel = () => {
     if (!user) return "Plans";
 
-    if (user.role === "ADMIN" || user.role === "RECRUITER_ADMIN") {
+    if (user.role === "ADMIN") {
       return null;
     }
 
@@ -109,12 +113,16 @@ function NavBar() {
       return isFree ? "Upgrade Plan 🚀" : "My Plan";
     }
 
+    if (user.role === "COMPANY_ADMIN") {
+      return isFree ? "Upgrade Admin Plan 🚀" : "My Admin Plan";
+    }
+
     return "Plans";
   };
 
   const getPlanBadge = () => {
     if (!user) return null;
-    if (user.role === "ADMIN" || user.role === "RECRUITER_ADMIN") return null;
+    if (user.role === "ADMIN") return null;
 
     const plan = currentPlan?.planName || "FREE";
 
@@ -150,11 +158,12 @@ function NavBar() {
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl tracking-tighter group-hover:bg-blue-700 transition-colors shadow-sm">
-                LWD
-              </div>
+              <img
+                src="/assets/lwd-logo.png"
+                alt="LWD-Logo"
+                className="h-8 w-auto object-contain"
+              />
               <span className="text-xl font-bold text-slate-900 dark:text-white hidden sm:block tracking-tight">
                 Portal
               </span>
@@ -351,7 +360,7 @@ function NavBar() {
 
                           {user?.role === "JOB_SEEKER" && (
                             <Link
-                              to="/my/applications"
+                              to="/my-applications"
                               className="flex items-center px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-700 dark:hover:text-white transition-colors"
                               onClick={closeMenus}
                             >
@@ -401,74 +410,42 @@ function NavBar() {
                     )}
                   </div>
 
-                  {user?.role === "JOB_SEEKER" && (
-                    <div className="flex z-50 gap-3">
+                  {
+                    <div className="flex gap-1">
                       {/* Messages */}
-                      <NavLink to="/messaging" className={navItemClass}>
-                        <div className="relative flex items-center justify-between">
-                          <div className="flex items-center">
-                            <span className="text-lg">💬</span>
-                          </div>
-
-                          {/* Badge */}
-                          <span className="absolute bottom-0.5 left-3 text-xs bg-blue-500 text-white px-2 py-0.5 mb-4 rounded-full">
-                            3
-                          </span>
-                        </div>
-                      </NavLink>
-
+                      {user?.role === "JOB_SEEKER" && (
+                        <MessageBadge navItemClass={navItemClass} />
+                      )}
                       {/* Notifications */}
-                      <NavLink to="/notifications" className={navItemClass}>
-                      <div className="relative flex items-center justify-between ">
-                        <div className="flex items-center">
-                          <span className="text-lg">🔔</span>
-                        </div>
-
-                        {/* Badge */}
-                        <span className="absolute bottom-0.5 left-3 text-xs bg-red-500 text-white px-2 py-0.5 mb-4 rounded-full">
-                          2
-                        </span>
-                      </div>
-                      </NavLink>
+                      <NotificationBell navItemClass={navItemClass} />
                     </div>
-                  )}
+                  }
                 </div>
               )}
             </div>
 
             {/* Mobile Menu Button */}
             <div className="flex items-center md:hidden gap-2">
-               {user?.role === "JOB_SEEKER" && (
-                    <div className="flex z-50 gap-3">
-                      {/* Messages */}
-                      <NavLink to="/messaging" className={navItemClass}>
-                        <div className="relative flex items-center justify-between">
-                          <div className="flex items-center">
-                            <span className="text-lg">💬</span>
-                          </div>
-
-                          {/* Badge */}
-                          <span className="absolute bottom-0.5 left-3 text-xs bg-blue-500 text-white px-2 py-0.5 mb-4 rounded-full">
-                            3
-                          </span>
-                        </div>
-                      </NavLink>
-
-                      {/* Notifications */}
-                      <NavLink to="/notifications" className={navItemClass}>
-                      <div className="relative flex items-center justify-between ">
-                        <div className="flex items-center">
-                          <span className="text-lg">🔔</span>
-                        </div>
-
-                        {/* Badge */}
-                        <span className="absolute bottom-0.5 left-3 text-xs bg-red-500 text-white px-2 py-0.5 mb-4 rounded-full">
-                          2
-                        </span>
+              {user?.role === "JOB_SEEKER" && (
+                <div className="flex z-50 gap-3">
+                  {/* Messages */}
+                  <NavLink to="/messaging" className={navItemClass}>
+                    <div className="relative flex items-center justify-between">
+                      <div className="flex items-center">
+                        <span className="text-lg">💬</span>
                       </div>
-                      </NavLink>
+
+                      {/* Badge */}
+                      <span className="absolute bottom-0.5 left-3 text-xs bg-blue-500 text-white px-2 py-0.5 mb-4 rounded-full">
+                        3
+                      </span>
                     </div>
-                  )}
+                  </NavLink>
+
+                  {/* Notifications */}
+                  <NotificationBell navItemClass={navItemClass} />
+                </div>
+              )}
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors"

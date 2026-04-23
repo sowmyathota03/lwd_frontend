@@ -47,7 +47,7 @@ export default function RecruiterAdminHome() {
         setRecentJobs(jobsRes.data || []);
         setFunnel(funnelRes.data || {});
       } catch (err) {
-        console.error("Failed to load recruiter admin dashboard:", err);
+        console.error("Failed to load Company Admin dashboard:", err);
         setError("Unable to load dashboard data. Please try again later.");
       } finally {
         setLoading(false);
@@ -80,31 +80,31 @@ export default function RecruiterAdminHome() {
       title: "Total Recruiters",
       value: summary.totalRecruitersInCompany ?? 0,
       icon: <Users size={24} />,
-      path: "/recruiter-admin/manage-recruiter",
+      path: "/company-admin/manage-recruiter",
     },
     {
       title: "Total Jobs",
       value: summary.totalJobsPosted ?? 0,
       icon: <Briefcase size={24} />,
-      path: "/recruiter-admin/managejob",
+      path: "/company-admin/managejob",
     },
     {
       title: "Active Jobs",
       value: summary.activeJobs ?? 0,
       icon: <CheckCircle size={24} />,
-      path: "/recruiter-admin/managejob",
+      path: "/company-admin/managejob",
     },
     {
       title: "Closed Jobs",
       value: summary.closedJobs ?? 0,
       icon: <XCircle size={24} />,
-      path: "/recruiter-admin/managejob",
+      path: "/company-admin/managejob",
     },
     {
       title: "Applications",
       value: summary.totalApplications ?? 0,
       icon: <FileText size={24} />,
-      path: "/recruiter-admin/applications",
+      path: "/company-admin/applications",
     },
   ];
 
@@ -280,21 +280,21 @@ export default function RecruiterAdminHome() {
 
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => navigate("/recruiter-admin/createjob")}
+              onClick={() => navigate("/company-admin/createjob")}
               className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
             >
               + Post Job
             </button>
 
             <button
-              onClick={() => navigate("/recruiter-admin/manage-recruiter")}
+              onClick={() => navigate("/company-admin/manage-recruiter")}
               className="rounded-lg bg-green-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
             >
               Manage Recruiters
             </button>
 
             <button
-              onClick={() => navigate("/recruiter-admin/applications")}
+              onClick={() => navigate("/company-admin/applications")}
               className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               Applications

@@ -5,14 +5,14 @@ export default function RecruiterAdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
-    { to: "/recruiter-admin", label: "Dashboard", icon: "📊" },
-    { to: "/recruiter-admin/company-profile", label: "Company Profile", icon: "🏢" },
-    { to: "/recruiter-admin/manage-recruiter", label: "Manage Recruiter", icon: "👥" },
-    { to: "/recruiter-admin/managejob", label: "Manage Jobs", icon: "📄" },
-    { to: "/recruiter-admin/createjob", label: "Create Job", icon: "➕" },
-    { to: "/recruiter-admin/applications", label: "Applications", icon: "📑" },
-    { to: "/recruiter-admin/job-seekers", label: "Job Seekers", icon: "📑" },
-    { to: "/recruiter-admin/messaging", label: "Messaging", icon: "💬" },
+    { to: "/company-admin", label: "Dashboard", icon: "📊" },
+    { to: "/company-admin/company-profile", label: "Company Profile", icon: "🏢" },
+    { to: "/company-admin/manage-recruiter", label: "Manage Recruiter", icon: "👥" },
+    { to: "/company-admin/managejob", label: "Manage Jobs", icon: "📄" },
+    { to: "/company-admin/createjob", label: "Create Job", icon: "➕" },
+    { to: "/company-admin/applications", label: "Applications", icon: "📑" },
+    { to: "/company-admin/job-seekers", label: "Job Seekers", icon: "📑" },
+    { to: "/company-admin/messaging", label: "Messaging", icon: "💬" },
   ];
 
   return (
@@ -46,7 +46,7 @@ export default function RecruiterAdminDashboard() {
               lwd-dashboard-sidebar-title
             `}
           >
-            Recruiter Admin
+            Company Admin
           </h2>
 
           <button
@@ -76,7 +76,7 @@ export default function RecruiterAdminDashboard() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === "/recruiter-admin"}
+              end={item.to === "/company-admin"}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-xl px-3 py-2 font-medium transition-all duration-200 ${

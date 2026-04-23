@@ -1,6 +1,6 @@
 import axiosInstance from "./axiosInstance";
 
-const BASE_URL = "/recruiter-admin"; 
+const BASE_URL = "/company-admin"; 
 // Because axiosInstance already has: http://localhost:8080/api
 
 // ================= RECRUITERS =================
@@ -13,31 +13,42 @@ export const getAllRecruiters = async (page = 0, size = 10) => {
   return res.data;
 };
 
-
 // Get pending recruiters
-export const getPendingRecruiters = async () => {
-  const res = await axiosInstance.get(`${BASE_URL}/recruiters/pending`);
+export const getPendingRecruiters = async (page = 0, size = 10) => {
+  const res = await axiosInstance.get(`${BASE_URL}/recruiters/pending`, {
+    params: { page, size },
+  });
   return res.data;
 };
 
-// Approve recruiter
+// Generic status update
+export const updateRecruiterStatus = async (recruiterId, request) => {
+  const res = await axiosInstance.patch(
+    `${BASE_URL}/recruiters/${recruiterId}/status`,
+    request
+  );
+  return res.data;
+};
+
+// Reject recruiter
+export const rejectRecruiter = async (recruiterId) => {
+  const res = await axiosInstance.put(
+    `${BASE_URL}/recruiters/${recruiterId}/reject`
+  );
+  return res.data;
+};
+
+// Optional wrappers for cleaner usage
 export const approveRecruiter = async (recruiterId) => {
-  const res = await axiosInstance.put(
-    `${BASE_URL}/recruiters/${recruiterId}/approve`
-  );
-  return res.data;
+  return updateRecruiterStatus(recruiterId, { status: "ACTIVE" });
 };
 
-// Block / Unblock recruiter
-export const blockRecruiter = async (recruiterId, block = true) => {
-  const res = await axiosInstance.put(
-    `${BASE_URL}/recruiters/${recruiterId}/block`,
-    null,
-    {
-      params: { block },
-    }
-  );
-  return res.data;
+export const suspendRecruiter = async (recruiterId) => {
+  return updateRecruiterStatus(recruiterId, { status: "SUSPENDED" });
+};
+
+export const unblockRecruiter = async (recruiterId) => {
+  return updateRecruiterStatus(recruiterId, { status: "ACTIVE" });
 };
 
 // Get jobs by recruiter
@@ -106,16 +117,16 @@ export const deleteJob = async (jobId) => {
 
 // SUMMARY
 export const fetchRecruiterAdminSummary = () =>
-  axiosInstance.get("/recruiter-admin/dashboard/summary");
+  axiosInstance.get("/company-admin/dashboard/summary");
 
 // RECRUITER PERFORMANCE
 export const fetchRecruiterPerformance = () =>
-  axiosInstance.get("/recruiter-admin/dashboard/recruiter-performance");
+  axiosInstance.get("/company-admin/dashboard/recruiter-performance");
 
 // RECENT JOBS
 export const fetchRecruiterAdminRecentJobs = (size = 5) =>
-  axiosInstance.get(`/recruiter-admin/dashboard/recent-jobs?size=${size}`);
+  axiosInstance.get(`/company-admin/dashboard/recent-jobs?size=${size}`);
 
 // HIRING FUNNEL
 export const fetchHiringFunnel = () =>
-  axiosInstance.get("/recruiter-admin/dashboard/hiring-funnel");
+  axiosInstance.get("/company-admin/dashboard/hiring-funnel");

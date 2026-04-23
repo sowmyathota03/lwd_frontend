@@ -102,6 +102,7 @@ export default function FeatureForm({ feature, planId, onSuccess, onCancel }) {
             <option value="">Select Plan Type</option>
             <option value="JOB_SEEKER">JOB_SEEKER</option>
             <option value="RECRUITER">RECRUITER</option>
+            <option value="COMPANY_ADMIN">COMPANY_ADMIN</option>
           </select>
         </div>
 

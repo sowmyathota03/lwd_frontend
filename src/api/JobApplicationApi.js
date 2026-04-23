@@ -36,7 +36,7 @@ export const getApplicationsByJobAdmin = (jobId, page = 0, size = 10) =>
     .then((res) => res.data);
 
 /* ==================================================
-   COMPANY (RECRUITER_ADMIN / RECRUITER)
+   COMPANY (COMPANY_ADMIN / RECRUITER)
 ================================================== */
 
 // Applications by job (company scope)
@@ -57,11 +57,11 @@ export const getMyCompanyApplications = (page = 0, size = 10) =>
     .then((res) => res.data);
 
 /* ==================================================
-   ROLE-BASED (ADMIN / RECRUITER_ADMIN / RECRUITER)
+   ROLE-BASED (ADMIN / COMPANY_ADMIN / RECRUITER)
 ================================================== */
 
 // ADMIN → all applications
-// RECRUITER_ADMIN → own company applications
+// COMPANY_ADMIN → own company applications
 // RECRUITER → only own created job applications
 export const getApplicationsByRole = (page = 0, size = 10, search = "") => {
   return axiosInstance.get("/job-applications/my-applications", {
@@ -76,7 +76,6 @@ export const searchApplications = (filters = {}, page = 0, size = 10) => {
       params: { page, size },
     })
     .then((res) => {
-      console.log("Search Applications Response 👉", res.data);
       return res.data;
     })
     .catch((err) => {

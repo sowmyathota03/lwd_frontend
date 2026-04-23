@@ -54,3 +54,10 @@ export const deleteSelectedMessages = async (conversationId, messageIds) => {
   });
   return response.data;
 };
+
+
+// GET /api/v1/messaging/unread-count
+export const getUnreadMessageCount = async () => {
+  const response = await axiosInstance.get("/v1/messaging/unread-count");
+  return response.data;
+};

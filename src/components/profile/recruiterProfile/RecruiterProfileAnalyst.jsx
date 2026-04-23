@@ -121,7 +121,7 @@ const RecruiterProfileAnalyst = ({ userId }) => {
                   <td className="px-3 py-2">
                     <button
                       onClick={() =>
-                        navigate(`/recruiter-admin/applications`)
+                        navigate(`/company-admin/applications`)
                       }
                       className="lwd-link"
                     >
