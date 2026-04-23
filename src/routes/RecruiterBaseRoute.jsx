@@ -18,13 +18,13 @@ function RecruiterBaseRoute() {
     return <Navigate to="/unauthorized" replace />;
   }
 
-//   if (!user.emailVerified) {
-//     return <Navigate to="/verify-email" replace />;
-//   }
+  if (!user.emailVerified) {
+    return <Navigate to="/verify-email" replace />;
+  }
 
-//   if (user.status !== "ACTIVE") {
-//     return <Navigate to="/account-pending" replace />;
-//   }
+  if (user.status !== "ACTIVE") {
+    return <Navigate to="/account-pending" replace />;
+  }
 
   return <Outlet />;
 }

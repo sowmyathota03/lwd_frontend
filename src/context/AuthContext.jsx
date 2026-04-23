@@ -11,12 +11,21 @@ const mapDecodedTokenToUser = (decoded) => {
   return {
     id: decoded.userId ?? null,
     userId: decoded.userId ?? null,
+
     email: decoded.sub ?? "",
     role: decoded.role ?? "",
+
+    // 🔥 NEW FIELDS (must match JWT claims)
+    status: decoded.status ?? null,
+    emailVerified: decoded.emailVerified ?? false,
+    companyId: decoded.companyId ?? null,
+
+    // optional
     exp: decoded.exp ?? null,
     iat: decoded.iat ?? null,
   };
 };
+
 
 const isTokenExpired = (decoded) => {
   if (!decoded?.exp) return false;
@@ -40,14 +49,14 @@ export const AuthProvider = ({ children }) => {
     const restoreUser = async () => {
       const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-
+      
       if (!accessToken) {
         clearAuthStorage();
         setUser(null);
         setLoading(false);
         return;
       }
-
+      
       try {
         const decoded = jwtDecode(accessToken);
 
