@@ -42,7 +42,7 @@ function Companies() {
             Top Employers
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight mb-4">
-            Discover <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">Trusted Companies</span>
+            Discover <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-indigo-500">Trusted Companies</span>
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 font-light max-w-2xl mx-auto">
             Explore industry-leading organizations hiring right now. Find a company culture that fits your career goals.
@@ -88,7 +88,7 @@ function Companies() {
                 className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-500/50 transition-all duration-300 group"
               >
                 {/* Logo */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl flex items-center justify-center p-2 bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 overflow-hidden shadow-inner group-hover:scale-105 transition-transform duration-300">
                     {company.logoUrl ? (
                       <img
@@ -123,17 +123,21 @@ function Companies() {
                       )}
                     </div>
 
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider md:self-start lg:-mt-1 ${
-                        company.isActive
-                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
-                          : "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800"
+                    <span
+                      className={`px-2 py-1 text-xs rounded-md font-semibold
+                      ${
+                        company.status === "ACTIVE"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                          : company.status === "PENDING"
+                          ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                          : company.status === "REJECTED"
+                          ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                          : company.status === "SUSPENDED"
+                          ? "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                          : "bg-gray-100 text-gray-500"
                       }`}
                     >
-                      {company.isActive ? (
-                        <><span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span> Active</>
-                      ) : (
-                        <><span className="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span> Inactive</>
-                      )}
+                      {company.status}
                     </span>
                   </div>
 
@@ -151,7 +155,7 @@ function Companies() {
                 </div>
 
                 {/* Button */}
-                <div className="flex-shrink-0 w-full md:w-auto mt-4 md:mt-0">
+                <div className="shrink-0 w-full md:w-auto mt-4 md:mt-0">
                   <button
                     onClick={() =>
                       navigate(

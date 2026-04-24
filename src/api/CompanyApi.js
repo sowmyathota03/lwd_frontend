@@ -24,9 +24,9 @@ export const searchCompanies = (keyword = "", page = 0, size = 5) => {
 
 
 
-// 🔹 Create company (ADMIN, RECRUITER_ADMIN)
+// 🔹 Create company (ADMIN, COMPANY_ADMIN)
 export const createCompany = (companyData) =>
-  axiosInstance.post("/", companyData).then((res) => res.data);
+  axiosInstance.post("/companies", companyData).then((res) => res.data);
 
 // 🔹 Update company by company ID
 export const updateCompany = (id, companyData) =>
@@ -44,7 +44,7 @@ export const getMyCompany = () =>
 export const getCompanyByCreatedByUserId = (userId) =>
   axiosInstance.get(`/companies/created-by/${userId}`).then((res) => res.data);
 
-// 🔹 Get company analytics by company ID (Admin / Recruiter Admin)
+// 🔹 Get company analytics by company ID (Admin / Company Admin)
 export const getCompanyAnalytics = async (companyId) => {
   const response = await axiosInstance.get(
     `/companies/${companyId}/analytics`

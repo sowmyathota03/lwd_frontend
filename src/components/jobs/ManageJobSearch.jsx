@@ -126,6 +126,8 @@ export default function ManageJobs() {
     staleTime: 30 * 1000,
   });
 
+
+
   const jobs = data?.content || [];
   const totalPages = data?.totalPages || 0;
   const totalElements = data?.totalElements || 0;

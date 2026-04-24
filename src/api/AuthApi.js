@@ -14,6 +14,43 @@ export const registerRecruiter = async (data) => {
   return res.data;
 };
 
+export const registerCompanyAdmin = async (data) => {
+  const res = await axiosInstance.post("/auth/register/company-admin", data);
+  return res.data;
+};
+
+// ================= EMAIL VERIFICATION =================
+
+export const verifyEmail = async (data) => {
+  const res = await axiosInstance.post("/email/verify", data);
+  return res.data;
+};
+
+export const resendVerificationEmail = async (data) => {
+  const res = await axiosInstance.post("/email/resend", data);
+  return res.data;
+};
+
+
+
+// forgot password
+export const forgotPassword = async (email) => {
+  const response = await axiosInstance.post("/password/forgot", { email });
+  return response.data;
+};
+
+// reset password
+export const resetPassword = async (resetData) => {
+  const response = await axiosInstance.post("/password/reset", resetData);
+  return response.data;
+};
+
+// change password
+export const changePassword = async (changeData) => {
+  const response = await axiosInstance.post("/password/change", changeData);
+  return response.data;
+};
+
 /* ========================= */
 /* ===== LOGIN API ===== */
 /* ========================= */
@@ -21,18 +58,10 @@ export const registerRecruiter = async (data) => {
 export const loginUser = async (data) => {
   const res = await axiosInstance.post("/auth/login", data);
 
-  const { token, refreshToken } = res.data || {};
+  const { accessToken, refreshToken } = res.data || {};
 
-  if (!token) {
-    throw new Error("Login failed: token not received");
-  }
-
-  // ✅ Store tokens
-  localStorage.setItem("token", token);
-
-  // (Optional - recommended if using refresh tokens)
-  if (refreshToken) {
-    localStorage.setItem("refreshToken", refreshToken);
+  if (!accessToken || !refreshToken) {
+    throw new Error("Login failed: access token or refresh token not received");
   }
 
   return res.data;
@@ -46,15 +75,15 @@ export const logoutUser = async () => {
   try {
     const refreshToken = localStorage.getItem("refreshToken");
 
-    // ✅ Call backend logout (if implemented)
     if (refreshToken) {
       await axiosInstance.post("/auth/logout", { refreshToken });
     }
   } catch (error) {
     console.warn("Logout API failed (safe to ignore):", error?.message);
   } finally {
-    // ✅ Always clear frontend session
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   }
 };

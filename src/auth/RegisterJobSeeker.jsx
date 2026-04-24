@@ -14,6 +14,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getApiErrorMessage } from "../utils/errorUtils";
 
 function RegisterJobSeeker() {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ function RegisterJobSeeker() {
       }, 2000);
 
     } catch (error) {
-      setError(error.response?.data || "Registration Failed");
+      setError(getApiErrorMessage(error, "Registration failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -233,4 +234,4 @@ function RegisterJobSeeker() {
   );
 }
 
-export default RegisterJobSeeker;
+export default RegisterJobSeeker;

@@ -163,7 +163,7 @@ export default function CompanyAnalytics({ companyId }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* DISTRIBUTION CHART */}
-          <motion.div variants={itemVariants} className="lg:col-span-2 lwd-card-glass p-8 space-y-6 min-h-[400px]">
+          <motion.div variants={itemVariants} className="lg:col-span-2 lwd-card-glass p-8 space-y-6 min-h-100">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg">
                 <PieChartIcon size={18} />
@@ -174,7 +174,7 @@ export default function CompanyAnalytics({ companyId }) {
               </div>
             </div>
 
-            <div className="h-[280px] w-full">
+            <div className="h-70 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -273,4 +273,4 @@ export default function CompanyAnalytics({ companyId }) {
       </motion.div>
     </div>
   );
-}
+}

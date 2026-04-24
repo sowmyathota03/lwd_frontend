@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { changePassword } from "../api/PasswordApi";
+import { changePassword } from "../api/AuthApi";
 import { 
   KeyRound, 
   Lock, 
@@ -13,6 +13,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getApiErrorMessage } from "../utils/errorUtils";
 
 export default function ChangePassword() {
   const navigate = useNavigate();
@@ -109,8 +110,9 @@ export default function ChangePassword() {
         newPassword: "",
       });
     } catch (err) {
+      
       setServerError(
-        err.response?.data || "Failed to change password"
+        getApiErrorMessage(err, "Failed to change password")
       );
     } finally {
       setLoading(false);

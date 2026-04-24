@@ -1,10 +1,10 @@
 import React from 'react';
+import Notifications from '../../components/Notification/Notifications';
 
 const NotificationPage = () => {
     return (
-        <div>
-            <h1>Notifications</h1>
-            {/* Add your notification content here */}
+        <div className="lwd-page">
+            <Notifications />
         </div>
     );
 };

@@ -128,6 +128,7 @@ export default function AdminPlansForm({
                 >
                   <option value="JOB_SEEKER">Job Seeker</option>
                   <option value="RECRUITER">Recruiter</option>
+                   <option value="COMPANY_ADMIN">Company Admin</option>
                 </select>
               </div>
 

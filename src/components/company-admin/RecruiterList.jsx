@@ -3,9 +3,10 @@ import { NavLink } from "react-router-dom";
 import {
   getAllRecruiters,
   getPendingRecruiters,
-  approveRecruiter,
-  blockRecruiter,
+  updateRecruiterStatus,
+  rejectRecruiter,
 } from "../../api/RecruiterAdminApi";
+import { createUpdateUserStatusRequest } from "./UpdateUserStatusRequest";
 import ConfirmDialog from "./ConfirmDialog";
 import Loader from "../common/Loader";
 
@@ -14,6 +15,7 @@ export default function RecruiterList() {
   const [pendingRecruiters, setPendingRecruiters] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("ALL");
 
   const [page, setPage] = useState(0);
@@ -29,7 +31,11 @@ export default function RecruiterList() {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    activeTab === "ALL" ? fetchAllRecruiters() : fetchPendingRecruiters();
+    if (activeTab === "ALL") {
+      fetchAllRecruiters();
+    } else {
+      fetchPendingRecruiters();
+    }
   }, [activeTab, page]);
 
   const fetchAllRecruiters = async () => {
@@ -37,9 +43,10 @@ export default function RecruiterList() {
       setLoading(true);
       setError("");
       const data = await getAllRecruiters(page, size);
-      setAllRecruiters(data.content);
-      setTotalPages(data.totalPages);
-    } catch {
+      setAllRecruiters(data.content || []);
+      setTotalPages(data.totalPages || 0);
+    } catch (err) {
+      console.error("Failed to load recruiters", err);
       setError("Failed to load recruiters");
     } finally {
       setLoading(false);
@@ -51,12 +58,21 @@ export default function RecruiterList() {
       setLoading(true);
       setError("");
       const data = await getPendingRecruiters(page, size);
-      setPendingRecruiters(data.content);
-      setTotalPages(data.totalPages);
-    } catch {
+      setPendingRecruiters(data.content || []);
+      setTotalPages(data.totalPages || 0);
+    } catch (err) {
+      console.error("Failed to load pending recruiters", err);
       setError("Failed to load pending recruiters");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshCurrentData = async () => {
+    if (activeTab === "ALL") {
+      await fetchAllRecruiters();
+    } else {
+      await fetchPendingRecruiters();
     }
   };
 
@@ -67,16 +83,45 @@ export default function RecruiterList() {
   const handleConfirm = async () => {
     const { action, recruiter } = confirm;
 
+    if (!action || !recruiter) return;
+
     try {
       setActionLoading(true);
+      setError("");
+      setMessage("");
 
-      if (action === "approve") await approveRecruiter(recruiter.id);
-      if (action === "block") await blockRecruiter(recruiter.id, true);
-      if (action === "unblock") await blockRecruiter(recruiter.id, false);
+      if (action === "approve") {
+        await updateRecruiterStatus(
+          recruiter.id,
+          createUpdateUserStatusRequest("ACTIVE")
+        );
+        setMessage("Recruiter approved successfully.");
+      } else if (action === "reject") {
+        await rejectRecruiter(recruiter.id);
+        setMessage("Recruiter rejected successfully.");
+      } else if (action === "block") {
+        await updateRecruiterStatus(
+          recruiter.id,
+          createUpdateUserStatusRequest("SUSPENDED")
+        );
+        setMessage("Recruiter blocked successfully.");
+      } else if (action === "unblock") {
+        await updateRecruiterStatus(
+          recruiter.id,
+          createUpdateUserStatusRequest("ACTIVE")
+        );
+        setMessage("Recruiter unblocked successfully.");
+      }
 
-      fetchAllRecruiters();
-      fetchPendingRecruiters();
-    } catch {
+      await refreshCurrentData();
+
+      if (activeTab === "ALL") {
+        await fetchPendingRecruiters();
+      } else {
+        await fetchAllRecruiters();
+      }
+    } catch (err) {
+      console.error("Action failed", err);
       setError("Action failed");
     } finally {
       setActionLoading(false);
@@ -86,6 +131,28 @@ export default function RecruiterList() {
 
   const recruiters =
     activeTab === "PENDING" ? pendingRecruiters : allRecruiters;
+
+  const isPendingStatus = (status) =>
+    status === "PENDING_APPROVAL" || status === "COMPANY_PENDING_APPROVAL";
+
+  const getStatusClass = (status) => {
+    if (status === "ACTIVE") {
+      return "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400";
+    }
+
+    if (
+      status === "PENDING_APPROVAL" ||
+      status === "COMPANY_PENDING_APPROVAL"
+    ) {
+      return "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-400";
+    }
+
+    if (status === "SUSPENDED") {
+      return "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400";
+    }
+
+    return "bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-gray-300";
+  };
 
   if (loading) {
     return (
@@ -97,12 +164,10 @@ export default function RecruiterList() {
 
   return (
     <div className="lwd-page p-4 md:p-6 space-y-6">
-      {/* Header */}
       <div className="lwd-card">
         <h2 className="lwd-title text-xl">Recruiters</h2>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-3">
         {["ALL", "PENDING"].map((tab) => (
           <button
@@ -110,26 +175,32 @@ export default function RecruiterList() {
             onClick={() => {
               setActiveTab(tab);
               setPage(0);
+              setError("");
+              setMessage("");
             }}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition
-              ${activeTab === tab
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+              activeTab === tab
                 ? "bg-blue-600 text-white dark:bg-blue-500"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-slate-700 dark:text-gray-300"
-              }`}
+            }`}
           >
             {tab === "ALL" ? "All Recruiters" : "Pending Approval"}
           </button>
         ))}
       </div>
 
-      {/* Error */}
+      {message && (
+        <div className="lwd-card text-green-600 dark:text-green-400">
+          {message}
+        </div>
+      )}
+
       {error && (
         <div className="lwd-card text-red-500 dark:text-red-400">
           {error}
         </div>
       )}
 
-      {/* Table */}
       <div className="lwd-card overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="border-b border-gray-200 dark:border-gray-700 text-left">
@@ -178,13 +249,9 @@ export default function RecruiterList() {
 
                   <td className="py-3 px-4">
                     <span
-                      className={`px-2 py-1 text-xs rounded-full font-medium
-                        ${rec.status === "ACTIVE"
-                          ? "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400"
-                          : rec.status === "PENDING_APPROVAL"
-                            ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-400"
-                            : "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400"
-                        }`}
+                      className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusClass(
+                        rec.status
+                      )}`}
                     >
                       {rec.status}
                     </span>
@@ -197,30 +264,40 @@ export default function RecruiterList() {
                   </td>
 
                   <td className="py-3 px-4 flex gap-2 flex-wrap">
-                    {rec.status === "PENDING_APPROVAL" && (
-                      <button
-                        onClick={() => openConfirm("approve", rec)}
-                        className="lwd-btn-success-sm"
-                      >
-                        Approve
-                      </button>
+                    {isPendingStatus(rec.status) && (
+                      <>
+                        <button
+                          onClick={() => openConfirm("approve", rec)}
+                          className="lwd-btn-success-sm"
+                        >
+                          Approve
+                        </button>
+
+                        <button
+                          onClick={() => openConfirm("reject", rec)}
+                          className="lwd-btn-danger-sm"
+                        >
+                          Reject
+                        </button>
+                      </>
                     )}
 
-                    {rec.status !== "SUSPENDED" ? (
-                      <button
-                        onClick={() => openConfirm("block", rec)}
-                        className="lwd-btn-danger-sm"
-                      >
-                        Block
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => openConfirm("unblock", rec)}
-                        className="lwd-btn-primary-sm"
-                      >
-                        Unblock
-                      </button>
-                    )}
+                    {!isPendingStatus(rec.status) &&
+                      (rec.status !== "SUSPENDED" ? (
+                        <button
+                          onClick={() => openConfirm("block", rec)}
+                          className="lwd-btn-danger-sm"
+                        >
+                          Block
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => openConfirm("unblock", rec)}
+                          className="lwd-btn-primary-sm"
+                        >
+                          Unblock
+                        </button>
+                      ))}
                   </td>
                 </tr>
               ))
@@ -229,7 +306,6 @@ export default function RecruiterList() {
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center items-center gap-4">
         <button
           disabled={page === 0}
@@ -240,7 +316,7 @@ export default function RecruiterList() {
         </button>
 
         <span className="lwd-text">
-          Page {page + 1} / {totalPages}
+          Page {page + 1} / {totalPages || 1}
         </span>
 
         <button
@@ -252,12 +328,21 @@ export default function RecruiterList() {
         </button>
       </div>
 
-      {/* Confirm Dialog */}
       <ConfirmDialog
         open={confirm.open}
-        title={`${confirm.action?.toUpperCase()} Recruiter`}
-        message={`Are you sure you want to ${confirm.action} ${confirm.recruiter?.name}?`}
-        confirmText={confirm.action}
+        title={`${
+          confirm.action
+            ? confirm.action.charAt(0).toUpperCase() + confirm.action.slice(1)
+            : ""
+        } Recruiter`}
+        message={`Are you sure you want to ${confirm.action} ${
+          confirm.recruiter?.name || "this recruiter"
+        }?`}
+        confirmText={
+          confirm.action
+            ? confirm.action.charAt(0).toUpperCase() + confirm.action.slice(1)
+            : "Confirm"
+        }
         onConfirm={handleConfirm}
         onCancel={() =>
           setConfirm({ open: false, action: null, recruiter: null })

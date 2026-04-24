@@ -98,7 +98,7 @@ export const getRecommendedJobs = () => {
 };
 
 // ===============================
-// GET MY JOBS (ADMIN / RECRUITER_ADMIN / RECRUITER)
+// GET MY JOBS (ADMIN / COMPANY_ADMIN / RECRUITER)
 // ===============================
 export const getMyJobs = async (page = 0) => {
   const response = await api.get("/jobs/my-jobs", {

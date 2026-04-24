@@ -82,7 +82,7 @@ export default function CompanyDashboardPage() {
         
         {/* BRANDED HERO HEADER */}
         <motion.div variants={itemVariants} className="flex flex-col md:flex-row items-center gap-8 border-b border-slate-100 dark:border-slate-800/50 pb-12">
-          <div className="w-24 h-24 rounded-[2rem] bg-blue-600 flex items-center justify-center text-white shadow-2xl shadow-blue-500/30">
+          <div className="w-24 h-24 rounded-4xl bg-blue-600 flex items-center justify-center text-white shadow-2xl shadow-blue-500/30">
             <Building2 size={40} />
           </div>
           <div className="text-center md:text-left space-y-3">
@@ -147,7 +147,7 @@ export default function CompanyDashboardPage() {
                 variants={itemVariants}
                 whileHover={{ y: -4 }}
                 onClick={() => navigate(`/admin/company/${companyId}/recruiters`)}
-                className="lwd-card bg-white dark:bg-slate-800/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xs hover:shadow-2xl hover:shadow-blue-500/5 transition-all text-left flex flex-col justify-between group"
+                className="lwd-card bg-white dark:bg-slate-800/50 p-8 rounded-4xl border border-slate-100 dark:border-slate-800 shadow-xs hover:shadow-2xl hover:shadow-blue-500/5 transition-all text-left flex flex-col justify-between group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Users size={24} />
@@ -164,8 +164,8 @@ export default function CompanyDashboardPage() {
               <motion.button
                 variants={itemVariants}
                 whileHover={{ y: -4 }}
-                onClick={() => navigate(`/recruiter-admin/companies/${companyId}/jobs`)}
-                className="lwd-card bg-white dark:bg-slate-800/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xs hover:shadow-2xl hover:shadow-indigo-500/5 transition-all text-left flex flex-col justify-between group"
+                onClick={() => navigate(`/company-admin/companies/${companyId}/jobs`)}
+                className="lwd-card bg-white dark:bg-slate-800/50 p-8 rounded-4xl border border-slate-100 dark:border-slate-800 shadow-xs hover:shadow-2xl hover:shadow-indigo-500/5 transition-all text-left flex flex-col justify-between group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Briefcase size={24} />
@@ -182,8 +182,8 @@ export default function CompanyDashboardPage() {
               <motion.button
                 variants={itemVariants}
                 whileHover={{ y: -4 }}
-                onClick={() => navigate(`/recruiter-admin/companies/${companyId}/applications`)}
-                className="lwd-card bg-white dark:bg-slate-800/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xs hover:shadow-2xl hover:shadow-violet-500/5 transition-all text-left flex flex-col justify-between group md:col-span-2"
+                onClick={() => navigate(`/company-admin/companies/${companyId}/applications`)}
+                className="lwd-card bg-white dark:bg-slate-800/50 p-8 rounded-4xl border border-slate-100 dark:border-slate-800 shadow-xs hover:shadow-2xl hover:shadow-violet-500/5 transition-all text-left flex flex-col justify-between group md:col-span-2"
               >
                 <div className="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-900/30 text-violet-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <FileText size={24} />

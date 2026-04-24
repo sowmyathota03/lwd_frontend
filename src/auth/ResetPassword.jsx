@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { resetPassword } from "../api/PasswordApi";
-import { 
-  Lock, 
-  Key, 
-  ShieldCheck, 
-  Eye, 
-  EyeOff, 
+import { resetPassword } from "../api/AuthApi";
+import {
+  Lock,
+  Key,
+  ShieldCheck,
+  Eye,
+  EyeOff,
   CheckCircle,
   AlertCircle,
   ArrowRight,
-  ChevronLeft
+  ChevronLeft,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getApiErrorMessage } from "../utils/errorUtils";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -86,17 +87,15 @@ export default function ResetPassword() {
       });
 
       setSuccessMessage(
-        res || "Password reset successful. Redirecting to login..."
+        res || "Password reset successful. Redirecting to login...",
       );
 
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-    } catch (err) {
-      setError(
-        err.response?.data ||
-        "Invalid or expired token. Please request a new password reset link."
-      );
+    } catch (error) {
+      const message = getApiErrorMessage(error, "Something went wrong. Please try again.");
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -104,19 +103,17 @@ export default function ResetPassword() {
 
   return (
     <div className="lwd-page flex flex-col justify-center items-center py-12 px-4 relative overflow-hidden">
-      
       {/* Decorative Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full max-w-md relative z-10"
       >
         <div className="lwd-card-glass p-8 md:p-10">
-          
           {/* Header Section */}
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/10 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 mb-6 shadow-sm ring-1 ring-blue-500/20">
@@ -141,7 +138,9 @@ export default function ResetPassword() {
                 className="mb-8 p-4 rounded-xl bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border border-green-100 dark:border-green-800/50 flex items-center gap-3 overflow-hidden"
               >
                 <CheckCircle size={20} className="shrink-0" />
-                <span className="text-sm font-bold tracking-wide">{successMessage}</span>
+                <span className="text-sm font-bold tracking-wide">
+                  {successMessage}
+                </span>
               </motion.div>
             )}
 
@@ -160,7 +159,6 @@ export default function ResetPassword() {
           </AnimatePresence>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-6">
-
             {/* New Password Field */}
             <div className="space-y-2">
               <label className="lwd-label">New Password</label>
@@ -210,7 +208,11 @@ export default function ResetPassword() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-blue-600 transition-colors focus:outline-none"
                 >
-                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
               </div>
               {fieldErrors.confirmPassword && (
@@ -230,21 +232,31 @@ export default function ResetPassword() {
                 <span className="font-black uppercase tracking-widest text-sm">
                   {loading ? "Resetting..." : "Reset Password"}
                 </span>
-                {!loading && <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />}
+                {!loading && (
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
+                )}
               </button>
             </div>
 
             {/* Navigation Link */}
             <div className="pt-4 text-center">
-              <Link to="/login" className="inline-flex items-center gap-1 font-black text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-xs uppercase tracking-widest italic group">
-                <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-1 font-black text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-xs uppercase tracking-widest italic group"
+              >
+                <ChevronLeft
+                  size={16}
+                  className="group-hover:-translate-x-1 transition-transform"
+                />
                 Return to Login
               </Link>
             </div>
-
           </form>
         </div>
       </motion.div>
     </div>
   );
-}
+}

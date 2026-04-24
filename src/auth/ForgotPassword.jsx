@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { forgotPassword } from "../api/PasswordApi";
+import { forgotPassword } from "../api/AuthApi";
 import { 
   Mail, 
   Key, 
@@ -11,6 +11,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getApiErrorMessage } from "../utils/errorUtils";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -61,8 +62,7 @@ export default function ForgotPassword() {
       setEmailError("");
     } catch (err) {
       setError(
-        err.response?.data ||
-        "Failed to send reset email. Please try again later."
+        getApiErrorMessage(err, "Failed to send reset email. Please try again later.")
       );
     } finally {
       setLoading(false);
@@ -159,7 +159,7 @@ export default function ForgotPassword() {
                 disabled={loading || !!emailError}
                 className="w-full h-14 lwd-btn-primary flex items-center justify-center gap-2 group disabled:opacity-70"
               >
-                <span className="text-lg font-black tracking-tight tracking-wide uppercase">
+                <span className="text-lg font-black tracking-tight uppercase">
                   {loading ? "Sending..." : "Send Reset Link"}
                 </span>
                 {!loading && <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
@@ -189,4 +189,4 @@ export default function ForgotPassword() {
       </motion.div>
     </div>
   );
-}
+}

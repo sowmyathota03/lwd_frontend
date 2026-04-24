@@ -30,8 +30,8 @@ const MessagingPage = () => {
   const [searchParams] = useSearchParams();
 
  const getMessagingBaseRoute = (pathname) => {
-  if (pathname.startsWith("/admin-recruiter/messaging")) {
-    return "/admin-recruiter/messaging";
+  if (pathname.startsWith("/company-admin/messaging")) {
+    return "/company-admin/messaging";
   }
 
   if (pathname.startsWith("/recruiter/messaging")) {
